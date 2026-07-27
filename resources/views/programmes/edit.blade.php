@@ -13,7 +13,6 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-pencil-square me-2 opacity-90"></i>Edit Programme</h1>
-    <p class="page-subtitle-landing mb-0">Select the programme, level, and duration from the lists — no typing required.</p>
 </div>
 
 <div class="card card-landing">

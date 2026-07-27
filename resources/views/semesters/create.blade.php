@@ -16,7 +16,6 @@
     <p class="page-subtitle-landing mb-0">Academic year and Semester I or II, plus key dates.</p>
 </div>
 
-<p class="small text-muted mb-3">Programmes (CMT, MLT, …) are added under <a href="{{ route('programmes.index') }}">Academics → Programmes</a> before you attach modules to semesters.</p>
 
 <div class="card card-landing">
     <div class="card-header-landing"><i class="bi bi-pencil-square me-2"></i>Semester details</div>

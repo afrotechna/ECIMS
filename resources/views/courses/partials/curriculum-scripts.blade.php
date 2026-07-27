@@ -18,7 +18,6 @@
     var creditsWrap = document.getElementById('creditsWrap');
     var creditsInput = document.getElementById('credits');
     var assessmentCard = document.getElementById('assessmentOptionsCard');
-    var manualExplainer = document.getElementById('manualEntryExplainer');
 
     var fields = {
         code: document.getElementById('field_code'),
@@ -145,11 +144,6 @@
             if (creditsWrap) creditsWrap.classList.remove('d-none');
             if (assessmentCard) assessmentCard.classList.remove('d-none');
             if (ntaLevelWrap) ntaLevelWrap.classList.remove('d-none');
-            if (manualExplainer) {
-                manualExplainer.textContent = code === 'MLT'
-                    ? 'Medical Laboratory Science (MLT): official tables are loaded for NTA Levels 4–6. For other levels, enter the module manually.'
-                    : 'Use when no official examination-component table is loaded for this programme and NTA level (e.g. CMT Level 5/6).';
-            }
             clearFields();
             syncNtaRequired(code);
             return;
@@ -166,8 +160,7 @@
 
         var levelOrder = [4, 5, 6];
         var firstLevelOpen = true;
-        var html = '<p class="small text-muted mb-3">Tables are grouped by <strong>NTA Level</strong> and <strong>Semester</strong>. Tick any number of modules to add in one save.</p>';
-        html += '<div id="curriculum-collapse-scope">';
+        var html = '<div id="curriculum-collapse-scope">';
 
         levelOrder.forEach(function(nta) {
             var pkg = CUR.programmes[code] && CUR.programmes[code][nta];

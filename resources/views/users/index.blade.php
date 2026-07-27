@@ -146,7 +146,7 @@
             </table>
         </div>
         @if($studentsAwaitingLogin > ($studentsAwaitingList->count()))
-            <p class="small text-muted mb-0 mt-2">Showing first {{ $studentsAwaitingList->count() }} of {{ $studentsAwaitingLogin }}. Use <strong>Create all + CSV</strong> for the full list, or narrow with filters.</p>
+            <p class="small text-muted mb-0 mt-2">Showing first {{ $studentsAwaitingList->count() }} of {{ $studentsAwaitingLogin }}.</p>
         @endif
     </div>
 </div>
@@ -273,13 +273,6 @@
     @endif
 </div>
 
-@if($type === 'student')
-<div class="cohas-filter-panel mt-3">
-    <div class="cohas-filter-panel__title"><i class="bi bi-info-circle me-1"></i> Student login rules</div>
-    <p class="small text-muted mb-1"><strong>Login:</strong> NACTVET registration number (not email).</p>
-    <p class="small text-muted mb-0"><strong>Password:</strong> One surname only — last word of the name, lowercase (e.g. Magesa → <code>magesa</code>). Student changes it on first sign-in.</p>
-</div>
-@endif
 
 @if($type === 'staff')
 @push('styles')

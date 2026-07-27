@@ -11,7 +11,6 @@
 
 <div class="page-header-landing mb-4">
     <h1 class="page-title-landing"><i class="bi bi-upload me-2 opacity-90"></i>Import CA results</h1>
-    <p class="page-subtitle-landing mb-0">Row 1 is the table header (SN, CANDIDATE NAME, … then each <strong>module code</strong>). Fill CA marks under each module column, save as CSV UTF-8, upload once.</p>
 </div>
 
 @if(session('success'))
@@ -99,7 +98,6 @@
                     <div class="mb-3">
                         <label class="form-label">CSV or Excel file</label>
                         <input type="file" name="file" class="form-control" accept=".csv,.txt,.xls,.xml" required>
-                        <div class="form-text">Keep header rows. One upload imports every module column you filled.</div>
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" name="notify_sms" value="1" class="form-check-input" id="notify_sms_ca"
@@ -115,8 +113,7 @@
     <div class="col-12">
         <div class="card card-landing border-0 bg-light">
             <div class="card-body small">
-                <h3 class="h6">Columns</h3>
-                <p class="mb-0">Row 1: SN, CANDIDATE NAME, … then one column per module (<strong>CMT04101</strong>, …). After upload, each module gets <strong>PASS</strong> or <strong>FAIL</strong> remarks for students (FAIL = cannot sit end-of-semester exam for that module).</p>
+                <p class="mb-0"><strong>FAIL</strong> = cannot sit end-of-semester exam for that module.</p>
             </div>
         </div>
     </div>

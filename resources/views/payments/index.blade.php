@@ -18,7 +18,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-clock-history me-2 opacity-90"></i>Payment history</h1>
-        <p class="page-subtitle-landing mb-0">All recorded fee payments. New payments are captured during student registration.</p>
+        <p class="page-subtitle-landing mb-0">All recorded fee payments.</p>
     </div>
     <a href="{{ route('reports.income') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-graph-up me-1"></i> Income report</a>
 </div>

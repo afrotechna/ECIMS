@@ -12,7 +12,6 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-journal-check me-2 opacity-90"></i>Results</h1>
-        <p class="page-subtitle-landing mb-0">Results are loaded from Excel (save as CSV) per semester and NTA level—import CA, then final. Use lock when a row is finalized. No per-student web entry.</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ route('results.transcript') }}" class="btn btn-outline-light btn-sm">Transcript</a>

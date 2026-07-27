@@ -15,16 +15,14 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-folder2-open me-2 opacity-90"></i>{{ $pageTitle }}</h1>
+        @if($studentPortal)
         <p class="page-subtitle-landing mb-0">
-            @if($studentPortal)
-            Documents for your programme and college-wide files. Open a folder to download.
+            Documents for your programme and college-wide files.
             @if(auth()->user()->student?->programme)
             <span class="d-block mt-1">Your programme: <strong>{{ auth()->user()->student->programme->code }}</strong></span>
             @endif
-            @else
-            Official college records stored securely. Open a folder to view or upload files.
-            @endif
         </p>
+        @endif
     </div>
 </div>
 

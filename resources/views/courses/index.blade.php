@@ -17,7 +17,7 @@
         @else
             <p class="page-subtitle-landing mb-0">
                 @canModule('courses', 'create')
-                By programme, NTA level, and semester. Use the semester filter for a single period.
+                By programme, NTA level, and semester.
                 @else
                 View modules by programme, NTA level, and semester. Only the ICT administrator can add or change modules.
                 @endcanModule
@@ -101,7 +101,6 @@
                 <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Reset</a>
             </div>
         </form>
-        <p class="small text-muted mb-0 mt-2">Select a semester and click <strong>Apply filter</strong> to see only modules offered in that period. Leave semester as “Full catalogue” and click Apply (or Reset) to show the complete tree.</p>
     </div>
 </div>
 

@@ -10,7 +10,6 @@
 </nav>
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-plus-circle me-2 opacity-90"></i>New rotation round</h1>
-    <p class="page-subtitle-landing mb-0">Choose <strong>Semester II</strong>, programme, <strong>NTA 4</strong>, <strong>5</strong>, or <strong>6</strong>, and the <strong>Monday–Friday</strong> dates for this posting week. On save we create <strong>six groups (NTA 4)</strong> or <strong>five groups (NTA 5–6)</strong>, each with a <strong>different department</strong> (every student in exactly one group), then you assign hospitals on the round page. Use <strong>Clinical rotation</strong> to export the official <strong>rotation schedule</strong> (Word/PDF).</p>
 </div>
 <div class="card card-landing">
     <div class="card-body">
@@ -55,7 +54,7 @@
             <div class="col-md-4">
                 <label class="form-label">Rotation week — Friday <span class="text-danger">*</span></label>
                 <input type="date" name="rotation_week_friday" class="form-control" value="{{ old('rotation_week_friday') }}" required>
-                <p class="small text-muted mb-0 mt-1">Must be the Friday of the same week as the Monday above. That Monday is also the default <strong>first week</strong> of the printable rotation schedule.</p>
+                <p class="small text-muted mb-0 mt-1">Must be the Friday of the same week as the Monday above.</p>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Weeks in each department (schedule grid) <span class="text-danger">*</span></label>
@@ -67,7 +66,6 @@
                     <option value="1" {{ $defWeeks === '1' ? 'selected' : '' }}>1 week per department (typical NTA 4)</option>
                     <option value="2" {{ $defWeeks === '2' ? 'selected' : '' }}>2 weeks per department — fortnight (typical NTA 5–6)</option>
                 </select>
-                <p class="small text-muted mb-0 mt-1">Controls the Word/PDF rotation timetable (how long each group stays in one department before moving). You can still override when exporting.</p>
             </div>
             <div class="col-md-8">
                 <label class="form-label">Title (optional)</label>

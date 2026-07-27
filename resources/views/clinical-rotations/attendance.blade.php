@@ -62,7 +62,7 @@
 </div>
 
 <div class="card card-landing">
-    <div class="card-header-landing">Mark <strong>P</strong> (present) or <strong>A</strong> (absent); leave “—” if not recorded.</div>
+    <div class="card-header-landing">Attendance</div>
     <div class="card-body p-0">
         <form method="POST" action="{{ route('clinical-rotations.attendance.store', [$clinical_rotation_round, $clinical_rotation_group]) }}">
             @csrf

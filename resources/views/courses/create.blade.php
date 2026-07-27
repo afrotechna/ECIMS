@@ -25,7 +25,6 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-plus-lg me-2 opacity-90"></i>Add Course / Module</h1>
-    <p class="page-subtitle-landing mb-0">Where curriculum tables exist, modules are grouped by <strong>NTA Level (4–6)</strong> and <strong>Semester I / II</strong> — expand each section and tick <strong>one or many</strong> modules to add at once. Otherwise use manual entry (e.g. MLT).</p>
 </div>
 
 <script type="application/json" id="curriculum-modules-json">{!! json_encode(config('curriculum_modules')) !!}</script>
@@ -96,7 +95,6 @@
     <div id="manualModuleFields" class="card card-landing mb-3">
         <div class="card-header-landing"><i class="bi bi-pencil-square me-2"></i>Module code &amp; name</div>
         <div class="card-body">
-            <p id="manualEntryExplainer" class="small text-muted mb-3">Use when no official examination-component table is loaded for this programme and level (e.g. MLT or CMT Level 5/6).</p>
             <div class="row g-3">
                 <div class="col-md-3">
                     <label for="manual_code" class="form-label">Code</label>

@@ -13,7 +13,7 @@
         @if($edit_mode ?? false)
             Choose the modules you will study this semester. If you are repeating only some modules, tick those modules only.
         @else
-            Your saved module selection for this semester. Use <strong>Change selection</strong> if you need to add or remove modules.
+            Your saved module selection for this semester.
         @endif
     </p>
 </div>
@@ -138,8 +138,7 @@
             <p class="text-muted mb-0">No modules are configured for your programme and NTA level in this semester. Contact the registry office.</p>
         @else
             @if(($enrolled_courses ?? collect())->isNotEmpty())
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                    <p class="small text-muted mb-0">Already chosen modules are faded. Uncheck to remove, or pick additional modules below.</p>
+                <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 mb-3">
                     <a href="{{ route('my.module-registration', ['semester_id' => $semester->id]) }}" class="btn btn-sm btn-outline-secondary">
                         <i class="bi bi-x-lg me-1"></i> Cancel editing
                     </a>

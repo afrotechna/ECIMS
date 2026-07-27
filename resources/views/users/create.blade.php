@@ -14,9 +14,10 @@
 
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
-        <h1 class="page-title-landing"><i class="bi bi-person-plus me-2 opacity-90"></i>Add User</h1>
-        <p class="page-subtitle-landing mb-0" id="pageSubtitleStudent">Student: pick from the uploaded register. Login = NACTVET no. Password = <strong>one surname</strong> (lowercase). Student changes it on first sign-in.</p>
-        <p class="page-subtitle-landing mb-0 d-none" id="pageSubtitleStaff">Staff: Staff ID is auto-generated. Initial password = surname (lowercase).</p>
+        <h1 class="page-title-landing">
+            <i class="bi bi-person-plus me-2 opacity-90"></i>Add User
+            @include('partials.help-tip', ['text' => 'Student: login = NACTVET no., initial password = one surname (lowercase), changed on first sign-in. Staff: Staff ID is auto-generated, initial password = surname (lowercase).', 'placement' => 'bottom'])
+        </h1>
     </div>
     <a href="{{ route('users.index') }}" class="btn btn-outline-light btn-sm text-dark border">Back to Users</a>
 </div>
@@ -69,10 +70,8 @@
                         Create login only
                     </button>
                 </div>
-                <p class="small text-muted mt-2 mb-0">Password uses the <strong>last word</strong> of the name only (e.g. Anna Donald Magesa → <code>magesa</code>).</p>
             </div>
             <div id="staffFields" style="display:{{ old('role', $defaultRole) !== 'student' ? 'block' : 'none' }};">
-                <p class="text-muted small mb-3">Staff ID will be auto-generated.</p>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="name" class="form-label">First name(s) <span class="text-danger">*</span></label>
@@ -107,8 +106,6 @@ document.getElementById('role').addEventListener('change', function() {
     document.getElementById('staffFields').style.display = isStudent ? 'none' : 'block';
     document.getElementById('studentActions').style.display = isStudent ? 'flex' : 'none';
     document.getElementById('staffSubmitBtn').style.display = isStudent ? 'none' : 'inline-block';
-    document.getElementById('pageSubtitleStudent').classList.toggle('d-none', !isStudent);
-    document.getElementById('pageSubtitleStaff').classList.toggle('d-none', isStudent);
     document.getElementById('student_id').required = isStudent;
     document.getElementById('name').required = !isStudent;
     document.getElementById('surname').required = !isStudent;

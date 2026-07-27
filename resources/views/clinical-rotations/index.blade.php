@@ -9,7 +9,6 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2">
     <div>
         <h1 class="page-title-landing mb-0"><i class="bi bi-hospital me-2 opacity-90"></i>Clinical rotation</h1>
-        <p class="page-subtitle-landing mb-0">Semester II for <strong>NTA 4–6</strong>: split students into <strong>six groups (Level 4)</strong> or <strong>five groups (Levels 5–6)</strong>, assign hospitals, record Mon–Fri attendance. Download the official <strong>rotation schedule</strong> below (Word or PDF).</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
         <a href="{{ route('clinical.coordinator') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-speedometer2 me-1"></i>Coordinator</a>

@@ -8,7 +8,6 @@
 </nav>
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-clipboard-check me-2 opacity-90"></i>Graduation clearances</h1>
-    <p class="page-subtitle-landing mb-0">Mark library, finance, accommodation and academic clearance per student.</p>
 </div>
 <div class="card card-landing mb-3">
     <div class="card-header-landing">Add clearance</div>

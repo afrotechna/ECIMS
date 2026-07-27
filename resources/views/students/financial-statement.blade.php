@@ -30,10 +30,6 @@
     <span>Financial Statement</span>
 </nav>
 
-<div class="alert alert-info d-flex align-items-start gap-2 mb-3">
-    <i class="bi bi-info-circle-fill flex-shrink-0 mt-1"></i>
-    <div class="small mb-0">Below is your financial information.</div>
-</div>
 
 <p class="fin-stmt-no-print mb-3">
     <a href="#" class="fin-stmt-print-link text-decoration-none" onclick="window.print(); return false;">

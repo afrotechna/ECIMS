@@ -46,12 +46,12 @@
 <div class="card card-landing mb-4">
     <div class="card-header-landing"><i class="bi bi-printer me-2"></i>Notice board &amp; downloads</div>
     <div class="card-body">
-        <p class="small text-muted mb-2"><strong>Posting list</strong> — students by group with department and hospital (current group assignment only).</p>
+        <p class="small text-muted mb-2"><strong>Posting list</strong></p>
         <div class="d-flex flex-wrap gap-2 mb-3">
             <a href="{{ route('clinical-rotations.roster.print', $clinical_rotation_round) }}" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener"><i class="bi bi-printer me-1"></i>Print posting list</a>
             <a href="{{ route('clinical-rotations.roster.csv', $clinical_rotation_round) }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Download roster (Excel / CSV)</a>
             @if(in_array((int) $clinical_rotation_round->nta_level, [4, 5, 6], true))
-                <div class="w-100 small text-muted mb-1 mt-2"><strong>Complete roster (all weeks)</strong> — every Mon–Fri week in the rotation cycle: each group’s <strong>department for that week</strong>, hospital, and full student list (for notice boards and supervisors).</div>
+                <div class="w-100 small text-muted mb-1 mt-2"><strong>Complete roster (all weeks)</strong></div>
                 <form method="GET" action="{{ route('clinical-rotations.roster.all-weeks.print', $clinical_rotation_round) }}" class="row g-2 align-items-end flex-wrap w-100 mb-3">
                     <div class="col-auto">
                         <label class="form-label small mb-0">Rotation starts (Monday)</label>
@@ -71,7 +71,7 @@
                 </form>
             @endif
             @if(in_array((int) $clinical_rotation_round->nta_level, [4, 5, 6], true))
-                <div class="w-100 small text-muted mb-1"><strong>Rotation schedule</strong> — choose the <strong>Monday the grid starts on</strong> and <strong>weeks per department posting</strong> (NTA 4 is usually 1 week per area → <strong>6</strong> weekly rows; NTA 5–6 with 2 weeks per posting → <strong>10</strong> weekly rows). Print/PDF/Word list <strong>every Mon–Fri week</strong> with each group’s department.</div>
+                <div class="w-100 small text-muted mb-1"><strong>Rotation schedule</strong></div>
                 <form method="GET" action="{{ route('clinical-rotations.schedule.print', $clinical_rotation_round) }}" class="row g-2 align-items-end flex-wrap w-100">
                     <div class="col-auto">
                         <label class="form-label small mb-0">Schedule starts (Monday)</label>
@@ -92,7 +92,7 @@
                 </form>
             @endif
         </div>
-        <p class="small text-muted mb-2"><strong>Attendance (CSV)</strong> — all rotation groups for one week (Monday start). Use the week picker on each group’s page for a single group.</p>
+        <p class="small text-muted mb-2"><strong>Attendance (CSV)</strong></p>
         <form method="GET" action="{{ route('clinical-rotations.attendance.round-csv', $clinical_rotation_round) }}" class="row g-2 align-items-end">
             <div class="col-auto">
                 <label class="form-label small mb-0">Week (Monday)</label>
@@ -108,7 +108,6 @@
 @if($clinical_rotation_round->rotation_week_monday && $clinical_rotation_round->rotation_week_friday)
 <div class="alert alert-secondary small py-2 mb-3">
     <strong>Rotation dates (Mon–Fri):</strong> {{ $clinical_rotation_round->rotation_week_monday->format('l j F Y') }} to {{ $clinical_rotation_round->rotation_week_friday->format('l j F Y') }}.
-    Weekly attendance opens on the posting Monday by default when you open a group’s attendance sheet.
 </div>
 @endif
 <div class="alert alert-info small py-2 mb-3">

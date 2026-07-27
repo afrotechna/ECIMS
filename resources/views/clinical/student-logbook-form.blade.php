@@ -41,7 +41,6 @@
                             <i class="bi bi-journal-text"></i>
                         </button>
                     </div>
-                    <div class="form-text">Select a procedure, then use <i class="bi bi-journal-text"></i> to open the instruction guide.</div>
                     @error('clinical_procedure_id')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">

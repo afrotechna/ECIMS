@@ -76,7 +76,7 @@
                         <td class="small">{{ $e->ip ?? '—' }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="text-center text-muted py-5">No activity log entries. Ensure the <code>activity_log</code> table exists and migrations have been run.</td></tr>
+                    <tr><td colspan="6" class="text-center text-muted py-5">No activity log entries.</td></tr>
                     @endforelse
                 </tbody>
             </table>

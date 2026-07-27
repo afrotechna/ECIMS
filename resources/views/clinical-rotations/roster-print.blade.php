@@ -42,7 +42,6 @@
         <br><em>{{ $clinical_rotation_round->title }}</em>
     @endif
 </div>
-<p class="meta" style="margin-top:-0.5rem;font-size:0.85rem;">Each table shows group and department, hospital on the top row, then students for that posting.</p>
 
 @foreach($clinical_rotation_round->groups as $group)
     <div class="group-block">

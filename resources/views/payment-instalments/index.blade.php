@@ -10,7 +10,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-calendar2-check me-2 opacity-90"></i>Payment instalments</h1>
-        <p class="page-subtitle-landing mb-0">Plan fee instalments per student. Record payments on the ledger as usual; mark instalments paid here.</p>
+        <p class="page-subtitle-landing mb-0">Plan fee instalments per student.</p>
     </div>
 </div>
 

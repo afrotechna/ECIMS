@@ -2,7 +2,7 @@
 @section('title', 'Send bulk message')
 @section('content')
 <nav class="student-breadcrumb"><a href="{{ route('dashboard') }}">Dashboard</a> / <a href="{{ route('message-logs.index') }}">Message log</a> / <span>Send</span></nav>
-<div class="page-header-landing"><h1 class="page-title-landing">Send bulk message</h1><p class="page-subtitle-landing mb-0">SMS uses Twilio when <code>TWILIO_ENABLED=true</code> in <code>.env</code>. Email is logged only until mail is wired.</p></div>
+<div class="page-header-landing"><h1 class="page-title-landing">Send bulk message</h1></div>
 
 <div class="card card-landing mb-4">
     <div class="card-header-landing"><i class="bi bi-phone me-2"></i>Send test SMS</div>
@@ -22,7 +22,6 @@
             </div>
             <div class="col-md-12">
                 <button type="submit" class="btn btn-outline-primary"><i class="bi bi-send me-1"></i> Send test SMS</button>
-                <span class="small text-muted ms-2">Checks Twilio credentials and appears in the message log.</span>
             </div>
         </form>
     </div>

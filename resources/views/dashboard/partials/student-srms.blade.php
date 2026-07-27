@@ -521,7 +521,6 @@
         </div>
         <div class="p-3">
             @if(isset($publicInstitutionDocuments) && $publicInstitutionDocuments->isNotEmpty())
-            <p class="small text-muted mb-2">Recent public files — open folders for practicum guides, curriculum, minutes, and more.</p>
             <ul class="list-group list-group-flush border rounded">
                 @foreach($publicInstitutionDocuments->take(5) as $doc)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -531,7 +530,7 @@
                 @endforeach
             </ul>
             @else
-            <p class="small text-muted mb-0">Browse college documents by folder (curriculum, practicum guide, assessment plan, minutes, and more).</p>
+            <p class="small text-muted mb-0">No public documents yet.</p>
             @endif
         </div>
     </div>

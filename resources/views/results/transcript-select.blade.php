@@ -14,7 +14,6 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-file-text me-2 opacity-90"></i>View Transcript</h1>
-        <p class="page-subtitle-landing mb-0">Select a student to view their academic transcript.</p>
     </div>
     <a href="{{ route('results.index') }}" class="btn btn-outline-light btn-sm">Back to Results</a>
 </div>

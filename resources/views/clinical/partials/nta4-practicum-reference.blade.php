@@ -19,10 +19,7 @@
         @endif
     </div>
     <div class="card-body pb-2">
-        <p class="small text-muted mb-2">
-            Each procedure shows its title here. Click <strong>Instructions</strong> to open the step-by-step guide in a popup.
-            Marks apply when the whole procedure is approved in your logbook.
-        </p>
+        <p class="small text-muted mb-2">Marks apply when the whole procedure is approved in your logbook.</p>
 
         @if($allTotal > 0)
         <div class="competency-checklist-accordion border rounded overflow-hidden mb-2">

@@ -11,7 +11,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-clipboard2-data me-2 opacity-90"></i>Students Admission Control Sheet</h1>
-        <p class="page-subtitle-landing mb-0">Filter by <strong>NTA level</strong> for separate Level 4 / 5 / 6 sheets. Expected tuition and fees follow the <strong>selected semester</strong> from Finance → Fee Structure (per-semester schedule). Tuition paid = sum of payment lines allocated to <strong>tuition</strong>. NACTVET and Form IV registration numbers are the same (one column).</p>
+        <p class="page-subtitle-landing mb-0">Expected tuition and fees follow the <strong>selected semester</strong>'s fee structure. Tuition paid = sum of payment lines allocated to <strong>tuition</strong>. NACTVET and Form IV registration numbers are the same (one column).</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ route('reports.admission-control-sheet.export', request()->query()) }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-download me-1"></i>Export control sheet (CSV)</a>

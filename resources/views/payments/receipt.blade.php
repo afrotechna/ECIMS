@@ -34,8 +34,7 @@
         Generated on {{ now()->format('d/m/Y H:i') }}
     </div>
     <p class="no-print" style="margin-top: 1.5rem;">
-        <button type="button" onclick="window.print()" class="btn btn-primary">Print receipt</button>
-        <span class="text-muted small ms-2">Use your browser’s print dialog and choose “Save as PDF” to download a PDF.</span><br>
+        <button type="button" onclick="window.print()" class="btn btn-primary">Print receipt</button><br>
         <a href="{{ route('payments.show', $payment) }}" class="mt-2 d-inline-block">Back to payment</a>
     </p>
 </body>

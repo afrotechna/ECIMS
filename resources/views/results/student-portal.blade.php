@@ -10,7 +10,6 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-award me-2 opacity-90"></i>My Modules Result</h1>
-        <p class="page-subtitle-landing mb-0">Choose year of study and semester to view final module marks as published from college records.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
         <a href="{{ route('results.transcript.show', $student) }}" class="btn btn-outline-light btn-sm"><i class="bi bi-file-text me-1"></i>Full transcript</a>

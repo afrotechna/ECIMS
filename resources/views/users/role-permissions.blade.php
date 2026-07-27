@@ -11,7 +11,7 @@
 
 <div class="page-header-landing mb-4">
     <h1 class="page-title-landing"><i class="bi bi-shield-lock me-2 opacity-90"></i>Role permissions by module</h1>
-    <p class="page-subtitle-landing mb-0">What each position may <strong>view</strong>, <strong>create</strong>, <strong>update</strong>, or <strong>delete</strong>. Enforced on menus and routes. Edit <code>config/permissions.php</code> to adjust.</p>
+    <p class="page-subtitle-landing mb-0">What each position may <strong>view</strong>, <strong>create</strong>, <strong>update</strong>, or <strong>delete</strong>.</p>
 </div>
 
 <div class="card card-landing">

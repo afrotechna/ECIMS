@@ -20,13 +20,9 @@
             <i class="bi {{ \App\Models\InstitutionDocument::folderIcons()[$folderKey] ?? 'bi-folder2' }} me-2 opacity-90"></i>
             {{ $folderLabel }}
         </h1>
-        <p class="page-subtitle-landing mb-0">
-            @if($studentPortal)
-            Files shared for your programme{{ auth()->user()->student?->programme ? ' ('.auth()->user()->student->programme->code.')' : '' }} and college-wide documents.
-            @else
-            Files in this folder are stored in the system database with secure file storage.
-            @endif
-        </p>
+        @if($studentPortal)
+        <p class="page-subtitle-landing mb-0">Files shared for your programme{{ auth()->user()->student?->programme ? ' ('.auth()->user()->student->programme->code.')' : '' }} and college-wide documents.</p>
+        @endif
     </div>
     @if(!$studentPortal)
     @canModule('institution_docs', 'create')

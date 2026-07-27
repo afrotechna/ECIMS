@@ -11,7 +11,6 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-calendar-plus me-2 opacity-90"></i>Quick registration submit</h1>
-    <p class="page-subtitle-landing mb-0">Creates a pending registration without the guided steps. Prefer <a href="{{ route('registration-wizard.start') }}">Student registration (steps)</a> for the full flow.</p>
 </div>
 
 <div class="card card-landing mb-3">

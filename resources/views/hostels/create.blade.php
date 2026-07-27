@@ -11,7 +11,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-plus-lg me-2 opacity-90"></i>Add Hostel</h1>
-    <p class="page-subtitle-landing mb-0">Default layout matches your campus: <strong>14 blocks</strong>, <strong>4 rooms per block</strong>, <strong>8 berths per room</strong> (4 double-decker beds × 2 tiers). Adjust if needed, then optionally generate all rooms in one step.</p>
+    <p class="page-subtitle-landing mb-0">Default layout: <strong>14 blocks</strong>, <strong>4 rooms per block</strong>, <strong>8 berths per room</strong> (4 double-decker beds × 2 tiers).</p>
 </div>
 
 <div class="card card-landing">

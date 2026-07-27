@@ -11,7 +11,6 @@
 
 <div class="page-header-landing mb-4">
     <h1 class="page-title-landing"><i class="bi bi-upload me-2 opacity-90"></i>Import final semester results</h1>
-    <p class="page-subtitle-landing mb-0">One file with columns for every module: <strong>AVCA</strong>, <strong>AVES</strong>, <strong>FSCORE</strong>, <strong>GRADE</strong> per module code.</p>
 </div>
 
 @if(session('success'))

@@ -15,7 +15,6 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-pencil-square me-2 opacity-90"></i>Edit document</h1>
-    <p class="page-subtitle-landing mb-0">Update title, folder, student access, or replace the file.</p>
 </div>
 
 <div class="card card-landing">

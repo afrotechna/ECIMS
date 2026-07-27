@@ -22,7 +22,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-building me-2 opacity-90"></i>Hostels</h1>
-        <p class="page-subtitle-landing mb-0">Each hostel can follow the standard grid: <strong>14 blocks × 4 rooms</strong>, <strong>8 berths</strong> per room (4 double-decker beds). Edit a hostel to generate rooms or adjust counts.</p>
+        <p class="page-subtitle-landing mb-0">Standard grid: <strong>14 blocks × 4 rooms</strong>, <strong>8 berths</strong> per room (4 double-decker beds).</p>
     </div>
     <a href="{{ route('hostels.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add Hostel</a>
 </div>

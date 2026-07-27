@@ -175,7 +175,7 @@
                     @endcanModule
                     @canModule('courses', 'view')
                     <li class="nav-group-sub-label">Module catalogue</li>
-                    <li><a href="{{ route('courses.index') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}" title="Full tree or filter by teaching semester"><i class="bi bi-diagram-3"></i>Module catalogue</a></li>
+                    <li><a href="{{ route('courses.index') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}"><i class="bi bi-diagram-3"></i>Module catalogue</a></li>
                     @endcanModule
                     @canModule('registrations', 'view')
                     <li class="nav-group-sub-label">Registration</li>
@@ -201,7 +201,7 @@
                     @endcanModule
                     @canModule('clinical', 'view')
                     <li class="nav-group-sub-label">Clinical training</li>
-                    <li><a href="{{ route('clinical-rotations.index') }}" class="{{ request()->routeIs('clinical-rotations.*') ? 'active' : '' }}" title="Rotation groups, hospitals, attendance"><i class="bi bi-hospital"></i>Rotation rounds</a></li>
+                    <li><a href="{{ route('clinical-rotations.index') }}" class="{{ request()->routeIs('clinical-rotations.*') ? 'active' : '' }}"><i class="bi bi-hospital"></i>Rotation rounds</a></li>
                     <li><a href="{{ route('clinical-logbook.index') }}" class="{{ request()->routeIs('clinical-logbook.*', 'clinical.framework') ? 'active' : '' }}"><i class="bi bi-journal-medical"></i>Logbook review</a></li>
                     <li><a href="{{ route('clinical-procedures.index') }}" class="{{ request()->routeIs('clinical-procedures.*') ? 'active' : '' }}"><i class="bi bi-list-check"></i>Procedures catalogue</a></li>
                     <li><a href="{{ route('clinical.coordinator') }}" class="{{ request()->routeIs('clinical.coordinator', 'clinical.reports', 'clinical.progression.*') ? 'active' : '' }}"><i class="bi bi-speedometer2"></i>Coordinator dashboard</a></li>

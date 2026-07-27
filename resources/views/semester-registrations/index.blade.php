@@ -14,7 +14,6 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-calendar-check me-2 opacity-90"></i>Student registrations</h1>
-        <p class="page-subtitle-landing mb-0">Guided multi-step registration is the main workflow; this list shows records for approval when needed.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
         <a href="{{ route('registration-wizard.start') }}" class="btn btn-primary btn-sm"><i class="bi bi-ui-checks-grid me-1"></i> Start registration (steps)</a>

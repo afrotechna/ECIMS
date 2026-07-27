@@ -34,7 +34,6 @@
     </div>
 </div>
 
-<p class="small text-muted mb-3">If a downloaded .docx will not open, ensure PHP has the <code>zip</code> extension enabled in Laragon (PHP → Extensions → php_zip), or rely on the built-in fallback used by the app. Open in Microsoft Word or LibreOffice.</p>
 
 <div class="card card-landing">
     <div class="card-header-landing">Questions</div>

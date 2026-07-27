@@ -10,19 +10,6 @@
 <div class="page-header-landing d-flex justify-content-between align-items-center">
     <div>
         <h1 class="page-title-landing">Question Bank</h1>
-        <p class="page-subtitle-landing mb-0">Create banks for each course, generate section questions, build assessments, then export DOCX.</p>
-    </div>
-</div>
-
-<div class="card card-landing mb-4">
-    <div class="card-header-landing">How It Works</div>
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-md-3"><div class="border rounded p-2 h-100 small"><strong>Step 1:</strong> Create a bank</div></div>
-            <div class="col-md-3"><div class="border rounded p-2 h-100 small"><strong>Step 2:</strong> Upload notes/slides</div></div>
-            <div class="col-md-3"><div class="border rounded p-2 h-100 small"><strong>Step 3:</strong> Generate per section (A-E)</div></div>
-            <div class="col-md-3"><div class="border rounded p-2 h-100 small"><strong>Step 4:</strong> Build and export assessment</div></div>
-        </div>
     </div>
 </div>
 
