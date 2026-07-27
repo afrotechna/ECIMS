@@ -21,9 +21,8 @@
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">New password</label>
-                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password" minlength="8">
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password" minlength="8" placeholder="At least 8 characters, letters and numbers">
                 @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                <small class="text-muted">At least 8 characters, including letters and numbers.</small>
             </div>
             <div class="mb-3">
                 <label for="password_confirmation" class="form-label">Confirm new password</label>

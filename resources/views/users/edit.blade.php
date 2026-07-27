@@ -26,9 +26,11 @@
 @endif
 
 <div class="card card-landing mb-3">
-    <div class="card-header-landing"><i class="bi bi-key me-2"></i>Temporary password</div>
+    <div class="card-header-landing d-flex align-items-center gap-2">
+        <i class="bi bi-key me-2"></i>Temporary password
+        @include('partials.help-tip', ['text' => $user->isStudent() ? 'Passwords are stored securely and cannot be retrieved. Generate password sets one surname only (last word, lowercase); the student must change it on first sign-in.' : 'Passwords are stored securely and cannot be retrieved. This issues a new random temporary password if the user lost theirs.', 'placement' => 'bottom'])
+    </div>
     <div class="card-body">
-        <p class="small text-muted mb-3">Passwords are stored securely and cannot be retrieved.@if($user->isStudent()) Click <strong>Generate password</strong> to set <strong>one surname only</strong> (last word, lowercase). The student must change it on first sign-in.@else Issue a new random temporary password if the user lost theirs.@endif</p>
         <form action="{{ route('users.issue-temporary-password', $user) }}" method="POST" class="row g-2 align-items-end">
             @csrf
             <div class="col-auto">

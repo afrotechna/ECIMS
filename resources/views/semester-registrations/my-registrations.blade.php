@@ -11,10 +11,6 @@
     <p class="page-subtitle-landing mb-0">{{ $student->reg_no }} — status of your semester registration (completed by college staff after payment).</p>
 </div>
 
-<div class="alert alert-info mb-3">
-    <i class="bi bi-info-circle me-1"></i>
-    You <strong>do not register yourself</strong> in the system. After your fees are paid, <strong>admissions or accounts staff</strong> complete your semester registration. Check this page for approval status.
-</div>
 
 <div class="card card-landing">
     <div class="card-header-landing">My registrations</div>

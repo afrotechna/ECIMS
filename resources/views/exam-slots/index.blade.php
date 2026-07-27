@@ -56,7 +56,7 @@
 
 @if($semesterId && ! $programmeId)
 <div class="alert alert-info no-print small">
-    Select a <strong>programme</strong> to view the official timetable grid and download programme-specific Word documents (e.g. CMT vs MLT).
+    Select a <strong>programme</strong> to view the timetable.
 </div>
 @endif
 

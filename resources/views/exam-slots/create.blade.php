@@ -13,17 +13,16 @@
     <span>Add</span>
 </nav>
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2">
-    <h1 class="page-title-landing mb-0"><i class="bi bi-calendar-plus me-2 opacity-90"></i>Add exam slots</h1>
+    <h1 class="page-title-landing mb-0">
+        <i class="bi bi-calendar-plus me-2 opacity-90"></i>Add exam slots
+        @include('partials.help-tip', ['text' => 'Choose the same date, time, and exam format for every module in this session (e.g. morning theory papers for NTA 4-6, then a separate session for practical / OSCE / OSPE). Ticking a module confirms it for this session (shown faint) until you use Clear session.', 'placement' => 'bottom'])
+    </h1>
 </div>
 <div class="card card-landing">
     <div class="card-body">
         @if($errors->any())
             <div class="alert alert-danger small">{{ $errors->first() }}</div>
         @endif
-        <p class="text-muted small mb-3">
-            Choose the <strong>same date, time, and exam format</strong> for every module in this session (e.g. morning <strong>theory</strong> papers for NTA 4–6, then a separate session for <strong>practical</strong> / OSCE / OSPE). The published timetable lists all <strong>theory</strong> exams first, then practical/OSCE/OSPE.
-            When you tick a module it is <strong>confirmed for this session</strong> (shown faint) and cannot be toggled off until you use <strong>Clear session</strong>.
-        </p>
         <form action="{{ route('exam-slots.store') }}" method="POST" id="examSlotForm">
             @csrf
             <div class="row g-3">

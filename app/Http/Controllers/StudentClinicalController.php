@@ -6,6 +6,8 @@ use App\Models\ClinicalLogbookEntry;
 use App\Models\ClinicalProcedure;
 use App\Models\Semester;
 use App\Models\Student;
+use App\Models\User;
+use App\Notifications\StaffClinicalLogbookSubmittedNotification;
 use App\Services\ClinicalCompetencyService;
 use App\Services\ClinicalPlacementService;
 use App\Services\ClinicalPracticumGuideService;
@@ -115,6 +117,12 @@ class StudentClinicalController extends Controller
         $message = $entry->status === ClinicalLogbookEntry::STATUS_SUBMITTED
             ? 'Logbook entry submitted for Clinical Instructor review.'
             : 'Logbook entry saved as draft.';
+
+        if ($entry->status === ClinicalLogbookEntry::STATUS_SUBMITTED) {
+            $entry->loadMissing('student', 'procedure');
+            User::query()->where('role', 'clinical_instructor')->get()
+                ->each->notify(new StaffClinicalLogbookSubmittedNotification($entry));
+        }
 
         return redirect()->route('my.clinical.logbook.show', $entry)->with('success', $message);
     }

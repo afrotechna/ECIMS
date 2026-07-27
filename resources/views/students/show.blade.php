@@ -230,7 +230,6 @@
         <div class="card card-landing mb-3">
             <div class="card-header-landing py-2"><i class="bi bi-people me-2"></i>Parent / guardian portal</div>
             <div class="card-body small">
-                <p class="text-muted mb-2">Guardian can sign in with <strong>email</strong> to view this student’s fees, results, and announcements (read-only).</p>
                 @if($guardianUser ?? null)
                 <p class="mb-2"><span class="badge bg-success">Active</span> {{ $guardianUser->email }}</p>
                 <form action="{{ route('students.guardian-access.destroy', $student) }}" method="POST" onsubmit="return confirm('Remove guardian login?');">

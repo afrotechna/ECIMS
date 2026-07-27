@@ -160,12 +160,20 @@
         @if(request()->hasAny(['search', 'intake_year', 'status']) || (request('programme_id') && ! $activeProgrammeId))
             <span class="text-muted small">More filters active — <a href="{{ route('students.index', array_filter(['nta_level' => $activeNtaLevel, 'programme_id' => $activeProgrammeId])) }}" class="text-decoration-none">clear search &amp; extras</a></span>
         @endif
+        @canModule('students', 'update')
+        <button type="button" id="bulkSmsBtn" class="btn btn-sm btn-outline-primary ms-auto" disabled>
+            <i class="bi bi-chat-dots me-1"></i>Send SMS to selected (<span id="bulkSmsCount">0</span>)
+        </button>
+        @endcanModule
     </div>
     <div class="card-body p-0">
         <div class="table-responsive table-responsive-students-landing">
             <table class="table table-hover align-middle mb-0 table-students-landing">
                 <thead>
                     <tr>
+                        @canModule('students', 'update')
+                        <th scope="col" class="text-center"><input type="checkbox" id="bulkSmsSelectAll" aria-label="Select all"></th>
+                        @endcanModule
                         <th scope="col">Reg no.</th>
                         <th scope="col">Registration</th>
                         <th scope="col">Name</th>
@@ -180,6 +188,9 @@
                 <tbody>
                     @forelse($students as $s)
                     <tr>
+                        @canModule('students', 'update')
+                        <td class="text-center"><input type="checkbox" class="bulk-sms-cb" value="{{ $s->id }}" aria-label="Select {{ $s->full_name }}"></td>
+                        @endcanModule
                         <td class="reg-cell text-nowrap">{{ $s->reg_no }}</td>
                         <td class="nacte-cell"><code>{{ $s->nactvet_reg_no }}</code></td>
                         <td class="name-cell">
@@ -221,7 +232,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="text-center text-muted py-5">
+                        <td colspan="{{ auth()->user()->canModule('students', 'update') ? 10 : 9 }}" class="text-center text-muted py-5">
                             <p class="mb-2">No students found.</p>
                             <a href="{{ route('students.create') }}" class="btn btn-sm btn-primary">Register a student</a>
                             <span class="mx-1 text-muted">or</span>
@@ -239,4 +250,72 @@
     </div>
     @endif
 </div>
+
+@canModule('students', 'update')
+<form id="bulkSmsForm" method="POST" action="{{ route('students.bulk-sms') }}" class="d-none">
+    @csrf
+    <div id="bulkSmsIds"></div>
+    <input type="hidden" name="body" id="bulkSmsBody">
+</form>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var selectAll = document.getElementById('bulkSmsSelectAll');
+    var btn = document.getElementById('bulkSmsBtn');
+    var countEl = document.getElementById('bulkSmsCount');
+
+    function checkedBoxes() {
+        return Array.from(document.querySelectorAll('.bulk-sms-cb:checked'));
+    }
+    function refresh() {
+        var n = checkedBoxes().length;
+        countEl.textContent = n;
+        btn.disabled = n === 0;
+        if (selectAll) {
+            var all = document.querySelectorAll('.bulk-sms-cb');
+            selectAll.checked = all.length > 0 && n === all.length;
+        }
+    }
+    document.querySelectorAll('.bulk-sms-cb').forEach(function (cb) {
+        cb.addEventListener('change', refresh);
+    });
+    if (selectAll) {
+        selectAll.addEventListener('change', function () {
+            document.querySelectorAll('.bulk-sms-cb').forEach(function (cb) { cb.checked = selectAll.checked; });
+            refresh();
+        });
+    }
+    if (btn) {
+        btn.addEventListener('click', function () {
+            var ids = checkedBoxes().map(function (cb) { return cb.value; });
+            if (ids.length === 0) return;
+            Swal.fire({
+                title: 'Send SMS to ' + ids.length + ' student(s)',
+                input: 'textarea',
+                inputPlaceholder: 'Message text…',
+                showCancelButton: true,
+                confirmButtonText: 'Send',
+                inputValidator: function (value) {
+                    if (!value || !value.trim()) return 'Message body is required.';
+                },
+            }).then(function (result) {
+                if (!result.isConfirmed) return;
+                var container = document.getElementById('bulkSmsIds');
+                container.innerHTML = '';
+                ids.forEach(function (id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    container.appendChild(input);
+                });
+                document.getElementById('bulkSmsBody').value = result.value;
+                document.getElementById('bulkSmsForm').submit();
+            });
+        });
+    }
+});
+</script>
+@endpush
+@endcanModule
 @endsection

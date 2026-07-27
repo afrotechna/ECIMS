@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\LeaveApplication;
 use App\Models\User;
 use App\Notifications\StaffLeaveDecisionNotification;
@@ -89,6 +90,7 @@ class LeaveApplicationController extends Controller
         if ($leave_application->staffUser) {
             $leave_application->staffUser->notify(new StaffLeaveDecisionNotification($leave_application->fresh()));
         }
+        ActivityLog::log('leave.approved', LeaveApplication::class, $leave_application->id, "Leave approved for {$leave_application->staffUser?->name}");
 
         return redirect()->route('leave-applications.index')->with('success', 'Leave approved.');
     }
@@ -107,6 +109,8 @@ class LeaveApplicationController extends Controller
         if ($leave_application->staffUser) {
             $leave_application->staffUser->notify(new StaffLeaveDecisionNotification($leave_application->fresh()));
         }
+        ActivityLog::log('leave.rejected', LeaveApplication::class, $leave_application->id, "Leave rejected for {$leave_application->staffUser?->name}");
+
         return redirect()->route('leave-applications.index')->with('success', 'Leave rejected.');
     }
 }

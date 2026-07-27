@@ -77,7 +77,6 @@
                         'label' => 'NHIF (TZS)',
                         'required' => false,
                         'value' => old('sem1_nhif', 50400),
-                        'help' => 'Skip if student has personal NHIF.',
                     ])
                 </div>
                 <div class="col-md-4">

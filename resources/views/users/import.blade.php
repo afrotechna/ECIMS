@@ -11,8 +11,10 @@
 
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
-        <h1 class="page-title-landing"><i class="bi bi-upload me-2 opacity-90"></i>Bulk Upload Users</h1>
-        <p class="page-subtitle-landing mb-0">CSV: name, surname (initial password). Student: nactvet_reg_no. Staff: email, check_number, role slug — e.g. <code>vice_principal_arc</code> (Academic, Research &amp; Consultancy), <code>vice_principal_afp</code> (Administrative, Financial &amp; Planning), <code>admission_officer</code>, <code>procurement_officer</code>.</p>
+        <h1 class="page-title-landing">
+            <i class="bi bi-upload me-2 opacity-90"></i>Bulk Upload Users
+            @include('partials.help-tip', ['text' => 'CSV columns: name, surname (initial password). Student rows: nactvet_reg_no. Staff rows: email, check_number, role slug — e.g. vice_principal_arc, vice_principal_afp, admission_officer, procurement_officer.', 'placement' => 'bottom'])
+        </h1>
     </div>
     <a href="{{ route('users.index') }}" class="btn btn-outline-light btn-sm text-dark border">Back to Users</a>
 </div>
@@ -26,11 +28,12 @@
         <form action="{{ route('users.import.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
-                <label for="file" class="form-label">CSV file</label>
+                <label for="file" class="form-label">CSV file
+                    @include('partials.help-tip', ['text' => 'Initial password = surname for all users. They must change it on first login (min 8 chars, letters and numbers).'])
+                </label>
                 <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file" accept=".csv,.txt" required>
                 @error('file')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
-            <p class="text-muted small">Initial password = surname for all users. They must change it on first login (min 8 chars, letters and numbers).</p>
             <div class="d-flex gap-2 mt-3">
             <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i> Upload and Create Users</button>
             <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">Cancel</a>

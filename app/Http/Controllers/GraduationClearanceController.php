@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\GraduationClearance;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -28,10 +29,12 @@ class GraduationClearanceController extends Controller
         $validated['finance_cleared'] = $validated['finance_cleared'] ?? 'no';
         $validated['accommodation_cleared'] = $validated['accommodation_cleared'] ?? 'no';
         $validated['academic_cleared'] = $validated['academic_cleared'] ?? 'no';
-        GraduationClearance::updateOrCreate(
+        $clearance = GraduationClearance::updateOrCreate(
             ['student_id' => $validated['student_id']],
             $validated
         );
+        ActivityLog::log('graduation_clearance.saved', GraduationClearance::class, $clearance->id, "Clearance saved for student #{$validated['student_id']}");
+
         return redirect()->route('graduation-clearances.index')->with('success', 'Clearance saved.');
     }
 

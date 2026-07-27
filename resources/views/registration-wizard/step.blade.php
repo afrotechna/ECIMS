@@ -170,7 +170,6 @@
             @csrf
 
             @if($isFirstSem && $step === 1)
-                <p class="text-muted small mb-3">Fill in the student profile for this registration period (intake uploads may only have minimal fields).</p>
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label">First name <span class="text-danger">*</span></label>
@@ -223,7 +222,6 @@
             @endif
 
             @if($isFirstSem && $step === 2)
-                <p class="text-muted small mb-3">Parent or guardian contact for this student.</p>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Guardian / parent name</label>
@@ -257,11 +255,10 @@
                     $glovesSel = old('supply_gloves_submitted', $supplySlot !== null && array_key_exists('gloves', $supplySlot) ? ($supplySlot['gloves'] ? '1' : '0') : '');
                     $reamSel = old('supply_ream_submitted', $supplySlot !== null && array_key_exists('ream', $supplySlot) ? ($supplySlot['ream'] ? '1' : '0') : '');
                 @endphp
-                <p class="small text-muted mb-3">Academic items (certificates), reporting, and class property.@if(!auth()->user()->isStudent()) Hostel block appears when allocated under <a href="{{ route('accommodation-allocations.index') }}">Accommodation</a>.@endif</p>
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="alert alert-light border py-2 small mb-0">
-                            <strong>Supplies for {{ $semester->label }}</strong> — gloves and ream are required each semester you register (not bank fees).
+                            <strong>Supplies for {{ $semester->label }}</strong>
                         </div>
                     </div>
                     <div class="col-md-6">

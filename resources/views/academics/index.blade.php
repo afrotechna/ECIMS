@@ -61,7 +61,7 @@
     </div>
     <div class="card-body">
         @if(!$semesterId)
-            <p class="text-muted mb-0">Select a semester above to view courses and modules (CA = Continuous Assessment, SE = Semester Exam).</p>
+            <p class="text-muted mb-0">Select a semester above to view courses and modules.</p>
         @elseif($courses->isEmpty())
             <p class="text-muted mb-0">
                 No courses assigned to this semester yet.

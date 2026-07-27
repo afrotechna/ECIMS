@@ -29,7 +29,6 @@
                     <label for="nactvet_reg_no" class="form-label">NACTVET / Form IV registration no. <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('nactvet_reg_no') is-invalid @enderror" id="nactvet_reg_no" name="nactvet_reg_no" value="{{ old('nactvet_reg_no', $student->nactvet_reg_no) }}" placeholder="S0001/0001/2026 or P0001/0001/2026" pattern="[SP]\d{4}/\d{4}/\d{4}" title="Format: S0000/0000/2026 or P0000/0000/2026" required>
                     @error('nactvet_reg_no')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    <small class="text-muted">Same as Form IV registration number (stored once).</small>
                 </div>
                 <div class="col-md-3">
                     <label for="programme_id" class="form-label">Programme <span class="text-danger">*</span></label>
@@ -162,7 +161,6 @@
                             <option value="{{ $val }}" {{ old('tuition_status_override', $student->tuition_status_override) === $val ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
-                    <small class="text-muted">Use for loan beneficiaries or when status must match the paper register.</small>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label d-block">Personal NHIF from home</label>
@@ -179,7 +177,6 @@
                             <option value="{{ $val }}" {{ old('semester_two_fee_band', $student->semester_two_fee_band) === $val ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
-                    <small class="text-muted">Overrides automatic continuous vs repeat/transfer rate for semester II.</small>
                 </div>
                 <div class="col-md-4">
                     <label for="class_group" class="form-label">Class</label>

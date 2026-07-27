@@ -26,6 +26,23 @@
     --cohas-shadow: rgba(7, 29, 82, 0.08);
     --cohas-shadow-lg: rgba(7, 29, 82, 0.14);
 
+    /* Unified surface/text vocabulary — shared by cohas-theme.css component overrides */
+    --cohas-surface: #ffffff;
+    --cohas-surface-muted: #f8fafc;
+    --cohas-text: #0f172a;
+    --cohas-text-muted: #64748b;
+    --cohas-border: #e2e8f0;
+    --cohas-hover: #e2e8f0;
+
+    /* Spacing / radius / shadow scale */
+    --cohas-radius-sm: .5rem;
+    --cohas-radius-md: .75rem;
+    --cohas-radius-lg: 1rem;
+    --cohas-space-1: .5rem;
+    --cohas-space-2: .75rem;
+    --cohas-space-3: 1rem;
+    --cohas-space-4: 1.5rem;
+
     /* Bootstrap 5.3 */
     --bs-primary: var(--cohas-blue-700);
     --bs-primary-rgb: 26, 79, 181;
@@ -53,6 +70,13 @@
     --bs-body-bg: var(--cohas-bg-page);
     --bs-link-color: #7eb8ff;
     --bs-link-hover-color: #a8d4ff;
+
+    --cohas-surface: #0e3583;
+    --cohas-surface-muted: #334155;
+    --cohas-text: #f1f5f9;
+    --cohas-text-muted: #94a3b8;
+    --cohas-border: #334155;
+    --cohas-hover: #475569;
 }
 
 /* Page shell */

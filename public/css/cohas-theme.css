@@ -1,22 +1,25 @@
-/* COHAS light/dark theme — works with data-bs-theme on <html> */
+/* COHAS light/dark theme — works with data-bs-theme on <html>.
+   Token values (--cohas-surface, --cohas-text, --cohas-border, etc.) live in cohas-brand.css;
+   this file only maps them onto the theme-toggle control and dark-mode component overrides. */
 
 .theme-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     padding: 0;
     border: 1px solid var(--cohas-border, #e2e8f0);
-    border-radius: .5rem;
+    border-radius: var(--cohas-radius-sm, .5rem);
     background: var(--cohas-surface-muted, #f8fafc);
     color: var(--cohas-text-muted, #64748b);
     cursor: pointer;
-    transition: background .2s, color .2s, border-color .2s;
+    transition: background .2s, color .2s, border-color .2s, transform .15s;
 }
 .theme-toggle:hover {
     background: var(--cohas-hover, #e2e8f0);
     color: var(--cohas-text, #1e293b);
+    transform: translateY(-1px);
 }
 .theme-toggle[aria-pressed="true"] {
     background: var(--cohas-gradient, linear-gradient(135deg, #071d52 0%, #1a4fb5 100%));
@@ -24,30 +27,11 @@
     color: #fff;
 }
 
-[data-theme="dark"] {
-    --cohas-bg: #071d52;
-    --cohas-surface: #0e3583;
-    --cohas-surface-muted: #334155;
-    --cohas-text: #f1f5f9;
-    --cohas-text-muted: #94a3b8;
-    --cohas-border: #334155;
-    --cohas-hover: #475569;
-    color-scheme: dark;
-}
-
-[data-theme="light"] {
-    --cohas-bg: #eef4fc;
-    --cohas-surface: #ffffff;
-    --cohas-surface-muted: #f8fafc;
-    --cohas-text: #0f172a;
-    --cohas-text-muted: #64748b;
-    --cohas-border: #e2e8f0;
-    --cohas-hover: #e2e8f0;
-    color-scheme: light;
-}
+[data-theme="dark"] { color-scheme: dark; }
+[data-theme="light"] { color-scheme: light; }
 
 [data-theme="dark"] body {
-    background: var(--cohas-bg) !important;
+    background: var(--cohas-bg-page) !important;
     color: var(--cohas-text);
 }
 
@@ -73,7 +57,7 @@
 
 [data-theme="dark"] .main-wrap,
 [data-theme="dark"] .main-content {
-    background: var(--cohas-bg) !important;
+    background: var(--cohas-bg-page) !important;
 }
 
 [data-theme="dark"] .topbar {

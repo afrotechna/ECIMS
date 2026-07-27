@@ -23,8 +23,8 @@
 
 @if($placements->isEmpty())
     <div class="alert alert-info">
-        You are not assigned to a clinical rotation group yet. After the college places you in a group, your hospital and department will appear here.
-        <a href="{{ route('my.module-registration') }}" class="alert-link">Register your clinical modules</a> if you have not done so.
+        Not yet assigned to a clinical rotation group.
+        <a href="{{ route('my.module-registration') }}" class="alert-link">Register your clinical modules</a>
     </div>
 @else
     @foreach($placements as $group)

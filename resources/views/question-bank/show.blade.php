@@ -170,9 +170,6 @@
             <div class="accordion-body p-0">
         <div class="card card-landing border-0 shadow-none rounded-0">
             <div class="card-body">
-                <div class="alert alert-info py-2 px-3 small mb-3">
-                    <strong>Flow:</strong> Generate here (left) Â· watch section progress (right) Â· then build assessment below Â· export from the list.
-                </div>
                 <div class="row g-3 align-items-start">
                     <div class="col-lg-6">
                         <div class="small text-uppercase text-muted fw-semibold mb-2">Generate</div>

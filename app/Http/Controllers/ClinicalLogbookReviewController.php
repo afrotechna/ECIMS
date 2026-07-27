@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\ClinicalLogbookEntry;
 use App\Models\ClinicalRemediationPlan;
 use App\Models\Student;
@@ -78,6 +79,7 @@ class ClinicalLogbookReviewController extends Controller
         ]);
 
         $notify->logbookApproved($clinical_logbook_entry, auth()->id());
+        ActivityLog::log('clinical_logbook.approved', ClinicalLogbookEntry::class, $clinical_logbook_entry->id, "Logbook entry approved for {$clinical_logbook_entry->student->full_name}");
 
         return redirect()->route('clinical-logbook.index', ['status' => 'submitted'])
             ->with('success', 'Competency signed off for '.$clinical_logbook_entry->student->full_name.'.');
@@ -101,6 +103,7 @@ class ClinicalLogbookReviewController extends Controller
         ]);
 
         $notify->logbookRejected($clinical_logbook_entry, auth()->id());
+        ActivityLog::log('clinical_logbook.rejected', ClinicalLogbookEntry::class, $clinical_logbook_entry->id, "Logbook entry returned to {$clinical_logbook_entry->student->full_name}");
 
         if ($request->boolean('create_remediation')) {
             $plan = ClinicalRemediationPlan::create([

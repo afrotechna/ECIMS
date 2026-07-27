@@ -759,4 +759,34 @@ class StudentController extends Controller
             }
         };
     }
+
+    public function bulkSms(Request $request, \App\Services\Sms\TwilioSmsSender $sms)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:200'],
+            'ids.*' => ['integer'],
+            'body' => ['required', 'string', 'max:500'],
+        ]);
+
+        $students = Student::query()->whereIn('id', $validated['ids'])->get();
+        $sent = 0;
+        $failed = 0;
+
+        foreach ($students as $student) {
+            $log = $sms->send($student->phone ?? '', $validated['body'], [
+                'student_id' => $student->id,
+                'recipient_role' => 'student',
+                'template' => 'bulk_manual',
+                'sent_by' => auth()->id(),
+            ]);
+            $log->status === 'sent' ? $sent++ : $failed++;
+        }
+
+        $msg = "{$sent} SMS sent.";
+        if ($failed > 0) {
+            $msg .= " {$failed} failed or skipped — see message log.";
+        }
+
+        return back()->with($failed > 0 ? 'warning' : 'success', $msg);
+    }
 }

@@ -5,11 +5,6 @@
 @section('content')
 <div class="page-header mb-4">
     <h1 class="page-title mb-1"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Complete your profile</h1>
-    @if($user->isStudent())
-    <p class="text-muted small mb-0">After changing your password, confirm your personal details and parent or guardian contact. <strong>You do not register yourself for the semester</strong> — staff complete registration after successful payment.</p>
-    @else
-    <p class="text-muted small mb-0">Please fill in your staff details below.</p>
-    @endif
 </div>
 <div class="card card-modern" style="max-width: 720px;">
     <div class="card-body">

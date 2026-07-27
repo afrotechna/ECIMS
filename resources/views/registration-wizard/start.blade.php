@@ -13,7 +13,6 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-ui-checks-grid me-2 opacity-90"></i>Student registration</h1>
-    <p class="page-subtitle-landing mb-0">Staff only: register a student after <strong>successful payment</strong> — details → guardian → payment → requirements. <strong>Semester I</strong> assigns the official registry number. Students complete personal/guardian details on their own login only.</p>
     <p class="small text-muted mb-0 mt-2"><a href="{{ route('semester-registrations.index') }}">View registration records &amp; approvals</a></p>
 </div>
 

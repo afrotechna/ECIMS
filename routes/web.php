@@ -154,6 +154,26 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             $studentDashboard = app(\App\Services\StudentDashboardService::class)->build($student);
         }
 
+        $arrearsFollowUp = collect();
+        if (! auth()->user()->isStudent() && auth()->user()->canModule('finance_payments', 'update')) {
+            $arrearsFollowUp = \App\Models\Student::query()
+                ->where('status', 'active')
+                ->with('programme')
+                ->get()
+                ->filter(fn ($s) => $s->balance > 0)
+                ->sortByDesc('balance')
+                ->take(8)
+                ->values();
+        }
+
+        $resultsPendingEntry = 0;
+        if (! auth()->user()->isStudent() && auth()->user()->canModule('results', 'update')) {
+            $resultsPendingEntry = \App\Models\Course::query()
+                ->whereHas('semesters', fn ($q) => $q->where('semesters.academic_year', $academicYear)->where('semesters.is_active', true))
+                ->whereDoesntHave('results', fn ($q) => $q->whereHas('semester', fn ($q2) => $q2->where('academic_year', $academicYear)->where('is_active', true)))
+                ->count();
+        }
+
         $publicInstitutionDocuments = collect();
         if (\Illuminate\Support\Facades\Schema::hasTable('institution_documents')) {
             $studentProgrammeId = auth()->user()->student?->programme_id;
@@ -172,7 +192,8 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             'recentPayments', 'semestersForDashboard', 'registrationCounts', 'userRole', 'announcements',
             'chartEnrollment', 'chartPayments', 'chartByNtaLevel', 'chartByProgramme', 'chartByProgrammeLevel', 'chartRegistrationTrend', 'chartBalance',
             'studentRegistrationBadge', 'studentDashboard', 'publicInstitutionDocuments',
-            'graduationYear', 'graduatedCount', 'graduationYearOptions'
+            'graduationYear', 'graduatedCount', 'graduationYearOptions',
+            'arrearsFollowUp', 'resultsPendingEntry'
         ));
     })->name('dashboard');
 
@@ -335,6 +356,8 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::get('student-documents/{student_document}/download', [\App\Http\Controllers\StudentDocumentController::class, 'download'])->name('student-documents.download');
         Route::delete('student-documents/{student_document}', [\App\Http\Controllers\StudentDocumentController::class, 'destroy'])->name('student-documents.destroy');
         Route::resource('students', StudentController::class)->except(['show']);
+        Route::post('students/bulk-sms', [StudentController::class, 'bulkSms'])->name('students.bulk-sms');
+        Route::get('search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
         Route::get('leave-applications', [\App\Http\Controllers\LeaveApplicationController::class, 'index'])->name('leave-applications.index');
         Route::get('leave-applications/create', [\App\Http\Controllers\LeaveApplicationController::class, 'create'])->name('leave-applications.create');
         Route::post('leave-applications', [\App\Http\Controllers\LeaveApplicationController::class, 'store'])->name('leave-applications.store');
@@ -344,6 +367,10 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::post('graduation-clearances', [\App\Http\Controllers\GraduationClearanceController::class, 'store'])->name('graduation-clearances.store');
         Route::get('graduation-clearances/{graduation_clearance}/edit', [\App\Http\Controllers\GraduationClearanceController::class, 'edit'])->name('graduation-clearances.edit');
         Route::put('graduation-clearances/{graduation_clearance}', [\App\Http\Controllers\GraduationClearanceController::class, 'update'])->name('graduation-clearances.update');
+        Route::get('certificate-collections', [\App\Http\Controllers\CertificateCollectionController::class, 'index'])->name('certificate-collections.index');
+        Route::get('certificate-collections/create', [\App\Http\Controllers\CertificateCollectionController::class, 'create'])->name('certificate-collections.create');
+        Route::post('certificate-collections', [\App\Http\Controllers\CertificateCollectionController::class, 'store'])->name('certificate-collections.store');
+        Route::delete('certificate-collections/{certificate_collection}', [\App\Http\Controllers\CertificateCollectionController::class, 'destroy'])->name('certificate-collections.destroy');
         Route::get('conduct-records', [\App\Http\Controllers\ConductRecordController::class, 'index'])->name('conduct-records.index');
         Route::get('conduct-records/create', [\App\Http\Controllers\ConductRecordController::class, 'create'])->name('conduct-records.create');
         Route::post('conduct-records', [\App\Http\Controllers\ConductRecordController::class, 'store'])->name('conduct-records.store');

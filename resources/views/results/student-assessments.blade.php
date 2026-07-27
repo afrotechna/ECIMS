@@ -38,10 +38,6 @@
     <span><span class="ca-remarks-swatch incomplete"></span> Incomplete</span>
 </div>
 
-<div class="alert alert-info d-flex align-items-start gap-2 mb-4">
-    <i class="bi bi-info-circle-fill flex-shrink-0 mt-1"></i>
-    <div class="small mb-0">Click on a listed academic year and semester to view your module assessments.</div>
-</div>
 
 @if($sections->isEmpty())
 <div class="alert alert-secondary">No continuous assessment records are published yet for your account.</div>

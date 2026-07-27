@@ -18,8 +18,6 @@
 @else
     <p class="small text-muted mb-3">
         Session <strong>{{ $paymentAcademicYear }}/{{ $paymentAcademicYear + 1 }}</strong>.
-        <strong>Semester I:</strong> tuition, NHIF, NACTVET QA. New students submit certificates at admissions.
-        <strong>Semester II:</strong> remaining tuition via tuition type below. Gloves and ream (A4) each semester (not bank fees).
     </p>
 
     <div class="card border mb-3">
@@ -54,11 +52,6 @@
         </div>
     </div>
         </div>
-    </div>
-
-    <div class="alert alert-light border small mb-3 mb-0">
-        <strong>Semester Two:</strong> remaining tuition is included when you select continuing / repeat / transfer above.
-        <strong>Gloves</strong> and <strong>ream</strong> must be brought in Semester One and Semester Two.
     </div>
 
     <hr class="my-4">

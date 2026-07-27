@@ -27,7 +27,6 @@
                     <label for="nactvet_reg_no" class="form-label">NACTVET / Form IV registration no. <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('nactvet_reg_no') is-invalid @enderror" id="nactvet_reg_no" name="nactvet_reg_no" value="{{ old('nactvet_reg_no') }}" placeholder="S0001/0001/2026 or P0001/0001/2026" pattern="[SP]\d{4}/\d{4}/\d{4}" title="Format: S0000/0000/2026 or P0000/0000/2026" required>
                     @error('nactvet_reg_no')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    <small class="text-muted">Same number as Form IV registration. Format: S0000/0000/YYYY or P0000/0000/YYYY.</small>
                 </div>
                 <div class="col-md-3">
                     <label for="programme_id" class="form-label">Programme <span class="text-danger">*</span></label>

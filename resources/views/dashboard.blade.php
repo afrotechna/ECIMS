@@ -52,6 +52,36 @@
     </ul>
     @endif
 </div>
+
+@php
+    $roleSlug = \App\Models\User::normalizeRoleSlug((string) auth()->user()->role);
+@endphp
+@if(in_array($roleSlug, ['accountant', 'vice_principal_afp'], true) && auth()->user()->canModule('finance_payments', 'update') && ($arrearsFollowUp ?? collect())->isNotEmpty())
+<div class="card card-landing mb-4">
+    <div class="card-header-landing"><i class="bi bi-cash-coin me-2"></i>Arrears to follow up</div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>Student</th><th>Programme</th><th class="text-end">Balance</th></tr></thead>
+            <tbody>
+                @foreach($arrearsFollowUp as $s)
+                <tr>
+                    <td><a href="{{ route('students.show', $s) }}">{{ $s->reg_no }} — {{ $s->full_name }}</a></td>
+                    <td>{{ $s->programme->code ?? '' }}</td>
+                    <td class="text-end fw-semibold text-danger">{{ number_format($s->balance) }} TZS</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
+@if($roleSlug === 'examination_officer' && auth()->user()->canModule('results', 'update') && ($resultsPendingEntry ?? 0) > 0)
+<div class="alert alert-warning d-flex align-items-center justify-content-between mb-4">
+    <span><i class="bi bi-exclamation-triangle me-2"></i><strong>{{ $resultsPendingEntry }}</strong> module(s) this academic year have no results entered yet.</span>
+    <a href="{{ route('results.index') }}" class="btn btn-sm btn-warning">Enter results</a>
+</div>
+@endif
 @endif
 
 <style>
@@ -69,9 +99,8 @@
     @if(auth()->user()->student && !auth()->user()->student->hasCompletedSemesterRegistration())
     <div class="alert alert-warning mb-4 border-0 shadow-sm">
             <i class="bi bi-info-circle me-1"></i>
-            You are <strong>not registered for the semester</strong> until college staff complete your registration <strong>after payment</strong>.
-            Pay fees at the accounts office, then staff will register you. Check status under
-            <a href="{{ route('my.registrations') }}" class="alert-link">My registrations</a>.
+            <strong>Not registered for the semester.</strong>
+            <a href="{{ route('my.registrations') }}" class="alert-link">Check status</a>.
     </div>
     @endif
 

@@ -1,7 +1,6 @@
-{{-- Expects: $name, $label, $value, optional $required, $help --}}
+{{-- Expects: $name, $label, $value, optional $required --}}
 @php
     $required = $required ?? false;
-    $help = $help ?? null;
     $allowOther = config('fee_structure_presets.allow_custom_amounts', false);
     $options = config('fee_structure_presets.pick.'.$name, []);
     $valueInt = (int) $value;
@@ -35,8 +34,5 @@
             <input type="number" id="{{ $name }}_custom" class="form-control mt-2 fee-pick-custom @if($matched) d-none @endif" min="0" step="1" value="{{ $valueInt }}" inputmode="numeric" aria-label="{{ $label }} other amount">
         @endif
         <input type="hidden" id="{{ $name }}_hidden" name="{{ $name }}" class="fee-pick-hidden" value="{{ $valueInt }}" @if($required) required @endif>
-    @endif
-    @if($help)
-        <small class="text-muted d-block mt-1">{{ $help }}</small>
     @endif
 </div>

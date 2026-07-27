@@ -85,7 +85,6 @@
                         'label' => 'NHIF (TZS)',
                         'required' => false,
                         'value' => $defSem1Nhif,
-                        'help' => 'Skip if student has personal NHIF.',
                     ])
                 </div>
                 <div class="col-md-4">
