@@ -70,7 +70,7 @@
                         </td>
                         <td class="text-end">
                             @canModule('programmes', 'update')
-                            @include('partials.action-edit', ['href' => route('programmes.edit', $p), 'class' => 'me-1'])
+                            @include('partials.action-edit', ['href' => route('programmes.edit', $p), 'class' => 'me-1', 'iconOnly' => true])
                             @endcanModule
                             @canModule('programmes', 'delete')
                             <form action="{{ route('programmes.destroy', $p) }}" method="POST" class="d-inline">

@@ -51,7 +51,7 @@
                     <td class="small" style="max-width:14rem">{{ $p->assessment_modes ?: '—' }}</td>
                     <td>{{ $p->min_required_count ?? '—' }}</td>
                     <td>@if($p->is_active)<span class="badge bg-success">Yes</span>@else<span class="badge bg-secondary">No</span>@endif</td>
-                    <td>@include('partials.action-edit', ['href' => route('clinical-procedures.edit', $p)])</td>
+                    <td>@include('partials.action-edit', ['href' => route('clinical-procedures.edit', $p), 'iconOnly' => true])</td>
                 </tr>
                 @endforeach
             </tbody>

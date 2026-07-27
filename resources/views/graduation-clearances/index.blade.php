@@ -45,7 +45,7 @@
                     <td>{{ $c->finance_cleared === 'yes' ? 'Yes' : 'No' }}</td>
                     <td>{{ $c->accommodation_cleared === 'yes' ? 'Yes' : 'No' }}</td>
                     <td>{{ $c->academic_cleared === 'yes' ? 'Yes' : 'No' }}</td>
-                    <td>@include('partials.action-edit', ['href' => route('graduation-clearances.edit', $c)])</td>
+                    <td>@include('partials.action-edit', ['href' => route('graduation-clearances.edit', $c), 'iconOnly' => true])</td>
                 </tr>
                 @empty
                 <tr><td colspan="6" class="text-center text-muted py-5">No clearances.</td></tr>

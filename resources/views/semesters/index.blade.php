@@ -103,7 +103,7 @@
                         <td>@if($s->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
                         <td class="text-end">
                             @canModule('semesters', 'update')
-                            @include('partials.action-edit', ['href' => route('semesters.edit', $s), 'class' => 'me-1'])
+                            @include('partials.action-edit', ['href' => route('semesters.edit', $s), 'class' => 'me-1', 'iconOnly' => true])
                             @endcanModule
                             @canModule('semesters', 'delete')
                             <form action="{{ route('semesters.destroy', $s) }}" method="POST" class="d-inline">

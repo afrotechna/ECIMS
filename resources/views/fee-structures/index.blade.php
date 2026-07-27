@@ -126,7 +126,7 @@
                     @else
                         <span class="badge bg-secondary">Inactive</span>
                     @endif
-                    @include('partials.action-edit', ['href' => route('fee-structures.edit', $s), 'class' => 'me-1'])
+                    @include('partials.action-edit', ['href' => route('fee-structures.edit', $s), 'class' => 'me-1', 'iconOnly' => true])
                     @canModule('finance_fees', 'delete')
                     <form action="{{ route('fee-structures.destroy', $s) }}" method="POST" class="d-inline">
                         @csrf

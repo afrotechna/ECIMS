@@ -107,7 +107,7 @@
                         <td>{{ $row->conditionLabel() }}</td>
                         <td><span class="badge bg-{{ $row->status === 'active' ? 'success' : ($row->status === 'in_repair' ? 'warning text-dark' : 'secondary') }}">{{ $row->statusLabel() }}</span></td>
                         <td class="text-end text-nowrap">
-                            @include('partials.action-edit', ['href' => route('inventory-items.edit', $row), 'class' => 'me-1'])
+                            @include('partials.action-edit', ['href' => route('inventory-items.edit', $row), 'class' => 'me-1', 'iconOnly' => true])
                             @canModule('inventory', 'delete')
                             <form action="{{ route('inventory-items.destroy', $row) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this inventory record?');">
                                 @csrf

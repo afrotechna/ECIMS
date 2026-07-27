@@ -53,7 +53,7 @@
                         <td>{{ $a->to_date ? $a->to_date->format('d/m/Y') : '-' }}</td>
                         <td>@if($a->status === 'active')<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Ended</span>@endif</td>
                         <td class="text-end">
-                            @include('partials.action-edit', ['href' => route('accommodation-allocations.edit', $a), 'class' => 'me-1'])
+                            @include('partials.action-edit', ['href' => route('accommodation-allocations.edit', $a), 'class' => 'me-1', 'iconOnly' => true])
                             @if($a->status === 'active')
                             <form action="{{ route('accommodation-allocations.end', $a) }}" method="POST" onsubmit="return confirm('End this allocation (set end date to today)?');" class="d-inline">
                                 @csrf

@@ -13,6 +13,7 @@
     <link href="{{ asset('css/cohas-theme.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-brand.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-app-shell.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/cohas-fonts.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
 <body>
