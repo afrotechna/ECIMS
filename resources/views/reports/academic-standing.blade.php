@@ -40,7 +40,7 @@
                         <td>{{ $s->full_name }}</td>
                         <td>{{ $s->programme->code ?? '-' }}</td>
                         <td>{{ $s->academic_standing ? (\App\Models\Student::ACADEMIC_STANDINGS[$s->academic_standing] ?? $s->academic_standing) : '—' }}</td>
-                        <td><a href="{{ route('students.edit', $s) }}" class="btn btn-sm btn-outline-primary">Edit</a></td>
+                        <td>@include('partials.action-edit', ['href' => route('students.edit', $s), 'iconOnly' => true])</td>
                     </tr>
                     @empty
                     <tr><td colspan="5" class="text-center text-muted py-5">No students match the filter.</td></tr>

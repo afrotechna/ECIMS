@@ -59,7 +59,7 @@
                             @csrf
                             @method('DELETE')
                             @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
-                            <button type="submit" class="btn btn-sm btn-cohas-delete" title="Delete" aria-label="Delete"><i class="bi bi-trash-fill"></i></button>
+                            @include('partials.action-delete', ['submit' => true])
                         </form>
                         @endcanModule
                     </td>

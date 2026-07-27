@@ -102,11 +102,11 @@
                             <td>{{ $c->credits }}</td>
                             @canModule('courses', 'update')
                             <td class="text-end">
-                                <a href="{{ route('courses.edit', array_filter([
+                                @include('partials.action-edit', ['href' => route('courses.edit', array_filter([
                                     'course' => $c,
                                     'return_semester_id' => $semesterId,
                                     'return_programme_id' => $programmeId ?: $c->programme_id,
-                                ])) }}" class="btn btn-sm btn-cohas-edit" title="Edit" aria-label="Edit"><i class="bi bi-pencil-square"></i><span class="ms-1">Edit</span></a>
+                                ])), 'iconOnly' => true])
                             </td>
                             @endcanModule
                         </tr>

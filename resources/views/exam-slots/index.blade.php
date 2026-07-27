@@ -209,7 +209,7 @@
                     <td class="no-print text-nowrap text-end">
                         <div class="d-inline-flex align-items-center gap-1 exam-slot-row-actions" role="group" aria-label="Slot actions">
                             @canModule('exams', 'update')
-                                <a href="{{ route('exam-slots.edit', $slot) }}" class="btn btn-sm btn-cohas-edit" title="Edit slot" aria-label="Edit slot"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
+                                @include('partials.action-edit', ['href' => route('exam-slots.edit', $slot), 'title' => 'Edit slot', 'iconOnly' => true])
                             @endcanModule
                             @canModule('exams', 'delete')
                                 <form method="POST" action="{{ route('exam-slots.destroy', $slot) }}" class="d-inline m-0" onsubmit="return confirm('Remove this exam slot ({{ e($slot->course?->code ?? '') }} on {{ $slot->exam_date->format('d/m/Y') }})? This cannot be undone.');">
@@ -218,7 +218,7 @@
                                     @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
                                     @if($programmeId)<input type="hidden" name="programme_id" value="{{ $programmeId }}">@endif
                                     @if(($assessmentType ?? '') !== '')<input type="hidden" name="assessment_type" value="{{ $assessmentType }}">@endif
-                                    <button type="submit" class="btn btn-sm btn-cohas-delete" title="Delete slot" aria-label="Delete slot"><i class="bi bi-trash-fill" aria-hidden="true"></i></button>
+                                    @include('partials.action-delete', ['submit' => true, 'title' => 'Delete slot'])
                                 </form>
                             @endcanModule
                         </div>

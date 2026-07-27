@@ -117,12 +117,12 @@
                             </td>
                             <td>{{ $r->groups->count() }}</td>
                             <td class="text-end text-nowrap">
-                                <a href="{{ route('clinical-rotations.show', $r) }}" class="btn btn-sm btn-outline-primary">Open</a>
+                                @include('partials.action-view', ['href' => route('clinical-rotations.show', $r), 'title' => 'Open'])
                                 @canModule('clinical', 'delete')
                                 <form method="POST" action="{{ route('clinical-rotations.destroy', $r) }}" class="d-inline" onsubmit="return confirm('Delete this rotation round and all groups?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-cohas-delete ms-1" title="Delete" aria-label="Delete"><i class="bi bi-trash-fill"></i></button>
+                                    @include('partials.action-delete', ['submit' => true, 'class' => 'ms-1'])
                                 </form>
                                 @endcanModule
                             </td>

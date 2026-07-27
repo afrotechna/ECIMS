@@ -107,11 +107,11 @@
                                 </td>
                                 <td class="text-end text-nowrap">
                                     <a href="{{ route('students.ledger', $inst->student) }}" class="btn btn-sm btn-outline-primary" title="Ledger">Ledger</a>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editInstalment{{ $inst->id }}">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-cohas-edit" data-bs-toggle="modal" data-bs-target="#editInstalment{{ $inst->id }}" title="Edit" aria-label="Edit"><i class="bi bi-pencil-square" aria-hidden="true"></i></button>
                                     <form action="{{ route('payment-instalments.destroy', $inst) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this instalment?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-cohas-delete" title="Delete"><i class="bi bi-trash-fill"></i></button>
+                                        @include('partials.action-delete', ['submit' => true])
                                     </form>
                                 </td>
                             </tr>

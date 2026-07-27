@@ -251,7 +251,7 @@
                                 <input type="hidden" name="redirect" value="index">
                                 <button type="submit" class="btn btn-sm btn-warning" title="Generate password" aria-label="Generate password"><i class="bi bi-key"></i></button>
                             </form>
-                            <a href="{{ route('users.edit', $u) }}" class="btn btn-sm btn-cohas-edit" title="Edit" aria-label="Edit"><i class="bi bi-pencil-square"></i></a>
+                            @include('partials.action-edit', ['href' => route('users.edit', $u), 'iconOnly' => true])
                         </td>
                     </tr>
                     @empty

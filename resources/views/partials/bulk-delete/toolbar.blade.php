@@ -19,8 +19,9 @@
                 <input type="hidden" name="{{ $name }}" value="{{ $value }}">
             @endif
         @endforeach
-        <button type="submit" class="btn btn-sm btn-cohas-delete bulk-delete-submit" disabled data-label-base="{{ $bulkButtonLabel ?? 'Delete selected' }}">
-            <i class="bi bi-trash me-1"></i>{{ $bulkButtonLabel ?? 'Delete selected' }}
+        <button type="submit" class="btn btn-sm btn-cohas-delete bulk-delete-submit d-none" title="{{ $bulkButtonLabel ?? 'Delete selected' }}" aria-label="{{ $bulkButtonLabel ?? 'Delete selected' }}" data-label-base="{{ $bulkButtonLabel ?? 'Delete selected' }}">
+            <i class="bi bi-trash-fill" aria-hidden="true"></i>
+            <span class="badge bg-light text-danger ms-1 bulk-delete-count">0</span>
         </button>
     </form>
 @endif

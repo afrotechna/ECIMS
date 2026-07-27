@@ -83,7 +83,7 @@
                         @endforelse
                     </td>
                     <td class="text-end">
-                        <a href="{{ route('clinical-logbook.student', $row['student']) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        @include('partials.action-view', ['href' => route('clinical-logbook.student', $row['student'])])
                     </td>
                 </tr>
                 @endforeach

@@ -87,7 +87,7 @@
                     <td class="fin-money fin-money--lg">{{ number_format($p->amount) }}</td>
                     <td><span class="badge bg-secondary">{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</span></td>
                     <td class="text-end text-nowrap">
-                        <a href="{{ route('payments.show', $p) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        @include('partials.action-view', ['href' => route('payments.show', $p)])
                         <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
                     </td>
                 </tr>
@@ -116,7 +116,7 @@
                 <dt>Reference</dt><dd><code class="small">{{ $p->reference ?? $p->id }}</code></dd>
             </dl>
             <div class="d-flex gap-2 mt-2">
-                <a href="{{ route('payments.show', $p) }}" class="btn btn-sm btn-outline-primary">View</a>
+                @include('partials.action-view', ['href' => route('payments.show', $p)])
                 <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
             </div>
         </article>

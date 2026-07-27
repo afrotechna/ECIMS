@@ -77,12 +77,12 @@
                     <td>{{ $r->bed_count }}</td>
                     <td>@if($r->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
                     <td class="text-end text-nowrap">
-                        <a href="{{ route('rooms.edit', $r) }}" class="btn btn-sm btn-cohas-edit" title="Edit" aria-label="Edit"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
+                        @include('partials.action-edit', ['href' => route('rooms.edit', $r), 'iconOnly' => true])
                         @canModule('accommodation', 'delete')
                         <form action="{{ route('rooms.destroy', $r) }}" method="POST" class="d-inline ms-1">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-sm btn-cohas-delete" title="Delete" aria-label="Delete" data-swal-confirm data-swal-title="Delete room?" data-swal-icon="warning"><i class="bi bi-trash-fill" aria-hidden="true"></i></button>
+                            @include('partials.action-delete', ['swalTitle' => 'Delete room?'])
                         </form>
                         @endcanModule
                     </td>

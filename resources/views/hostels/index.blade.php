@@ -67,13 +67,13 @@
                         <td class="text-end">{{ (int) ($h->rooms_sum_bed_count ?? 0) }}</td>
                         <td>@if($h->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
                         <td class="text-end">
-                            <a href="{{ route('hostels.edit', $h) }}" class="btn btn-sm btn-cohas-edit me-1" title="Edit / generate" aria-label="Edit"><i class="bi bi-pencil-square"></i><span class="ms-1 d-none d-lg-inline">Edit</span></a>
+                            @include('partials.action-edit', ['href' => route('hostels.edit', $h), 'title' => 'Edit / generate', 'class' => 'me-1', 'iconOnly' => true])
                             <a href="{{ route('rooms.index', ['hostel_id' => $h->id]) }}" class="btn btn-sm btn-outline-primary me-1">Rooms</a>
                             @canModule('accommodation', 'delete')
                             <form action="{{ route('hostels.destroy', $h) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn btn-sm btn-cohas-delete" data-swal-confirm data-swal-title="Delete hostel?" data-swal-text="Remove all rooms first." data-swal-icon="warning" title="Delete" aria-label="Delete"><i class="bi bi-trash-fill"></i></button>
+                                @include('partials.action-delete', ['swalTitle' => 'Delete hostel?', 'swalText' => 'Remove all rooms first.'])
                             </form>
                             @endcanModule
                         </td>

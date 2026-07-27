@@ -334,7 +334,7 @@
                                                         </form>
                                                     @endif
                                                     @if($meta['is_blocked'])
-                                                        <a href="#assessments" class="btn btn-sm btn-cohas-edit px-2" title="Assessments"><i class="bi bi-journal-text"></i><span class="ms-1">Asm</span></a>
+                                                        <a href="#assessments" class="btn btn-sm btn-outline-secondary px-2" title="Assessments"><i class="bi bi-journal-text"></i><span class="ms-1">Asm</span></a>
                                                     @endif
                                                     @if(! $meta['can_add'] && ! $meta['can_regenerate'] && ! $meta['is_blocked'])
                                                         <button type="button" class="btn btn-success btn-sm px-2" disabled>Done</button>

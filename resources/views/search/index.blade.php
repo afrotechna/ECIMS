@@ -34,7 +34,7 @@
                     <td>{{ $s->reg_no }}</td>
                     <td>{{ $s->full_name }}</td>
                     <td>{{ $s->programme->code ?? '' }}</td>
-                    <td><a href="{{ route('students.show', $s) }}" class="btn btn-sm btn-cohas-edit">Open</a></td>
+                    <td>@include('partials.action-view', ['href' => route('students.show', $s), 'title' => 'Open'])</td>
                 </tr>
                 @empty
                 <tr><td colspan="4" class="text-center text-muted py-5">No students matched "{{ $q }}".</td></tr>

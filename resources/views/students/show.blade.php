@@ -209,7 +209,7 @@
                                             @if(!auth()->user()->isStudent())
                                             <form action="{{ route('student-documents.destroy', $doc) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this document?');">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove"><i class="bi bi-trash"></i></button>
+                                                @include('partials.action-delete', ['submit' => true, 'title' => 'Remove'])
                                             </form>
                                             @endif
                                         </div>

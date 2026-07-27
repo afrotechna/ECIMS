@@ -25,10 +25,9 @@
         var checked = checkboxesInScope(scope).filter(function (cb) { return cb.checked; });
         var n = checked.length;
         btn.disabled = n === 0;
-        var base = btn.getAttribute('data-label-base') || 'Delete selected';
-        btn.innerHTML = n > 0
-            ? '<i class="bi bi-trash me-1"></i>' + base + ' (' + n + ')'
-            : '<i class="bi bi-trash me-1"></i>' + base;
+        btn.classList.toggle('d-none', n === 0);
+        var countEl = btn.querySelector('.bulk-delete-count');
+        if (countEl) countEl.textContent = String(n);
     }
 
     function syncSelectAll(scope) {

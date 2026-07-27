@@ -54,7 +54,7 @@
                     <td class="small">{{ \App\Support\ClinicalRotationCatalog::departmentLabel($entry->department_code ?? '') }}</td>
                     <td><span class="badge {{ \App\Models\ClinicalLogbookEntry::statusBadgeClass($entry->status) }}">{{ \App\Models\ClinicalLogbookEntry::statusLabel($entry->status) }}</span></td>
                     <td class="text-end">
-                        <a href="{{ route('my.clinical.logbook.show', $entry) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        @include('partials.action-view', ['href' => route('my.clinical.logbook.show', $entry)])
                     </td>
                 </tr>
                 @empty

@@ -161,8 +161,9 @@
             <span class="text-muted small">More filters active — <a href="{{ route('students.index', array_filter(['nta_level' => $activeNtaLevel, 'programme_id' => $activeProgrammeId])) }}" class="text-decoration-none">clear search &amp; extras</a></span>
         @endif
         @canModule('students', 'update')
-        <button type="button" id="bulkSmsBtn" class="btn btn-sm btn-outline-primary ms-auto" disabled>
-            <i class="bi bi-chat-dots me-1"></i>Send SMS to selected (<span id="bulkSmsCount">0</span>)
+        <button type="button" id="bulkSmsBtn" class="btn btn-sm btn-outline-primary ms-auto d-none" title="Send SMS to selected" aria-label="Send SMS to selected">
+            <i class="bi bi-chat-dots" aria-hidden="true"></i>
+            <span class="badge bg-primary ms-1" id="bulkSmsCount">0</span>
         </button>
         @endcanModule
     </div>
@@ -222,11 +223,11 @@
                         </td>
                         <td class="text-end actions-cell">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Actions for {{ $s->full_name }}">
-                                <a href="{{ route('students.show', $s) }}" class="btn btn-outline-primary" title="View profile"><i class="bi bi-eye"></i></a>
+                                @include('partials.action-view', ['href' => route('students.show', $s), 'title' => 'View profile'])
                                 @if(auth()->user()->canAccessFinance())
                                 <a href="{{ route('students.ledger', $s) }}" class="btn btn-outline-info" title="Fee ledger"><i class="bi bi-wallet2"></i></a>
                                 @endif
-                                <a href="{{ route('students.edit', $s) }}" class="btn btn-cohas-edit" title="Edit" aria-label="Edit"><i class="bi bi-pencil-square"></i></a>
+                                @include('partials.action-edit', ['href' => route('students.edit', $s), 'iconOnly' => true])
                             </div>
                         </td>
                     </tr>
@@ -271,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var n = checkedBoxes().length;
         countEl.textContent = n;
         btn.disabled = n === 0;
+        btn.classList.toggle('d-none', n === 0);
         if (selectAll) {
             var all = document.querySelectorAll('.bulk-sms-cb');
             selectAll.checked = all.length > 0 && n === all.length;
