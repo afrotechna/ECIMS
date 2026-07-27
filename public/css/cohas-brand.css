@@ -215,9 +215,11 @@ a.btn-cta:hover {
 /* Links & breadcrumbs */
 a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item) {
     color: var(--cohas-blue-700);
+    text-decoration: none;
 }
 a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     color: var(--cohas-blue-900);
+    text-decoration: none;
 }
 
 .student-breadcrumb a {

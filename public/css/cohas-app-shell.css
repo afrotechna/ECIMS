@@ -251,7 +251,7 @@ body {
 .student-glance-card .glance-value { font-size: .9375rem; color: var(--cohas-text); font-weight: 600; word-break: break-word; }
 .student-breadcrumb { font-size: .875rem; color: var(--cohas-text-muted); margin-bottom: 1rem; }
 .student-breadcrumb a { color: var(--cohas-blue-700); text-decoration: none; }
-.student-breadcrumb a:hover { text-decoration: underline; }
+.student-breadcrumb a:hover { text-decoration: none; }
 .form-section-title { font-size: .875rem; font-weight: 600; color: var(--cohas-text); margin: 1rem 0 .5rem; padding-bottom: .35rem; border-bottom: 1px solid var(--cohas-border); }
 .form-section-title:first-child { margin-top: 0; }
 

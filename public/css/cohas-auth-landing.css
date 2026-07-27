@@ -271,7 +271,7 @@
 
 .auth-promo-contact a:hover {
     color: var(--cohas-blue-900);
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .auth-promo-contact i {
@@ -352,7 +352,7 @@
 
 .auth-home-link:hover {
     color: var(--cohas-blue-900);
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .auth-main-tools {
@@ -540,7 +540,7 @@
 }
 
 .auth-login-footer-link a:hover {
-    text-decoration: underline;
+    text-decoration: none;
     color: var(--cohas-blue-900);
 }
 

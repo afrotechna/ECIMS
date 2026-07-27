@@ -13,7 +13,7 @@
     <div>
         <h1 class="page-title-landing"><i class="bi bi-journal-book-fill me-2 opacity-90"></i>Module catalogue</h1>
         @if($catalogueFilterActive)
-            <p class="page-subtitle-landing mb-0">Modules linked to the selected teaching semester @if($currentSemester)<strong>{{ $currentSemester->label }}</strong>@endif. <a href="{{ route('courses.index') }}" class="text-white text-decoration-underline">Show full catalogue</a> (programme · NTA level · semester tree).</p>
+            <p class="page-subtitle-landing mb-0">Modules linked to the selected teaching semester @if($currentSemester)<strong>{{ $currentSemester->label }}</strong>@endif. <a href="{{ route('courses.index') }}" class="text-white">Show full catalogue</a> (programme · NTA level · semester tree).</p>
         @else
             <p class="page-subtitle-landing mb-0">
                 @canModule('courses', 'create')
