@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Worksheet ss:Name="Final Results"><Table>
+<Row><Cell><Data ss:Type="String">THE UNITED REPUBLIC OF TANZANIA</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">MINISTRY OF HEALTH</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">TANGANYIKA MEDICAL TRAINING BOARD</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">ORDINARY DIPLOMA IN CLINICAL MEDICINE</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">NTA LEVEL 6</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">SEMESTER II EXAMINATION RESULTS</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">INSTITUTION NAME:</Data></Cell><Cell><Data ss:Type="String">MUSOMA COLLEGE OF HEALTH AND ALLIED SCIENCES</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">YEAR:</Data></Cell><Cell><Data ss:Type="String">2025/2026</Data></Cell></Row>
+<Row></Row>
+<Row><Cell><Data ss:Type="String">PROGRAMME:</Data></Cell><Cell><Data ss:Type="String">CLINICAL MEDICINE (CMT)</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">MODULES:</Data></Cell><Cell><Data ss:Type="String">CMT06206, CMT06207, CMT06208, CMT06209</Data></Cell></Row>
+<Row></Row>
+<Row><Cell><Data ss:Type="String">SN</Data></Cell><Cell><Data ss:Type="String">CANDIDATE NAME</Data></Cell><Cell><Data ss:Type="String">SEX (M/F)</Data></Cell><Cell><Data ss:Type="String">NACTE REGISTRATION NUMBER</Data></Cell><Cell><Data ss:Type="String">EXAMINATION NUMBER</Data></Cell><Cell><Data ss:Type="String">CURRENT STATUS</Data></Cell><Cell><Data ss:Type="String">SIT STATUS</Data></Cell><Cell><Data ss:Type="String">CMT06206 AVCA (40%)</Data></Cell><Cell><Data ss:Type="String">CMT06206 AVES (60%)</Data></Cell><Cell><Data ss:Type="String">CMT06206 FSCORE</Data></Cell><Cell><Data ss:Type="String">CMT06206 GRADE</Data></Cell><Cell><Data ss:Type="String">CMT06207 AVCA (40%)</Data></Cell><Cell><Data ss:Type="String">CMT06207 AVES (60%)</Data></Cell><Cell><Data ss:Type="String">CMT06207 FSCORE</Data></Cell><Cell><Data ss:Type="String">CMT06207 GRADE</Data></Cell><Cell><Data ss:Type="String">CMT06208 AVCA (40%)</Data></Cell><Cell><Data ss:Type="String">CMT06208 AVES (60%)</Data></Cell><Cell><Data ss:Type="String">CMT06208 FSCORE</Data></Cell><Cell><Data ss:Type="String">CMT06208 GRADE</Data></Cell><Cell><Data ss:Type="String">CMT06209 AVCA (40%)</Data></Cell><Cell><Data ss:Type="String">CMT06209 AVES (60%)</Data></Cell><Cell><Data ss:Type="String">CMT06209 FSCORE</Data></Cell><Cell><Data ss:Type="String">CMT06209 GRADE</Data></Cell></Row>
+<Row><Cell><Data ss:Type="Number">1</Data></Cell><Cell><Data ss:Type="String">EXAMPLE CANDIDATE</Data></Cell><Cell><Data ss:Type="String">M</Data></Cell><Cell><Data ss:Type="String">NACTE000000</Data></Cell><Cell><Data ss:Type="String">EXAM0001</Data></Cell><Cell><Data ss:Type="String">ACTIVE</Data></Cell><Cell><Data ss:Type="String">FIRST SITTING</Data></Cell><Cell><Data ss:Type="Number">30</Data></Cell><Cell><Data ss:Type="Number">48</Data></Cell><Cell><Data ss:Type="Number">40.8</Data></Cell><Cell><Data ss:Type="String">E</Data></Cell><Cell><Data ss:Type="Number">22.5</Data></Cell><Cell><Data ss:Type="Number">52</Data></Cell><Cell><Data ss:Type="Number">40.2</Data></Cell><Cell><Data ss:Type="String">E</Data></Cell><Cell><Data ss:Type="Number">31.5</Data></Cell><Cell><Data ss:Type="Number">45</Data></Cell><Cell><Data ss:Type="Number">39.6</Data></Cell><Cell><Data ss:Type="String">F</Data></Cell><Cell><Data ss:Type="Number">28</Data></Cell><Cell><Data ss:Type="Number">55</Data></Cell><Cell><Data ss:Type="Number">44.2</Data></Cell><Cell><Data ss:Type="String">E</Data></Cell></Row>
+</Table></Worksheet></Workbook>

@@ -1,0 +1,176 @@
+﻿py : Traceback (most recent call last):
+At C:\Users\COTC-MUSOMA\AppData\Local\Temp\ps-script-51dbf524-5126-46ec-b6da-60485a8508b0.ps1:78 char:1
++ py -c "
++ ~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<string>", line 11, in <module>
+    print(t[:2000])
+    ~~~~~^^^^^^^^^^
+  File "C:\Users\COTC-MUSOMA\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\uf0b7' in position 90: character maps to <undefined>
+=== PAGE 1 len 205 ===
+THE UNITED REPUBLIC OF TANZANIA 
+ 
+ 
+ 
+Ministry of Health 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Practicum Guide 
+ 
+For Tutors and Clinical Instructors  
+ 
+NTA level 4 Clinical Medicine 
+ 
+  Revised October, 2022 
+ 
+
+=== PAGE 2 len 900 ===
+Practicum Guide for Tutors and Clinical Instructors 
+NTA Level 4 Clinical Medicine  1 
+Published by the Ministry of Health-Department of Human 
+Resource Development 
+Copyright ⌐ 2022 Ministry of Health 
+ 
+All rights reserved. No part of this publication may be 
+reproduced or transmitted in any form or by any means, 
+electronically, including photocopying, recording or any 
+information storage or retrieval system, without either prior 
+permission in writing from the publisher. 
+ 
+Permission may be sought directly from the Ministry of 
+Health, Department of Human Resource Development, 
+Government City, Mtumba, Afya Road, P. O BOX 743  
+40478 DODOMA. 
+ 
+ 
+Notice: The advice and information in this book are 
+believed to be true and accurate at the date going to press, 
+but neither the authors nor the publisher can accept any 
+legal responsibility or liability for any errors or omissions. 
+  
+
+=== PAGE 3 len 1424 ===
+Practicum Guide for Tutors and Clinical Instructors 
+NTA Level 4 Clinical Medicine  2 
+Table of Contents 
+List of Abbreviations ...............................................................3 
+Acknowledgement ...................................................................5 
+Introduction to NTA Level 4 Practicum Guide ....................6 
+Section II: The Clinical Teaching Team and Their Roles22 
+Section III. Clinical Competencies According to NTA Level 
+4 ...............................................................................................29 
+Section IV: Semester I Practicum Modules .......................34 
+Practicum Module: CMT 04101 ..........................................35 
+Communication Skills and Customer Care .......................35 
+Practicum Module: CMT04102 Human Anatomy .............42 
+Practicum Module: CMT04104 Epidemiology and 
+Biostatistics ............................................................................52 
+Practicum Module: CMT04105 Computer Applications 129 
+Practicum Module: CMT 04107 Microbiology, Parasitology 
+and Entomology ...................................................................177 
+Practicum Module: CMT04208 Clinical Nutrition............183 
+Practicum Module: CMT 04209 Clinical Skills ................202 
+Practicum Module: CMT 04211 Clinical Laboratory ......278 
+Practicum Module: CMT 04212: Patient Care ................336 
+ 
+ 
+ 
+  
+
+=== PAGE 4 len 796 ===
+Practicum Guide for Tutors and Clinical Instructors 
+NTA Level 4 Clinical Medicine  3 
+List of Abbreviations 
+ABC Airway, Breathing, Circulation 
+AFB Acid Fast Bacilli 
+AIDS Acquired Immunodeficiency Syndrome 
+AMOTC Assistant Medical Officers Training Centre 
+APGAR Appearance, Pulse, Grimace, Activity and 
+Respiration 
+ARV Antiretroviral 
+CA Clinical Assistant 
+CMT Clinical Medicine Technician 
+CO Clinical Officer 
+COTCs Clinical OfficersÆ Training Centres 
+CPR Cardio-Pulmonary Resuscitation 
+CTC Care and Treatment Clinic 
+DMO District Medical Officer 
+ENT Ear, Nose and Throat 
+IPD In-patient Department 
+NTA National Technical Award 
+OPD Out-Patient Department 
+PMTCT Prevention of Mother to Child Transmission of 
+HIV 
+POP Plaster of Paris 
+PPROM Preterm-Premature Rupture of  Membranes 
+
+=== PAGE 5 len 393 ===
+Practicum Guide for Tutors and Clinical Instructors 
+NTA Level 4 Clinical Medicine  4 
+PROM Premature Rupture of Membranes 
+RCH Reproductive and Child Health 
+RV Recto-Vaginal 
+STI Sexually Transmitted Infections 
+SWOC Strength, Weakness, Opportunity, Challenges 
+TB Tuberculosis 
+TB/HIV Tuberculosis/Human Immunodeficiency Virus 
+UTI Urinary Tract Infection 
+WHO World Health Organization 
+  
+
+=== PAGE 6 len 1876 ===
+Practicum Guide for Tutors and Clinical Instructors 
+NTA Level 4 Clinical Medicine  5 
+Acknowledgement 
+The development of this practicum guide for the Basic Technician 
+certificate (NTA level 4) in Clinical Medicine is an outcome of 
+collaborative efforts of the Ministry of Health (MoH), National 
+Council for Technical and Vocational Education and Training 
+(NACTVET) and tutors from various Health Training Institutions  
+I would like to appreciate in particular, the hard work of Dr. Fadhili 
+M. Lyimo (Assistant Director for Allied Health Training), Mr. 
+Innocent Chinguile and Dr. Joseph Mwabusila (coordinators  for 
+Human Resource Development - MoH) for their collaboration in 
+thought and process to organize, coordinate and guide the 
+development of this practicum guide.   
+The MoH is also grateful to Dr. Fabian P. Mghanga, Director of 
+Tanzania Training Center for Internatio nal Health, Dr. Robert 
+Rweyemamu Principal Tabora CoHAS, Dr. Lucheri Kweka 
+Principal Tanga CoHAS, Dr. Melkzedeck Mansi Principal Kigoma 
+COTC and Dr. Bonny Betson Principal MUCOHAS, Dr. 
+Abdulrahman Mpili Principal Lindi CoHAS, Dr. Kashahu Selapius 
+HoD clinical medicine at St. Gasper CoHAS, Dr. Henry S. Bukhay 
+tutor Karatu HTI, Dr. Alex S. Mlimandago tutor Masasi CoHAS 
+and Ms. Lucy P. Mathias tutor Mtwara CoHAS, Dr. Pemanecia 
+Leganya from Kahama Municipal hospital, Dr Majaliwa John 
+Lusendamila from Singida Di strict hospital, Dr Benjamin Najimu 
+Mohamed from City College Dar es Salaam and Mr John 
+Raymond Sanga from Ilunda dispensary (Mkalama-Singida)    for 
+their commendable work towards development of this practicum 
+guide. 
+I also wish to acknowledge the contributions of Mr. Twaha Twaha 
+from NACTVET for his commitment and technical support during 
+the development of this practicum guide 
+ 
+Dr. Loishooki Saitore Laizer 
+Director of Human Resources Development 
+
+
+=== PAGE 11 len 276 ===

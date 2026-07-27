@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Worksheet ss:Name="CA Results"><Table>
+<Row><Cell><Data ss:Type="String">THE UNITED REPUBLIC OF TANZANIA</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">MINISTRY OF HEALTH</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">TANGANYIKA MEDICAL TRAINING BOARD</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">ORDINARY DIPLOMA IN CLINICAL MEDICINE</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">NTA LEVEL 5</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">SEMESTER II CONTINUOUS ASSESSMENT (CA) RESULTS</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">INSTITUTION NAME:</Data></Cell><Cell><Data ss:Type="String">MUSOMA COLLEGE OF HEALTH AND ALLIED SCIENCES</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">YEAR:</Data></Cell><Cell><Data ss:Type="String">2025/2026</Data></Cell></Row>
+<Row></Row>
+<Row><Cell><Data ss:Type="String">PROGRAMME:</Data></Cell><Cell><Data ss:Type="String">CLINICAL MEDICINE (CMT)</Data></Cell></Row>
+<Row><Cell><Data ss:Type="String">MODULES:</Data></Cell><Cell><Data ss:Type="String">CMT05207, CMT05208, CMT05209, CMT05210, CMT05211</Data></Cell></Row>
+<Row></Row>
+<Row><Cell><Data ss:Type="String">SN</Data></Cell><Cell><Data ss:Type="String">CANDIDATE NAME</Data></Cell><Cell><Data ss:Type="String">SEX (M/F)</Data></Cell><Cell><Data ss:Type="String">NACTE REGISTRATION NUMBER</Data></Cell><Cell><Data ss:Type="String">EXAMINATION NUMBER</Data></Cell><Cell><Data ss:Type="String">CURRENT STATUS</Data></Cell><Cell><Data ss:Type="String">SIT STATUS</Data></Cell><Cell><Data ss:Type="String">CMT05207</Data></Cell><Cell><Data ss:Type="String">CMT05208</Data></Cell><Cell><Data ss:Type="String">CMT05209</Data></Cell><Cell><Data ss:Type="String">CMT05210</Data></Cell><Cell><Data ss:Type="String">CMT05211</Data></Cell></Row>
+<Row><Cell><Data ss:Type="Number">1</Data></Cell><Cell><Data ss:Type="String">EXAMPLE CANDIDATE</Data></Cell><Cell><Data ss:Type="String">M</Data></Cell><Cell><Data ss:Type="String">NACTE000000</Data></Cell><Cell><Data ss:Type="String"></Data></Cell><Cell><Data ss:Type="String">ACTIVE</Data></Cell><Cell><Data ss:Type="String">FIRST SITTING</Data></Cell><Cell><Data ss:Type="Number">30</Data></Cell><Cell><Data ss:Type="Number">22.5</Data></Cell><Cell><Data ss:Type="Number">31.5</Data></Cell><Cell><Data ss:Type="Number">28</Data></Cell><Cell><Data ss:Type="Number">25</Data></Cell></Row>
+</Table></Worksheet></Workbook>
