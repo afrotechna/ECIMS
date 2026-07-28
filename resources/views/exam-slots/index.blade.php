@@ -212,13 +212,13 @@
                                 @include('partials.action-edit', ['href' => route('exam-slots.edit', $slot), 'title' => 'Edit slot', 'iconOnly' => true])
                             @endcanModule
                             @canModule('exams', 'delete')
-                                <form method="POST" action="{{ route('exam-slots.destroy', $slot) }}" class="d-inline m-0" onsubmit="return confirm('Remove this exam slot ({{ e($slot->course?->code ?? '') }} on {{ $slot->exam_date->format('d/m/Y') }})? This cannot be undone.');">
+                                <form method="POST" action="{{ route('exam-slots.destroy', $slot) }}" class="d-inline m-0">
                                     @csrf
                                     @method('DELETE')
                                     @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
                                     @if($programmeId)<input type="hidden" name="programme_id" value="{{ $programmeId }}">@endif
                                     @if(($assessmentType ?? '') !== '')<input type="hidden" name="assessment_type" value="{{ $assessmentType }}">@endif
-                                    @include('partials.action-delete', ['submit' => true, 'title' => 'Delete slot'])
+                                    @include('partials.action-delete', ['title' => 'Delete slot', 'swalTitle' => 'Remove this exam slot?', 'swalText' => 'Remove this exam slot ('.e($slot->course?->code ?? '').' on '.$slot->exam_date->format('d/m/Y').')? This cannot be undone.'])
                                 </form>
                             @endcanModule
                         </div>

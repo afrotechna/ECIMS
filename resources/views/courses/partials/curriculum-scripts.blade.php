@@ -214,7 +214,7 @@
             var n = mount ? mount.querySelectorAll('.curriculum-module-cb:checked').length : 0;
             if (n < 1) {
                 e.preventDefault();
-                alert('Please tick one or more modules in the curriculum tables below.');
+                Swal.fire({ icon: 'warning', title: 'No modules selected', text: 'Please tick one or more modules in the curriculum tables below.' });
             }
         });
     }

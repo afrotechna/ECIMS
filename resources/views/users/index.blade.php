@@ -78,10 +78,10 @@
 <div class="card card-landing mb-3 border-info">
     <div class="card-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2 py-2">
         <span><i class="bi bi-person-plus me-2"></i> Students without portal login ({{ $studentsAwaitingLogin }})</span>
-        <form action="{{ route('users.create-all-student-logins') }}" method="POST" class="d-inline" onsubmit="return confirm('Create logins for ALL students without an account (all programmes)? Password = surname (lowercase). CSV will download.');">
+        <form action="{{ route('users.create-all-student-logins') }}" method="POST" class="d-inline">
             @csrf
             <input type="hidden" name="send_email" value="0">
-            <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-people me-1"></i> Create all + CSV</button>
+            <button type="button" class="btn btn-primary btn-sm" data-swal-confirm data-swal-title="Create logins for all students?" data-swal-text="Creates logins for ALL students without an account (all programmes). Password = surname (lowercase). CSV will download."><i class="bi bi-people me-1"></i> Create all + CSV</button>
         </form>
     </div>
     <div class="card-body py-2">
@@ -129,7 +129,7 @@
                         <td><code class="small">{{ $s->nactvet_reg_no }}</code></td>
                         <td class="small text-muted">{{ $s->class_group ?: '—' }}</td>
                         <td class="text-end">
-                            <form action="{{ route('users.create-student-login', $s) }}" method="POST" class="d-inline" onsubmit="return confirm('Create login for {{ $s->full_name }}? Password will be surname (lowercase).');">
+                            <form action="{{ route('users.create-student-login', $s) }}" method="POST" class="d-inline">
                                 @csrf
                                 @if(!empty($loginFilters['class_group']))
                                     <input type="hidden" name="class_group" value="{{ $loginFilters['class_group'] }}">
@@ -137,7 +137,7 @@
                                 @if(!empty($loginFilters['intake_year']))
                                     <input type="hidden" name="intake_year" value="{{ $loginFilters['intake_year'] }}">
                                 @endif
-                                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-key me-1"></i> Create login</button>
+                                <button type="button" class="btn btn-sm btn-primary" data-swal-confirm data-swal-title="Create login for {{ $s->full_name }}?" data-swal-text="Password will be surname (lowercase)."><i class="bi bi-key me-1"></i> Create login</button>
                             </form>
                         </td>
                     </tr>
@@ -165,15 +165,15 @@
 
     @if($type === 'student')
     <div class="users-actions-bar">
-        <form action="{{ route('users.create-all-student-logins') }}" method="POST" class="d-inline" onsubmit="return confirm('Create logins for all students without an account? Password = one surname (lowercase). CSV will download.');">
+        <form action="{{ route('users.create-all-student-logins') }}" method="POST" class="d-inline">
             @csrf
             <input type="hidden" name="send_email" value="0">
-            <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-people me-1"></i> Create logins + CSV</button>
+            <button type="button" class="btn btn-primary btn-sm" data-swal-confirm data-swal-title="Create logins for all students?" data-swal-text="Creates logins for all students without an account. Password = one surname (lowercase). CSV will download."><i class="bi bi-people me-1"></i> Create logins + CSV</button>
         </form>
-        <form action="{{ route('users.issue-all-student-passwords') }}" method="POST" class="d-inline" onsubmit="return confirm('Reset all student passwords to surname (lowercase)? CSV will download.');">
+        <form action="{{ route('users.issue-all-student-passwords') }}" method="POST" class="d-inline">
             @csrf
             <input type="hidden" name="send_email" value="0">
-            <button type="submit" class="btn btn-outline-warning btn-sm"><i class="bi bi-key me-1"></i> Re-issue all passwords</button>
+            <button type="button" class="btn btn-outline-warning btn-sm" data-swal-confirm data-swal-title="Reset all student passwords?" data-swal-text="Resets all student passwords to surname (lowercase). CSV will download."><i class="bi bi-key me-1"></i> Re-issue all passwords</button>
         </form>
         <a href="{{ route('users.create') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-person-plus me-1"></i> One student</a>
     </div>
@@ -212,6 +212,7 @@
                         </td>
                         <td class="small text-secondary text-truncate" style="max-width: 12rem;">{{ $u->email ?: '—' }}</td>
                         <td class="text-end text-nowrap pe-4">
+                            <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-light border shadow-sm me-1" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock text-primary"></i></a>
                             <a href="{{ route('users.edit', $u) }}" class="btn btn-sm btn-light border shadow-sm" title="Edit staff account" aria-label="Edit"><i class="bi bi-pencil-square text-primary"></i></a>
                         </td>
                     </tr>
@@ -246,10 +247,10 @@
                         <td><code class="small">{{ $u->loginIdentifier() }}</code></td>
                         <td class="small text-muted">{{ $u->email }}</td>
                         <td class="text-end text-nowrap">
-                            <form action="{{ route('users.issue-temporary-password', $u) }}" method="POST" class="d-inline" onsubmit="return confirm('Generate password from surname (lowercase)? The old password will stop working.');">
+                            <form action="{{ route('users.issue-temporary-password', $u) }}" method="POST" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="redirect" value="index">
-                                <button type="submit" class="btn btn-sm btn-warning" title="Generate password" aria-label="Generate password"><i class="bi bi-key"></i></button>
+                                <button type="button" class="btn btn-sm btn-warning" title="Generate password" aria-label="Generate password" data-swal-confirm data-swal-title="Generate password from surname?" data-swal-text="The old password will stop working."><i class="bi bi-key"></i></button>
                             </form>
                             @include('partials.action-edit', ['href' => route('users.edit', $u), 'iconOnly' => true])
                         </td>

@@ -22,7 +22,7 @@
     <div class="d-flex flex-wrap gap-2 align-items-center">
         <a href="{{ route('question-bank.exams.export-docx', [$questionBank, $examPaper]) }}" class="btn btn-light">Question Paper (.docx)</a>
         <a href="{{ route('question-bank.exams.export-docx', [$questionBank, $examPaper]) }}?with_answers=1" class="btn btn-outline-light">Answer Guide (.docx)</a>
-        <form method="POST" action="{{ route('question-bank.exams.destroy', [$questionBank, $examPaper]) }}" class="d-inline-flex align-items-center gap-2 ms-1" onsubmit="return confirm('Delete this assessment? Questions remain in the bank unless you remove them separately.');">
+        <form method="POST" action="{{ route('question-bank.exams.destroy', [$questionBank, $examPaper]) }}" class="d-inline-flex align-items-center gap-2 ms-1" onsubmit="event.preventDefault(); var f=this; Swal.fire({title:'Delete this assessment?', text:'Questions remain in the bank unless you remove them separately.', icon:'warning', showCancelButton:true, confirmButtonColor:'#dc3545', cancelButtonColor:'#6c757d'}).then(function(r){ if(r.isConfirmed) HTMLFormElement.prototype.submit.call(f); });">
             @csrf
             @method('DELETE')
             <div class="form-check mb-0">

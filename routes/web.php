@@ -394,6 +394,10 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::resource('inventory-items', InventoryItemController::class)->except(['show']);
         Route::middleware('admin')->group(function () {
             Route::get('users/role-permissions', [UserController::class, 'rolePermissions'])->name('users.role-permissions');
+            Route::get('users/role-permissions/matrix', [UserController::class, 'roleMatrix'])->name('users.role-matrix');
+            Route::get('users/{user}/permissions', [UserController::class, 'permissions'])->name('users.permissions');
+            Route::post('users/{user}/permissions', [UserController::class, 'permissionsStore'])->name('users.permissions.store');
+            Route::delete('users/{user}/permissions/{user_module_permission}', [UserController::class, 'permissionsDestroy'])->name('users.permissions.destroy');
             Route::get('users/import', [UserController::class, 'importForm'])->name('users.import');
             Route::post('users/import', [UserController::class, 'importStore'])->name('users.import.store');
             Route::post('users/students/{student}/create-login', [UserController::class, 'createStudentLogin'])->name('users.create-student-login');

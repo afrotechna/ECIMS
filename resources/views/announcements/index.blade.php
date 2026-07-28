@@ -45,10 +45,10 @@
             @if($a->body)<p class="text-muted small mb-1 mt-1">{{ \Illuminate\Support\Str::limit(strip_tags($a->body), 200) }}</p>@endif
             <small class="text-muted">{{ $a->created_at->format('d/m/Y H:i') }} @if($a->show_until) &middot; Show until {{ $a->show_until->format('d/m/Y') }}@endif</small>
             @canModule('college_comms', 'delete')
-            <form action="{{ route('announcements.destroy', $a) }}" method="POST" class="d-inline ms-2" onsubmit="return confirm('Delete this announcement?');">
+            <form action="{{ route('announcements.destroy', $a) }}" method="POST" class="d-inline ms-2">
                 @csrf
                 @method('DELETE')
-                @include('partials.action-delete', ['submit' => true, 'class' => 'ms-1'])
+                @include('partials.action-delete', ['class' => 'ms-1', 'swalTitle' => 'Delete this announcement?'])
             </form>
             @endcanModule
             @include('partials.action-edit', ['href' => route('announcements.edit', $a), 'class' => 'ms-1', 'iconOnly' => true])

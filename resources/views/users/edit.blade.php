@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm(@json($user->isStudent() ? 'Generate password from surname (one word, lowercase)? The old password will stop working.' : 'Issue a new temporary password? The old password will stop working.'));">
+                <button type="button" class="btn btn-warning btn-sm" data-swal-confirm data-swal-title="{{ $user->isStudent() ? 'Generate password from surname?' : 'Issue a new temporary password?' }}" data-swal-text="{{ $user->isStudent() ? 'Password will be one word, lowercase, from the surname. The old password will stop working.' : 'The old password will stop working.' }}">
                     <i class="bi bi-key me-1"></i> {{ $user->isStudent() ? 'Generate password' : 'Issue temporary password' }}
                 </button>
             </div>

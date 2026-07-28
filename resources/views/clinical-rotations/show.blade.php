@@ -23,10 +23,10 @@
     </div>
     <div class="d-flex flex-wrap gap-2">
         <a href="{{ route('clinical-rotations.index') }}" class="btn btn-outline-secondary btn-sm">All rounds</a>
-        <form method="POST" action="{{ route('clinical-rotations.destroy', $clinical_rotation_round) }}" class="d-inline" onsubmit="return confirm('Delete this rotation round and all groups, placements, and attendance?');">
+        <form method="POST" action="{{ route('clinical-rotations.destroy', $clinical_rotation_round) }}" class="d-inline">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Delete round</button>
+            <button type="button" class="btn btn-outline-danger btn-sm" data-swal-confirm data-swal-title="Delete this rotation round?" data-swal-text="This deletes all groups, placements, and attendance."><i class="bi bi-trash me-1"></i>Delete round</button>
         </form>
     </div>
 </div>
@@ -131,7 +131,7 @@
         <p class="small text-muted mb-2">Re-divides <strong>rotation-eligible</strong> students (registered at least one module that requires clinical rotation for this semester) evenly across all <strong>{{ $groupSlotCount }}</strong> groups. Clears saved <strong>Mon–Fri attendance</strong> for this round.</p>
         <form method="POST" action="{{ route('clinical-rotations.regenerate', $clinical_rotation_round) }}" class="d-inline">
             @csrf
-            <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Re-divide all students across rotation groups and clear weekly attendance for this round?');"><i class="bi bi-shuffle me-1"></i>Regenerate groups</button>
+            <button type="button" class="btn btn-warning btn-sm" data-swal-confirm data-swal-title="Regenerate groups?" data-swal-text="Re-divides all students across rotation groups and clears weekly attendance for this round."><i class="bi bi-shuffle me-1"></i>Regenerate groups</button>
         </form>
     </div>
 </div>

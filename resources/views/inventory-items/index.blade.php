@@ -109,10 +109,10 @@
                         <td class="text-end text-nowrap">
                             @include('partials.action-edit', ['href' => route('inventory-items.edit', $row), 'class' => 'me-1', 'iconOnly' => true])
                             @canModule('inventory', 'delete')
-                            <form action="{{ route('inventory-items.destroy', $row) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this inventory record?');">
+                            <form action="{{ route('inventory-items.destroy', $row) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                @include('partials.action-delete', ['submit' => true])
+                                @include('partials.action-delete', ['swalTitle' => 'Remove this inventory record?'])
                             </form>
                             @endcanModule
                         </td>

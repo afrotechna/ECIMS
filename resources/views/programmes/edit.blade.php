@@ -113,10 +113,10 @@
                                             @if($current->uploader)
                                                 <span class="text-muted">Uploaded by {{ $current->uploader->name }}</span>
                                             @endif
-                                            <form method="POST" action="{{ route('programmes.nta-level-documents.destroy', [$programme, $current->id]) }}" class="d-inline ms-auto" onsubmit="return confirm('Remove this file?');">
+                                            <form method="POST" action="{{ route('programmes.nta-level-documents.destroy', [$programme, $current->id]) }}" class="d-inline ms-auto">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove"><i class="bi bi-trash"></i></button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Remove" data-swal-confirm data-swal-title="Remove this file?"><i class="bi bi-trash"></i></button>
                                             </form>
                                         </div>
                                     @else

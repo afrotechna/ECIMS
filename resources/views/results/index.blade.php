@@ -48,7 +48,7 @@
             <div class="col-auto"><button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-funnel me-1"></i> Filter</button></div>
         </form>
         <hr class="my-3">
-        <form method="POST" action="{{ route('results.notify-sms') }}" class="row g-2 align-items-end" onsubmit="return confirm('Send result SMS to all students with results for this semester?');">
+        <form method="POST" action="{{ route('results.notify-sms') }}" class="row g-2 align-items-end" onsubmit="event.preventDefault(); var f=this; Swal.fire({title:'Send result SMS?', text:'Send result SMS to all students with results for this semester?', icon:'warning', showCancelButton:true, confirmButtonColor:'#0d6efd', cancelButtonColor:'#6c757d', confirmButtonText:'Send'}).then(function(r){ if(r.isConfirmed) HTMLFormElement.prototype.submit.call(f); });">
             @csrf
             <div class="col-md-4">
                 <label class="form-label small mb-0">Notify by SMS (Twilio)</label>

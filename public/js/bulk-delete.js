@@ -77,28 +77,47 @@
     document.addEventListener('submit', function (e) {
         var form = e.target;
         if (!form.classList || !form.classList.contains('bulk-delete-form')) return;
+        e.preventDefault();
         var scope = scopeForForm(form);
         var ids = checkboxesInScope(scope).filter(function (cb) { return cb.checked; }).map(function (cb) { return cb.value; });
         if (ids.length === 0) {
-            e.preventDefault();
-            alert('Select at least one item to delete.');
+            if (window.Swal) {
+                Swal.fire({ icon: 'warning', title: 'Nothing selected', text: 'Select at least one item to delete.' });
+            } else {
+                alert('Select at least one item to delete.');
+            }
             return;
         }
         var template = form.getAttribute('data-bulk-confirm') || 'Delete :count selected item(s)? This cannot be undone.';
         var msg = template.replace(':count', String(ids.length));
-        if (!confirm(msg)) {
-            e.preventDefault();
+        var finish = function () {
+            var holder = form.querySelector('.bulk-delete-ids');
+            if (holder) {
+                holder.innerHTML = '';
+                ids.forEach(function (id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    holder.appendChild(input);
+                });
+            }
+            HTMLFormElement.prototype.submit.call(form);
+        };
+        if (!window.Swal) {
+            if (confirm(msg)) finish();
             return;
         }
-        var holder = form.querySelector('.bulk-delete-ids');
-        if (!holder) return;
-        holder.innerHTML = '';
-        ids.forEach(function (id) {
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'ids[]';
-            input.value = id;
-            holder.appendChild(input);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: msg,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+        }).then(function (result) {
+            if (result.isConfirmed) finish();
         });
     });
 })();

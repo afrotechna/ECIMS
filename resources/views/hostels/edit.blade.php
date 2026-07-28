@@ -84,9 +84,9 @@
             <a href="{{ route('rooms.index', ['hostel_id' => $hostel->id]) }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-door-open me-1"></i> View rooms</a>
         @else
             <p class="small text-muted mb-3">Creates <strong>{{ $hostel->block_count }} × {{ $hostel->rooms_per_block }} = {{ $hostel->expectedRoomSlots() }}</strong> rooms with codes from <code>{{ \App\Models\Room::generatedCode(1, 1) }}</code> through <code>{{ \App\Models\Room::generatedCode($hostel->block_count, $hostel->rooms_per_block) }}</code>, each with <strong>{{ $hostel->beds_per_room }}</strong> berths.</p>
-            <form action="{{ route('hostels.generate-rooms', $hostel) }}" method="POST" class="d-inline" onsubmit="return confirm('Create {{ $hostel->expectedRoomSlots() }} rooms for this hostel?');">
+            <form action="{{ route('hostels.generate-rooms', $hostel) }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-magic me-1"></i> Generate all rooms</button>
+                <button type="button" class="btn btn-success btn-sm" data-swal-confirm data-swal-title="Generate rooms?" data-swal-text="Create {{ $hostel->expectedRoomSlots() }} rooms for this hostel." data-swal-icon="question"><i class="bi bi-magic me-1"></i> Generate all rooms</button>
             </form>
         @endif
     </div>

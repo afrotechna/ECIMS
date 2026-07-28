@@ -207,9 +207,9 @@
                                         <div class="d-inline-flex flex-wrap justify-content-end gap-1">
                                             <a href="{{ route('student-documents.download', $doc) }}" class="btn btn-sm btn-outline-primary" title="Download"><i class="bi bi-download"></i></a>
                                             @if(!auth()->user()->isStudent())
-                                            <form action="{{ route('student-documents.destroy', $doc) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this document?');">
+                                            <form action="{{ route('student-documents.destroy', $doc) }}" method="POST" class="d-inline">
                                                 @csrf @method('DELETE')
-                                                @include('partials.action-delete', ['submit' => true, 'title' => 'Remove'])
+                                                @include('partials.action-delete', ['title' => 'Remove', 'swalTitle' => 'Remove this document?'])
                                             </form>
                                             @endif
                                         </div>
@@ -232,10 +232,10 @@
             <div class="card-body small">
                 @if($guardianUser ?? null)
                 <p class="mb-2"><span class="badge bg-success">Active</span> {{ $guardianUser->email }}</p>
-                <form action="{{ route('students.guardian-access.destroy', $student) }}" method="POST" onsubmit="return confirm('Remove guardian login?');">
+                <form action="{{ route('students.guardian-access.destroy', $student) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove access</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-swal-confirm data-swal-title="Remove guardian login?">Remove access</button>
                 </form>
                 @else
                 <form action="{{ route('students.guardian-access.store', $student) }}" method="POST" class="row g-2">

@@ -118,10 +118,10 @@
                             <td class="text-end text-nowrap">
                                 @include('partials.action-view', ['href' => route('clinical-rotations.show', $r), 'title' => 'Open'])
                                 @canModule('clinical', 'delete')
-                                <form method="POST" action="{{ route('clinical-rotations.destroy', $r) }}" class="d-inline" onsubmit="return confirm('Delete this rotation round and all groups?');">
+                                <form method="POST" action="{{ route('clinical-rotations.destroy', $r) }}" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    @include('partials.action-delete', ['submit' => true, 'class' => 'ms-1'])
+                                    @include('partials.action-delete', ['class' => 'ms-1', 'swalTitle' => 'Delete this rotation round and all groups?'])
                                 </form>
                                 @endcanModule
                             </td>

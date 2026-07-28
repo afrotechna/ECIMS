@@ -84,14 +84,14 @@
             }
             document.getElementById('bulkApproveForm')?.addEventListener('submit', function(e) {
                 var ids = getPendingIds();
-                if (ids.length === 0) { e.preventDefault(); alert('Select at least one registration.'); return; }
+                if (ids.length === 0) { e.preventDefault(); Swal.fire({ icon: 'warning', title: 'Nothing selected', text: 'Select at least one registration.' }); return; }
                 var div = document.getElementById('bulkApproveIds');
                 div.innerHTML = '';
                 ids.forEach(function(id) { var i = document.createElement('input'); i.type = 'hidden'; i.name = 'ids[]'; i.value = id; div.appendChild(i); });
             });
             document.getElementById('bulkRejectForm')?.addEventListener('submit', function(e) {
                 var ids = getPendingIds();
-                if (ids.length === 0) { e.preventDefault(); alert('Select at least one registration.'); return; }
+                if (ids.length === 0) { e.preventDefault(); Swal.fire({ icon: 'warning', title: 'Nothing selected', text: 'Select at least one registration.' }); return; }
                 var div = document.getElementById('bulkRejectIds');
                 div.innerHTML = '';
                 ids.forEach(function(id) { var i = document.createElement('input'); i.type = 'hidden'; i.name = 'ids[]'; i.value = id; div.appendChild(i); });

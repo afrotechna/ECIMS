@@ -6,6 +6,7 @@ use App\Mail\TemporaryPasswordMail;
 use App\Models\ActivityLog;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\UserModulePermission;
 use App\Support\RolePermissions;
 use App\Support\StudentSurname;
 use Illuminate\Http\Request;
@@ -18,7 +19,25 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
-    public function rolePermissions()
+    public function rolePermissions(Request $request)
+    {
+        $query = User::query()->whereIn('role', array_keys(User::staffRoleOptions()));
+
+        if ($request->filled('search')) {
+            $q = $request->search;
+            $query->where(function ($qry) use ($q) {
+                $qry->where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%")
+                    ->orWhere('staff_id', 'like', "%{$q}%");
+            });
+        }
+
+        $users = $query->orderBy('name')->paginate(20)->withQueryString();
+
+        return view('users.role-permissions', compact('users'));
+    }
+
+    public function roleMatrix()
     {
         $modules = RolePermissions::modules();
         $actions = config('permissions.actions', ['view', 'create', 'update', 'delete']);
@@ -28,7 +47,60 @@ class UserController extends Controller
         ])->values();
         $matrix = RolePermissions::matrix();
 
-        return view('users.role-permissions', compact('modules', 'actions', 'roles', 'matrix'));
+        return view('users.role-matrix', compact('modules', 'actions', 'roles', 'matrix'));
+    }
+
+    public function permissions(User $user)
+    {
+        $modules = RolePermissions::modules();
+        $actions = config('permissions.actions', ['view', 'create', 'update', 'delete']);
+        $roleGrants = RolePermissions::roleGrants(User::normalizeRoleSlug((string) $user->role));
+        $extraGrants = $user->extraModulePermissions()->orderBy('module')->get()->keyBy('module');
+
+        return view('users.permissions', compact('user', 'modules', 'actions', 'roleGrants', 'extraGrants'));
+    }
+
+    public function permissionsStore(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'module' => ['required', 'string', Rule::in(array_keys(RolePermissions::modules()))],
+            'actions' => ['required', 'array', 'min:1'],
+            'actions.*' => ['string', Rule::in(config('permissions.actions', ['view', 'create', 'update', 'delete']))],
+        ]);
+
+        $grant = UserModulePermission::firstOrNew([
+            'user_id' => $user->id,
+            'module' => $validated['module'],
+        ]);
+        $grant->actions = array_values(array_unique(array_merge($grant->actions ?? [], $validated['actions'])));
+        $grant->granted_by = auth()->id();
+        $grant->save();
+
+        ActivityLog::log(
+            'user_permission.granted',
+            UserModulePermission::class,
+            $grant->id,
+            "Granted {$validated['module']} (".implode(',', $validated['actions']).") to {$user->name}"
+        );
+
+        return redirect()->route('users.permissions', $user)->with('success', 'Permission granted.');
+    }
+
+    public function permissionsDestroy(User $user, UserModulePermission $user_module_permission)
+    {
+        abort_unless($user_module_permission->user_id === $user->id, 404);
+
+        $module = $user_module_permission->module;
+        $user_module_permission->delete();
+
+        ActivityLog::log(
+            'user_permission.revoked',
+            UserModulePermission::class,
+            $user->id,
+            "Revoked {$module} extra grant from {$user->name}"
+        );
+
+        return redirect()->route('users.permissions', $user)->with('success', 'Permission removed.');
     }
 
     public function index(Request $request)

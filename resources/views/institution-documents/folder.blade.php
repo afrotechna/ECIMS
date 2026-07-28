@@ -147,10 +147,10 @@
                             <a href="{{ route('institution-documents.edit', $doc) }}" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="bi bi-pencil"></i></a>
                             @endcanModule
                             @canModule('institution_docs', 'delete')
-                            <form action="{{ route('institution-documents.destroy', $doc) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this document?');">
+                            <form action="{{ route('institution-documents.destroy', $doc) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                @include('partials.action-delete', ['submit' => true])
+                                @include('partials.action-delete', ['swalTitle' => 'Delete this document?'])
                             </form>
                             @endcanModule
                         </td>

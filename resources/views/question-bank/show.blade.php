@@ -316,7 +316,7 @@
                                                         </form>
                                                     @endif
                                                     @if($meta['can_regenerate'])
-                                                        <form method="POST" action="{{ route('question-bank.generate', $questionBank) }}" class="d-inline" onsubmit="return confirm('Regenerate section {{ $section }}?');">
+                                                        <form method="POST" action="{{ route('question-bank.generate', $questionBank) }}" class="d-inline">
                                                             @csrf
                                                             <input type="hidden" name="regenerate" value="1">
                                                             <input type="hidden" name="question_material_id" value="{{ $questionBank->materials->first()?->id }}">
@@ -324,7 +324,7 @@
                                                             <input type="hidden" name="difficulty" value="medium">
                                                             <input type="hidden" name="count" value="{{ min($meta['required'], 20) }}">
                                                             <input type="hidden" name="marks" value="1">
-                                                            <button type="submit" class="btn btn-warning btn-sm px-2" @if($questionBank->materials->isEmpty()) disabled @endif>Regen</button>
+                                                            <button type="button" class="btn btn-warning btn-sm px-2" @if($questionBank->materials->isEmpty()) disabled @endif data-swal-confirm data-swal-title="Regenerate section {{ $section }}?">Regen</button>
                                                         </form>
                                                         <form method="POST" action="{{ route('question-bank.reset-section', $questionBank) }}" class="d-inline">
                                                             @csrf
@@ -447,7 +447,7 @@
                             <a class="btn btn-sm btn-outline-primary" href="{{ route('question-bank.exams.show', [$questionBank, $exam]) }}">Open</a>
                             <a class="btn btn-sm btn-outline-success" href="{{ route('question-bank.exams.export-docx', [$questionBank, $exam]) }}">Export QP</a>
                             <a class="btn btn-sm btn-outline-success" href="{{ route('question-bank.exams.export-docx', [$questionBank, $exam]) }}?with_answers=1">Export Ans</a>
-                            <form method="POST" action="{{ route('question-bank.exams.destroy', [$questionBank, $exam]) }}" class="d-inline-flex align-items-center gap-2" onsubmit="return confirm('Delete this exam/assignment/quiz? Question bank items stay; you can build a new version and export again.');">
+                            <form method="POST" action="{{ route('question-bank.exams.destroy', [$questionBank, $exam]) }}" class="d-inline-flex align-items-center gap-2" onsubmit="event.preventDefault(); var f=this; Swal.fire({title:'Delete this exam/assignment/quiz?', text:'Question bank items stay; you can build a new version and export again.', icon:'warning', showCancelButton:true, confirmButtonColor:'#dc3545', cancelButtonColor:'#6c757d'}).then(function(r){ if(r.isConfirmed) HTMLFormElement.prototype.submit.call(f); });">
                                 @csrf
                                 @method('DELETE')
                                 <div class="form-check mb-0">
@@ -476,7 +476,7 @@
     <div class="card-body">
         <p class="mb-2">You have <strong>{{ $purgeableAiCount }}</strong> AI-generated question(s) that are <strong>not</strong> used in any saved assessment. Remove them to free section slots and generate new questions from your notes.</p>
         <p class="small text-muted mb-3">Questions already linked to an exam are kept until you delete that assessment (or remove items manually). Delete an old assessment above if you only want a new paper but the same pool is fine.</p>
-        <form method="POST" action="{{ route('question-bank.purge-unused-ai', $questionBank) }}" onsubmit="return confirm('Remove all unused AI questions from this bank? This cannot be undone.');">
+        <form method="POST" action="{{ route('question-bank.purge-unused-ai', $questionBank) }}" onsubmit="event.preventDefault(); var f=this; Swal.fire({title:'Remove all unused AI questions?', text:'This removes all unused AI questions from this bank. This cannot be undone.', icon:'warning', showCancelButton:true, confirmButtonColor:'#dc3545', cancelButtonColor:'#6c757d'}).then(function(r){ if(r.isConfirmed) HTMLFormElement.prototype.submit.call(f); });">
             @csrf
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" name="confirm_purge" value="1" id="confirm_purge_ai" required>

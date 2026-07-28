@@ -314,11 +314,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 btn.className = 'btn btn-outline-danger btn-sm';
                 btn.textContent = 'Remove';
                 btn.onclick = function () {
-                    if (!confirm('Remove for everyone?')) return;
-                    fetch(destroyUrlTemplate.replace('__ID__', p.eventId), {
-                        method: 'DELETE',
-                        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
-                    }).then(function (r) { if (r.ok) { eventModalBs.hide(); calendar.refetchEvents(); location.reload(); } });
+                    Swal.fire({ title: 'Remove for everyone?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', cancelButtonColor: '#6c757d', confirmButtonText: 'Remove' }).then(function (result) {
+                        if (!result.isConfirmed) return;
+                        fetch(destroyUrlTemplate.replace('__ID__', p.eventId), {
+                            method: 'DELETE',
+                            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+                        }).then(function (r) { if (r.ok) { eventModalBs.hide(); calendar.refetchEvents(); location.reload(); } });
+                    });
                 };
                 footer.appendChild(btn);
             }
@@ -387,10 +389,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 calendar.refetchEvents();
                 location.reload();
             } else {
-                alert(res.data.message || 'Could not publish.');
+                Swal.fire({ icon: 'error', title: 'Could not publish', text: res.data.message || 'Could not publish.' });
             }
         })
-        .catch(function () { btn.disabled = false; alert('Network error.'); });
+        .catch(function () { btn.disabled = false; Swal.fire({ icon: 'error', title: 'Network error' }); });
     });
 
     var form = document.getElementById('calendar-add-form');
@@ -399,31 +401,35 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             var title = form.querySelector('[name=title]').value.trim();
             if (!title) return;
-            if (!confirm('Save this event? Everyone will see it on the calendar.')) return;
-            var btn = document.getElementById('calendar-form-submit');
-            btn.disabled = true;
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf }
-            })
-            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
-            .then(function (res) {
-                btn.disabled = false;
-                if (res.ok) { createEventBs.hide(); calendar.refetchEvents(); location.reload(); }
-                else alert('Could not save event.');
-            })
-            .catch(function () { btn.disabled = false; form.submit(); });
+            Swal.fire({ title: 'Save this event?', text: 'Everyone will see it on the calendar.', icon: 'question', showCancelButton: true, confirmButtonColor: '#0d6efd', cancelButtonColor: '#6c757d', confirmButtonText: 'Save' }).then(function (result) {
+                if (!result.isConfirmed) return;
+                var btn = document.getElementById('calendar-form-submit');
+                btn.disabled = true;
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf }
+                })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    btn.disabled = false;
+                    if (res.ok) { createEventBs.hide(); calendar.refetchEvents(); location.reload(); }
+                    else Swal.fire({ icon: 'error', title: 'Could not save event' });
+                })
+                .catch(function () { btn.disabled = false; form.submit(); });
+            });
         });
     }
 
     document.querySelectorAll('.calendar-delete-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            if (!confirm('Remove this event?')) return;
-            fetch(destroyUrlTemplate.replace('__ID__', btn.getAttribute('data-id')), {
-                method: 'DELETE',
-                headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
-            }).then(function (r) { if (r.ok) location.reload(); });
+            Swal.fire({ title: 'Remove this event?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', cancelButtonColor: '#6c757d', confirmButtonText: 'Remove' }).then(function (result) {
+                if (!result.isConfirmed) return;
+                fetch(destroyUrlTemplate.replace('__ID__', btn.getAttribute('data-id')), {
+                    method: 'DELETE',
+                    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+                }).then(function (r) { if (r.ok) location.reload(); });
+            });
         });
     });
 

@@ -237,7 +237,7 @@
         const n = wrap.querySelectorAll('input.js-module-course-id').length;
         if (n === 0) {
             e.preventDefault();
-            alert('Select at least one module for this date and time (tick modules to confirm — use Clear session to start over).');
+            Swal.fire({ icon: 'warning', title: 'No modules selected', text: 'Select at least one module for this date and time (tick modules to confirm — use Clear session to start over).' });
         }
     });
 })();

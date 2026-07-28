@@ -9,69 +9,67 @@
     <span>Role permissions</span>
 </nav>
 
-<div class="page-header-landing mb-4">
-    <h1 class="page-title-landing"><i class="bi bi-shield-lock me-2 opacity-90"></i>Role permissions by module</h1>
-    <p class="page-subtitle-landing mb-0">What each position may <strong>view</strong>, <strong>create</strong>, <strong>update</strong>, or <strong>delete</strong>.</p>
+<div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h1 class="page-title-landing"><i class="bi bi-shield-lock me-2 opacity-90"></i>Role permissions</h1>
+        <p class="page-subtitle-landing mb-0">Select a staff member to view or grant module access.</p>
+    </div>
+    <a href="{{ route('users.role-matrix') }}" class="btn btn-outline-light btn-sm text-white border">Role defaults</a>
+</div>
+
+<div class="card card-landing mb-3">
+    <div class="card-body py-3">
+        <form method="GET" action="{{ route('users.role-permissions') }}" class="row g-2 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label">Search</label>
+                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Name, email, or staff ID">
+            </div>
+            <div class="col-auto"><button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>Search</button></div>
+        </form>
+    </div>
 </div>
 
 <div class="card card-landing">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-sm table-bordered mb-0 align-middle" style="font-size: .8rem;">
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th class="sticky-start bg-light" style="min-width: 200px;">Module</th>
-                        @foreach($roles as $role)
-                        <th class="text-center" style="min-width: 120px;">{{ $role['label'] }}</th>
-                        @endforeach
+                        <th scope="col" class="ps-4">Name</th>
+                        <th scope="col">Position</th>
+                        <th scope="col">Email</th>
+                        <th scope="col" class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($modules as $moduleKey => $moduleLabel)
+                    @forelse($users as $u)
                     <tr>
-                        <th class="sticky-start bg-white">{{ $moduleLabel }}</th>
-                        @foreach($roles as $role)
-                        @php
-                            $grants = $matrix[$role['key']] ?? [];
-                            if (isset($grants['*'])) {
-                                $allowed = $grants['*'];
-                            } else {
-                                $allowed = $grants[$moduleKey] ?? [];
-                            }
-                        @endphp
-                        <td class="text-center">
-                            @if(in_array('*', $allowed, true) || count(array_intersect($actions, $allowed)) === count($actions))
-                                <span class="badge bg-success">Full</span>
-                            @elseif($allowed === [])
-                                <span class="text-muted">—</span>
-                            @else
-                                @foreach($actions as $act)
-                                    @if(in_array('*', $allowed, true) || in_array($act, $allowed, true))
-                                    <span class="badge bg-secondary me-1">{{ strtoupper(substr($act, 0, 1)) }}</span>
-                                    @endif
-                                @endforeach
-                                <div class="small text-muted mt-1">
-                                    @foreach($actions as $act)
-                                        @if(in_array('*', $allowed, true) || in_array($act, $allowed, true))
-                                            {{ $act }}@if(!$loop->last), @endif
-                                        @endif
-                                    @endforeach
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="staff-user-avatar" aria-hidden="true">{{ $u->initials }}</div>
+                                <div class="min-w-0">
+                                    <div class="staff-user-surname fw-semibold text-dark">{{ $u->staffSurname() ?: $u->name }}</div>
+                                    <div class="staff-user-given text-muted">{{ $u->staffGivenNames() }}</div>
                                 </div>
-                            @endif
+                            </div>
                         </td>
-                        @endforeach
+                        <td><span class="staff-role-pill">{{ \App\Models\User::roleLabel($u->role) }}</span></td>
+                        <td class="small text-secondary text-truncate" style="max-width: 12rem;">{{ $u->email ?: '—' }}</td>
+                        <td class="text-end text-nowrap pe-4">
+                            <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-light border shadow-sm" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock text-primary"></i></a>
+                        </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr><td colspan="4" class="text-center text-muted py-5">No staff users found.</td></tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
+    @if($users->hasPages())
+    <div class="card-footer bg-light border-0 py-3 d-flex justify-content-center">
+        {{ $users->links() }}
+    </div>
+    @endif
 </div>
-
-<p class="small text-muted mt-3 mb-0">
-    <strong>Legend:</strong> V = view, C = create, U = update, D = delete.
-    <strong>Academic portfolio (ARC):</strong> Vice Principal — Academic, Research &amp; Consultancy; Admission; HOD CMT; HOD MLT; Examination Officer; tutors; clinical instructors.
-    <strong>Finance &amp; planning portfolio (AFP):</strong> Vice Principal — Administrative, Financial &amp; Planning; Accountant; Procurement Officer; Secretary; Accommodation Matron.
-    Students use the portal only (not listed here).
-</p>
 @endsection

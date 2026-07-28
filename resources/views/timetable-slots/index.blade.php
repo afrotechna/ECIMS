@@ -55,11 +55,11 @@
                     <td>{{ $slot->room ?? '—' }}</td>
                     <td class="text-end text-nowrap">
                         @canModule('timetable', 'delete')
-                        <form method="POST" action="{{ route('timetable-slots.destroy', $slot) }}" class="d-inline" onsubmit="return confirm('Remove this timetable slot?');">
+                        <form method="POST" action="{{ route('timetable-slots.destroy', $slot) }}" class="d-inline">
                             @csrf
                             @method('DELETE')
                             @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
-                            @include('partials.action-delete', ['submit' => true])
+                            @include('partials.action-delete', ['swalTitle' => 'Remove this timetable slot?'])
                         </form>
                         @endcanModule
                     </td>

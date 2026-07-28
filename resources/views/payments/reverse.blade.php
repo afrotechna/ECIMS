@@ -18,14 +18,14 @@
     <div class="card-header-landing">Confirm reversal</div>
     <div class="card-body">
         <p class="mb-3">Payment #{{ $payment->id }}: <strong>{{ number_format($payment->amount) }} TZS</strong> for {{ $payment->student->full_name }} ({{ $payment->student->reg_no }}) on {{ $payment->paid_at->format('d/m/Y') }}.</p>
-        <form action="{{ route('payments.reverse', $payment) }}" method="POST" onsubmit="return confirm('Reverse this payment? A debit entry will be added to the student ledger.');">
+        <form action="{{ route('payments.reverse', $payment) }}" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="reason" class="form-label">Reason (optional)</label>
                 <input type="text" class="form-control" id="reason" name="reason" value="{{ old('reason') }}" placeholder="e.g. Duplicate entry">
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-danger">Reverse payment</button>
+                <button type="button" class="btn btn-danger" data-swal-confirm data-swal-title="Reverse this payment?" data-swal-text="A debit entry will be added to the student ledger.">Reverse payment</button>
                 <a href="{{ route('payments.show', $payment) }}" class="btn btn-outline-secondary">Cancel</a>
             </div>
         </form>

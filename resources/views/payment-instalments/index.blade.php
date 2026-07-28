@@ -108,10 +108,10 @@
                                 <td class="text-end text-nowrap">
                                     <a href="{{ route('students.ledger', $inst->student) }}" class="btn btn-sm btn-outline-primary" title="Ledger">Ledger</a>
                                     <button type="button" class="btn btn-sm btn-cohas-edit" data-bs-toggle="modal" data-bs-target="#editInstalment{{ $inst->id }}" title="Edit" aria-label="Edit"><i class="bi bi-pencil-square" aria-hidden="true"></i></button>
-                                    <form action="{{ route('payment-instalments.destroy', $inst) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this instalment?');">
+                                    <form action="{{ route('payment-instalments.destroy', $inst) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        @include('partials.action-delete', ['submit' => true])
+                                        @include('partials.action-delete', ['swalTitle' => 'Delete this instalment?'])
                                     </form>
                                 </td>
                             </tr>

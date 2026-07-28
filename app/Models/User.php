@@ -14,6 +14,8 @@ class User extends Authenticatable implements CanResetPasswordContract
 {
     use CanResetPassword, HasFactory, Notifiable;
 
+    protected ?\Illuminate\Support\Collection $extraModulePermissionsCache = null;
+
     protected $fillable = [
         'name',
         'surname',
@@ -202,14 +204,40 @@ class User extends Authenticatable implements CanResetPasswordContract
         return in_array(self::normalizeRoleSlug((string) $this->role), self::SYSTEM_ADMIN_ROLES, true);
     }
 
-    /** Module permission: view | create | update | delete (config/permissions.php). */
+    /** Module permission: view | create | update | delete (config/permissions.php), plus any extra per-user grants. */
     public function canModule(string $module, string $action = 'view'): bool
     {
         if ($this->isStudent() || $this->isGuardian()) {
             return false;
         }
 
-        return RolePermissions::allows(self::normalizeRoleSlug((string) $this->role), $module, $action);
+        if (RolePermissions::allows(self::normalizeRoleSlug((string) $this->role), $module, $action)) {
+            return true;
+        }
+
+        $grant = $this->loadedExtraModulePermissions()->get($module);
+        if (! $grant) {
+            return false;
+        }
+
+        $actions = $grant->actions ?? [];
+
+        return in_array('*', $actions, true) || in_array($action, $actions, true);
+    }
+
+    public function extraModulePermissions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(UserModulePermission::class);
+    }
+
+    /** Memoized per-request lookup of extra grants, keyed by module. */
+    protected function loadedExtraModulePermissions(): \Illuminate\Support\Collection
+    {
+        if ($this->extraModulePermissionsCache === null) {
+            $this->extraModulePermissionsCache = $this->extraModulePermissions()->get()->keyBy('module');
+        }
+
+        return $this->extraModulePermissionsCache;
     }
 
     /** Academic portfolio: any academic module with view access. */

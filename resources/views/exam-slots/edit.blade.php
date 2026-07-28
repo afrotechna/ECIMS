@@ -71,10 +71,10 @@
         </form>
         <div class="border-top pt-3 mt-4">
             <p class="small text-muted mb-2">Added this row by mistake? You can remove only this slot; other slots for the same session are not affected.</p>
-            <form method="POST" action="{{ route('exam-slots.destroy', $exam_slot) }}" onsubmit="return confirm('Delete this exam slot permanently?');">
+            <form method="POST" action="{{ route('exam-slots.destroy', $exam_slot) }}">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Delete this slot</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" data-swal-confirm data-swal-title="Delete this exam slot permanently?"><i class="bi bi-trash me-1"></i>Delete this slot</button>
             </form>
         </div>
     </div>

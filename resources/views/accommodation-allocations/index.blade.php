@@ -55,9 +55,9 @@
                         <td class="text-end">
                             @include('partials.action-edit', ['href' => route('accommodation-allocations.edit', $a), 'class' => 'me-1', 'iconOnly' => true])
                             @if($a->status === 'active')
-                            <form action="{{ route('accommodation-allocations.end', $a) }}" method="POST" onsubmit="return confirm('End this allocation (set end date to today)?');" class="d-inline">
+                            <form action="{{ route('accommodation-allocations.end', $a) }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-warning">End</button>
+                                <button type="button" class="btn btn-sm btn-outline-warning" data-swal-confirm data-swal-title="End this allocation?" data-swal-text="Sets the end date to today.">End</button>
                             </form>
                             @endif
                         </td>
