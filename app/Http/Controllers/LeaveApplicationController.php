@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 
 class LeaveApplicationController extends Controller
 {
+    /**
+     * Roles that may approve staff leave. Vice Principals act on behalf of the Principal
+     * when the Principal is unavailable, rather than leaving approval blocked entirely.
+     */
+    private const APPROVER_ROLES = ['principal', 'vice_principal_afp', 'vice_principal_arc'];
+
     private function ensureStaffOnly(): void
     {
         if (auth()->user()->isStudent()) {
@@ -20,11 +26,11 @@ class LeaveApplicationController extends Controller
         }
     }
 
-    private function ensurePrincipalApproverOnly(): void
+    private function ensureApproverRole(): void
     {
         $role = User::normalizeRoleSlug((string) auth()->user()->role);
-        if ($role !== 'principal') {
-            abort(403, 'Only principal can approve or reject leave requests.');
+        if (! in_array($role, self::APPROVER_ROLES, true)) {
+            abort(403, 'Only the Principal or a Vice Principal can approve or reject leave requests.');
         }
     }
 
@@ -38,7 +44,7 @@ class LeaveApplicationController extends Controller
         }
         $applications = $query->orderByDesc('created_at')->paginate(20);
 
-        $canApproveLeave = User::normalizeRoleSlug((string) auth()->user()->role) === 'principal';
+        $canApproveLeave = in_array(User::normalizeRoleSlug((string) auth()->user()->role), self::APPROVER_ROLES, true);
 
         return view('leave-applications.index', compact('applications', 'canApproveLeave'));
     }
@@ -73,7 +79,7 @@ class LeaveApplicationController extends Controller
 
         auth()->user()->notify(new StaffLeavePendingNotification($leave));
         User::query()
-            ->where('role', 'principal')
+            ->whereIn('role', self::APPROVER_ROLES)
             ->get()
             ->each
             ->notify(new StaffLeaveSubmittedNotification($leave));
@@ -84,7 +90,7 @@ class LeaveApplicationController extends Controller
     public function approve(LeaveApplication $leave_application)
     {
         $this->ensureStaffOnly();
-        $this->ensurePrincipalApproverOnly();
+        $this->ensureApproverRole();
 
         $leave_application->update(['status' => 'approved', 'approved_by' => auth()->id(), 'approved_at' => now()]);
         if ($leave_application->staffUser) {
@@ -98,7 +104,7 @@ class LeaveApplicationController extends Controller
     public function reject(Request $request, LeaveApplication $leave_application)
     {
         $this->ensureStaffOnly();
-        $this->ensurePrincipalApproverOnly();
+        $this->ensureApproverRole();
 
         $leave_application->update([
             'status' => 'rejected',

@@ -55,9 +55,9 @@ class RoomController extends Controller
         );
 
         $hostels = Hostel::where('is_active', true)->orderBy('name')->get();
-        $blockMeta = $this->blockColumnRowspanMeta($rooms->getCollection()->values()->all());
+        $roomGroups = $this->groupRoomsByBlock($rooms->getCollection()->values()->all());
 
-        return view('rooms.index', compact('rooms', 'hostels', 'blockMeta'));
+        return view('rooms.index', compact('rooms', 'hostels', 'roomGroups'));
     }
 
     /**
@@ -68,9 +68,9 @@ class RoomController extends Controller
         $hostels = Hostel::where('is_active', true)->orderBy('name')->get();
         $rooms = $this->roomsForOccupancy($request);
         $liveDataUrl = route('rooms.occupancy.live-data', $request->filled('hostel_id') ? ['hostel_id' => $request->hostel_id] : []);
-        $blockMeta = $this->blockColumnRowspanMeta($rooms->values()->all());
+        $roomGroups = $this->groupRoomsByBlock($rooms->values()->all());
 
-        return view('rooms.occupancy', compact('rooms', 'hostels', 'liveDataUrl', 'blockMeta'));
+        return view('rooms.occupancy', compact('rooms', 'hostels', 'liveDataUrl', 'roomGroups'));
     }
 
     public function occupancyLiveData(Request $request): JsonResponse
@@ -298,46 +298,34 @@ class RoomController extends Controller
     }
 
     /**
-     * Per-page metadata for merged Block column cells (same hostel + block_number).
+     * Group ordered rooms into per-block sections for the collapsible table:
+     * consecutive rooms sharing (hostel, block_number) become one group;
+     * rooms without a block_number each form their own single-room group.
      *
      * @param  list<Room>  $items
-     * @return list<array{show: bool, rowspan: int}>
+     * @return list<array{key: string, hostel: Hostel|null, blockNumber: int|null, rooms: list<Room>}>
      */
-    private function blockColumnRowspanMeta(array $items): array
+    private function groupRoomsByBlock(array $items): array
     {
-        $n = count($items);
-        $meta = [];
-        for ($i = 0; $i < $n; $i++) {
-            /** @var Room $r */
-            $r = $items[$i];
-            if ($r->block_number === null) {
-                $meta[] = ['show' => true, 'rowspan' => 1];
-
-                continue;
+        $groups = [];
+        $currentKey = null;
+        foreach ($items as $room) {
+            /** @var Room $room */
+            $key = $room->block_number !== null
+                ? 'b'.$room->hostel_id.'-'.$room->block_number
+                : 'r'.$room->id;
+            if ($key !== $currentKey) {
+                $groups[] = [
+                    'key' => $key,
+                    'hostel' => $room->hostel,
+                    'blockNumber' => $room->block_number,
+                    'rooms' => [],
+                ];
+                $currentKey = $key;
             }
-            $prev = $i > 0 ? $items[$i - 1] : null;
-            $sameAsPrev = $prev instanceof Room
-                && $prev->hostel_id === $r->hostel_id
-                && $prev->block_number === $r->block_number;
-            if ($sameAsPrev) {
-                $meta[] = ['show' => false, 'rowspan' => 1];
-
-                continue;
-            }
-            $span = 1;
-            for ($j = $i + 1; $j < $n; $j++) {
-                $r2 = $items[$j];
-                if ($r2->block_number !== null
-                    && $r2->hostel_id === $r->hostel_id
-                    && $r2->block_number === $r->block_number) {
-                    $span++;
-                } else {
-                    break;
-                }
-            }
-            $meta[] = ['show' => true, 'rowspan' => $span];
+            $groups[array_key_last($groups)]['rooms'][] = $room;
         }
 
-        return $meta;
+        return $groups;
     }
 }

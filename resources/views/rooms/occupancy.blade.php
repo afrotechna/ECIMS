@@ -47,7 +47,7 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0" id="occupancyTable">
                 <thead>
                     <tr>
                         <th>Block</th>
@@ -58,18 +58,33 @@
                         <th>Students</th>
                     </tr>
                 </thead>
-                <tbody id="occupancy-tbody">
-                    @forelse($rooms as $room)
+                @forelse($roomGroups as $group)
+                @php
+                    $isBlock = $group['blockNumber'] !== null;
+                    $collapseId = 'occGroup-'.\Illuminate\Support\Str::slug($group['key']);
+                @endphp
+                @if($isBlock)
+                <tbody>
+                    <tr class="cohas-accordion-row" role="button" tabindex="0" data-bs-toggle="collapse" data-bs-target="#{{ $collapseId }}" aria-expanded="false" aria-controls="{{ $collapseId }}">
+                        <td colspan="100%">
+                            <i class="bi bi-chevron-right room-group-caret me-2"></i>
+                            <strong>{{ $group['hostel']?->name }} · Block {{ $group['blockNumber'] }}</strong>
+                            <span class="text-muted small ms-2">{{ count($group['rooms']) }} room{{ count($group['rooms']) === 1 ? '' : 's' }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody class="collapse" id="{{ $collapseId }}">
+                @else
+                <tbody>
+                @endif
+                    @foreach($group['rooms'] as $room)
                     @php
-                        $bm = $blockMeta[$loop->index] ?? ['show' => true, 'rowspan' => 1];
                         $res = $room->effectiveAllocationsNow->unique('student_id');
                         $occ = $res->count();
                         $vac = max(0, $room->bed_count - $occ);
                     @endphp
                     <tr data-room-id="{{ $room->id }}">
-                        @if($bm['show'])
-                        <td rowspan="{{ $bm['rowspan'] }}" class="bg-light align-middle">{{ $room->blockLabel() ?? '—' }}</td>
-                        @endif
+                        <td class="bg-light align-middle">{{ $room->blockLabel() ?? '—' }}</td>
                         <td><strong class="font-monospace small">{{ $room->name }}</strong></td>
                         <td class="text-center" data-bed>{{ $room->bed_count }}</td>
                         <td class="text-center" data-occupied>{{ $occ }}</td>
@@ -100,21 +115,32 @@
                             @endif
                         </td>
                     </tr>
-                    @empty
-                    <tr><td colspan="6" class="text-center text-muted py-5">No active rooms match this filter.</td></tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
+                @empty
+                <tbody>
+                    <tr><td colspan="6" class="text-center text-muted py-5">No active rooms match this filter.</td></tr>
+                </tbody>
+                @endforelse
             </table>
         </div>
     </div>
 </div>
+@push('styles')
+<style>
+    .cohas-accordion-row { cursor: pointer; }
+    .cohas-accordion-row:hover { background-color: var(--cohas-hover, rgba(0,0,0,.03)); }
+    .room-group-caret { transition: transform .15s ease; display: inline-block; }
+    .cohas-accordion-row[aria-expanded="true"] .room-group-caret { transform: rotate(90deg); }
+</style>
+@endpush
 @endsection
 
 @push('scripts')
 <script>
 (function () {
     var url = @json($liveDataUrl);
-    var tbody = document.getElementById('occupancy-tbody');
+    var tbody = document.getElementById('occupancyTable');
     var updatedEl = document.getElementById('occupancy-updated-at');
     if (!tbody || !url) return;
 

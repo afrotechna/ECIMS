@@ -139,6 +139,7 @@ return [
             'registrations' => ['view'],
             'programmes' => ['view'],
             'college_comms' => ['view', 'create', 'update'],
+            'student_affairs' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
         ],

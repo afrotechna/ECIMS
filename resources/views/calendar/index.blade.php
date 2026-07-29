@@ -204,63 +204,65 @@
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 <style>
-.gcal-wrap { max-width: 1100px; }
-.gcal-toolbar { min-height: 40px; }
+.gcal-wrap { max-width: 900px; }
+.gcal-toolbar { min-height: 36px; }
 .gcal-create {
-    background: #1a73e8; color: #fff; border: none; border-radius: 24px;
-    font-weight: 500; font-size: .875rem; padding: .4rem 1.1rem;
-    box-shadow: 0 1px 2px rgba(26,115,232,.3);
+    background: var(--cohas-gradient); color: #fff; border: none; border-radius: 24px;
+    font-weight: 500; font-size: .8rem; padding: .35rem 1rem;
+    box-shadow: 0 1px 3px var(--cohas-shadow);
 }
-.gcal-create:hover { background: #1765cc; color: #fff; }
-.gcal-year { width: auto; border-radius: 4px; font-size: .8rem; }
+.gcal-create:hover { background: var(--cohas-gradient-hover); color: #fff; }
+.gcal-year { width: auto; border-radius: 4px; font-size: .75rem; }
 .gcal-layout {
-    display: grid; grid-template-columns: 1fr 200px; gap: 1rem;
-    background: #fff; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 180px; gap: .75rem;
+    background: var(--cohas-surface); border: 1px solid var(--cohas-border);
+    border-radius: var(--cohas-radius-lg); box-shadow: 0 4px 20px var(--cohas-shadow);
+    overflow: hidden;
 }
 @media (max-width: 768px) { .gcal-layout { grid-template-columns: 1fr; } .gcal-aside { display: none; } }
-.gcal-main { padding: .5rem .75rem 1rem; min-width: 0; }
+.gcal-main { padding: .4rem .6rem .75rem; min-width: 0; }
 .gcal-aside {
-    border-left: 1px solid #dadce0; padding: .75rem; background: #fafafa;
+    border-left: 1px solid var(--cohas-border); padding: .6rem; background: var(--cohas-surface-muted);
 }
-.gcal-aside-title { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: #5f6368; margin-bottom: .5rem; }
-.gcal-aside-item { display: flex; align-items: flex-start; gap: .4rem; padding: .35rem 0; font-size: .8rem; }
-.gcal-aside-item-title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.gcal-aside-item-date { font-size: .7rem; color: #5f6368; }
-.gcal-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: .35rem; flex-shrink: 0; }
-.gcal-leg { font-size: .65rem; color: #5f6368; margin-right: .5rem; }
+.gcal-aside-title { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--cohas-text-muted); margin-bottom: .4rem; }
+.gcal-aside-item { display: flex; align-items: flex-start; gap: .4rem; padding: .3rem 0; font-size: .75rem; }
+.gcal-aside-item-title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--cohas-text); }
+.gcal-aside-item-date { font-size: .65rem; color: var(--cohas-text-muted); }
+.gcal-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: .3rem; flex-shrink: 0; }
+.gcal-leg { font-size: .62rem; color: var(--cohas-text-muted); margin-right: .5rem; }
 .gcal-leg::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--c); margin-right: 3px; }
-#cohas-calendar { max-height: 480px; }
+#cohas-calendar { max-height: 380px; }
 .cohas-fc {
-    --fc-border-color: #dadce0;
-    --fc-today-bg-color: #e8f0fe;
-    --fc-page-bg-color: #fff;
-    font-size: .8rem;
+    --fc-border-color: var(--cohas-border);
+    --fc-today-bg-color: var(--cohas-blue-soft);
+    --fc-page-bg-color: var(--cohas-surface);
+    font-size: .75rem;
 }
-.cohas-fc .fc-toolbar { margin-bottom: .5rem !important; }
-.cohas-fc .fc-toolbar-title { font-size: 1.1rem; font-weight: 500; color: #3c4043; }
+.cohas-fc .fc-toolbar { margin-bottom: .4rem !important; }
+.cohas-fc .fc-toolbar-title { font-size: 1rem; font-weight: 500; color: var(--cohas-text); }
 .cohas-fc .fc-button {
-    background: transparent !important; border: none !important; color: #5f6368 !important;
-    font-size: .75rem !important; padding: .25rem .5rem !important; box-shadow: none !important;
+    background: transparent !important; border: none !important; color: var(--cohas-text-muted) !important;
+    font-size: .7rem !important; padding: .2rem .45rem !important; box-shadow: none !important;
 }
-.cohas-fc .fc-button:hover { background: #f1f3f4 !important; border-radius: 50% !important; }
-.cohas-fc .fc-button-primary:not(:disabled).fc-button-active { background: #e8f0fe !important; color: #1a73e8 !important; border-radius: 4px !important; }
-.cohas-fc .fc-col-header-cell { padding: .35rem 0; font-size: .65rem; font-weight: 500; color: #70757a; }
-.cohas-fc .fc-daygrid-day { min-height: 4.5rem; }
-.cohas-fc .fc-daygrid-day-number { font-size: .75rem; color: #3c4043; padding: .25rem .4rem; }
+.cohas-fc .fc-button:hover { background: var(--cohas-hover) !important; border-radius: 50% !important; }
+.cohas-fc .fc-button-primary:not(:disabled).fc-button-active { background: var(--cohas-blue-soft) !important; color: var(--cohas-blue-700) !important; border-radius: 4px !important; }
+.cohas-fc .fc-col-header-cell { padding: .3rem 0; font-size: .62rem; font-weight: 500; color: var(--cohas-text-muted); }
+.cohas-fc .fc-daygrid-day { min-height: 3.75rem; }
+.cohas-fc .fc-daygrid-day-number { font-size: .7rem; color: var(--cohas-text); padding: .2rem .35rem; }
 .cohas-fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-    background: #1a73e8; color: #fff; border-radius: 50%; width: 1.5rem; height: 1.5rem;
+    background: var(--cohas-blue-700); color: #fff; border-radius: 50%; width: 1.35rem; height: 1.35rem;
     display: flex; align-items: center; justify-content: center; margin: 2px;
 }
 .cohas-fc .fc-event {
-    border: none; border-radius: 3px; font-size: .65rem; padding: 0 3px;
+    border: none; border-radius: 3px; font-size: .62rem; padding: 0 3px;
     cursor: pointer; line-height: 1.3;
 }
 .cohas-fc .fc-daygrid-event-dot { display: none; }
-.gcal-modal .modal-content { border-radius: 8px; }
-.gcal-holiday-list { max-height: 280px; overflow-y: auto; }
-.gcal-holiday-pick { background: #fff; transition: background .15s; }
-.gcal-holiday-pick:hover { background: #f1f3f4; }
-.gcal-confirm-box { background: #f8f9fa; border: 1px solid #e8eaed; }
+.gcal-modal .modal-content { border-radius: var(--cohas-radius-md); }
+.gcal-holiday-list { max-height: 260px; overflow-y: auto; }
+.gcal-holiday-pick { background: var(--cohas-surface); transition: background .15s; }
+.gcal-holiday-pick:hover { background: var(--cohas-hover); }
+.gcal-confirm-box { background: var(--cohas-surface-muted); border: 1px solid var(--cohas-border); }
 </style>
 @endpush
 
@@ -292,8 +294,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var calendar = new FullCalendar.Calendar(el, {
         initialView: 'dayGridMonth',
         initialDate: @json($calendarInitialDate),
-        height: 480,
-        contentHeight: 420,
+        height: 380,
+        contentHeight: 330,
         fixedWeekCount: false,
         firstDay: 1,
         dayMaxEvents: 2,

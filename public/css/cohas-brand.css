@@ -16,6 +16,7 @@
     --cohas-green: #1d9d57;
     --cohas-green-dark: #157a44;
     --cohas-green-soft: #e8f8ef;
+    --cohas-blue-soft: #e5edfb;
 
     --cohas-gradient: linear-gradient(135deg, var(--cohas-blue-950) 0%, var(--cohas-blue-900) 42%, var(--cohas-blue-700) 100%);
     --cohas-gradient-hover: linear-gradient(135deg, var(--cohas-blue-900) 0%, var(--cohas-blue-700) 50%, #2080c9 100%);
@@ -77,6 +78,7 @@
     --cohas-text-muted: #94a3b8;
     --cohas-border: #334155;
     --cohas-hover: #475569;
+    --cohas-blue-soft: rgba(77, 143, 232, 0.22);
 }
 
 /* Page shell */

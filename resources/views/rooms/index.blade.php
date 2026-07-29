@@ -63,16 +63,30 @@
                     <th>Block</th><th>Room code</th><th>Berths</th><th>Status</th><th class="text-end">Actions</th>
                 </tr>
             </thead>
+            @forelse($roomGroups as $group)
+            @php
+                $isBlock = $group['blockNumber'] !== null;
+                $collapseId = 'roomGroup-'.\Illuminate\Support\Str::slug($group['key']);
+                $totalBeds = collect($group['rooms'])->sum('bed_count');
+            @endphp
+            @if($isBlock)
             <tbody>
-                @forelse($rooms as $r)
-                @php
-                    $bm = $blockMeta[$loop->index] ?? ['show' => true, 'rowspan' => 1];
-                @endphp
+                <tr class="cohas-accordion-row" role="button" tabindex="0" data-bs-toggle="collapse" data-bs-target="#{{ $collapseId }}" aria-expanded="false" aria-controls="{{ $collapseId }}">
+                    <td colspan="100%">
+                        <i class="bi bi-chevron-right room-group-caret me-2"></i>
+                        <strong>{{ $group['hostel']?->name }} · Block {{ $group['blockNumber'] }}</strong>
+                        <span class="text-muted small ms-2">{{ count($group['rooms']) }} room{{ count($group['rooms']) === 1 ? '' : 's' }} · {{ $totalBeds }} berths</span>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody class="collapse" id="{{ $collapseId }}">
+            @else
+            <tbody>
+            @endif
+                @foreach($group['rooms'] as $r)
                 <tr>
                     @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $r->id]))
-                    @if($bm['show'])
-                    <td rowspan="{{ $bm['rowspan'] }}" class="bg-light align-middle">{{ $r->blockLabel() ?? '—' }}</td>
-                    @endif
+                    <td class="bg-light align-middle">{{ $r->blockLabel() ?? '—' }}</td>
                     <td><strong class="font-monospace small">{{ $r->name }}</strong></td>
                     <td>{{ $r->bed_count }}</td>
                     <td>@if($r->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
@@ -87,10 +101,13 @@
                         @endcanModule
                     </td>
                 </tr>
-                @empty
-                <tr><td colspan="6" class="text-center text-muted py-5">No rooms yet. Add one or create a hostel first.</td></tr>
-                @endforelse
+                @endforeach
             </tbody>
+            @empty
+            <tbody>
+                <tr><td colspan="6" class="text-center text-muted py-5">No rooms yet. Add one or create a hostel first.</td></tr>
+            </tbody>
+            @endforelse
         </table>
         </div>
     </div>
@@ -99,4 +116,12 @@
     @endif
 </div>
 @include('partials.bulk-delete.scripts')
+@push('styles')
+<style>
+    .cohas-accordion-row { cursor: pointer; }
+    .cohas-accordion-row:hover { background-color: var(--cohas-hover, rgba(0,0,0,.03)); }
+    .room-group-caret { transition: transform .15s ease; display: inline-block; }
+    .cohas-accordion-row[aria-expanded="true"] .room-group-caret { transform: rotate(90deg); }
+</style>
+@endpush
 @endsection

@@ -34,7 +34,7 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead>
-                    <tr><th>Staff</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr>
+                    <tr><th>Staff</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th>Decision by</th><th></th></tr>
                 </thead>
                 <tbody>
                     @forelse($applications as $app)
@@ -45,6 +45,16 @@
                         <td>{{ $app->from_date->diffInDays($app->to_date) + 1 }}</td>
                         <td>{{ Str::limit($app->reason, 40) }}</td>
                         <td><span class="badge bg-{{ $app->status === 'approved' ? 'success' : ($app->status === 'rejected' ? 'danger' : 'warning') }}">{{ \App\Models\LeaveApplication::STATUSES[$app->status] ?? $app->status }}</span></td>
+                        <td class="small">
+                            @if($app->approvedBy)
+                                {{ $app->approvedBy->staffDisplayName() }}
+                                @if(\App\Models\User::normalizeRoleSlug((string) $app->approvedBy->role) !== 'principal')
+                                    <br><span class="text-muted">(on behalf of Principal)</span>
+                                @endif
+                            @else
+                                <span class="text-muted">—</span>
+                            @endif
+                        </td>
                         <td>
                             @if(($canApproveLeave ?? false) && $app->status === 'pending')
                                 <form action="{{ route('leave-applications.approve', $app) }}" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-sm btn-success">Approve</button></form>
@@ -63,7 +73,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="7" class="text-center text-muted py-5">No staff leave applications.</td></tr>
+                    <tr><td colspan="8" class="text-center text-muted py-5">No staff leave applications.</td></tr>
                     @endforelse
                 </tbody>
             </table>

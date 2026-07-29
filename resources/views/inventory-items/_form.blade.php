@@ -14,7 +14,26 @@
         </div>
         <div class="col-md-8">
             <label class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $inv?->name) }}" required maxlength="255">
+            @php
+                $selectedName = old('name', $inv?->name);
+                $isAdminUser = auth()->user()->isAdmin();
+                $nameInCatalog = ($catalogItems ?? collect())->contains($selectedName);
+                $startInNewMode = $isAdminUser && (old('_name_mode') === 'new' || ($selectedName && ! $nameInCatalog));
+            @endphp
+            <select name="name" id="inventory-name-select" class="form-select @error('name') is-invalid @enderror" style="{{ $startInNewMode ? 'display:none' : '' }}" @if($startInNewMode) disabled @else required @endif>
+                <option value="" disabled {{ ($selectedName && $nameInCatalog) ? '' : 'selected' }}>Select item / asset name…</option>
+                @foreach($catalogItems ?? [] as $catalogName)
+                    <option value="{{ $catalogName }}" {{ (string) $selectedName === (string) $catalogName ? 'selected' : '' }}>{{ $catalogName }}</option>
+                @endforeach
+            </select>
+            @if($isAdminUser)
+            <input type="text" name="name" id="inventory-name-new" class="form-control @error('name') is-invalid @enderror" value="{{ $startInNewMode ? $selectedName : '' }}" maxlength="255" placeholder="New item / asset name" style="{{ $startInNewMode ? '' : 'display:none' }}" @if($startInNewMode) required @else disabled @endif>
+            <input type="hidden" name="_name_mode" id="inventory-name-mode" value="{{ $startInNewMode ? 'new' : 'list' }}">
+            <div class="form-text">
+                <a href="#" id="inventory-name-toggle-new" style="{{ $startInNewMode ? 'display:none' : '' }}">+ Add new name</a>
+                <a href="#" id="inventory-name-toggle-list" style="{{ $startInNewMode ? '' : 'display:none' }}">Choose from list instead</a>
+            </div>
+            @endif
             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="col-md-4">
@@ -118,3 +137,43 @@
         <a href="{{ route('inventory-items.index') }}" class="btn btn-outline-secondary">Cancel</a>
     </div>
 </form>
+@if($isAdminUser)
+@push('scripts')
+<script>
+(function () {
+    var toggleNewLink = document.getElementById('inventory-name-toggle-new');
+    var toggleListLink = document.getElementById('inventory-name-toggle-list');
+    var select = document.getElementById('inventory-name-select');
+    var newInput = document.getElementById('inventory-name-new');
+    var modeInput = document.getElementById('inventory-name-mode');
+    if (!toggleNewLink || !toggleListLink || !select || !newInput) return;
+
+    function showNew() {
+        select.style.display = 'none';
+        select.disabled = true;
+        select.required = false;
+        newInput.style.display = '';
+        newInput.disabled = false;
+        newInput.required = true;
+        toggleNewLink.style.display = 'none';
+        toggleListLink.style.display = '';
+        if (modeInput) modeInput.value = 'new';
+        newInput.focus();
+    }
+    function showList() {
+        select.style.display = '';
+        select.disabled = false;
+        select.required = true;
+        newInput.style.display = 'none';
+        newInput.disabled = true;
+        newInput.required = false;
+        toggleNewLink.style.display = '';
+        toggleListLink.style.display = 'none';
+        if (modeInput) modeInput.value = 'list';
+    }
+    toggleNewLink.addEventListener('click', function (e) { e.preventDefault(); showNew(); });
+    toggleListLink.addEventListener('click', function (e) { e.preventDefault(); showList(); });
+})();
+</script>
+@endpush
+@endif

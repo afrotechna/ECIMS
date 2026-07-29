@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\BulkDestroysRecords;
+use App\Models\InventoryCatalogItem;
 use App\Models\InventoryItem;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -43,7 +44,9 @@ class InventoryItemController extends Controller
 
     public function create()
     {
-        return view('inventory-items.create');
+        $catalogItems = InventoryCatalogItem::orderBy('name')->pluck('name');
+
+        return view('inventory-items.create', compact('catalogItems'));
     }
 
     public function store(Request $request)
@@ -58,7 +61,9 @@ class InventoryItemController extends Controller
 
     public function edit(InventoryItem $inventory_item)
     {
-        return view('inventory-items.edit', compact('inventory_item'));
+        $catalogItems = InventoryCatalogItem::orderBy('name')->pluck('name');
+
+        return view('inventory-items.edit', compact('inventory_item', 'catalogItems'));
     }
 
     public function update(Request $request, InventoryItem $inventory_item)
@@ -96,9 +101,17 @@ class InventoryItemController extends Controller
             $assetRule = $assetRule->ignore($ignoreId);
         }
 
+        $submittedName = trim((string) $request->input('name'));
+        $isNewCatalogName = $submittedName !== ''
+            && ! InventoryCatalogItem::where('name', $submittedName)->exists();
+
+        $nameRule = ($isNewCatalogName && auth()->user()->isAdmin())
+            ? ['required', 'string', 'max:255']
+            : ['required', 'string', 'max:255', Rule::in(InventoryCatalogItem::pluck('name'))];
+
         $validated = $request->validate([
             'asset_tag' => ['nullable', 'string', 'max:64', $assetRule],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => $nameRule,
             'description' => ['nullable', 'string', 'max:5000'],
             'category' => ['required', 'string', 'max:100'],
             'kind' => ['required', 'string', Rule::in(array_keys(InventoryItem::KINDS))],
@@ -114,6 +127,13 @@ class InventoryItemController extends Controller
             'status' => ['required', 'string', Rule::in(array_keys(InventoryItem::STATUSES))],
             'notes' => ['nullable', 'string', 'max:5000'],
         ]);
+
+        if ($isNewCatalogName && auth()->user()->isAdmin()) {
+            InventoryCatalogItem::firstOrCreate(
+                ['name' => $validated['name']],
+                ['created_by' => auth()->id()]
+            );
+        }
 
         if (($validated['asset_tag'] ?? '') === '') {
             $validated['asset_tag'] = null;
