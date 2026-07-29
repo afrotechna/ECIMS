@@ -34,11 +34,11 @@
             global.localStorage.setItem(STORAGE_KEY, theme);
         } catch (e) {}
         global.dispatchEvent(new CustomEvent('cohas-theme-change', { detail: { theme: theme } }));
+        syncToggleButtons();
     }
 
     function toggle() {
         apply(current() === 'dark' ? 'light' : 'dark');
-        syncToggleButtons();
     }
 
     function syncToggleButtons() {

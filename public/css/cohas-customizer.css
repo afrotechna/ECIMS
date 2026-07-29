@@ -1,0 +1,76 @@
+/**
+ * COHAS live layout customizer — Menu color and Layout width options.
+ * Independent of the light/dark theme (data-theme); these are separate axes
+ * so a user can pair a dark sidebar with a light theme or vice versa.
+ * Built on the same --cohas-* tokens as the rest of the app shell so both
+ * options stay legible in either theme (high-contrast pairs only — no
+ * arbitrary color picking).
+ */
+
+/* ---------- Menu (sidebar) dark skin ---------- */
+[data-menu-skin="dark"] .sidebar-wrap {
+    background: var(--cohas-blue-950);
+    border-right-color: rgba(255, 255, 255, .08);
+}
+[data-menu-skin="dark"] .sidebar-header { border-bottom-color: rgba(255, 255, 255, .08); }
+[data-menu-skin="dark"] .sidebar-wrap .brand .app-name { color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap .brand .logo-circle { box-shadow: 0 0 0 1px rgba(255, 255, 255, .15); }
+[data-menu-skin="dark"] .sidebar-wrap .nav-link { color: rgba(255, 255, 255, .72); }
+[data-menu-skin="dark"] .sidebar-wrap .nav-link:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap .nav-link.active { color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-toggle { color: rgba(255, 255, 255, .72); }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-toggle i:first-of-type { color: var(--cohas-cyan); }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-toggle:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-toggle:hover i:first-of-type,
+[data-menu-skin="dark"] .sidebar-wrap .nav-group.expanded .nav-group-toggle i:first-of-type { color: var(--cohas-cyan); }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group.expanded .nav-group-toggle { background: rgba(255, 255, 255, .08); color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-sub a { color: rgba(255, 255, 255, .65); }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-sub a:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap .nav-group-sub a.active { color: #fff; }
+[data-menu-skin="dark"] .sidebar-wrap li.nav-group-sub-label,
+[data-menu-skin="dark"] .sidebar-wrap .sidebar-section-heading { color: rgba(255, 255, 255, .5); }
+
+/* ---------- Layout width: boxed ---------- */
+[data-layout-width="boxed"] .main-content {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------- Customizer trigger + panel ---------- */
+.customizer-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.25rem; height: 2.25rem; padding: 0;
+    border: 1px solid var(--cohas-border); border-radius: var(--cohas-radius-sm);
+    background: var(--cohas-surface-muted); color: var(--cohas-text-muted);
+    cursor: pointer; transition: background .2s, color .2s, border-color .2s, transform .15s;
+}
+.customizer-toggle:hover { background: var(--cohas-hover); color: var(--cohas-text); transform: translateY(-1px); }
+
+.customizer-panel .offcanvas-header { background: var(--cohas-gradient); color: #fff; }
+.customizer-panel .offcanvas-header .btn-close { filter: invert(1) grayscale(1) brightness(2); }
+.customizer-panel .offcanvas-body { background: var(--cohas-surface); color: var(--cohas-text); }
+.customizer-section { margin-bottom: 1.75rem; }
+.customizer-section:last-child { margin-bottom: 0; }
+.customizer-section-title { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cohas-text-muted); margin-bottom: .75rem; }
+.customizer-options { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.customizer-option {
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    padding: .75rem .5rem; border: 2px solid var(--cohas-border); border-radius: var(--cohas-radius-md);
+    background: var(--cohas-surface-muted); cursor: pointer; transition: border-color .15s ease, transform .15s ease;
+    color: var(--cohas-text); font-size: .8125rem; font-weight: 600;
+}
+.customizer-option:hover { transform: translateY(-1px); }
+.customizer-option.is-active { border-color: var(--cohas-blue-700); box-shadow: 0 0 0 .15rem rgba(26, 79, 181, .15); }
+.customizer-option-swatch {
+    width: 100%; height: 3rem; border-radius: var(--cohas-radius-sm); overflow: hidden;
+    display: flex; border: 1px solid var(--cohas-border);
+}
+.customizer-option-swatch > span:first-child { width: 30%; }
+.customizer-option-swatch > span:last-child { width: 70%; }
+.customizer-switch-row {
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    padding: .75rem .9rem; background: var(--cohas-surface-muted); border: 1px solid var(--cohas-border); border-radius: var(--cohas-radius-md);
+}
+.customizer-switch-row .form-check-input { cursor: pointer; }
+.customizer-reset-btn { width: 100%; }

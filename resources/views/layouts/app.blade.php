@@ -7,12 +7,19 @@
     <title>{{ config('app.name') }} — @yield('title', 'Dashboard')</title>
     <script>
     (function(){try{var t=localStorage.getItem('cohas-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-bs-theme',t);}catch(e){}})();
+    (function(){try{
+        var skin=localStorage.getItem('cohas-menu-skin');
+        document.documentElement.setAttribute('data-menu-skin',(skin==='dark')?'dark':'light');
+        var width=localStorage.getItem('cohas-layout-width');
+        document.documentElement.setAttribute('data-layout-width',(width==='boxed')?'boxed':'full');
+    }catch(e){}})();
     </script>
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-theme.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-brand.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-app-shell.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/cohas-customizer.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-fonts.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
@@ -387,6 +394,7 @@
                 </div>
             </div>
             @include('layouts.partials.theme-toggle')
+            @include('layouts.partials.customizer-toggle')
             @include('layouts.partials.language-toggle')
             <div class="profile-dropdown">
                 <button type="button" class="topbar-avatar" id="profileToggle" aria-label="Profile menu" aria-expanded="false" aria-haspopup="true">
@@ -419,6 +427,7 @@
         </footer>
     </div>
     <div class="sidebar-overlay d-lg-none" id="sidebarOverlay" style="display:none!important; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1029;"></div>
+    @include('layouts.partials.customizer')
     @else
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -442,6 +451,9 @@
 
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/cohas-theme.js') }}"></script>
+    @auth
+    <script src="{{ asset('js/cohas-customizer.js') }}"></script>
+    @endauth
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
