@@ -184,15 +184,30 @@
     height: 100%;
     min-height: 180px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at 30% 30%, rgba(56, 182, 232, 0.35), transparent 55%),
+    align-items: flex-end;
+    justify-content: flex-end;
+    background-image: var(--photo-inner-bg, none),
+        radial-gradient(circle at 30% 30%, rgba(56, 182, 232, 0.35), transparent 55%),
         linear-gradient(160deg, var(--cohas-blue-700) 0%, var(--cohas-blue-900) 100%);
+    background-size: cover, cover, cover;
+    background-position: center, center, center;
+    background-repeat: no-repeat;
 }
 
 .auth-promo-visual .photo-inner i {
-    font-size: clamp(3rem, 10vw, 5rem);
-    opacity: 0.35;
+    font-size: 1.35rem;
+    opacity: .95;
+    color: #fff;
+    margin: .65rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(7, 29, 82, .55);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
 }
 
 .auth-cta-slat {

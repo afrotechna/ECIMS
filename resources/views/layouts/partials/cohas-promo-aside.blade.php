@@ -17,7 +17,7 @@
             </div>
             <div class="auth-promo-visual">
                 <div class="photo-frame">
-                    <div class="photo-inner"><i class="bi bi-person-check"></i></div>
+                    <div class="photo-inner" style="--photo-inner-bg: url('https://images.unsplash.com/photo-1624727828489-a1e03b79bba8?auto=format&amp;fit=crop&amp;w=800&amp;q=70')"><i class="bi bi-person-check"></i></div>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
             </div>
             <div class="auth-promo-visual">
                 <div class="photo-frame">
-                    <div class="photo-inner"><i class="bi bi-hospital"></i></div>
+                    <div class="photo-inner" style="--photo-inner-bg: url('https://images.unsplash.com/photo-1672655412906-8e10ba6ee373?auto=format&amp;fit=crop&amp;w=800&amp;q=70')"><i class="bi bi-hospital"></i></div>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
             </div>
             <div class="auth-promo-visual">
                 <div class="photo-frame">
-                    <div class="photo-inner"><i class="bi bi-wallet2"></i></div>
+                    <div class="photo-inner" style="--photo-inner-bg: url('https://images.unsplash.com/photo-1549057446-9f5c6ac91a04?auto=format&amp;fit=crop&amp;w=800&amp;q=70')"><i class="bi bi-wallet2"></i></div>
                 </div>
             </div>
         </div>

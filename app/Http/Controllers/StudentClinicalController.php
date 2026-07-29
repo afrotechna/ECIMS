@@ -120,7 +120,7 @@ class StudentClinicalController extends Controller
 
         if ($entry->status === ClinicalLogbookEntry::STATUS_SUBMITTED) {
             $entry->loadMissing('student', 'procedure');
-            User::query()->where('role', 'clinical_instructor')->get()
+            User::query()->whereIn('role', ['clinical_instructor', 'administrator'])->get()
                 ->each->notify(new StaffClinicalLogbookSubmittedNotification($entry));
         }
 

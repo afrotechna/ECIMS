@@ -393,7 +393,6 @@
                     </div>
                 </div>
             </div>
-            @include('layouts.partials.theme-toggle')
             @include('layouts.partials.customizer-toggle')
             @include('layouts.partials.language-toggle')
             <div class="profile-dropdown">

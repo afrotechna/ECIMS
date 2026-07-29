@@ -7,6 +7,8 @@ use App\Models\FeeStructure;
 use App\Models\LedgerEntry;
 use App\Models\Payment;
 use App\Models\Student;
+use App\Models\User;
+use App\Notifications\PaymentReceivedNotification;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 
@@ -151,6 +153,13 @@ class RecordPaymentService
         if (Schema::hasTable('activity_log')) {
             ActivityLog::log('payment.created', Payment::class, $payment->id, 'Amount: '.number_format($amount).' TZS, student_id: '.$payment->student_id);
         }
+
+        $payment->loadMissing('student');
+        User::query()
+            ->whereIn('role', ['accountant', 'vice_principal_afp', 'administrator'])
+            ->get()
+            ->each
+            ->notify(new PaymentReceivedNotification($payment));
 
         $studentUpdates = [];
         if ($tuitionPart > 0 && isset($refs['tuition'])) {

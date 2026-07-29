@@ -79,7 +79,7 @@ class LeaveApplicationController extends Controller
 
         auth()->user()->notify(new StaffLeavePendingNotification($leave));
         User::query()
-            ->whereIn('role', self::APPROVER_ROLES)
+            ->whereIn('role', [...self::APPROVER_ROLES, 'administrator'])
             ->get()
             ->each
             ->notify(new StaffLeaveSubmittedNotification($leave));
