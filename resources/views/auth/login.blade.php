@@ -24,11 +24,11 @@
                required
                autofocus
                autocomplete="username"
-               placeholder="NACTVET reg. no., Staff ID, or surname">
+               placeholder="NACTVET reg. no., Staff ID, or email">
         @error('login')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
-        <p class="auth-field-hint">Students: NACTVET number · Staff: Staff ID · Admin: surname</p>
+        <p class="auth-field-hint">Students: NACTVET number · Staff: Staff ID · Admin: email</p>
     </div>
 
     <div class="auth-field">

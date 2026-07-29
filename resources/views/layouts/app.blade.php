@@ -342,7 +342,7 @@
                 @elseif($currentUser->staff_id)
                     <span class="topbar-reg-no">ID: {{ $currentUser->staff_id }}</span>
                 @else
-                    <span class="login-as">Login as: {{ $currentUser->email }}</span>
+                    <span class="login-as">Login as: {{ $currentUser->staffDisplayName() ?: $currentUser->email }}</span>
                 @endif
             </div>
             <div class="topbar-datetime" id="topbarDateTime" aria-live="polite">
