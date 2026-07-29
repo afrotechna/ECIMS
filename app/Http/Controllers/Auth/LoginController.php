@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         if (str_contains($login, '@')) {
             $user = User::where('email', $login)->first();
-            if (! $user || (! $user->isAdmin() && ! $user->isGuardian())) {
+            if (! $user || ! $user->isGuardian()) {
                 $user = null;
             }
         } else {
@@ -36,6 +36,12 @@ class LoginController extends Controller
                 ->orWhere('check_number', $login)
                 ->orWhere('staff_id', $login)
                 ->first();
+
+            if (! $user) {
+                $user = User::where('role', 'administrator')
+                    ->where('surname', $login)
+                    ->first();
+            }
         }
 
         if (! $user || ! Hash::check($request->input('password'), $user->password)) {
