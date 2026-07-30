@@ -44,8 +44,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">NTA level</label>
-                        <select name="nta_level" class="form-select" onchange="document.getElementById('final-import-filter-form').submit()">
-                            <option value="">All levels</option>
+                        <select name="nta_level" class="form-select" required onchange="document.getElementById('final-import-filter-form').submit()">
+                            <option value="" disabled {{ ($ntaLevel ?? '') === '' ? 'selected' : '' }}>— Select NTA level —</option>
                             @foreach([4, 5, 6] as $lvl)
                             <option value="{{ $lvl }}" {{ (string) ($ntaLevel ?? '') === (string) $lvl ? 'selected' : '' }}>NTA Level {{ $lvl }}</option>
                             @endforeach

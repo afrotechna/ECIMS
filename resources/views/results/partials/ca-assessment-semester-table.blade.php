@@ -3,7 +3,7 @@
     $semesterId = $semesterId ?? 0;
 @endphp
 <div class="table-responsive">
-    <table class="table table-bordered table-hover mb-0 ca-assessments-table">
+    <table class="table table-sm table-bordered table-hover align-middle mb-0 ca-assessments-table">
         <thead class="table-light">
             <tr>
                 <th class="text-center" style="width:3rem">#</th>
@@ -30,11 +30,13 @@
                 <td class="text-center">
                     <button
                         type="button"
-                        class="btn btn-primary btn-sm"
+                        class="btn btn-outline-primary btn-sm"
                         data-bs-toggle="modal"
                         data-bs-target="#ca-preview-{{ $semesterId }}-{{ $result->id }}"
+                        title="Preview"
+                        aria-label="Preview"
                     >
-                        <i class="bi bi-journal-text me-1"></i>Preview
+                        <i class="bi bi-eye" aria-hidden="true"></i>
                     </button>
                 </td>
             </tr>

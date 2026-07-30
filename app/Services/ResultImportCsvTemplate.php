@@ -116,8 +116,9 @@ class ResultImportCsvTemplate
             ->where('programme_id', $programme->id)
             ->where('status', 'active')
             ->when($ntaLevel, fn ($q) => $q->where('nta_level', $ntaLevel))
-            ->orderBy('last_name')
             ->orderBy('first_name')
+            ->orderBy('middle_name')
+            ->orderBy('last_name')
             ->get();
 
         $sn = 1;
