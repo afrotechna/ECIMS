@@ -115,6 +115,10 @@
                     <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $student->phone) }}">
                 </div>
                 <div class="col-md-4">
+                    <label for="biometric_id" class="form-label">Biometric ID</label>
+                    <input type="text" class="form-control" id="biometric_id" name="biometric_id" value="{{ old('biometric_id', $student->biometric_id) }}" placeholder="ZKTeco device User ID">
+                </div>
+                <div class="col-md-4">
                     <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                     <select class="form-select" id="status" name="status">
                         <option value="active" {{ old('status', $student->status) === 'active' ? 'selected' : '' }}>Active</option>

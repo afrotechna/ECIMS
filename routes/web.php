@@ -293,6 +293,14 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::post('clinical-remediation/{clinical_remediation_plan}/complete', [\App\Http\Controllers\ClinicalRemediationController::class, 'complete'])->name('clinical.remediation.complete');
             Route::get('clinical-print/students/{student}', [\App\Http\Controllers\ClinicalCoordinatorController::class, 'printStudentLogbook'])->name('clinical.print.student');
 
+            Route::get('student-attendance', [\App\Http\Controllers\StudentAttendanceController::class, 'index'])->name('student-attendance.index');
+            Route::get('student-attendance/import', [\App\Http\Controllers\StudentAttendanceController::class, 'createImport'])->name('student-attendance.import');
+            Route::post('student-attendance/import', [\App\Http\Controllers\StudentAttendanceController::class, 'storeImport'])->name('student-attendance.import.store');
+            Route::get('student-attendance/import/template', [\App\Http\Controllers\StudentAttendanceController::class, 'downloadTemplate'])->name('student-attendance.import.template');
+            Route::get('student-attendance/mapping', [\App\Http\Controllers\StudentAttendanceController::class, 'mappingForm'])->name('student-attendance.mapping');
+            Route::post('student-attendance/mapping', [\App\Http\Controllers\StudentAttendanceController::class, 'mappingStore'])->name('student-attendance.mapping.store');
+            Route::get('student-attendance/{student}', [\App\Http\Controllers\StudentAttendanceController::class, 'show'])->name('student-attendance.show');
+
             Route::get('timetable-slots', [\App\Http\Controllers\TimetableSlotController::class, 'index'])->name('timetable-slots.index');
             Route::get('timetable-slots/create', [\App\Http\Controllers\TimetableSlotController::class, 'create'])->name('timetable-slots.create');
             Route::post('timetable-slots', [\App\Http\Controllers\TimetableSlotController::class, 'store'])->name('timetable-slots.store');

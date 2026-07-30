@@ -21,6 +21,7 @@ class Student extends Model
         'date_of_birth',
         'email',
         'phone',
+        'biometric_id',
         'programme_id',
         'intake_year',
         'nta_level',
@@ -206,6 +207,11 @@ class Student extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function attendanceLogs(): HasMany
+    {
+        return $this->hasMany(StudentAttendanceLog::class);
     }
 
     public function semesterRegistrations(): HasMany

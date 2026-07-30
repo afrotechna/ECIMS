@@ -212,6 +212,7 @@ class StudentController extends Controller
             'date_of_birth' => ['nullable', 'date'],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
+            'biometric_id' => ['nullable', 'string', 'max:30', 'unique:students,biometric_id,'.$student->id],
             'programme_id' => ['required', 'exists:programmes,id'],
             'intake_year' => ['required', 'integer', 'min:2020', 'max:2030'],
             'nta_level' => ['nullable', 'integer', 'in:4,5,6'],
