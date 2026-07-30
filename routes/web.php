@@ -28,6 +28,7 @@ use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\QuestionBankController;
 use App\Http\Controllers\RegistrationWizardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ResultApprovalController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ResultImportController;
 use App\Http\Controllers\RoomController;
@@ -236,6 +237,9 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::post('results/import/final', [ResultImportController::class, 'storeFinal'])->name('results.import.final.store');
             Route::post('results/notify-sms', [\App\Http\Controllers\ResultSmsController::class, 'notify'])->name('results.notify-sms');
             Route::get('results', [ResultController::class, 'index'])->name('results.index');
+            Route::get('results/approvals', [ResultApprovalController::class, 'index'])->name('results.approvals.index');
+            Route::post('results/approvals/approve', [ResultApprovalController::class, 'approve'])->name('results.approvals.approve');
+            Route::post('results/approvals/reject', [ResultApprovalController::class, 'reject'])->name('results.approvals.reject');
             Route::get('exam-slots/export-docx', [\App\Http\Controllers\ExamSlotController::class, 'exportDocx'])->name('exam-slots.export-docx');
             Route::get('exam-slots/courses-for-semester', [\App\Http\Controllers\ExamSlotController::class, 'coursesForSemester'])->name('exam-slots.courses-json');
             Route::get('exam-slots', [\App\Http\Controllers\ExamSlotController::class, 'index'])->name('exam-slots.index');
@@ -392,6 +396,10 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::resource('accommodation-allocations', AccommodationAllocationController::class)->only(['index', 'create', 'store', 'edit', 'update']);
         Route::post('inventory-items/bulk-destroy', [InventoryItemController::class, 'bulkDestroy'])->name('inventory-items.bulk-destroy');
         Route::resource('inventory-items', InventoryItemController::class)->except(['show']);
+        // Read-only, gated by the "system" module permission (Principal/VP oversight per RBAC policy)
+        // rather than the hard admin-only group below — everything that mutates data stays admin-only.
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
         Route::middleware('admin')->group(function () {
             Route::get('users/role-permissions', [UserController::class, 'rolePermissions'])->name('users.role-permissions');
             Route::get('users/role-permissions/matrix', [UserController::class, 'roleMatrix'])->name('users.role-matrix');
@@ -404,8 +412,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::post('users/create-all-student-logins', [UserController::class, 'createAllStudentLogins'])->name('users.create-all-student-logins');
             Route::post('users/issue-all-student-passwords', [UserController::class, 'issueAllStudentPasswords'])->name('users.issue-all-student-passwords');
             Route::post('users/{user}/issue-temporary-password', [UserController::class, 'issueTemporaryPassword'])->name('users.issue-temporary-password');
-            Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'edit', 'update']);
-            Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+            Route::resource('users', UserController::class)->only(['create', 'store', 'edit', 'update']);
             Route::get('activity-log/export', [ActivityLogController::class, 'export'])->name('activity-log.export');
             Route::get('export', [ReportController::class, 'export'])->name('export.index');
             Route::get('export/run', [ReportController::class, 'exportRun'])->middleware('throttle:10,1')->name('export.run');

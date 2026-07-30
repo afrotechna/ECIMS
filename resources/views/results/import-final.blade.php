@@ -96,14 +96,7 @@
                         <label class="form-label">CSV or Excel file</label>
                         <input type="file" name="file" class="form-control" accept=".csv,.txt,.xls,.xml" required>
                     </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" name="notify_sms" value="1" class="form-check-input" id="notify_sms_final"
-                            {{ config('college.result_sms.notify_on_final_import') ? 'checked' : '' }}>
-                        <label class="form-check-label" for="notify_sms_final">
-                            SMS students &amp; guardians (Twilio) after import
-                        </label>
-                        <div class="form-text">Requires guardian/student phone on file and Twilio configured in <code>.env</code>.</div>
-                    </div>
+                    <p class="small text-muted mb-3">Imported rows are hidden from students and guardians until the Principal or VP (ARC) approves them on the <a href="{{ route('results.approvals.index') }}">Results approvals</a> page — SMS (Twilio) goes out at that point.</p>
                     <button type="submit" class="btn btn-primary w-100">Import final results</button>
                 </form>
             </div>

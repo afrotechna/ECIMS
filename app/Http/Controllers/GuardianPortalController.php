@@ -16,7 +16,7 @@ class GuardianPortalController extends Controller
         $balance = $this->studentBalance($student);
         $recentResults = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
-            ->where('is_locked', true)
+            ->where('status', 'approved')
             ->orderByDesc('updated_at')
             ->limit(10)
             ->get();
@@ -39,7 +39,7 @@ class GuardianPortalController extends Controller
         $student = $this->linkedStudent();
         $results = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
-            ->where('is_locked', true)
+            ->where('status', 'approved')
             ->orderByDesc('semester_id')
             ->get()
             ->groupBy(fn ($r) => $r->semester?->label ?? 'Other');

@@ -24,6 +24,10 @@ class Result extends Model
         'ca_eligibility',
         'grade_source',
         'is_locked',
+        'status',
+        'approved_by',
+        'approved_at',
+        'review_notes',
     ];
 
     protected $casts = [
@@ -36,6 +40,13 @@ class Result extends Model
         'exam_mark' => 'decimal:2',
         'total_mark' => 'decimal:2',
         'is_locked' => 'boolean',
+        'approved_at' => 'datetime',
+    ];
+
+    public const STATUSES = [
+        'pending_approval' => 'Pending approval',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
     ];
 
     public function student(): BelongsTo
@@ -51,6 +62,16 @@ class Result extends Model
     public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
+    }
+
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
     }
 
     /** Compute CA mark from components (two tests, two assignments, optional practical). */

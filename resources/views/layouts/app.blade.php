@@ -197,6 +197,9 @@
                     @endif
                     @canModule('results', 'view')
                     <li><a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Results</a></li>
+                    @if(in_array(\App\Models\User::normalizeRoleSlug((string) auth()->user()->role), ['principal', 'vice_principal_arc'], true))
+                    <li><a href="{{ route('results.approvals.index') }}" class="{{ request()->routeIs('results.approvals.*') ? 'active' : '' }}"><i class="bi bi-check2-square"></i>Results approvals</a></li>
+                    @endif
                     @endcanModule
                     @canModule('question_bank', 'view')
                     <li><a href="{{ route('question-bank.index') }}" class="{{ request()->routeIs('question-bank.*') ? 'active' : '' }}"><i class="bi bi-question-circle"></i>Question bank</a></li>
@@ -301,7 +304,11 @@
                 </ul>
             </div>
             @endcanModule
-            @if(auth()->user()->isAdmin())
+            @php
+                $isSystemAdmin = auth()->user()->isAdmin();
+                $hasSystemView = $isSystemAdmin || auth()->user()->canModule('system', 'view');
+            @endphp
+            @if($hasSystemView)
             <div class="nav-group {{ request()->routeIs('users.*', 'activity-log*', 'export*', 'users.role-permissions') ? 'expanded' : '' }}" id="navGroupSystem">
                 <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('users.*', 'activity-log*', 'export*') ? 'true' : 'false' }}" aria-controls="navGroupSystemSub">
                     <i class="bi bi-gear"></i><span>System</span><i class="bi bi-chevron-down"></i>
@@ -309,11 +316,15 @@
                 <ul class="nav-group-sub" id="navGroupSystemSub">
                     <li class="nav-group-sub-label">Access</li>
                     <li><a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.index', 'users.create', 'users.edit') ? 'active' : '' }}"><i class="bi bi-person-gear"></i>Users</a></li>
+                    @if($isSystemAdmin)
                     <li><a href="{{ route('users.role-permissions') }}" class="{{ request()->routeIs('users.role-permissions') ? 'active' : '' }}"><i class="bi bi-shield-lock"></i>Role permissions</a></li>
+                    @endif
                     <li class="nav-group-sub-label">Audit &amp; data</li>
                     <li><a href="{{ route('activity-log.index') }}" class="{{ request()->routeIs('activity-log*') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Activity log</a></li>
+                    @if($isSystemAdmin)
                     <li><a href="{{ route('export.index') }}" class="{{ request()->routeIs('export*') ? 'active' : '' }}"><i class="bi bi-download"></i>Export data</a></li>
                     <li><a href="{{ route('integrations.index') }}" class="{{ request()->routeIs('integrations.*') ? 'active' : '' }}"><i class="bi bi-plug"></i>Integrations</a></li>
+                    @endif
                 </ul>
             </div>
             @endif

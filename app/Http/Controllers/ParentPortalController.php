@@ -36,7 +36,7 @@ class ParentPortalController extends Controller
 
         $recentResults = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
-            ->where('is_locked', true)
+            ->where('status', 'approved')
             ->orderByDesc('updated_at')
             ->limit(10)
             ->get();

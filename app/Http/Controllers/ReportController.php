@@ -690,7 +690,7 @@ class ReportController extends Controller
 
         $results = Result::with(['student.programme', 'course'])
             ->where('semester_id', $semester->id)
-            ->where('is_locked', true)
+            ->where('status', 'approved')
             ->orderBy('student_id')
             ->get();
 

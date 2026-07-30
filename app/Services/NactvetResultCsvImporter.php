@@ -185,6 +185,9 @@ class NactvetResultCsvImporter
         }
 
         $result->grade_source = 'nactvet';
+        $result->status = 'pending_approval';
+        $result->approved_by = null;
+        $result->approved_at = null;
         $result->save();
 
         return true;

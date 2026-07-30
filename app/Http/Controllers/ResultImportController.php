@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Programme;
+use App\Models\User;
+use App\Notifications\ResultsPendingApprovalNotification;
 use App\Services\ResultImportCourseQuery;
 use App\Models\ResultImportLog;
 use App\Models\Semester;
 use App\Services\NactvetResultCsvImporter;
 use App\Services\ResultImportCsvTemplate;
 use App\Services\ResultImportSpreadsheetExport;
-use App\Services\ResultReleaseSmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -70,13 +71,11 @@ class ResultImportController extends Controller
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
             'file' => ['required', 'file', 'mimes:csv,txt,xls,xml', 'max:10240'],
-            'notify_sms' => ['nullable', 'boolean'],
         ]);
         $semester = Semester::findOrFail($validated['semester_id']);
         $path = $request->file('file')->getRealPath();
         $importer = new NactvetResultCsvImporter('ca', $semester);
         $out = $importer->import($path);
-        $notifySms = $request->boolean('notify_sms') || config('college.result_sms.notify_on_ca_import');
 
         ResultImportLog::create([
             'user_id' => auth()->id(),
@@ -91,20 +90,15 @@ class ResultImportController extends Controller
             ActivityLog::log('result.import_ca', null, null, "semester_id: {$semester->id}, rows: {$out['rows_touched']}");
         }
 
-        $smsQueued = 0;
-        if ($notifySms && $out['rows_touched'] > 0) {
-            $smsOut = app(ResultReleaseSmsService::class)->notifySemester(
-                $semester,
-                ResultReleaseSmsService::TEMPLATE_CA,
-                auth()->id()
-            );
-            $smsQueued = $smsOut['queued'];
+        if ($out['rows_touched'] > 0) {
+            User::query()
+                ->whereIn('role', ['principal', 'vice_principal_arc', 'administrator'])
+                ->get()
+                ->each
+                ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched']));
         }
 
-        $msg = "Imported {$out['rows_touched']} row(s).";
-        if ($smsQueued > 0) {
-            $msg .= " {$smsQueued} CA result SMS queued.";
-        }
+        $msg = "Imported {$out['rows_touched']} row(s). Pending approval before students/guardians can see them.";
         if (count($out['errors'])) {
             $msg .= ' Notes: '.implode(' ', array_slice($out['errors'], 0, 5));
             if (count($out['errors']) > 5) {
@@ -185,13 +179,11 @@ class ResultImportController extends Controller
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
             'file' => ['required', 'file', 'mimes:csv,txt,xls,xml', 'max:10240'],
-            'notify_sms' => ['nullable', 'boolean'],
         ]);
         $semester = Semester::findOrFail($validated['semester_id']);
         $path = $request->file('file')->getRealPath();
         $importer = new NactvetResultCsvImporter('final', $semester);
         $out = $importer->import($path);
-        $notifySms = $request->boolean('notify_sms') || config('college.result_sms.notify_on_final_import');
 
         ResultImportLog::create([
             'user_id' => auth()->id(),
@@ -206,20 +198,15 @@ class ResultImportController extends Controller
             ActivityLog::log('result.import_final', null, null, "semester_id: {$semester->id}, rows: {$out['rows_touched']}");
         }
 
-        $smsQueued = 0;
-        if ($notifySms && $out['rows_touched'] > 0) {
-            $smsOut = app(ResultReleaseSmsService::class)->notifySemester(
-                $semester,
-                ResultReleaseSmsService::TEMPLATE_FINAL,
-                auth()->id()
-            );
-            $smsQueued = $smsOut['queued'];
+        if ($out['rows_touched'] > 0) {
+            User::query()
+                ->whereIn('role', ['principal', 'vice_principal_arc', 'administrator'])
+                ->get()
+                ->each
+                ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched']));
         }
 
-        $msg = "Imported {$out['rows_touched']} row(s).";
-        if ($smsQueued > 0) {
-            $msg .= " {$smsQueued} result SMS queued for students/guardians.";
-        }
+        $msg = "Imported {$out['rows_touched']} row(s). Pending approval before students/guardians can see them.";
         if (count($out['errors'])) {
             $msg .= ' Notes: '.implode(' ', array_slice($out['errors'], 0, 5));
             if (count($out['errors']) > 5) {

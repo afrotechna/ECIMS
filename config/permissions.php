@@ -99,6 +99,13 @@ return [
         'students.ledger' => ['finance_payments', 'view'],
         'students.ledger.charge' => ['finance_payments', 'create'],
         'academics.index' => ['programmes', 'view'],
+        // Approving results is a distinct hard-coded role check (ResultApprovalController::ensureApproverRole,
+        // Principal/VP ARC only) — mapped to 'view' here since Principal deliberately has no 'create' grant
+        // on results (read-only oversight); the real access restriction is the controller-level role check,
+        // not this module-permission mapping.
+        'results.approvals.index' => ['results', 'view'],
+        'results.approvals.approve' => ['results', 'view'],
+        'results.approvals.reject' => ['results', 'view'],
     ],
 
     'matrix' => [
@@ -127,6 +134,7 @@ return [
             'inventory' => ['view', 'update'],
             'institution_docs' => ['view', 'create', 'update', 'delete'],
             'calendar' => ['view', 'create', 'update', 'delete'],
+            'system' => ['view'],
         ],
 
         'vice_principal_afp' => [
@@ -142,6 +150,7 @@ return [
             'student_affairs' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
+            'system' => ['view'],
         ],
 
         'procurement_officer' => [
@@ -186,6 +195,8 @@ return [
             'college_comms' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
+            'finance_reports' => ['view'],
+            'system' => ['view'],
         ],
 
         'hod_cmt' => [
@@ -204,6 +215,7 @@ return [
             'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
+            'finance_reports' => ['view'],
         ],
 
         'hod_mlt' => [
@@ -222,6 +234,7 @@ return [
             'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
+            'finance_reports' => ['view'],
         ],
 
         'admission_officer' => [
@@ -248,6 +261,7 @@ return [
             'semesters' => ['view'],
             'registrations' => ['view'],
             'calendar' => ['view', 'create'],
+            'finance_reports' => ['view'],
         ],
 
         'accountant' => [
@@ -292,6 +306,7 @@ return [
         'clinical_instructor' => [
             'clinical' => ['view', 'update'],
             'students' => ['view'],
+            'finance_reports' => ['view'],
         ],
     ],
 

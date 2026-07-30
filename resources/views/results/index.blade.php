@@ -14,6 +14,7 @@
         <h1 class="page-title-landing"><i class="bi bi-journal-check me-2 opacity-90"></i>Results</h1>
     </div>
     <div class="d-flex gap-2">
+        <a href="{{ route('results.approvals.index') }}" class="btn btn-outline-light btn-sm"><i class="bi bi-check2-square me-1"></i>Approvals</a>
         <a href="{{ route('results.transcript') }}" class="btn btn-outline-light btn-sm">Transcript</a>
         <a href="{{ route('results.import.ca') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-upload me-1"></i>Import CA (CSV)</a>
         <a href="{{ route('results.import.final') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-upload me-1"></i>Import final (CSV)</a>
@@ -73,7 +74,7 @@
         <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead>
-                <tr><th>Student</th><th>Course</th><th>Semester</th><th class="text-end">CA</th><th class="text-end">Exam</th><th class="text-end">Total</th><th>Grade</th><th class="text-end">Lock</th></tr>
+                <tr><th>Student</th><th>Course</th><th>Semester</th><th class="text-end">CA</th><th class="text-end">Exam</th><th class="text-end">Total</th><th>Grade</th><th>Approval</th><th class="text-end">Lock</th></tr>
             </thead>
             <tbody>
                 @forelse($results as $r)
@@ -85,6 +86,12 @@
                     <td class="text-end">{{ $r->exam_mark !== null ? number_format($r->exam_mark, 1) : '-' }}</td>
                     <td class="text-end">{{ $r->total_mark !== null ? number_format($r->total_mark, 1) : '-' }}</td>
                     <td><span class="badge bg-{{ $r->grade === 'F' ? 'danger' : 'secondary' }}">{{ $r->grade ?? '-' }}</span></td>
+                    <td>
+                        @php
+                            $statusColor = match($r->status) { 'approved' => 'success', 'rejected' => 'danger', default => 'warning' };
+                        @endphp
+                        <span class="badge bg-{{ $statusColor }}">{{ \App\Models\Result::STATUSES[$r->status] ?? $r->status }}</span>
+                    </td>
                     <td class="text-end">
                         @if($r->is_locked)
                         <form action="{{ route('results.unlock', $r) }}" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-sm btn-outline-warning me-1">Unlock</button></form>
@@ -94,7 +101,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="text-center text-muted py-5">No results yet. Use <a href="{{ route('results.import.ca') }}">Import CA</a> or <a href="{{ route('results.import.final') }}">Import final</a> (CSV) for the correct semester.</td></tr>
+                <tr><td colspan="9" class="text-center text-muted py-5">No results yet. Use <a href="{{ route('results.import.ca') }}">Import CA</a> or <a href="{{ route('results.import.final') }}">Import final</a> (CSV) for the correct semester.</td></tr>
                 @endforelse
             </tbody>
         </table>

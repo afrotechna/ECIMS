@@ -29,8 +29,8 @@ class StudentModuleResultsService
     public function yearSections(Student $student): Collection
     {
         $semesters = Semester::query()
-            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id))
-            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->with('course')->orderBy('course_id')])
+            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved())
+            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->with('course')->orderBy('course_id')])
             ->orderBy('academic_year')
             ->orderBy('number')
             ->get();

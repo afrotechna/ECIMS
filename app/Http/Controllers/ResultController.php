@@ -86,12 +86,14 @@ class ResultController extends Controller
             return redirect()->route('dashboard')->with('error', 'You must clear your fee balance to view results. Current balance: '.number_format($student->balance, 0).' TZS. Please pay the required amount for the semester.');
         }
         $student->load('programme');
-        $results = Result::with(['course', 'semester'])
+        $resultsQuery = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
             ->orderBy('semester_id')
-            ->orderBy('course_id')
-            ->get()
-            ->groupBy('semester_id');
+            ->orderBy('course_id');
+        if (auth()->user()->isStudent() || auth()->user()->isGuardian()) {
+            $resultsQuery->approved();
+        }
+        $results = $resultsQuery->get()->groupBy('semester_id');
         $summaries = ResultSemesterSummary::where('student_id', $student->id)
             ->whereIn('semester_id', $results->keys())
             ->get()
@@ -112,8 +114,8 @@ class ResultController extends Controller
         $student->load('programme');
 
         $semestersWithResults = Semester::query()
-            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id))
-            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->with('course')->orderBy('course_id')])
+            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved())
+            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->with('course')->orderBy('course_id')])
             ->orderBy('academic_year')
             ->orderBy('number')
             ->get();
@@ -178,7 +180,7 @@ class ResultController extends Controller
         $student->load('programme');
 
         $semestersWithResults = Semester::query()
-            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id))
+            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved())
             ->orderBy('academic_year')
             ->orderBy('number')
             ->get();
@@ -206,6 +208,7 @@ class ResultController extends Controller
                 $results = Result::with('course')
                     ->where('student_id', $student->id)
                     ->where('semester_id', $semester->id)
+                    ->approved()
                     ->orderBy('course_id')
                     ->get();
                 $summary = ResultSemesterSummary::where('student_id', $student->id)->where('semester_id', $semester->id)->first();
@@ -235,10 +238,13 @@ class ResultController extends Controller
             return redirect()->route('dashboard')->with('error', 'You must clear your fee balance to view or print results. Current balance: '.number_format($student->balance, 0).' TZS.');
         }
         $student->load('programme');
-        $results = Result::with(['course', 'semester'])
+        $resultsQuery = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
-            ->orderBy('semester_id')->orderBy('course_id')
-            ->get()->groupBy('semester_id');
+            ->orderBy('semester_id')->orderBy('course_id');
+        if (auth()->user()->isStudent() || auth()->user()->isGuardian()) {
+            $resultsQuery->approved();
+        }
+        $results = $resultsQuery->get()->groupBy('semester_id');
         $summaries = ResultSemesterSummary::where('student_id', $student->id)
             ->whereIn('semester_id', $results->keys())
             ->get()

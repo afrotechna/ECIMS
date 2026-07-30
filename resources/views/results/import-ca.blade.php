@@ -99,11 +99,7 @@
                         <label class="form-label">CSV or Excel file</label>
                         <input type="file" name="file" class="form-control" accept=".csv,.txt,.xls,.xml" required>
                     </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" name="notify_sms" value="1" class="form-check-input" id="notify_sms_ca"
-                            {{ config('college.result_sms.notify_on_ca_import') ? 'checked' : '' }}>
-                        <label class="form-check-label" for="notify_sms_ca">SMS students &amp; guardians after CA import</label>
-                    </div>
+                    <p class="small text-muted mb-3">Imported rows are hidden from students and guardians until the Principal or VP (ARC) approves them on the <a href="{{ route('results.approvals.index') }}">Results approvals</a> page — SMS goes out at that point.</p>
                     <button type="submit" class="btn btn-primary w-100">Import CA results</button>
                 </form>
             </div>
