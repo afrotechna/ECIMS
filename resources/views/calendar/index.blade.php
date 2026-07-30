@@ -202,7 +202,6 @@
 @endsection
 
 @push('styles')
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
 <style>
 .gcal-wrap { max-width: 900px; }
 .gcal-toolbar { min-height: 36px; }
@@ -267,7 +266,7 @@
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="{{ asset('vendor/fullcalendar/index.global.min.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var el = document.getElementById('cohas-calendar');
