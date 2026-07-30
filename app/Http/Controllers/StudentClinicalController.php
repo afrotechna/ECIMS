@@ -12,6 +12,7 @@ use App\Services\ClinicalCompetencyService;
 use App\Services\ClinicalPlacementService;
 use App\Services\ClinicalPracticumGuideService;
 use App\Services\ClinicalSummativeService;
+use App\Support\CmtNta4PracticumCatalog;
 use App\Support\CmtPracticumCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;

@@ -1,0 +1,42 @@
+.ts-wrapper.form-select-sm .ts-control {
+    min-height: calc(1.5em + 0.5rem + 2px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.ts-control.focus,
+.ts-wrapper.focus .ts-control {
+    border-color: var(--cohas-blue-500, #0d6efd);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.ts-dropdown .active {
+    background-color: var(--cohas-blue-700, #0a58ca);
+    color: #fff;
+}
+
+[data-theme="dark"] .ts-control,
+[data-theme="dark"] .ts-control input,
+[data-theme="dark"] .ts-control > div {
+    color: var(--cohas-text, #e9ecef) !important;
+    background-color: var(--cohas-surface, #16213e);
+}
+
+[data-theme="dark"] .ts-control input::placeholder {
+    color: var(--cohas-text-muted, #9aa5b8);
+}
+
+[data-theme="dark"] .ts-dropdown {
+    background-color: var(--cohas-surface, #16213e);
+    border-color: var(--cohas-border, #2e3a5c);
+    color: var(--cohas-text, #e9ecef);
+}
+
+[data-theme="dark"] .ts-dropdown .option {
+    color: var(--cohas-text, #e9ecef);
+}
+
+[data-theme="dark"] .ts-dropdown .option.active {
+    background-color: var(--cohas-blue-700, #0a58ca);
+    color: #fff;
+}

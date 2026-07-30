@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="room_id" class="form-label">Room</label>
-                    <select class="form-select @error('room_id') is-invalid @enderror" id="room_id" name="room_id" required>
+                    <select class="form-select @error('room_id') is-invalid @enderror" id="room_id" name="room_id" required data-no-search>
                         @foreach($rooms as $r)
                             <option value="{{ $r->id }}" {{ old('room_id', $allocation->room_id) == $r->id ? 'selected' : '' }}>{{ $r->hostel->name }} — {{ $r->name }}</option>
                         @endforeach

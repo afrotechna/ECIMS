@@ -16,6 +16,10 @@
     </script>
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
+    @auth
+    <link href="{{ asset('vendor/tom-select/tom-select.bootstrap5.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/cohas-select-search.css') }}" rel="stylesheet">
+    @endauth
     <link href="{{ asset('css/cohas-theme.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-brand.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-app-shell.css') }}" rel="stylesheet">
@@ -452,6 +456,8 @@
     <script src="{{ asset('js/cohas-theme.js') }}"></script>
     @auth
     <script src="{{ asset('js/cohas-customizer.js') }}"></script>
+    <script src="{{ asset('vendor/tom-select/tom-select.complete.min.js') }}"></script>
+    <script src="{{ asset('js/cohas-select-search.js') }}"></script>
     @endauth
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script>

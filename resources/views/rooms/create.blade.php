@@ -36,14 +36,14 @@
                 </div>
                 <div class="col-md-6">
                     <label for="block_number" class="form-label">Block</label>
-                    <select class="form-select @error('block_number') is-invalid @enderror" id="block_number" name="block_number">
+                    <select class="form-select @error('block_number') is-invalid @enderror" id="block_number" name="block_number" data-no-search>
                         <option value="">— Select block —</option>
                     </select>
                     @error('block_number')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">
                     <label for="room_in_block" class="form-label">Room in block</label>
-                    <select class="form-select @error('room_in_block') is-invalid @enderror" id="room_in_block" name="room_in_block">
+                    <select class="form-select @error('room_in_block') is-invalid @enderror" id="room_in_block" name="room_in_block" data-no-search>
                         <option value="">— Select room —</option>
                     </select>
                     @error('room_in_block')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
