@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Course;
 use App\Models\Result;
 use App\Models\ResultSemesterSummary;
 use App\Models\Semester;
@@ -28,9 +29,11 @@ class StudentModuleResultsService
      */
     public function yearSections(Student $student): Collection
     {
+        // A module only appears here once its final/SE exam mark has been recorded — CA-only
+        // progress belongs on "My Assessments", not the final module results page.
         $semesters = Semester::query()
-            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved())
-            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->with('course')->orderBy('course_id')])
+            ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved()->whereNotNull('exam_mark'))
+            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->whereNotNull('exam_mark')->with('course')->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'))])
             ->orderBy('academic_year')
             ->orderBy('number')
             ->get();

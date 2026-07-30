@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Result;
 use App\Models\ResultSemesterSummary;
 use App\Models\Semester;
@@ -18,7 +19,7 @@ class ResultController extends Controller
             ->whereHas('student')
             ->orderByDesc('semester_id')
             ->orderBy('student_id')
-            ->orderBy('course_id');
+            ->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'));
 
         if ($request->filled('semester_id')) {
             $query->where('semester_id', $request->semester_id);
@@ -49,7 +50,7 @@ class ResultController extends Controller
         $results = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
             ->orderBy('semester_id')
-            ->orderBy('course_id')
+            ->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'))
             ->get()
             ->groupBy('semester_id');
         $summaries = ResultSemesterSummary::where('student_id', $student->id)
@@ -89,7 +90,7 @@ class ResultController extends Controller
         $resultsQuery = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
             ->orderBy('semester_id')
-            ->orderBy('course_id');
+            ->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'));
         if (auth()->user()->isStudent() || auth()->user()->isGuardian()) {
             $resultsQuery->approved();
         }
@@ -115,7 +116,7 @@ class ResultController extends Controller
 
         $semestersWithResults = Semester::query()
             ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved())
-            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->with('course')->orderBy('course_id')])
+            ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->with('course')->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'))])
             ->orderBy('academic_year')
             ->orderBy('number')
             ->get();
@@ -209,7 +210,7 @@ class ResultController extends Controller
                     ->where('student_id', $student->id)
                     ->where('semester_id', $semester->id)
                     ->approved()
-                    ->orderBy('course_id')
+                    ->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'))
                     ->get();
                 $summary = ResultSemesterSummary::where('student_id', $student->id)->where('semester_id', $semester->id)->first();
             }
@@ -240,7 +241,7 @@ class ResultController extends Controller
         $student->load('programme');
         $resultsQuery = Result::with(['course', 'semester'])
             ->where('student_id', $student->id)
-            ->orderBy('semester_id')->orderBy('course_id');
+            ->orderBy('semester_id')->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'));
         if (auth()->user()->isStudent() || auth()->user()->isGuardian()) {
             $resultsQuery->approved();
         }
