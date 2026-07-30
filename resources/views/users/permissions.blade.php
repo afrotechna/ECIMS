@@ -20,7 +20,7 @@
 <div class="card card-landing mb-3">
     <div class="card-header-landing">
         <i class="bi bi-shield-check me-2"></i>Granted modules
-        @include('partials.help-tip', ['text' => 'Badges show what this user can access. Solid badges come from their role. Outlined badges with a remove icon are extra grants added specifically for this user.', 'placement' => 'bottom'])
+        @include('partials.help-tip', ['text' => 'Badges show what this user can access. Solid blue badges come from their role and cannot be edited here. Info-coloured badges are extra grants added specifically for this user — use the pencil icon to change exactly which actions are granted, or the trash icon to remove the grant entirely.', 'placement' => 'bottom'])
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -54,11 +54,44 @@
                                     @endforeach
                                 @endif
                                 @if($extra)
+                                    <button type="button" class="btn btn-sm btn-cohas-edit ms-1" title="Change extra grant" aria-label="Change extra grant" data-bs-toggle="modal" data-bs-target="#editGrant{{ $extra->id }}">
+                                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                    </button>
                                     <form method="POST" action="{{ route('users.permissions.destroy', [$user, $extra]) }}" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         @include('partials.action-delete', ['title' => 'Remove extra grant', 'class' => 'ms-1', 'swalTitle' => 'Remove this extra grant?', 'swalText' => 'Remove the extra '.$moduleLabel.' grant for '.$user->name.'?'])
                                     </form>
+
+                                    <div class="modal fade" id="editGrant{{ $extra->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="POST" action="{{ route('users.permissions.store', $user) }}">
+                                                    @csrf
+                                                    <input type="hidden" name="module" value="{{ $moduleKey }}">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Change {{ $moduleLabel }} grant</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="text-muted small">Extra access for {{ $user->name }} beyond their role. Unchecking an action removes it; this does not affect access granted by their role.</p>
+                                                        <div class="d-flex flex-wrap gap-3">
+                                                            @foreach($actions as $act)
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="actions[]" value="{{ $act }}" id="editAct_{{ $extra->id }}_{{ $act }}" {{ in_array($act, $extraActions, true) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label" for="editAct_{{ $extra->id }}_{{ $act }}">{{ ucfirst($act) }}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endif
                             </td>
                         </tr>
@@ -76,12 +109,15 @@
             @csrf
             <div class="mb-3">
                 <label for="module" class="form-label">Module <span class="text-danger">*</span></label>
-                <select class="form-select @error('module') is-invalid @enderror" id="module" name="module" required>
+                <select class="form-select @error('module') is-invalid @enderror" id="module" name="module" required @if(empty($availableModules)) disabled @endif>
                     <option value="">Select</option>
-                    @foreach($modules as $moduleKey => $moduleLabel)
+                    @foreach($availableModules as $moduleKey => $moduleLabel)
                         <option value="{{ $moduleKey }}" {{ (string) old('module') === (string) $moduleKey ? 'selected' : '' }}>{{ $moduleLabel }}</option>
                     @endforeach
                 </select>
+                @if(empty($availableModules))
+                    <p class="form-text mb-0">Every module already has an extra grant for this user — use the edit icon above to change one.</p>
+                @endif
                 @error('module')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="mb-3">

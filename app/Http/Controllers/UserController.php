@@ -56,8 +56,9 @@ class UserController extends Controller
         $actions = config('permissions.actions', ['view', 'create', 'update', 'delete']);
         $roleGrants = RolePermissions::roleGrants(User::normalizeRoleSlug((string) $user->role));
         $extraGrants = $user->extraModulePermissions()->orderBy('module')->get()->keyBy('module');
+        $availableModules = collect($modules)->except($extraGrants->keys())->all();
 
-        return view('users.permissions', compact('user', 'modules', 'actions', 'roleGrants', 'extraGrants'));
+        return view('users.permissions', compact('user', 'modules', 'actions', 'roleGrants', 'extraGrants', 'availableModules'));
     }
 
     public function permissionsStore(Request $request, User $user)
@@ -72,18 +73,19 @@ class UserController extends Controller
             'user_id' => $user->id,
             'module' => $validated['module'],
         ]);
-        $grant->actions = array_values(array_unique(array_merge($grant->actions ?? [], $validated['actions'])));
+        $isUpdate = $grant->exists;
+        $grant->actions = array_values(array_unique($validated['actions']));
         $grant->granted_by = auth()->id();
         $grant->save();
 
         ActivityLog::log(
-            'user_permission.granted',
+            $isUpdate ? 'user_permission.updated' : 'user_permission.granted',
             UserModulePermission::class,
             $grant->id,
-            "Granted {$validated['module']} (".implode(',', $validated['actions']).") to {$user->name}"
+            ($isUpdate ? 'Updated' : 'Granted')." {$validated['module']} (".implode(',', $validated['actions']).") for {$user->name}"
         );
 
-        return redirect()->route('users.permissions', $user)->with('success', 'Permission granted.');
+        return redirect()->route('users.permissions', $user)->with('success', $isUpdate ? 'Permission updated.' : 'Permission granted.');
     }
 
     public function permissionsDestroy(User $user, UserModulePermission $user_module_permission)
