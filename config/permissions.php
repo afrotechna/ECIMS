@@ -168,6 +168,7 @@ return [
 
         'secretary' => [
             'finance_reports' => ['view'],
+            'finance_payments' => ['view', 'create', 'update'],
             'students' => ['view'],
             'registrations' => ['view'],
             'programmes' => ['view'],
@@ -175,6 +176,7 @@ return [
             'college_comms' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
+            'student_card_status' => ['view', 'create', 'update', 'delete'],
         ],
 
         'accommodation_matron' => [

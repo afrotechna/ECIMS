@@ -230,6 +230,16 @@ class User extends Authenticatable implements CanResetPasswordContract
         return $this->hasMany(UserModulePermission::class);
     }
 
+    public function sentOfficeDocuments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OfficeDocument::class, 'sender_id');
+    }
+
+    public function receivedOfficeDocuments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OfficeDocument::class, 'recipient_id');
+    }
+
     /** Memoized per-request lookup of extra grants, keyed by module. */
     protected function loadedExtraModulePermissions(): \Illuminate\Support\Collection
     {

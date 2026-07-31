@@ -158,6 +158,9 @@
             </a>
             @endif
             @else
+            <a class="nav-link {{ request()->routeIs('office-documents.*') ? 'active' : '' }}" href="{{ route('office-documents.index') }}">
+                <i class="bi bi-send-check"></i><span>e-Office</span><i class="bi bi-chevron-right"></i>
+            </a>
             @php
                 $showAcademicMenu = auth()->user()->canModule('programmes', 'view')
                     || auth()->user()->canModule('semesters', 'view')
