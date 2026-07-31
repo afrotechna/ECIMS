@@ -208,6 +208,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::post('office-documents', [\App\Http\Controllers\OfficeDocumentController::class, 'store'])->name('office-documents.store');
         Route::get('office-documents/{office_document}', [\App\Http\Controllers\OfficeDocumentController::class, 'show'])->name('office-documents.show');
         Route::get('office-documents/{office_document}/download', [\App\Http\Controllers\OfficeDocumentController::class, 'download'])->name('office-documents.download');
+        Route::post('office-documents/{office_document}/accept', [\App\Http\Controllers\OfficeDocumentController::class, 'accept'])->name('office-documents.accept');
         Route::post('office-documents/{office_document}/mark-printed', [\App\Http\Controllers\OfficeDocumentController::class, 'markPrinted'])->name('office-documents.mark-printed');
         Route::post('office-documents/{office_document}/mark-completed', [\App\Http\Controllers\OfficeDocumentController::class, 'markCompleted'])->name('office-documents.mark-completed');
 

@@ -18,6 +18,11 @@
     .doc-timeline .stage-meta { font-size: .8125rem; color: #64748b; }
 </style>
 @endpush
+@php
+    $isRecipient = auth()->id() === $document->recipient_id;
+    $isSender = auth()->id() === $document->sender_id;
+    $accepted = $document->received_at !== null;
+@endphp
 @section('content')
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Dashboard</a>
@@ -38,7 +43,7 @@
                     'printed' => 'bg-primary',
                     'completed' => 'bg-success',
                     default => 'bg-secondary',
-                } }}">{{ $document->statusLabel() }}</span>
+                } }}">{{ $document->statusLabelFor($isRecipient) }}</span>
             </div>
             <div class="card-body">
                 <dl class="row small mb-3">
@@ -54,13 +59,23 @@
                 @if($document->notes)
                 <p class="mb-3">{{ $document->notes }}</p>
                 @endif
+
+                @if($isRecipient && ! $accepted)
+                <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2 mb-0">
+                    <span><i class="bi bi-envelope-paper me-1"></i>Accept this document to view the attachment.</span>
+                    <form method="POST" action="{{ route('office-documents.accept', $document) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-warning btn-sm"><i class="bi bi-check-lg me-1"></i>Accept</button>
+                    </form>
+                </div>
+                @else
                 <a href="{{ route('office-documents.download', $document) }}" class="btn btn-outline-primary">
                     <i class="bi bi-download me-1"></i>Download {{ $document->original_name }}
                 </a>
 
                 <hr class="my-3">
                 <div class="d-flex flex-wrap gap-2">
-                    @if(auth()->id() === $document->recipient_id)
+                    @if($isRecipient)
                         @if($document->received_at && ! $document->printed_at)
                         <form method="POST" action="{{ route('office-documents.mark-printed', $document) }}">
                             @csrf
@@ -74,10 +89,11 @@
                         </form>
                         @endif
                         <a href="{{ route('office-documents.create', ['reply_to' => $document->id]) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-reply me-1"></i>Reply</a>
-                    @elseif(auth()->id() === $document->sender_id)
+                    @elseif($isSender)
                         <a href="{{ route('office-documents.create', ['reply_to' => $document->id]) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-reply me-1"></i>Send another</a>
                     @endif
                 </div>
+                @endif
             </div>
         </div>
 
@@ -89,7 +105,7 @@
                     @foreach($document->replies as $reply)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <a href="{{ route('office-documents.show', $reply) }}">{{ $reply->title }}</a>
-                        <span class="badge bg-light text-dark">{{ $reply->statusLabel() }}</span>
+                        <span class="badge bg-light text-dark">{{ $reply->statusLabelFor(auth()->id() === $reply->recipient_id) }}</span>
                     </li>
                     @endforeach
                 </ul>
@@ -103,7 +119,7 @@
             <div class="card-header-landing"><i class="bi bi-clock-history me-2"></i>Timeline</div>
             <div class="card-body">
                 <ul class="doc-timeline">
-                    @foreach($document->timeline() as $stage)
+                    @foreach($document->timeline($isRecipient) as $stage)
                     <li class="{{ $stage['done'] ? 'done' : '' }}">
                         <div class="stage-label">{{ $stage['label'] }}</div>
                         @if($stage['done'] && $stage['at'])

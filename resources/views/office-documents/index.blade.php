@@ -52,7 +52,7 @@
                             'printed' => 'bg-primary',
                             'completed' => 'bg-success',
                             default => 'bg-secondary',
-                        } }}">{{ $doc->statusLabel() }}</span>
+                        } }}">{{ $doc->statusLabelFor($tab !== 'sent') }}</span>
                     </td>
                     <td>{{ $doc->created_at->format('d M Y H:i') }}</td>
                     <td class="text-center">
