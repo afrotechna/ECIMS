@@ -21,7 +21,6 @@
 @php
     $isRecipient = auth()->id() === $document->recipient_id;
     $isSender = auth()->id() === $document->sender_id;
-    $accepted = $document->received_at !== null;
 @endphp
 @section('content')
 <nav class="student-breadcrumb">
@@ -60,15 +59,6 @@
                 <p class="mb-3">{{ $document->notes }}</p>
                 @endif
 
-                @if($isRecipient && ! $accepted)
-                <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2 mb-0">
-                    <span><i class="bi bi-envelope-paper me-1"></i>Accept this document to view the attachment.</span>
-                    <form method="POST" action="{{ route('office-documents.accept', $document) }}">
-                        @csrf
-                        <button type="submit" class="btn btn-warning btn-sm"><i class="bi bi-check-lg me-1"></i>Accept</button>
-                    </form>
-                </div>
-                @else
                 <a href="{{ route('office-documents.download', $document) }}" class="btn btn-outline-primary">
                     <i class="bi bi-download me-1"></i>Download {{ $document->original_name }}
                 </a>
@@ -93,7 +83,6 @@
                         <a href="{{ route('office-documents.create', ['reply_to' => $document->id]) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-reply me-1"></i>Send another</a>
                     @endif
                 </div>
-                @endif
             </div>
         </div>
 

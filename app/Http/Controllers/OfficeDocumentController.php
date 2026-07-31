@@ -86,36 +86,32 @@ class OfficeDocumentController extends Controller
     public function show(OfficeDocument $office_document): View
     {
         $this->authorizeParty($office_document);
+        $this->markReceivedOnFirstView($office_document);
         $office_document->load(['sender', 'recipient', 'parent', 'replies.sender', 'replies.recipient']);
 
         return view('office-documents.show', ['document' => $office_document]);
     }
 
-    public function accept(OfficeDocument $office_document): RedirectResponse
-    {
-        $this->authorizeRecipient($office_document);
-        abort_unless($office_document->received_at === null, 422, 'This document has already been accepted.');
-
-        $office_document->update(['status' => 'received', 'received_at' => now()]);
-        ActivityLog::log('office_document.received', OfficeDocument::class, $office_document->id, "\"{$office_document->title}\" accepted by ".auth()->user()->name);
-        $office_document->sender?->notify(new OfficeDocumentStatusNotification($office_document->fresh()));
-
-        return back()->with('success', 'Document accepted.');
-    }
-
     public function download(OfficeDocument $office_document)
     {
         $this->authorizeParty($office_document);
-
-        if (auth()->id() === $office_document->recipient_id && $office_document->received_at === null) {
-            abort(403, 'Accept this document before viewing the attachment.');
-        }
+        $this->markReceivedOnFirstView($office_document);
 
         if (! Storage::disk('local')->exists($office_document->file_path)) {
             abort(404);
         }
 
         return Storage::disk('local')->download($office_document->file_path, $office_document->original_name);
+    }
+
+    /** The moment the recipient opens the document (via notification link or the show page) or downloads it, mark it Received. */
+    private function markReceivedOnFirstView(OfficeDocument $document): void
+    {
+        if (auth()->id() === $document->recipient_id && $document->received_at === null) {
+            $document->update(['status' => 'received', 'received_at' => now()]);
+            ActivityLog::log('office_document.received', OfficeDocument::class, $document->id, "\"{$document->title}\" received by ".auth()->user()->name);
+            $document->sender?->notify(new OfficeDocumentStatusNotification($document->fresh()));
+        }
     }
 
     public function markPrinted(OfficeDocument $office_document): RedirectResponse
