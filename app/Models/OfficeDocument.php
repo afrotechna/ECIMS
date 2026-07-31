@@ -72,21 +72,32 @@ class OfficeDocument extends Model
         return $this->statusLabel();
     }
 
+    /** Whether this document's recipient actually prints things (secretary, admission officer, etc.), vs. just reading it on screen (e.g. Principal). */
+    public function requiresPrinting(): bool
+    {
+        return $this->recipient?->canPrintOfficeDocuments() ?? false;
+    }
+
     /**
      * Ordered stages of the document's journey, each with whether it has happened,
      * when, and by whom — used to render the timeline. The recipient's own
      * acceptance stage reads "Accepted" on their screen and "Received" on the
-     * sender's, since it's the same event seen from either side.
+     * sender's, since it's the same event seen from either side. The Printed
+     * stage only appears when the recipient's role actually handles printing.
      *
      * @return list<array{label: string, at: ?\Illuminate\Support\Carbon, by: ?string, done: bool}>
      */
     public function timeline(bool $viewerIsRecipient = false): array
     {
-        return [
+        $stages = [
             ['label' => 'Sent', 'at' => $this->created_at, 'by' => $this->sender?->name, 'done' => true],
             ['label' => $viewerIsRecipient ? 'Accepted' : 'Received', 'at' => $this->received_at, 'by' => $this->recipient?->name, 'done' => $this->received_at !== null],
-            ['label' => 'Printed', 'at' => $this->printed_at, 'by' => $this->recipient?->name, 'done' => $this->printed_at !== null],
-            ['label' => 'Completed', 'at' => $this->completed_at, 'by' => $this->recipient?->name, 'done' => $this->completed_at !== null],
         ];
+        if ($this->requiresPrinting()) {
+            $stages[] = ['label' => 'Printed', 'at' => $this->printed_at, 'by' => $this->recipient?->name, 'done' => $this->printed_at !== null];
+        }
+        $stages[] = ['label' => 'Completed', 'at' => $this->completed_at, 'by' => $this->recipient?->name, 'done' => $this->completed_at !== null];
+
+        return $stages;
     }
 }

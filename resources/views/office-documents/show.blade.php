@@ -66,17 +66,27 @@
                 <hr class="my-3">
                 <div class="d-flex flex-wrap gap-2">
                     @if($isRecipient)
-                        @if($document->received_at && ! $document->printed_at)
-                        <form method="POST" action="{{ route('office-documents.mark-printed', $document) }}">
-                            @csrf
-                            <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-printer me-1"></i>Mark printed</button>
-                        </form>
-                        @endif
-                        @if($document->printed_at && ! $document->completed_at)
-                        <form method="POST" action="{{ route('office-documents.mark-completed', $document) }}">
-                            @csrf
-                            <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check2-circle me-1"></i>Mark completed</button>
-                        </form>
+                        @php $canPrint = auth()->user()->canPrintOfficeDocuments(); @endphp
+                        @if($canPrint)
+                            @if($document->received_at && ! $document->printed_at)
+                            <form method="POST" action="{{ route('office-documents.mark-printed', $document) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-printer me-1"></i>Mark printed</button>
+                            </form>
+                            @endif
+                            @if($document->printed_at && ! $document->completed_at)
+                            <form method="POST" action="{{ route('office-documents.mark-completed', $document) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check2-circle me-1"></i>Mark completed</button>
+                            </form>
+                            @endif
+                        @else
+                            @if($document->received_at && ! $document->completed_at)
+                            <form method="POST" action="{{ route('office-documents.mark-completed', $document) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check2-circle me-1"></i>Mark completed</button>
+                            </form>
+                            @endif
                         @endif
                         <a href="{{ route('office-documents.create', ['reply_to' => $document->id]) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-reply me-1"></i>Reply</a>
                     @elseif($isSender)

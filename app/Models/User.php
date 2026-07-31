@@ -204,6 +204,19 @@ class User extends Authenticatable implements CanResetPasswordContract
         return in_array(self::normalizeRoleSlug((string) $this->role), self::SYSTEM_ADMIN_ROLES, true);
     }
 
+    /** Roles that actually handle physical printing for e-Office documents. */
+    protected const OFFICE_DOCUMENT_PRINTER_ROLES = [
+        'secretary',
+        'admission_officer',
+        'accountant',
+    ];
+
+    /** Whether this role prints e-Office documents, vs. just reading them on screen (e.g. Principal). */
+    public function canPrintOfficeDocuments(): bool
+    {
+        return $this->isAdmin() || in_array(self::normalizeRoleSlug((string) $this->role), self::OFFICE_DOCUMENT_PRINTER_ROLES, true);
+    }
+
     /** Module permission: view | create | update | delete (config/permissions.php), plus any extra per-user grants. */
     public function canModule(string $module, string $action = 'view'): bool
     {

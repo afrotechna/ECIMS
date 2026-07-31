@@ -117,6 +117,7 @@ class OfficeDocumentController extends Controller
     public function markPrinted(OfficeDocument $office_document): RedirectResponse
     {
         $this->authorizeRecipient($office_document);
+        abort_unless(auth()->user()->canPrintOfficeDocuments(), 403, 'Printing this kind of document is handled by office/clerical staff, not this role.');
         abort_unless($office_document->received_at !== null, 422, 'Mark the document as received before marking it printed.');
 
         if ($office_document->printed_at === null) {
@@ -131,7 +132,12 @@ class OfficeDocumentController extends Controller
     public function markCompleted(OfficeDocument $office_document): RedirectResponse
     {
         $this->authorizeRecipient($office_document);
-        abort_unless($office_document->printed_at !== null, 422, 'Mark the document as printed before marking it completed.');
+
+        if ($office_document->requiresPrinting()) {
+            abort_unless($office_document->printed_at !== null, 422, 'Mark the document as printed before marking it completed.');
+        } else {
+            abort_unless($office_document->received_at !== null, 422, 'Open the document before marking it completed.');
+        }
 
         if ($office_document->completed_at === null) {
             $office_document->update(['status' => 'completed', 'completed_at' => now()]);
