@@ -262,7 +262,7 @@
             @endif
             <div class="nav-group {{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'transcript-requests.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*') ? 'expanded' : '' }}" id="navGroupCollegeOffice">
                 <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*') ? 'true' : 'false' }}" aria-controls="navGroupCollegeOfficeSub">
-                    <i class="bi bi-briefcase"></i><span>College office</span><i class="bi bi-chevron-down"></i>
+                    <i class="bi bi-briefcase"></i><span>Registrar's office</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupCollegeOfficeSub">
                     <li class="nav-group-sub-label">People</li>
