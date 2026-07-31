@@ -257,8 +257,8 @@
                 </ul>
             </div>
             @endif
-            <div class="nav-group {{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'transcript-requests.*', 'certificate-collections.*', 'calendar.*') ? 'expanded' : '' }}" id="navGroupCollegeOffice">
-                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'certificate-collections.*', 'calendar.*') ? 'true' : 'false' }}" aria-controls="navGroupCollegeOfficeSub">
+            <div class="nav-group {{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'transcript-requests.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*') ? 'expanded' : '' }}" id="navGroupCollegeOffice">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*') ? 'true' : 'false' }}" aria-controls="navGroupCollegeOfficeSub">
                     <i class="bi bi-briefcase"></i><span>College office</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupCollegeOfficeSub">
@@ -274,6 +274,9 @@
                     <li><a href="{{ route('transcript-requests.index') }}" class="{{ request()->routeIs('transcript-requests.*') ? 'active' : '' }}"><i class="bi bi-file-earmark-text"></i>Transcript requests</a></li>
                     @canModule('certificate_collection', 'view')
                     <li><a href="{{ route('certificate-collections.index') }}" class="{{ request()->routeIs('certificate-collections.*') ? 'active' : '' }}"><i class="bi bi-patch-check"></i>Certificate collection</a></li>
+                    @endcanModule
+                    @canModule('student_card_status', 'view')
+                    <li><a href="{{ route('student-card-status.index') }}" class="{{ request()->routeIs('student-card-status.*') ? 'active' : '' }}"><i class="bi bi-person-vcard"></i>Student ID &amp; NHIF status</a></li>
                     @endcanModule
                     @canModule('institution_docs', 'view')
                     <li class="nav-group-sub-label">Records</li>

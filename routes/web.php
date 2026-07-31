@@ -383,6 +383,9 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::get('certificate-collections/create', [\App\Http\Controllers\CertificateCollectionController::class, 'create'])->name('certificate-collections.create');
         Route::post('certificate-collections', [\App\Http\Controllers\CertificateCollectionController::class, 'store'])->name('certificate-collections.store');
         Route::delete('certificate-collections/{certificate_collection}', [\App\Http\Controllers\CertificateCollectionController::class, 'destroy'])->name('certificate-collections.destroy');
+
+        Route::get('student-card-status', [\App\Http\Controllers\StudentCardStatusController::class, 'index'])->name('student-card-status.index');
+        Route::put('student-card-status/{student}', [\App\Http\Controllers\StudentCardStatusController::class, 'update'])->name('student-card-status.update');
         Route::get('conduct-records', [\App\Http\Controllers\ConductRecordController::class, 'index'])->name('conduct-records.index');
         Route::get('conduct-records/create', [\App\Http\Controllers\ConductRecordController::class, 'create'])->name('conduct-records.create');
         Route::post('conduct-records', [\App\Http\Controllers\ConductRecordController::class, 'store'])->name('conduct-records.store');

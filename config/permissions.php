@@ -34,6 +34,7 @@ return [
         'college_comms' => 'Announcements & message log',
         'student_affairs' => 'Leave, conduct & graduation',
         'certificate_collection' => 'Certificate collection',
+        'student_card_status' => 'Student ID & NHIF card status',
         'inventory' => 'Inventory & assets',
         'institution_docs' => 'Institution documents',
         'calendar' => 'College calendar & events',
@@ -71,6 +72,7 @@ return [
         'conduct-records' => 'student_affairs',
         'graduation-clearances' => 'student_affairs',
         'certificate-collections' => 'certificate_collection',
+        'student-card-status' => 'student_card_status',
         'inventory-items' => 'inventory',
         'institution-documents' => 'institution_docs',
         'calendar' => 'calendar',
@@ -134,6 +136,7 @@ return [
             'college_comms' => ['view', 'create', 'update', 'delete'],
             'student_affairs' => ['view', 'create', 'update'],
             'certificate_collection' => ['view'],
+            'student_card_status' => ['view'],
             'inventory' => ['view', 'update'],
             'institution_docs' => ['view', 'create', 'update', 'delete'],
             'calendar' => ['view', 'create', 'update', 'delete'],
@@ -255,6 +258,7 @@ return [
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
             'certificate_collection' => ['view', 'create', 'update', 'delete'],
+            'student_card_status' => ['view', 'create', 'update', 'delete'],
         ],
 
         'examination_officer' => [

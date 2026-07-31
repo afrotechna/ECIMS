@@ -214,6 +214,17 @@ class Student extends Model
         return $this->hasMany(StudentAttendanceLog::class);
     }
 
+    public function cardStatuses(): HasMany
+    {
+        return $this->hasMany(StudentCardStatus::class);
+    }
+
+    /** The student's own portal login account, matched via NACTVET reg. no. (mirrors User::student()). */
+    public function userAccount(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(User::class, 'nactvet_reg_no', 'nactvet_reg_no');
+    }
+
     public function semesterRegistrations(): HasMany
     {
         return $this->hasMany(SemesterRegistration::class);
