@@ -11,6 +11,9 @@ return [
     /** Minimum % of ca_max_mark required to PASS CA and sit the end-of-semester exam for that module. */
     'ca_pass_percent' => (float) env('COLLEGE_CA_PASS_PERCENT', 40),
 
+    /** End-of-semester exam (AVES) is marked out of this maximum (e.g. 60 for the "60%" component). */
+    'exam_max_mark' => (float) env('COLLEGE_EXAM_MAX_MARK', 60),
+
     /**
      * Month (1–12) when a new academic year starts (Tanzania colleges often use July).
      * Before this month in the calendar year, the session is still the year that began last July.

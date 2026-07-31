@@ -31,6 +31,16 @@
                     <dt class="col-5 text-muted">Credits</dt>
                     <dd class="col-7">{{ $course && $course->credits !== null ? number_format((float) $course->credits, 1) : '—' }}</dd>
                 </dl>
+                @php $failureComponents = $result->failureComponents(); @endphp
+                @if(!empty($failureComponents))
+                <hr>
+                <p class="small text-muted mb-2">Why this module is marked Failed</p>
+                <ul class="mb-0 small ps-3">
+                    @foreach($failureComponents as $reason)
+                    <li class="text-danger">{{ $reason }}</li>
+                    @endforeach
+                </ul>
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>

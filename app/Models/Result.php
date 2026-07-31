@@ -234,6 +234,84 @@ class Result extends Model
         return 'incomplete';
     }
 
+    /** Minimum exam mark (out of exam_max_mark) needed to clear the theory component, using the same pass % as CA. */
+    public function theoryMarkThreshold(): float
+    {
+        $max = max(1.0, (float) config('college.exam_max_mark', 60));
+        $minPercent = (float) config('college.ca_pass_percent', 40);
+
+        return round($max * $minPercent / 100, 2);
+    }
+
+    public function theoryFailed(): bool
+    {
+        if ($this->exam_mark === null || $this->exam_mark === '') {
+            return false;
+        }
+
+        return (float) $this->exam_mark < $this->theoryMarkThreshold();
+    }
+
+    /** Label for this module's skills component: Clinical (if it requires a clinical rotation), else Practical/OSPE/OSCE. */
+    public function practicalComponentLabel(): ?string
+    {
+        $course = $this->course ?? $this->course()->first();
+        if (! $course || ! $course->has_practical) {
+            return null;
+        }
+
+        return $course->requires_clinical_rotation ? 'Clinical' : $course->practicalColumnLabel();
+    }
+
+    /** Whether the practical/clinical CA sub-mark is notably lower than the module's other CA components. */
+    public function practicalComponentFailed(): bool
+    {
+        $course = $this->course ?? $this->course()->first();
+        if (! $course || ! $course->has_practical || $this->ca_practical === null || $this->ca_practical === '') {
+            return false;
+        }
+
+        $others = [];
+        foreach (['ca_test1', 'ca_test2', 'ca_assignment1', 'ca_assignment2'] as $attr) {
+            if ($this->{$attr} !== null && $this->{$attr} !== '') {
+                $others[] = (float) $this->{$attr};
+            }
+        }
+        if (! $others) {
+            return false;
+        }
+
+        return (float) $this->ca_practical < (array_sum($others) / count($others));
+    }
+
+    /**
+     * Human labels for the component(s) responsible for a FAILED module outcome
+     * (Theory / Practical / Clinical / CA), for the student-facing result preview.
+     *
+     * @return list<string>
+     */
+    public function failureComponents(): array
+    {
+        if ($this->finalOutcome() !== 'fail') {
+            return [];
+        }
+
+        $reasons = [];
+        if ($this->theoryFailed()) {
+            $reasons[] = 'Theory (end-of-semester exam)';
+        }
+        if ($this->caFailedModule()) {
+            $reasons[] = $this->practicalComponentFailed()
+                ? $this->practicalComponentLabel()
+                : 'Continuous assessment (CA)';
+        }
+        if (! $reasons) {
+            $reasons[] = 'Overall score below pass mark';
+        }
+
+        return $reasons;
+    }
+
     public static function gradeToPoints(?string $grade): ?float
     {
         return GradingScale::gradeToPoints($grade);
