@@ -29,8 +29,8 @@ class StudentCardStatusController extends Controller
             $query->where('programme_id', $request->programme_id);
         }
 
-        // Only students who have fully cleared their fee balance (tuition, NHIF, etc.) are eligible for card issuance.
-        $eligible = $query->orderBy('reg_no')->get()->filter(fn (Student $s) => $s->balance <= 0)->values();
+        // Only registered students who have fully cleared their fee balance (tuition, NHIF, etc.) are eligible for card issuance.
+        $eligible = $query->orderBy('reg_no')->get()->filter(fn (Student $s) => $this->hasCompletedPayment($s))->values();
 
         $perPage = 25;
         $page = (int) $request->integer('page', 1);
@@ -53,8 +53,8 @@ class StudentCardStatusController extends Controller
             'status' => ['required', 'string', 'in:'.implode(',', array_keys(StudentCardStatus::STATUSES))],
         ])->validate();
 
-        if ($student->balance > 0) {
-            return back()->with('error', "{$student->full_name} still owes ".number_format($student->balance, 0).' TZS. Clear the fee balance before changing card status.');
+        if (! $this->hasCompletedPayment($student)) {
+            return back()->with('error', $this->ineligibilityReason($student));
         }
 
         $record = $this->applyStatus($student, $validated['document_type'], $validated['status']);
@@ -75,7 +75,7 @@ class StudentCardStatusController extends Controller
         $updated = 0;
         $skipped = 0;
         foreach ($students as $student) {
-            if ($student->balance > 0) {
+            if (! $this->hasCompletedPayment($student)) {
                 $skipped++;
 
                 continue;
@@ -89,10 +89,25 @@ class StudentCardStatusController extends Controller
 
         $message = "{$label} set to {$statusLabel} for {$updated} student(s).";
         if ($skipped > 0) {
-            $message .= " Skipped {$skipped} with an outstanding fee balance.";
+            $message .= " Skipped {$skipped} not registered or with an outstanding fee balance.";
         }
 
         return back()->with($updated > 0 ? 'success' : 'error', $message);
+    }
+
+    /** Registered for a semester (billed) AND has cleared whatever was billed — zero ledger activity alone doesn't count as "paid". */
+    private function hasCompletedPayment(Student $student): bool
+    {
+        return $student->hasCompletedSemesterRegistration() && $student->balance <= 0;
+    }
+
+    private function ineligibilityReason(Student $student): string
+    {
+        if (! $student->hasCompletedSemesterRegistration()) {
+            return "{$student->full_name} is not registered for a semester yet.";
+        }
+
+        return "{$student->full_name} still owes ".number_format($student->balance, 0).' TZS. Clear the fee balance before changing card status.';
     }
 
     private function applyStatus(Student $student, string $documentType, string $status): StudentCardStatus
