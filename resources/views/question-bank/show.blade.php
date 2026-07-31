@@ -78,7 +78,7 @@
     <div class="accordion-item">
         <h2 class="accordion-header" id="qbHeading1">
             <button class="accordion-button {{ $openStep === 1 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#qbCollapse1" aria-expanded="{{ $openStep === 1 ? 'true' : 'false' }}" aria-controls="qbCollapse1" data-bs-parent="#questionBankAccordion">
-                Step 1 â€” Upload material <span class="badge bg-light text-dark ms-2">{{ $matCount }} source(s)</span>
+                Step 1 — Upload material <span class="badge bg-light text-dark ms-2">{{ $matCount }} source(s)</span>
             </button>
         </h2>
         <div id="qbCollapse1" class="accordion-collapse collapse {{ $openStep === 1 ? 'show' : '' }}" aria-labelledby="qbHeading1" data-bs-parent="#questionBankAccordion">
@@ -163,7 +163,7 @@
     <div class="accordion-item">
         <h2 class="accordion-header" id="qbHeading2">
             <button class="accordion-button {{ $openStep === 2 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#qbCollapse2" aria-expanded="{{ $openStep === 2 ? 'true' : 'false' }}" aria-controls="qbCollapse2" data-bs-parent="#questionBankAccordion">
-                Step 2 â€” Generate &amp; section status
+                Step 2 — Generate &amp; section status
             </button>
         </h2>
         <div id="qbCollapse2" class="accordion-collapse collapse {{ $openStep === 2 ? 'show' : '' }}" aria-labelledby="qbHeading2" data-bs-parent="#questionBankAccordion">
@@ -360,7 +360,7 @@
     <div class="accordion-item">
         <h2 class="accordion-header" id="qbHeading3">
             <button class="accordion-button {{ $openStep === 3 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#qbCollapse3" aria-expanded="{{ $openStep === 3 ? 'true' : 'false' }}" aria-controls="qbCollapse3" data-bs-parent="#questionBankAccordion">
-                Step 3 â€” Build assessment &amp; export <span class="badge bg-light text-dark ms-2">{{ $examCount }} saved</span>
+                Step 3 — Build assessment &amp; export <span class="badge bg-light text-dark ms-2">{{ $examCount }} saved</span>
             </button>
         </h2>
         <div id="qbCollapse3" class="accordion-collapse collapse {{ $openStep === 3 ? 'show' : '' }}" aria-labelledby="qbHeading3" data-bs-parent="#questionBankAccordion">

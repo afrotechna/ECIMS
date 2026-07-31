@@ -13,7 +13,7 @@
 @if(!($feeStructureResolved ?? false))
     <div class="alert alert-danger mb-0">
         No active fee schedule for session <strong>{{ $paymentAcademicYear }}/{{ $paymentAcademicYear + 1 }}</strong>.
-        Add one under <strong>Finance â†’ Fees</strong> for this session and programme (or <em>All programmes</em>).
+        Add one under <strong>Finance &rarr; Fees</strong> for this session and programme (or <em>All programmes</em>).
     </div>
 @else
     <p class="small text-muted mb-3">
@@ -21,16 +21,16 @@
     </p>
 
     <div class="card border mb-3">
-        <div class="card-header py-2 fw-semibold small text-uppercase">Semester One â€” bank fees</div>
+        <div class="card-header py-2 fw-semibold small text-uppercase">Semester One &mdash; bank fees</div>
         <div class="card-body">
     <div class="row g-3">
         <div class="col-12">
             <label class="form-label" for="rw_tuition_category">Tuition fee</label>
             <select name="tuition_category" id="rw_tuition_category" class="form-select @error('tuition_category') is-invalid @enderror" required>
-                <option value="new_student" {{ old('tuition_category', $paymentTuitionDefault) === 'new_student' ? 'selected' : '' }}>New student â€” Semester I tuition only</option>
-                <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing â€” Semester I + II (continuous rate)</option>
-                <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating â€” Semester I + II (repeat rate)</option>
-                <option value="transfer" {{ old('tuition_category', $paymentTuitionDefault) === 'transfer' ? 'selected' : '' }}>Transferred â€” Semester I + II (transfer / repeat rate)</option>
+                <option value="new_student" {{ old('tuition_category', $paymentTuitionDefault) === 'new_student' ? 'selected' : '' }}>New student &mdash; Semester I tuition only</option>
+                <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing &mdash; Semester I + II (continuous rate)</option>
+                <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating &mdash; Semester I + II (repeat rate)</option>
+                <option value="transfer" {{ old('tuition_category', $paymentTuitionDefault) === 'transfer' ? 'selected' : '' }}>Transferred &mdash; Semester I + II (transfer / repeat rate)</option>
             </select>
             @error('tuition_category')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
         </div>
@@ -122,7 +122,7 @@
                 return opts;
             }
             opts += '<option value="0">Not paying this line</option>';
-            opts += '<option value="' + scheduled + '">Pay scheduled â€” ' + fmt(scheduled) + '</option>';
+            opts += '<option value="' + scheduled + '">Pay scheduled &mdash; ' + fmt(scheduled) + '</option>';
             return opts;
         }
 
@@ -156,7 +156,7 @@
                 var el = document.getElementById(id);
                 if (!el) return;
                 if (!slots) {
-                    el.innerHTML = '<option value="">â€”</option>';
+                    el.innerHTML = '<option value="">&mdash;</option>';
                     el.disabled = true;
                     return;
                 }

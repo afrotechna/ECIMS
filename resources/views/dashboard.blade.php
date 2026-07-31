@@ -291,9 +291,9 @@
                             <tr>
                                 <td>{{ $p->paid_at->format('d/m/Y H:i') }}</td>
                                 <td><code>{{ $p->reference ?? $p->id }}</code></td>
-                                <td>{{ $p->student?->full_name ?? 'â€”' }} ({{ $p->student?->reg_no ?? '' }})</td>
+                                <td>{{ $p->student?->full_name ?? '—' }} ({{ $p->student?->reg_no ?? '' }})</td>
                                 <td>{{ number_format($p->amount, 0) }}</td>
-                                <td>{{ ucfirst($p->payment_method ?? 'â€”') }}</td>
+                                <td>{{ ucfirst($p->payment_method ?? '—') }}</td>
                                 <td>{{ number_format($p->student?->balance ?? 0, 0) }}</td>
                                 <td><a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-primary">Receipt</a></td>
                             </tr>

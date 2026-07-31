@@ -77,8 +77,8 @@
                             <tr>
                                 <td>{{ \App\Models\TimetableSlot::DAYS[$slot->day_of_week] ?? $slot->day_of_week }}</td>
                                 <td class="text-nowrap">{{ $slot->start_time }} â€“ {{ $slot->end_time }}</td>
-                                <td>{{ $slot->course ? $slot->course->code.' â€” '.$slot->course->name : 'â€”' }}</td>
-                                <td>{{ $slot->room ?? $slot->venue ?? 'â€”' }}</td>
+                                <td>{{ $slot->course ? $slot->course->code.' — '.$slot->course->name : '—' }}</td>
+                                <td>{{ $slot->room ?? $slot->venue ?? '—' }}</td>
                             </tr>
                             @empty
                             <tr>
