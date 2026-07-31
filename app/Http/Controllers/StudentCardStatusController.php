@@ -42,18 +42,45 @@ class StudentCardStatusController extends Controller
             'status' => ['required', 'string', 'in:'.implode(',', array_keys(StudentCardStatus::STATUSES))],
         ])->validate();
 
+        $record = $this->applyStatus($student, $validated['document_type'], $validated['status']);
+
+        return back()->with('success', $record->documentTypeLabel().' status updated to '.$record->statusLabel().'.');
+    }
+
+    public function bulkUpdate(Request $request): RedirectResponse
+    {
+        $validated = Validator::make($request->all(), [
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:students,id'],
+            'document_type' => ['required', 'string', 'in:'.implode(',', array_keys(StudentCardStatus::DOCUMENT_TYPES))],
+            'status' => ['required', 'string', 'in:'.implode(',', array_keys(StudentCardStatus::STATUSES))],
+        ])->validate();
+
+        $students = Student::whereIn('id', $validated['ids'])->get();
+        foreach ($students as $student) {
+            $this->applyStatus($student, $validated['document_type'], $validated['status']);
+        }
+
+        $label = StudentCardStatus::DOCUMENT_TYPES[$validated['document_type']] ?? $validated['document_type'];
+        $statusLabel = StudentCardStatus::STATUSES[$validated['status']] ?? $validated['status'];
+
+        return back()->with('success', $label.' set to '.$statusLabel.' for '.$students->count().' student(s).');
+    }
+
+    private function applyStatus(Student $student, string $documentType, string $status): StudentCardStatus
+    {
         $record = StudentCardStatus::firstOrNew([
             'student_id' => $student->id,
-            'document_type' => $validated['document_type'],
+            'document_type' => $documentType,
         ]);
 
-        $statusChanged = $record->status !== $validated['status'];
-        $record->status = $validated['status'];
+        $statusChanged = $record->status !== $status;
+        $record->status = $status;
         $record->updated_by = auth()->id();
-        if ($validated['status'] === 'printed' && ! $record->printed_at) {
+        if ($status === 'printed' && ! $record->printed_at) {
             $record->printed_at = now();
         }
-        if ($validated['status'] === 'active' && ! $record->activated_at) {
+        if ($status === 'active' && ! $record->activated_at) {
             $record->activated_at = now();
         }
         $record->save();
@@ -65,13 +92,13 @@ class StudentCardStatusController extends Controller
             "{$record->documentTypeLabel()} for {$student->reg_no} set to {$record->statusLabel()}"
         );
 
-        if ($statusChanged && in_array($validated['status'], ['printed', 'active'], true) && $student->status === 'active') {
+        if ($statusChanged && in_array($status, ['printed', 'active'], true) && $student->status === 'active') {
             $studentUser = $student->userAccount;
             if ($studentUser) {
                 $studentUser->notify(new StudentCardStatusNotification($record));
             }
         }
 
-        return back()->with('success', $record->documentTypeLabel().' status updated to '.$record->statusLabel().'.');
+        return $record;
     }
 }

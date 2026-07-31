@@ -35,11 +35,19 @@
 </div>
 
 <div class="card card-landing">
+    <div class="card-header-landing d-flex flex-wrap align-items-center gap-2">
+        <span class="fw-semibold"><i class="bi bi-list-check me-1"></i>Students</span>
+        <button type="button" id="bulkCardStatusBtn" class="btn btn-sm btn-outline-primary ms-auto d-none" title="Apply to selected" aria-label="Apply to selected">
+            <i class="bi bi-pencil-square" aria-hidden="true"></i> Apply to selected
+            <span class="badge bg-primary ms-1" id="bulkCardStatusCount">0</span>
+        </button>
+    </div>
     <div class="card-body p-0">
         <div class="table-responsive">
         <table class="table table-sm table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
+                    <th class="text-center" style="width:2.5rem"><input type="checkbox" id="bulkCardStatusSelectAll" aria-label="Select all"></th>
                     <th>Reg. no</th>
                     <th>Student</th>
                     <th>Programme</th>
@@ -53,6 +61,7 @@
                     $byType = $student->cardStatuses->keyBy('document_type');
                 @endphp
                 <tr>
+                    <td class="text-center"><input type="checkbox" class="bulk-card-status-cb" value="{{ $student->id }}" aria-label="Select {{ $student->full_name }}"></td>
                     <td class="fw-medium">{{ $student->reg_no }}</td>
                     <td>{{ $student->full_name }}</td>
                     <td>{{ $student->programme->code ?? '—' }}</td>
@@ -73,7 +82,7 @@
                     @endforeach
                 </tr>
                 @empty
-                <tr><td colspan="5" class="text-center text-muted py-5">No active students found.</td></tr>
+                <tr><td colspan="6" class="text-center text-muted py-5">No active students found.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -81,4 +90,89 @@
     </div>
 </div>
 @if($students->hasPages())<div class="mt-3">{{ $students->links() }}</div>@endif
+
+<form id="bulkCardStatusForm" method="POST" action="{{ route('student-card-status.bulk-update') }}" class="d-none">
+    @csrf
+    <div id="bulkCardStatusIds"></div>
+    <input type="hidden" name="document_type" id="bulkCardStatusDocType">
+    <input type="hidden" name="status" id="bulkCardStatusValue">
+</form>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var selectAll = document.getElementById('bulkCardStatusSelectAll');
+    var btn = document.getElementById('bulkCardStatusBtn');
+    var countEl = document.getElementById('bulkCardStatusCount');
+    var documentTypes = @json(\App\Models\StudentCardStatus::DOCUMENT_TYPES);
+    var statuses = @json(\App\Models\StudentCardStatus::STATUSES);
+
+    function checkedBoxes() {
+        return Array.from(document.querySelectorAll('.bulk-card-status-cb:checked'));
+    }
+    function refresh() {
+        var n = checkedBoxes().length;
+        countEl.textContent = n;
+        btn.disabled = n === 0;
+        btn.classList.toggle('d-none', n === 0);
+        if (selectAll) {
+            var all = document.querySelectorAll('.bulk-card-status-cb');
+            selectAll.checked = all.length > 0 && n === all.length;
+        }
+    }
+    document.querySelectorAll('.bulk-card-status-cb').forEach(function (cb) {
+        cb.addEventListener('change', refresh);
+    });
+    if (selectAll) {
+        selectAll.addEventListener('change', function () {
+            document.querySelectorAll('.bulk-card-status-cb').forEach(function (cb) { cb.checked = selectAll.checked; });
+            refresh();
+        });
+    }
+    if (btn) {
+        btn.addEventListener('click', function () {
+            var ids = checkedBoxes().map(function (cb) { return cb.value; });
+            if (ids.length === 0) return;
+            var typeOptions = Object.keys(documentTypes).map(function (key) {
+                return '<option value="' + key + '">' + documentTypes[key] + '</option>';
+            }).join('');
+            var statusOptions = Object.keys(statuses).map(function (key) {
+                return '<option value="' + key + '">' + statuses[key] + '</option>';
+            }).join('');
+            Swal.fire({
+                title: 'Update ' + ids.length + ' student(s)',
+                html:
+                    '<div class="text-start">' +
+                    '<label class="form-label small">Document</label>' +
+                    '<select id="swalCardDocType" class="form-select mb-2">' + typeOptions + '</select>' +
+                    '<label class="form-label small">New status</label>' +
+                    '<select id="swalCardStatus" class="form-select">' + statusOptions + '</select>' +
+                    '</div>',
+                showCancelButton: true,
+                confirmButtonText: 'Apply',
+                preConfirm: function () {
+                    return {
+                        documentType: document.getElementById('swalCardDocType').value,
+                        status: document.getElementById('swalCardStatus').value,
+                    };
+                },
+            }).then(function (result) {
+                if (!result.isConfirmed) return;
+                var container = document.getElementById('bulkCardStatusIds');
+                container.innerHTML = '';
+                ids.forEach(function (id) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = id;
+                    container.appendChild(input);
+                });
+                document.getElementById('bulkCardStatusDocType').value = result.value.documentType;
+                document.getElementById('bulkCardStatusValue').value = result.value.status;
+                document.getElementById('bulkCardStatusForm').submit();
+            });
+        });
+    }
+});
+</script>
+@endpush
 @endsection
