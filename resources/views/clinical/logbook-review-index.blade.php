@@ -1,5 +1,13 @@
 @extends('layouts.app')
 @section('title', 'Clinical logbook review')
+@push('styles')
+<style>
+    .logbook-review-table thead th { font-size: .7rem; text-transform: uppercase; letter-spacing: .03em; color: #475569; white-space: nowrap; }
+    .logbook-review-table td { font-size: .8125rem; vertical-align: middle; }
+    .logbook-review-table td .fw-semibold { font-size: .8125rem; }
+    .logbook-review-table td .small { font-size: .7rem; }
+</style>
+@endpush
 @section('content')
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Dashboard</a>
@@ -29,7 +37,7 @@
 
 <div class="card card-landing">
     <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
+        <table class="table table-sm table-hover mb-0 align-middle logbook-review-table">
             <thead class="table-light">
                 <tr>
                     <th>Student</th>
