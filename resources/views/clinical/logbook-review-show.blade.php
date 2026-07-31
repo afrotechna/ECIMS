@@ -39,26 +39,78 @@
         <div class="card card-landing">
             <div class="card-header-landing">Clinical Instructor decision</div>
             <div class="card-body">
-                <form method="POST" action="{{ route('clinical-logbook.approve', $entry) }}" class="mb-4">
+                <form method="POST" id="clinicalDecisionForm" action="{{ route('clinical-logbook.approve', $entry) }}">
                     @csrf
-                    <label class="form-label">Feedback (optional)</label>
-                    <textarea name="reviewer_feedback" class="form-control mb-2" rows="2" placeholder="Commendation or brief note"></textarea>
-                    <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-1"></i>Approve &amp; sign competency</button>
-                </form>
-                <form method="POST" action="{{ route('clinical-logbook.reject', $entry) }}">
-                    @csrf
-                    <label class="form-label">Return for revision <span class="text-danger">*</span></label>
-                    <textarea name="reviewer_feedback" class="form-control mb-2 @error('reviewer_feedback') is-invalid @enderror" rows="2" required placeholder="What must the student correct?"></textarea>
-                    @error('reviewer_feedback')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    <div class="form-check mb-2">
-                        <input type="checkbox" class="form-check-input" name="create_remediation" value="1" id="create_remediation" checked>
-                        <label class="form-check-label" for="create_remediation">Also create remediation plan</label>
+                    <div class="mb-3">
+                        <label for="clinicalDecisionSelect" class="form-label">Decision</label>
+                        <select id="clinicalDecisionSelect" class="form-select">
+                            <option value="approve" {{ old('_decision', 'approve') === 'approve' ? 'selected' : '' }}>Approve &amp; sign competency</option>
+                            <option value="reject" {{ old('_decision') === 'reject' ? 'selected' : '' }}>Return for revision</option>
+                        </select>
                     </div>
-                    <input type="date" name="remediation_due" class="form-control form-control-sm mb-2" value="{{ now()->addWeek()->format('Y-m-d') }}">
-                    <button type="submit" class="btn btn-outline-danger"><i class="bi bi-arrow-return-left me-1"></i>Return to student</button>
+
+                    <div class="mb-2">
+                        <label for="clinicalFeedbackField" class="form-label" id="clinicalFeedbackLabel">Feedback (optional)</label>
+                        <textarea name="reviewer_feedback" id="clinicalFeedbackField" class="form-control @error('reviewer_feedback') is-invalid @enderror" rows="3" placeholder="Commendation or brief note">{{ old('reviewer_feedback') }}</textarea>
+                        @error('reviewer_feedback')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div id="remediationFields" class="d-none mb-2">
+                        <div class="form-check mb-2">
+                            <input type="checkbox" class="form-check-input" name="create_remediation" value="1" id="create_remediation" checked>
+                            <label class="form-check-label" for="create_remediation">Also create remediation plan</label>
+                        </div>
+                        <input type="date" name="remediation_due" class="form-control form-control-sm" value="{{ now()->addWeek()->format('Y-m-d') }}">
+                    </div>
+
+                    <button type="submit" id="clinicalDecisionSubmit" class="btn btn-success"><i class="bi bi-check-lg me-1" id="clinicalDecisionIcon"></i><span id="clinicalDecisionLabel">Approve &amp; sign competency</span></button>
                 </form>
             </div>
         </div>
+        @push('scripts')
+        <script>
+        (function () {
+            var select = document.getElementById('clinicalDecisionSelect');
+            var form = document.getElementById('clinicalDecisionForm');
+            var textarea = document.getElementById('clinicalFeedbackField');
+            var feedbackLabel = document.getElementById('clinicalFeedbackLabel');
+            var remediation = document.getElementById('remediationFields');
+            var submitBtn = document.getElementById('clinicalDecisionSubmit');
+            var submitIcon = document.getElementById('clinicalDecisionIcon');
+            var submitLabel = document.getElementById('clinicalDecisionLabel');
+            var routes = {
+                approve: @json(route('clinical-logbook.approve', $entry)),
+                reject: @json(route('clinical-logbook.reject', $entry))
+            };
+
+            function applyDecision(value) {
+                form.action = routes[value];
+                if (value === 'reject') {
+                    textarea.setAttribute('required', 'required');
+                    textarea.placeholder = 'What must the student correct?';
+                    feedbackLabel.innerHTML = 'Feedback (required) <span class="text-danger">*</span>';
+                    remediation.classList.remove('d-none');
+                    submitBtn.classList.remove('btn-success');
+                    submitBtn.classList.add('btn-outline-danger');
+                    submitIcon.className = 'bi bi-arrow-return-left me-1';
+                    submitLabel.textContent = 'Return to student';
+                } else {
+                    textarea.removeAttribute('required');
+                    textarea.placeholder = 'Commendation or brief note';
+                    feedbackLabel.textContent = 'Feedback (optional)';
+                    remediation.classList.add('d-none');
+                    submitBtn.classList.remove('btn-outline-danger');
+                    submitBtn.classList.add('btn-success');
+                    submitIcon.className = 'bi bi-check-lg me-1';
+                    submitLabel.textContent = 'Approve & sign competency';
+                }
+            }
+
+            select.addEventListener('change', function () { applyDecision(this.value); });
+            applyDecision(select.value);
+        })();
+        </script>
+        @endpush
         @elseif($entry->reviewer)
         <div class="card card-landing">
             <div class="card-body small">
