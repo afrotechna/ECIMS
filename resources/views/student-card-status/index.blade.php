@@ -11,6 +11,8 @@
     <p class="page-subtitle-landing mb-0">Track card production and notify active students automatically when their card is printed or ready.</p>
 </div>
 
+<div class="alert alert-light border small mb-3"><i class="bi bi-info-circle me-1"></i>Only students who have fully cleared their semester fee balance (tuition, NHIF, etc.) are listed and eligible for a status update.</div>
+
 <div class="card card-landing mb-3">
     <div class="card-body py-3">
         <form method="GET" action="{{ route('student-card-status.index') }}" class="row g-3 align-items-end">

@@ -29,7 +29,18 @@ class StudentCardStatusController extends Controller
             $query->where('programme_id', $request->programme_id);
         }
 
-        $students = $query->orderBy('reg_no')->paginate(25)->withQueryString();
+        // Only students who have fully cleared their fee balance (tuition, NHIF, etc.) are eligible for card issuance.
+        $eligible = $query->orderBy('reg_no')->get()->filter(fn (Student $s) => $s->balance <= 0)->values();
+
+        $perPage = 25;
+        $page = (int) $request->integer('page', 1);
+        $students = new \Illuminate\Pagination\LengthAwarePaginator(
+            $eligible->forPage($page, $perPage),
+            $eligible->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
         $programmes = \App\Models\Programme::orderBy('code')->get();
 
         return view('student-card-status.index', compact('students', 'programmes'));
@@ -41,6 +52,10 @@ class StudentCardStatusController extends Controller
             'document_type' => ['required', 'string', 'in:'.implode(',', array_keys(StudentCardStatus::DOCUMENT_TYPES))],
             'status' => ['required', 'string', 'in:'.implode(',', array_keys(StudentCardStatus::STATUSES))],
         ])->validate();
+
+        if ($student->balance > 0) {
+            return back()->with('error', "{$student->full_name} still owes ".number_format($student->balance, 0).' TZS. Clear the fee balance before changing card status.');
+        }
 
         $record = $this->applyStatus($student, $validated['document_type'], $validated['status']);
 
@@ -57,14 +72,27 @@ class StudentCardStatusController extends Controller
         ])->validate();
 
         $students = Student::whereIn('id', $validated['ids'])->get();
+        $updated = 0;
+        $skipped = 0;
         foreach ($students as $student) {
+            if ($student->balance > 0) {
+                $skipped++;
+
+                continue;
+            }
             $this->applyStatus($student, $validated['document_type'], $validated['status']);
+            $updated++;
         }
 
         $label = StudentCardStatus::DOCUMENT_TYPES[$validated['document_type']] ?? $validated['document_type'];
         $statusLabel = StudentCardStatus::STATUSES[$validated['status']] ?? $validated['status'];
 
-        return back()->with('success', $label.' set to '.$statusLabel.' for '.$students->count().' student(s).');
+        $message = "{$label} set to {$statusLabel} for {$updated} student(s).";
+        if ($skipped > 0) {
+            $message .= " Skipped {$skipped} with an outstanding fee balance.";
+        }
+
+        return back()->with($updated > 0 ? 'success' : 'error', $message);
     }
 
     private function applyStatus(Student $student, string $documentType, string $status): StudentCardStatus
