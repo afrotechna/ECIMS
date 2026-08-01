@@ -67,8 +67,6 @@
                 No courses assigned to this semester yet.
                 @canModule('courses', 'create')
                 <a href="{{ route('courses.create') }}">Add a course</a> and assign it to this semester.
-                @else
-                Contact the ICT administrator to add modules.
                 @endcanModule
             </p>
         @else

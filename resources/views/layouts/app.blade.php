@@ -183,7 +183,7 @@
                     <li class="nav-group-sub-label">Programme &amp; terms</li>
                     @endif
                     @canModule('programmes', 'view')
-                    <li><a href="{{ route('programmes.index') }}" class="{{ request()->routeIs('programmes.*') ? 'active' : '' }}" title="View programmes (ICT administrator adds new programmes)"><i class="bi bi-collection"></i>Programmes</a></li>
+                    <li><a href="{{ route('programmes.index') }}" class="{{ request()->routeIs('programmes.*') ? 'active' : '' }}"><i class="bi bi-collection"></i>Programmes</a></li>
                     @endcanModule
                     @canModule('semesters', 'view')
                     <li><a href="{{ route('semesters.index') }}" class="{{ request()->routeIs('semesters.*') ? 'active' : '' }}"><i class="bi bi-calendar-range"></i>Semesters</a></li>

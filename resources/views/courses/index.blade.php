@@ -15,13 +15,7 @@
         @if($catalogueFilterActive)
             <p class="page-subtitle-landing mb-0">Modules linked to the selected teaching semester @if($currentSemester)<strong>{{ $currentSemester->label }}</strong>@endif. <a href="{{ route('courses.index') }}" class="text-white">Show full catalogue</a> (programme · NTA level · semester tree).</p>
         @else
-            <p class="page-subtitle-landing mb-0">
-                @canModule('courses', 'create')
-                By programme, NTA level, and semester.
-                @else
-                View modules by programme, NTA level, and semester. Only the ICT administrator can add or change modules.
-                @endcanModule
-            </p>
+            <p class="page-subtitle-landing mb-0">By programme, NTA level, and semester.</p>
         @endif
     </div>
     <div class="d-flex flex-wrap gap-2">
@@ -123,8 +117,6 @@
                     No modules linked to this semester yet (with the programme filter if used).
                     @canModule('courses', 'create')
                     <a href="{{ route('courses.create') }}">Add a module</a> and assign it to this semester.
-                    @else
-                    Contact the ICT administrator to add modules.
                     @endcanModule
                 </p>
             @else
@@ -189,15 +181,11 @@
 @elseif(empty($programmesTree))
 <div class="card card-landing">
     <div class="card-body text-center text-muted py-5">
-        <p class="mb-2">
-            @canModule('programmes', 'create')
-            Add a <a href="{{ route('programmes.create') }}">programme</a> first, then semesters, then modules.
-            @else
-            Programmes and semesters must be set up by the ICT administrator before modules can be added.
-            @endcanModule
-        </p>
         @canModule('programmes', 'create')
+        <p class="mb-2">Add a <a href="{{ route('programmes.create') }}">programme</a> first, then semesters, then modules.</p>
         <a href="{{ route('programmes.create') }}" class="btn btn-primary btn-sm me-1">Add programme</a>
+        @else
+        <p class="mb-0">No programmes set up yet.</p>
         @endcanModule
         @canModule('courses', 'create')
         <a href="{{ route('courses.create') }}" class="btn btn-outline-primary btn-sm">Add module</a>

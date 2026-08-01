@@ -126,8 +126,6 @@
                         No semesters yet.
                         @canModule('semesters', 'create')
                         <a href="{{ route('semesters.create') }}">Add one</a>
-                        @else
-                        Contact the ICT administrator to set up semesters.
                         @endcanModule
                     </td></tr>
                     @endforelse

@@ -12,9 +12,6 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-journal-bookmark-fill me-2 opacity-90"></i>Programmes</h1>
-        @unless(auth()->user()->canModule('programmes', 'create'))
-        <p class="page-subtitle-landing mb-0">View official programmes (CMT, MLT, etc.). Only the ICT administrator can add or change programmes.</p>
-        @endunless
     </div>
     @canModule('programmes', 'create')
     <a href="{{ route('programmes.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add Programme</a>
@@ -90,8 +87,6 @@
                             No programmes yet.
                             @canModule('programmes', 'create')
                             <a href="{{ route('programmes.create') }}">Add one</a>
-                            @else
-                            Contact the ICT administrator to set up programmes.
                             @endcanModule
                         </td>
                     </tr>
