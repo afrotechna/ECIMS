@@ -3,6 +3,7 @@
 @section('title', 'Welcome')
 
 @section('content')
+@include('layouts.partials.maintenance-banner')
 <div class="landing-welcome">
     <div class="logo-hero">
         <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}">

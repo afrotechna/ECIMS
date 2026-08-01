@@ -11,6 +11,7 @@
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
     @include('layouts.partials.cohas-auth-styles')
+    <link href="{{ asset('css/cohas-customizer.css') }}" rel="stylesheet">
     <link href="{{ asset('css/cohas-fonts.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
@@ -27,12 +28,13 @@
                         <span>Home</span>
                     </a>
                     <div class="auth-main-tools">
-                        @include('layouts.partials.theme-toggle')
+                        @include('layouts.partials.customizer-toggle')
                         @include('layouts.partials.language-toggle')
                     </div>
                 </header>
 
                 <section class="auth-login-card" aria-labelledby="login-form-title">
+                    @include('layouts.partials.maintenance-banner')
                     @yield('content')
                 </section>
 
@@ -42,9 +44,11 @@
             </div>
         </main>
     </div>
+    @include('layouts.partials.customizer')
 
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/cohas-theme.js') }}"></script>
+    <script src="{{ asset('js/cohas-customizer.js') }}"></script>
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     @include('layouts.partials.cohas-promo-carousel-script')
     @include('layouts.partials.cohas-loader-script')

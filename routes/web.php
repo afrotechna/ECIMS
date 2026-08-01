@@ -20,6 +20,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\HostelController;
 use App\Http\Controllers\InstitutionDocumentController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\PaymentController;
@@ -441,6 +442,8 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::get('trash', [\App\Http\Controllers\TrashController::class, 'index'])->name('trash.index');
             Route::post('trash/{type}/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restore'])->whereNumber('id')->name('trash.restore');
             Route::delete('trash/{type}/{id}', [\App\Http\Controllers\TrashController::class, 'forceDelete'])->whereNumber('id')->name('trash.force-delete');
+            Route::get('maintenance-mode', [MaintenanceController::class, 'edit'])->name('maintenance.edit');
+            Route::put('maintenance-mode', [MaintenanceController::class, 'update'])->name('maintenance.update');
         });
         Route::post('calendar/holidays/activate', [CalendarController::class, 'activateCatalog'])->name('calendar.holidays.activate');
         Route::post('calendar/events', [CalendarController::class, 'storeEvent'])->name('calendar.events.store');

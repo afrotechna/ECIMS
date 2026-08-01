@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\EnsureBursarOrAdmin;
 use App\Http\Middleware\LinkStudentUserRecord;
 use App\Http\Middleware\EnsureNotStudent;
@@ -37,6 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             SetLocale::class,
+            CheckMaintenanceMode::class,
             LinkStudentUserRecord::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('login.create'));

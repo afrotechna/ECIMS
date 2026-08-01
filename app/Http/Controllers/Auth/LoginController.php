@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\MaintenanceSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,12 @@ class LoginController extends Controller
         if (! $user || ! Hash::check($request->input('password'), $user->password)) {
             throw ValidationException::withMessages([
                 'login' => __('auth.failed'),
+            ]);
+        }
+
+        if (MaintenanceSetting::current()->isEffectiveNow() && ! $user->isAdmin()) {
+            throw ValidationException::withMessages([
+                'login' => 'The system is under scheduled maintenance. Only administrators can sign in right now — please try again later.',
             ]);
         }
 
