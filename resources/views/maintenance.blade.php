@@ -2,6 +2,8 @@
 
 @section('title', 'Under maintenance')
 
+@section('main-class', 'landing-main-maintenance')
+
 @section('content')
 <div class="landing-welcome">
     <div class="logo-hero">
