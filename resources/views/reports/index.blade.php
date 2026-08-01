@@ -56,12 +56,14 @@
             <div class="fin-report-link-body"><p class="fin-report-link-desc">Expected vs collected per academic year.</p></div>
         </a>
     </div>
+    @canModule('finance_payments', 'view')
     <div class="col-sm-6 col-lg-4">
         <a href="{{ route('payments.index') }}" class="fin-report-link">
             <div class="fin-report-link-head"><i class="bi bi-clock-history me-2"></i>Payment history</div>
             <div class="fin-report-link-body"><p class="fin-report-link-desc">All receipts with ledger links.</p></div>
         </a>
     </div>
+    @endcanModule
     <div class="col-sm-6 col-lg-4">
         <a href="{{ route('reports.enrollment') }}" class="fin-report-link">
             <div class="fin-report-link-head"><i class="bi bi-people me-2"></i>Enrollment</div>

@@ -25,7 +25,9 @@
         </div>
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('programmes.index') }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-collection me-1"></i> Manage programmes</a>
+            @canModule('programmes', 'create')
             <a href="{{ route('programmes.create') }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg me-1"></i> Programme</a>
+            @endcanModule
             @canModule('courses', 'create')
             <a href="{{ route('courses.create') }}" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i> Module</a>
             @endcanModule
@@ -39,7 +41,9 @@
         <h1 class="page-title-landing"><i class="bi bi-calendar3 me-2 opacity-90"></i>Semesters</h1>
         <p class="page-subtitle-landing mb-0">Manage academic semesters and key dates.</p>
     </div>
+    @canModule('semesters', 'create')
     <a href="{{ route('semesters.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add Semester</a>
+    @endcanModule
 </div>
 
 <div class="card card-landing mb-3">
