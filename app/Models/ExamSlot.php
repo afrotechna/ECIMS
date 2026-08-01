@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExamSlot extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     /** Continuous Assessment I examination slot. */
     public const ASSESSMENT_CAT1 = 'cat1';
 

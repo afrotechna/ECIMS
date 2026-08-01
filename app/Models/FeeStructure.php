@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FeeStructure extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     protected $fillable = [
         'academic_year',
         'programme_id',

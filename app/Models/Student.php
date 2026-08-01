@@ -4,12 +4,16 @@ namespace App\Models;
 
 use App\Support\StudentSurname;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     protected $fillable = [
         'reg_no',
         'official_registry_no',

@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class ProgrammeNtaLevelDocument extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     public const TYPE_ASSESSMENT_PLAN = 'assessment_plan';
 
     public const TYPE_PRACTICUM_GUIDE = 'practicum_guide';

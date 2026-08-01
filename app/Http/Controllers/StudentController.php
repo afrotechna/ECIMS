@@ -273,6 +273,17 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('success', 'Student updated successfully.');
     }
 
+    public function destroy(Student $student)
+    {
+        $name = $student->full_name;
+        $regNo = $student->reg_no;
+        $student->delete();
+
+        \App\Models\ActivityLog::log('student.deleted', Student::class, $student->id, "Student record removed: {$regNo} — {$name}");
+
+        return redirect()->route('students.index')->with('success', "{$name} moved to Trash.");
+    }
+
     public function importForm()
     {
         $programmes = Programme::where('is_active', true)->orderBy('code')->get();

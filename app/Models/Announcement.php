@@ -5,10 +5,14 @@ namespace App\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Announcement extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     public const AUDIENCE_ALL = 'all';
 
     public const AUDIENCE_STUDENTS = 'students';

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSoftDeleteAudit;
 use App\Support\RolePermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable implements CanResetPasswordContract
 {
-    use CanResetPassword, HasFactory, Notifiable;
+    use CanResetPassword, HasFactory, Notifiable, SoftDeletes, HasSoftDeleteAudit;
 
     protected ?\Illuminate\Support\Collection $extraModulePermissionsCache = null;
 

@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 
 class UserModulePermission extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     protected $fillable = [
         'user_id',
         'module',

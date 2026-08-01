@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InstitutionDocument extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     /** Folder keys used in UI and storage path (institution-documents/{key}/year). */
     public const CATEGORIES = [
         'practicum_guide' => 'Practicum guide',

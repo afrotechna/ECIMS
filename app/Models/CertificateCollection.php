@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 
 class CertificateCollection extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     protected $fillable = [
         'student_id',
         'collected_on',

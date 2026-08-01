@@ -4,12 +4,16 @@ namespace App\Models;
 
 use App\Support\AcademicSession;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class Semester extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     /** First teaching period of the academic year (often roughly Oct–Feb). */
     public const PERIOD_FIRST = 1;
 

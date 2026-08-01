@@ -209,9 +209,7 @@ class InstitutionDocumentController extends Controller
     public function destroy(InstitutionDocument $institution_document)
     {
         $category = $institution_document->category;
-        if (Storage::disk('local')->exists($institution_document->file_path)) {
-            Storage::disk('local')->delete($institution_document->file_path);
-        }
+        // Soft-deleted only: the file is kept on disk so the record can still be restored from Trash.
         $institution_document->delete();
 
         return redirect()
@@ -253,9 +251,7 @@ class InstitutionDocumentController extends Controller
             ], fn ($v) => $v !== null && $v !== ''),
             singularLabel: 'document',
             deleter: function (InstitutionDocument $doc) {
-                if (Storage::disk('local')->exists($doc->file_path)) {
-                    Storage::disk('local')->delete($doc->file_path);
-                }
+                // Soft-deleted only: the file is kept on disk so the record can still be restored from Trash.
                 $doc->delete();
 
                 return true;

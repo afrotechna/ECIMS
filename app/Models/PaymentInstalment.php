@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PaymentInstalment extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     protected $fillable = [
         'student_id',
         'amount',

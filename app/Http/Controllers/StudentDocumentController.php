@@ -30,9 +30,7 @@ class StudentDocumentController extends Controller
 
     public function destroy(StudentDocument $student_document)
     {
-        if (Storage::disk('local')->exists($student_document->path)) {
-            Storage::disk('local')->delete($student_document->path);
-        }
+        // Soft-deleted only: the file is kept on disk so the record can still be restored from Trash.
         $student_document->delete();
         return back()->with('success', 'Document removed.');
     }

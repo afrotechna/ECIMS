@@ -268,6 +268,21 @@
         </form>
     </div>
 </div>
+@canModule('students', 'delete')
+<div class="card card-landing mt-3 border-danger-subtle">
+    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div>
+            <div class="fw-semibold text-danger">Delete this student</div>
+            <div class="small text-muted">Removes the record from all lists. It's moved to Trash and can be restored by an administrator.</div>
+        </div>
+        <form action="{{ route('students.destroy', $student) }}" method="POST" class="d-inline">
+            @csrf
+            @method('DELETE')
+            @include('partials.action-delete', ['label' => 'Delete student', 'iconOnly' => false, 'swalTitle' => 'Delete '.$student->full_name.'?', 'swalText' => 'This moves the student to Trash. An administrator can restore it later.'])
+        </form>
+    </div>
+</div>
+@endcanModule
 @push('scripts')
 <script>
 document.getElementById('student_type').addEventListener('change', function() {

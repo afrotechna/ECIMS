@@ -320,8 +320,8 @@
                 $hasSystemView = $isSystemAdmin || auth()->user()->canModule('system', 'view');
             @endphp
             @if($hasSystemView)
-            <div class="nav-group {{ request()->routeIs('users.*', 'activity-log*', 'export*', 'users.role-permissions') ? 'expanded' : '' }}" id="navGroupSystem">
-                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('users.*', 'activity-log*', 'export*') ? 'true' : 'false' }}" aria-controls="navGroupSystemSub">
+            <div class="nav-group {{ request()->routeIs('users.*', 'activity-log*', 'export*', 'users.role-permissions', 'trash.*') ? 'expanded' : '' }}" id="navGroupSystem">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('users.*', 'activity-log*', 'export*', 'trash.*') ? 'true' : 'false' }}" aria-controls="navGroupSystemSub">
                     <i class="bi bi-gear"></i><span>System</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupSystemSub">
@@ -335,6 +335,7 @@
                     @if($isSystemAdmin)
                     <li><a href="{{ route('export.index') }}" class="{{ request()->routeIs('export*') ? 'active' : '' }}"><i class="bi bi-download"></i>Export data</a></li>
                     <li><a href="{{ route('integrations.index') }}" class="{{ request()->routeIs('integrations.*') ? 'active' : '' }}"><i class="bi bi-plug"></i>Integrations</a></li>
+                    <li><a href="{{ route('trash.index') }}" class="{{ request()->routeIs('trash.*') ? 'active' : '' }}"><i class="bi bi-trash3"></i>Trash</a></li>
                     @endif
                 </ul>
             </div>

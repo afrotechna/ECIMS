@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class StudentDocument extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     protected $fillable = ['student_id', 'type', 'name', 'path', 'mime_type', 'size'];
 
     public const TYPES = ['id_copy' => 'ID copy', 'photo' => 'Photo', 'joining_instructions' => 'Joining instructions (signed)', 'birth_certificate' => 'Birth certificate', 'other' => 'Other'];

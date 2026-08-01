@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasSoftDeleteAudit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CalendarEvent extends Model
 {
+    use SoftDeletes, HasSoftDeleteAudit;
+
     public const TYPES = [
         'public_holiday' => 'Public holiday',
         'international' => 'International observance',

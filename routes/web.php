@@ -438,6 +438,9 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::get('export', [ReportController::class, 'export'])->name('export.index');
             Route::get('export/run', [ReportController::class, 'exportRun'])->middleware('throttle:10,1')->name('export.run');
             Route::get('integrations', [IntegrationsController::class, 'index'])->name('integrations.index');
+            Route::get('trash', [\App\Http\Controllers\TrashController::class, 'index'])->name('trash.index');
+            Route::post('trash/{type}/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restore'])->whereNumber('id')->name('trash.restore');
+            Route::delete('trash/{type}/{id}', [\App\Http\Controllers\TrashController::class, 'forceDelete'])->whereNumber('id')->name('trash.force-delete');
         });
         Route::post('calendar/holidays/activate', [CalendarController::class, 'activateCatalog'])->name('calendar.holidays.activate');
         Route::post('calendar/events', [CalendarController::class, 'storeEvent'])->name('calendar.events.store');
