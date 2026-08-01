@@ -34,6 +34,7 @@
                 </header>
 
                 <section class="auth-login-card" aria-labelledby="login-form-title">
+                    @include('layouts.partials.maintenance-banner')
                     @yield('content')
                 </section>
 

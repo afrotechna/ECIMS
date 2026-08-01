@@ -9,8 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckMaintenanceMode
 {
-    /** Routes that must keep working during maintenance so an admin can still sign in to turn it off. */
-    private const ALWAYS_ALLOWED = ['locale.switch', 'login.create', 'login.store', 'logout'];
+    /** Routes that must keep working during maintenance so the public can see why, and an admin can sign in to turn it off. */
+    private const ALWAYS_ALLOWED = ['home', 'locale.switch', 'login.create', 'login.store', 'logout'];
 
     public function handle(Request $request, Closure $next): Response
     {
