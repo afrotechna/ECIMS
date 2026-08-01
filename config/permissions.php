@@ -204,7 +204,6 @@ return [
             'college_comms' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
-            'finance_reports' => ['view'],
             'system' => ['view'],
         ],
 
@@ -225,7 +224,6 @@ return [
             'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
-            'finance_reports' => ['view'],
         ],
 
         'hod_mlt' => [
@@ -245,7 +243,6 @@ return [
             'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
-            'finance_reports' => ['view'],
         ],
 
         'admission_officer' => [
@@ -255,7 +252,6 @@ return [
             'semesters' => ['view'],
             'courses' => ['view'],
             'accommodation' => ['view', 'create', 'update', 'delete'],
-            'finance_reports' => ['view'],
             'college_comms' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
@@ -273,7 +269,6 @@ return [
             'semesters' => ['view'],
             'registrations' => ['view'],
             'calendar' => ['view', 'create'],
-            'finance_reports' => ['view'],
         ],
 
         'accountant' => [
@@ -295,7 +290,6 @@ return [
             'exams' => ['view'],
             'students' => ['view'],
             'student_attendance' => ['view'],
-            'finance_reports' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view'],
         ],
@@ -321,7 +315,6 @@ return [
             'clinical' => ['view', 'update'],
             'student_attendance' => ['view'],
             'students' => ['view'],
-            'finance_reports' => ['view'],
         ],
     ],
 
