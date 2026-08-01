@@ -120,20 +120,28 @@
                     @endcanModule
                 </p>
             @else
-                @php $filteredCreditsTotal = $filteredCourses->sum(fn ($c) => (float) $c->credits); @endphp
+                @php
+                    $sortLink = function (string $column, string $label) use ($sort, $direction) {
+                        $nextDirection = ($sort === $column && $direction === 'asc') ? 'desc' : 'asc';
+                        $icon = $sort === $column ? ($direction === 'asc' ? 'bi-sort-up' : 'bi-sort-down') : 'bi-arrow-down-up text-muted';
+                        $url = request()->fullUrlWithQuery(['sort' => $column, 'direction' => $nextDirection]);
+
+                        return '<a href="'.$url.'" class="text-decoration-none text-reset d-inline-flex align-items-center gap-1">'.$label.' <i class="bi '.$icon.' small"></i></a>';
+                    };
+                @endphp
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 @include('partials.bulk-delete.th', $bulkDelete)
                                 <th>#</th>
-                                <th>Module code</th>
-                                <th>Course / Module</th>
+                                <th>{!! $sortLink('code', 'Module code') !!}</th>
+                                <th>{!! $sortLink('name', 'Course / Module') !!}</th>
                                 <th>Programme</th>
-                                <th>Year</th>
-                                <th>CA %</th>
-                                <th>SE %</th>
-                                <th>Credits</th>
+                                <th>{!! $sortLink('year_of_study', 'Year') !!}</th>
+                                <th>{!! $sortLink('ca_weight', 'CA %') !!}</th>
+                                <th>{!! $sortLink('exam_weight', 'SE %') !!}</th>
+                                <th>{!! $sortLink('credits', 'Credits') !!}</th>
                                 @canModule('courses', 'update')
                                 <th class="text-end">Actions</th>
                                 @endcanModule
@@ -143,7 +151,7 @@
                             @foreach($filteredCourses as $i => $c)
                             <tr>
                                 @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $c->id]))
-                                <td>{{ $i + 1 }}</td>
+                                <td>{{ $filteredCourses->firstItem() + $i }}</td>
                                 <td><strong>{{ $c->code }}</strong></td>
                                 <td>{{ $c->name }}</td>
                                 <td>{{ $c->programme->code ?? '—' }}</td>
@@ -166,7 +174,7 @@
                         <tfoot class="table-light">
                             <tr>
                                 <td class="border-top"></td>
-                                <td colspan="7" class="fw-semibold border-top">Total credits</td>
+                                <td colspan="7" class="fw-semibold border-top">Total credits (all matching modules)</td>
                                 <td class="fw-semibold border-top">{{ number_format($filteredCreditsTotal, 2, '.', '') }}</td>
                                 @canModule('courses', 'update')
                                 <td class="border-top"></td>
@@ -175,6 +183,11 @@
                         </tfoot>
                     </table>
                 </div>
+                @if($filteredCourses->hasPages())
+                <div class="card-footer bg-transparent">
+                    {{ $filteredCourses->appends(request()->query())->links() }}
+                </div>
+                @endif
             @endif
         </div>
     </div>

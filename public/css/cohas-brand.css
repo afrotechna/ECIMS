@@ -35,14 +35,10 @@
     --cohas-border: #e2e8f0;
     --cohas-hover: #e2e8f0;
 
-    /* Spacing / radius / shadow scale */
+    /* Radius / shadow scale */
     --cohas-radius-sm: .5rem;
     --cohas-radius-md: .75rem;
-    --cohas-radius-lg: 1rem;
-    --cohas-space-1: .5rem;
-    --cohas-space-2: .75rem;
-    --cohas-space-3: 1rem;
-    --cohas-space-4: 1.5rem;
+    --cohas-radius-lg: .75rem;
 
     /* Bootstrap 5.3 */
     --bs-primary: var(--cohas-blue-700);
@@ -352,6 +348,12 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     color: #5c4a00 !important;
 }
 
+/* Form sizing */
+.form-control:not(.form-control-sm):not(.form-control-lg),
+.form-select:not(.form-select-sm):not(.form-select-lg) {
+    min-height: 40px;
+}
+
 /* Form focus */
 .form-control:focus,
 .form-select:focus {
@@ -378,8 +380,8 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     align-items: center;
     justify-content: center;
     gap: .2rem;
-    min-width: 2.125rem;
-    min-height: 2.125rem;
+    min-width: 2.375rem;
+    min-height: 2.375rem;
     padding: .35rem .55rem !important;
     font-size: .8125rem !important;
     font-weight: 600 !important;

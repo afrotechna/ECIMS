@@ -28,6 +28,7 @@
     @stack('styles')
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     @include('layouts.partials.cohas-page-loader')
     @auth
     <aside class="sidebar-wrap" id="sidebar" aria-label="Sidebar">
@@ -445,7 +446,7 @@
             </div>
             </div>
         </header>
-        <main class="main-content">
+        <main class="main-content" id="main-content">
             @yield('content')
         </main>
         <footer class="app-footer" role="contentinfo">

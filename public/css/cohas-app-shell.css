@@ -89,6 +89,7 @@ body {
 .topbar {
     background: var(--cohas-surface); border-bottom: 1px solid var(--cohas-border); padding: .65rem 1.5rem;
     display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    min-height: 64px;
 }
 .topbar .topbar-left { display: flex; align-items: center; gap: .5rem; min-width: 0; }
 .topbar-search {
@@ -401,4 +402,34 @@ body {
 }
 .sidebar-wrap .nav-group-toggle .bi-chevron-down {
     transition: transform .25s ease;
+}
+
+/* Accessibility: skip-to-content link, visible only when focused */
+.skip-link {
+    position: absolute;
+    top: -3rem;
+    left: 1rem;
+    z-index: 2000;
+    background: var(--cohas-blue-700, #1a4fb5);
+    color: #fff;
+    padding: .6rem 1.1rem;
+    border-radius: var(--cohas-radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    transition: top .15s ease;
+}
+.skip-link:focus {
+    top: 1rem;
+    color: #fff;
+}
+
+/* Accessibility: visible keyboard-focus ring app-wide */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--cohas-blue-500, #1a4fb5);
+    outline-offset: 2px;
 }

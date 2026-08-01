@@ -4,6 +4,10 @@
     font-size: 0.875rem;
 }
 
+.ts-wrapper:not(.form-select-sm):not(.form-select-lg) .ts-control {
+    min-height: 40px;
+}
+
 .ts-control.focus,
 .ts-wrapper.focus .ts-control {
     border-color: var(--cohas-blue-500, #0d6efd);

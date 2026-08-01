@@ -87,7 +87,7 @@
     <div class="receipt-card">
         <div class="receipt-band">
             @if(file_exists(public_path('images/logo.png')))
-            <img src="{{ asset('images/logo.png') }}" alt="Logo">
+            <img src="{{ asset('images/logo.png') }}" alt="">
             @endif
             <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
             <div class="sub">Official Payment Receipt</div>

@@ -25,8 +25,15 @@ class CourseController extends Controller
         $programmeId = $request->get('programme_id');
 
         $filteredCourses = collect();
+        $filteredCreditsTotal = 0.0;
         $currentSemester = null;
         $catalogueFilterActive = false;
+        $sort = $request->get('sort', 'year_of_study');
+        $direction = $request->get('direction') === 'desc' ? 'desc' : 'asc';
+        $sortable = ['code', 'name', 'year_of_study', 'ca_weight', 'exam_weight', 'credits'];
+        if (! in_array($sort, $sortable, true)) {
+            $sort = 'year_of_study';
+        }
 
         if ($semesterId !== null && $semesterId !== '') {
             $currentSemester = Semester::find($semesterId);
@@ -37,7 +44,12 @@ class CourseController extends Controller
                 if ($programmeId) {
                     $query->where('programme_id', $programmeId);
                 }
-                $filteredCourses = $query->orderBy('year_of_study')->orderBy('code')->get();
+                $filteredCreditsTotal = (float) (clone $query)->sum('credits');
+                $query->orderBy($sort, $direction);
+                if ($sort !== 'code') {
+                    $query->orderBy('code');
+                }
+                $filteredCourses = $query->paginate(25)->withQueryString();
             }
         }
 
@@ -109,10 +121,13 @@ class CourseController extends Controller
             'semestersForFilter',
             'programmesForFilter',
             'filteredCourses',
+            'filteredCreditsTotal',
             'currentSemester',
             'semesterId',
             'programmeId',
-            'catalogueFilterActive'
+            'catalogueFilterActive',
+            'sort',
+            'direction'
         ));
     }
 
