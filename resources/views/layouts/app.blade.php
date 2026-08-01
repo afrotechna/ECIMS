@@ -266,15 +266,23 @@
                     <i class="bi bi-briefcase"></i><span>Registrar's office</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupCollegeOfficeSub">
+                    @canModule('students', 'view')
                     <li class="nav-group-sub-label">People</li>
                     <li><a href="{{ route('students.index') }}" class="{{ request()->routeIs('students.*') ? 'active' : '' }}"><i class="bi bi-people"></i>Students</a></li>
+                    @endcanModule
+                    @canModule('college_comms', 'view')
                     <li class="nav-group-sub-label">Communication</li>
                     <li><a href="{{ route('message-logs.index') }}" class="{{ request()->routeIs('message-logs.*') ? 'active' : '' }}"><i class="bi bi-chat-dots"></i>Message log</a></li>
                     <li><a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}"><i class="bi bi-megaphone"></i>Announcements</a></li>
+                    @endcanModule
                     <li class="nav-group-sub-label">Student affairs</li>
+                    @canModule('staff_leave', 'view')
                     <li><a href="{{ route('leave-applications.index') }}" class="{{ request()->routeIs('leave-applications.*') ? 'active' : '' }}"><i class="bi bi-calendar-x"></i>Leave applications</a></li>
+                    @endcanModule
+                    @canModule('student_affairs', 'view')
                     <li><a href="{{ route('graduation-clearances.index') }}" class="{{ request()->routeIs('graduation-clearances.*') ? 'active' : '' }}"><i class="bi bi-clipboard-check"></i>Graduation clearance</a></li>
                     <li><a href="{{ route('conduct-records.index') }}" class="{{ request()->routeIs('conduct-records.*') ? 'active' : '' }}"><i class="bi bi-shield-exclamation"></i>Conduct records</a></li>
+                    @endcanModule
                     <li><a href="{{ route('transcript-requests.index') }}" class="{{ request()->routeIs('transcript-requests.*') ? 'active' : '' }}"><i class="bi bi-file-earmark-text"></i>Transcript requests</a></li>
                     @canModule('certificate_collection', 'view')
                     <li><a href="{{ route('certificate-collections.index') }}" class="{{ request()->routeIs('certificate-collections.*') ? 'active' : '' }}"><i class="bi bi-patch-check"></i>Certificate collection</a></li>
@@ -286,8 +294,10 @@
                     <li class="nav-group-sub-label">Records</li>
                     <li><a href="{{ route('institution-documents.index') }}" class="{{ request()->routeIs('institution-documents.*') ? 'active' : '' }}"><i class="bi bi-folder2-open"></i>Institution documents</a></li>
                     @endcanModule
+                    @canModule('calendar', 'view')
                     <li class="nav-group-sub-label">Planning</li>
                     <li><a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}"><i class="bi bi-calendar3"></i>College calendar</a></li>
+                    @endcanModule
                 </ul>
             </div>
             @canModule('accommodation', 'view')
