@@ -1,5 +1,16 @@
 @extends('layouts.app')
 @section('title', 'Clinical training framework')
+@push('styles')
+<style>
+    .framework-accordion .courses-fold-trigger { cursor: pointer; user-select: none; }
+    .framework-accordion .courses-fold-icon { transition: transform 0.2s ease; display: inline-block; }
+    .framework-accordion .courses-fold-trigger.collapsed .courses-fold-icon { transform: rotate(-90deg); }
+    .framework-dept-card { border: 1px solid #e2e8f0; border-radius: .5rem; margin-bottom: .6rem; overflow: hidden; }
+    .framework-dept-card:last-child { margin-bottom: 0; }
+    .framework-dept-header { padding: .55rem .9rem; background: #f8fafc; font-size: .875rem; font-weight: 600; text-transform: none; letter-spacing: normal; }
+    .framework-search-empty { display: none; }
+</style>
+@endpush
 @section('content')
 <nav class="student-breadcrumb">
     <a href="{{ route('clinical-rotations.index') }}">Clinical rotation</a>
@@ -51,33 +62,102 @@
 @endif
 
 @if(!empty($practicum_by_department ?? []))
+@php
+    $frameworkTotalItems = collect($practicum_by_department)->sum(fn ($items) => count($items));
+@endphp
 <div class="card card-landing mb-3">
-    <div class="card-header-landing">NTA 4 logbook catalogue by posting area</div>
+    <div class="card-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <span>NTA {{ $practicum_level ?? 4 }} logbook catalogue by posting area</span>
+        <span class="badge bg-light text-dark">{{ $frameworkTotalItems }} procedures</span>
+    </div>
     <div class="card-body">
         @if(!empty($assessment_methods ?? []))
         <p class="small mb-2"><strong>Assessment methods:</strong> {{ implode(' · ', $assessment_methods) }}</p>
         @endif
-        @foreach($practicum_by_department as $deptCode => $items)
-        <h6 class="text-uppercase text-muted small mt-3 mb-2">{{ ($rotation_area_labels ?? [])[$deptCode] ?? $deptCode }}</h6>
-        <div class="table-responsive mb-2">
-            <table class="table table-sm small mb-0">
-                <thead class="table-light"><tr><th>Code</th><th>Procedure</th><th>Assessment</th><th>Min.</th></tr></thead>
-                <tbody>
-                    @foreach($items as $item)
-                    <tr>
-                        <td class="fw-semibold">{{ $item['code'] }}</td>
-                        <td>{{ $item['name'] }}</td>
-                        <td>{{ $item['assessment_modes'] ?? '—' }}</td>
-                        <td>{{ $item['min_required_count'] }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <input
+            type="search"
+            class="form-control form-control-sm mb-3"
+            id="frameworkSearch"
+            placeholder="Search procedures by name or code…"
+            aria-label="Search procedures"
+        >
+        <p class="framework-search-empty text-muted small mb-3" id="frameworkNoMatch">No procedures match your search.</p>
+        <div class="framework-accordion" id="frameworkAccordion">
+            @foreach($practicum_by_department as $deptCode => $items)
+            @php
+                $deptLabel = ($rotation_area_labels ?? [])[$deptCode] ?? $deptCode;
+                $deptCollapseId = 'framework-dept-'.\Illuminate\Support\Str::slug($deptCode);
+                $deptOpen = $loop->first;
+            @endphp
+            <div class="framework-dept-card" data-framework-dept>
+                <div
+                    class="framework-dept-header d-flex justify-content-between align-items-center gap-2 courses-fold-trigger {{ $deptOpen ? '' : 'collapsed' }}"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#{{ $deptCollapseId }}"
+                    aria-expanded="{{ $deptOpen ? 'true' : 'false' }}"
+                    role="button"
+                    tabindex="0"
+                >
+                    <span>{{ $deptLabel }}</span>
+                    <span class="d-flex align-items-center gap-2">
+                        <span class="badge bg-light text-dark">{{ count($items) }}</span>
+                        <i class="bi bi-chevron-down courses-fold-icon"></i>
+                    </span>
+                </div>
+                <div id="{{ $deptCollapseId }}" class="collapse {{ $deptOpen ? 'show' : '' }}">
+                    <div class="table-responsive">
+                        <table class="table table-sm small mb-0">
+                            <thead class="table-light"><tr><th>Code</th><th>Procedure</th><th>Assessment</th><th>Min.</th></tr></thead>
+                            <tbody>
+                                @foreach($items as $item)
+                                <tr data-framework-row data-framework-search="{{ strtolower($item['code'].' '.$item['name']) }}">
+                                    <td class="fw-semibold">{{ $item['code'] }}</td>
+                                    <td>{{ $item['name'] }}</td>
+                                    <td>{{ $item['assessment_modes'] ?? '—' }}</td>
+                                    <td>{{ $item['min_required_count'] }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @endforeach
         </div>
-        @endforeach
         <p class="small text-muted mt-3 mb-0">Sync catalogue: <code>php artisan clinical:sync-cmt4-practicum</code></p>
     </div>
 </div>
+@push('scripts')
+<script>
+(function () {
+    var input = document.getElementById('frameworkSearch');
+    if (!input) return;
+    var noMatch = document.getElementById('frameworkNoMatch');
+    input.addEventListener('input', function () {
+        var term = this.value.trim().toLowerCase();
+        var anyVisible = false;
+        document.querySelectorAll('[data-framework-dept]').forEach(function (dept) {
+            var deptHasMatch = false;
+            dept.querySelectorAll('[data-framework-row]').forEach(function (row) {
+                var match = term === '' || row.getAttribute('data-framework-search').includes(term);
+                row.classList.toggle('d-none', !match);
+                if (match) deptHasMatch = true;
+            });
+            dept.classList.toggle('d-none', !deptHasMatch);
+            if (deptHasMatch) anyVisible = true;
+            if (term !== '' && deptHasMatch) {
+                var trigger = dept.querySelector('.courses-fold-trigger');
+                var target = document.querySelector(trigger.getAttribute('data-bs-target'));
+                if (target && !target.classList.contains('show')) {
+                    new bootstrap.Collapse(target, { toggle: true });
+                }
+            }
+        });
+        noMatch.style.display = (term !== '' && !anyVisible) ? 'block' : 'none';
+    });
+})();
+</script>
+@endpush
 @endif
 
 <div class="row g-3">
