@@ -100,9 +100,9 @@
     </div>
 
     @php
-        $hasFinance = auth()->user()->canAccessFinance();
+        $hasPayments = auth()->user()->canModule('finance_payments', 'view');
         $hasAcademics = auth()->user()->canAccessAcademics();
-        $trendCol = ($hasFinance && $hasAcademics) ? 'col-6 col-xl-3' : (($hasFinance || $hasAcademics) ? 'col-md-6 col-lg-4' : 'col-12');
+        $trendCol = ($hasPayments && $hasAcademics) ? 'col-6 col-xl-3' : (($hasPayments || $hasAcademics) ? 'col-md-6 col-lg-4' : 'col-12');
     @endphp
     <div class="row g-3">
         <div class="{{ $trendCol }}">
@@ -116,7 +116,7 @@
                 </div>
             </div>
         </div>
-        @if($hasFinance)
+        @if($hasPayments)
         <div class="{{ $trendCol }}">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
@@ -340,7 +340,7 @@
         });
     }
 
-    @if(auth()->user()->canAccessFinance())
+    @if(auth()->user()->canModule('finance_payments', 'view'))
     var payLabels = {!! json_encode(array_keys($chartPayments ?? [])) !!};
     var payData = {!! json_encode(array_values($chartPayments ?? [])) !!};
     if (document.getElementById('chartPaymentsTrend') && payData.length) {

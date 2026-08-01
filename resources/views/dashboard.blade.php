@@ -159,7 +159,7 @@
                     </form>
                 </div>
             </div>
-            @if($canViewFinanceArea)
+            @if($canViewPayments)
             <div class="col-6 col-lg-3">
                 <div class="dashboard-stat-card">
                     <div class="dashboard-stat-card__icon bg-warning bg-opacity-10 text-warning">
