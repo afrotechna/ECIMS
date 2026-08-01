@@ -23,7 +23,7 @@
             'promoCtaLabel' => 'Sign in to portal',
         ])
 
-        <main class="landing-main @yield('main-class')">
+        <main class="landing-main">
             <div class="landing-panel">
                 @yield('content')
             </div>
