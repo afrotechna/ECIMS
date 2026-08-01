@@ -141,8 +141,8 @@
             <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}">
         </div>
         <h1><i class="bi bi-cone-striped me-2"></i>Under maintenance</h1>
-        <p class="lead">{{ $setting->title ?: 'Sorry for the inconvenience' }}</p>
-        <p class="tagline">{{ $setting->message ?: "We're performing scheduled maintenance and will be back online shortly." }}</p>
+        <p class="lead">{{ $setting->title ?: 'Scheduled system maintenance' }}</p>
+        <p class="tagline">{{ $setting->message ?: 'The system is temporarily unavailable while we perform scheduled maintenance. Please check back shortly.' }}</p>
 
         @if($setting->starts_at)
         <div class="maintenance-schedule">

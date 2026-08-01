@@ -32,8 +32,8 @@ class MaintenanceScheduledNotification extends Notification
         }
 
         return [
-            'title' => $this->setting->title ?: 'Sorry for the inconvenience',
-            'message' => trim(($this->setting->message ?: "We're performing scheduled maintenance and will be back online shortly.").$schedule),
+            'title' => $this->setting->title ?: 'Scheduled system maintenance',
+            'message' => trim(($this->setting->message ?: 'The system will be temporarily unavailable for maintenance.').$schedule),
             'kind' => 'maintenance_scheduled',
         ];
     }

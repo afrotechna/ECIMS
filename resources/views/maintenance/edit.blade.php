@@ -40,7 +40,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $setting->title) }}" placeholder="Sorry for the inconvenience">
+                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $setting->title) }}" placeholder="Scheduled system maintenance">
                     @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-3">
@@ -56,7 +56,7 @@
                 </div>
                 <div class="col-12">
                     <label for="message" class="form-label">Message shown to users</label>
-                    <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="3" placeholder="We're performing scheduled maintenance and will be back online shortly.">{{ old('message', $setting->message) }}</textarea>
+                    <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="3" placeholder="The system will be briefly unavailable while we perform scheduled maintenance.">{{ old('message', $setting->message) }}</textarea>
                     @error('message')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
