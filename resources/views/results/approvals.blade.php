@@ -26,15 +26,15 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead>
-                    <tr><th>Semester</th><th>Pending rows</th><th class="text-end">Actions</th></tr>
+                    <tr><th>Semester</th><th>Pending rows</th>@if($canApprove)<th class="text-end">Actions</th>@endif</tr>
                 </thead>
                 <tbody>
                     @forelse($pending as $row)
                     <tr>
                         <td>{{ $row->semester?->label ?? '—' }}</td>
                         <td>{{ $row->row_count }}</td>
+                        @if($canApprove)
                         <td class="text-end">
-                            @if($canApprove)
                                 <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ $row->semester_id }}">Approve</button>
                                 <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $row->semester_id }}">Reject</button>
 
@@ -75,11 +75,11 @@
                                         </form>
                                     </div></div>
                                 </div>
-                            @endif
                         </td>
+                        @endif
                     </tr>
                     @empty
-                    <tr><td colspan="3" class="text-center text-muted py-5">No results pending approval.</td></tr>
+                    <tr><td colspan="{{ $canApprove ? 3 : 2 }}" class="text-center text-muted py-5">No results pending approval.</td></tr>
                     @endforelse
                 </tbody>
             </table>

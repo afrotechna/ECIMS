@@ -320,6 +320,7 @@
                                                     <td>{{ $c->ca_weight }}</td>
                                                     <td>{{ $c->exam_weight }}</td>
                                                     <td>{{ $c->credits }}</td>
+                                                    @canModule('courses', 'update')
                                                     <td class="text-end">
                                                         @include('partials.action-edit', ['href' => route('courses.edit', array_filter([
                                                             'course' => $c,
@@ -327,6 +328,7 @@
                                                             'return_programme_id' => $programme->id,
                                                         ])), 'iconOnly' => true])
                                                     </td>
+                                                    @endcanModule
                                                 </tr>
                                                 @endforeach
                                             </tbody>

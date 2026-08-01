@@ -42,7 +42,9 @@
                     <th>Time</th>
                     <th>Course</th>
                     <th>Room</th>
+                    @canModule('timetable', 'delete')
                     <th class="text-end">Actions</th>
+                    @endcanModule
                 </tr>
             </thead>
             <tbody>
@@ -53,19 +55,19 @@
                     <td>{{ $slot->start_time }} – {{ $slot->end_time }}</td>
                     <td>{{ $slot->course ? $slot->course->code : '' }} {{ $slot->course ? $slot->course->name : '' }}</td>
                     <td>{{ $slot->room ?? '—' }}</td>
+                    @canModule('timetable', 'delete')
                     <td class="text-end text-nowrap">
-                        @canModule('timetable', 'delete')
                         <form method="POST" action="{{ route('timetable-slots.destroy', $slot) }}" class="d-inline">
                             @csrf
                             @method('DELETE')
                             @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
                             @include('partials.action-delete', ['swalTitle' => 'Remove this timetable slot?'])
                         </form>
-                        @endcanModule
                     </td>
+                    @endcanModule
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center text-muted py-5">No timetable slots.</td></tr>
+                <tr><td colspan="{{ auth()->user()->canModule('timetable', 'delete') ? 5 : 4 }}" class="text-center text-muted py-5">No timetable slots.</td></tr>
                 @endforelse
             </tbody>
         </table>

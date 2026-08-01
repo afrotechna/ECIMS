@@ -38,6 +38,9 @@
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0" id="programmesTable">
+                @php
+                    $showProgrammeActions = auth()->user()->canModule('programmes', 'update') || auth()->user()->canModule('programmes', 'delete');
+                @endphp
                 <thead>
                     <tr>
                         @include('partials.bulk-delete.th', $bulkDelete)
@@ -46,7 +49,9 @@
                         <th>Level</th>
                         <th>Duration</th>
                         <th>Status</th>
+                        @if($showProgrammeActions)
                         <th class="text-end">Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -64,6 +69,7 @@
                                 <span class="badge bg-secondary">Inactive</span>
                             @endif
                         </td>
+                        @if($showProgrammeActions)
                         <td class="text-end">
                             @canModule('programmes', 'update')
                             @include('partials.action-edit', ['href' => route('programmes.edit', $p), 'class' => 'me-1', 'iconOnly' => true])
@@ -76,10 +82,11 @@
                             </form>
                             @endcanModule
                         </td>
+                        @endif
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-5">
+                        <td colspan="{{ $showProgrammeActions ? 7 : 6 }}" class="text-center text-muted py-5">
                             No programmes yet.
                             @canModule('programmes', 'create')
                             <a href="{{ route('programmes.create') }}">Add one</a>

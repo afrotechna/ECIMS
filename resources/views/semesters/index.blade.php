@@ -81,6 +81,9 @@
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0" id="semestersTable">
+                @php
+                    $showSemesterActions = auth()->user()->canModule('semesters', 'update') || auth()->user()->canModule('semesters', 'delete');
+                @endphp
                 <thead>
                     <tr>
                         @include('partials.bulk-delete.th', $bulkDelete)
@@ -89,7 +92,9 @@
                         <th>Start</th>
                         <th>End</th>
                         <th>Status</th>
+                        @if($showSemesterActions)
                         <th class="text-end">Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -101,6 +106,7 @@
                         <td>@if($s->start_date){{ $s->start_date->format('d/m/Y') }}@else—@endif</td>
                         <td>@if($s->end_date){{ $s->end_date->format('d/m/Y') }}@else—@endif</td>
                         <td>@if($s->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
+                        @if($showSemesterActions)
                         <td class="text-end">
                             @canModule('semesters', 'update')
                             @include('partials.action-edit', ['href' => route('semesters.edit', $s), 'class' => 'me-1', 'iconOnly' => true])
@@ -113,9 +119,10 @@
                             </form>
                             @endcanModule
                         </td>
+                        @endif
                     </tr>
                     @empty
-                    <tr><td colspan="7" class="text-center text-muted py-5">
+                    <tr><td colspan="{{ $showSemesterActions ? 7 : 6 }}" class="text-center text-muted py-5">
                         No semesters yet.
                         @canModule('semesters', 'create')
                         <a href="{{ route('semesters.create') }}">Add one</a>
