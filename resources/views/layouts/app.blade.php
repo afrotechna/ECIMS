@@ -283,21 +283,19 @@
                     <li><a href="{{ route('graduation-clearances.index') }}" class="{{ request()->routeIs('graduation-clearances.*') ? 'active' : '' }}"><i class="bi bi-clipboard-check"></i>Graduation clearance</a></li>
                     <li><a href="{{ route('conduct-records.index') }}" class="{{ request()->routeIs('conduct-records.*') ? 'active' : '' }}"><i class="bi bi-shield-exclamation"></i>Conduct records</a></li>
                     @endcanModule
+                    @canModule('transcript_requests', 'view')
                     <li><a href="{{ route('transcript-requests.index') }}" class="{{ request()->routeIs('transcript-requests.*') ? 'active' : '' }}"><i class="bi bi-file-earmark-text"></i>Transcript requests</a></li>
+                    @endcanModule
                     @canModule('certificate_collection', 'view')
                     <li><a href="{{ route('certificate-collections.index') }}" class="{{ request()->routeIs('certificate-collections.*') ? 'active' : '' }}"><i class="bi bi-patch-check"></i>Certificate collection</a></li>
                     @endcanModule
                     @canModule('student_card_status', 'view')
                     <li><a href="{{ route('student-card-status.index') }}" class="{{ request()->routeIs('student-card-status.*') ? 'active' : '' }}"><i class="bi bi-person-vcard"></i>Student ID &amp; NHIF status</a></li>
                     @endcanModule
-                    @canModule('institution_docs', 'view')
                     <li class="nav-group-sub-label">Records</li>
                     <li><a href="{{ route('institution-documents.index') }}" class="{{ request()->routeIs('institution-documents.*') ? 'active' : '' }}"><i class="bi bi-folder2-open"></i>Institution documents</a></li>
-                    @endcanModule
-                    @canModule('calendar', 'view')
                     <li class="nav-group-sub-label">Planning</li>
                     <li><a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}"><i class="bi bi-calendar3"></i>College calendar</a></li>
-                    @endcanModule
                 </ul>
             </div>
             @canModule('accommodation', 'view')

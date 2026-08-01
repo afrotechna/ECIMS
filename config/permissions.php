@@ -35,6 +35,7 @@ return [
         'staff_leave' => 'Staff leave applications',
         'student_affairs' => 'Conduct & graduation',
         'certificate_collection' => 'Certificate collection',
+        'transcript_requests' => 'Transcript requests',
         'student_card_status' => 'Student ID & NHIF card status',
         'inventory' => 'Inventory & assets',
         'institution_docs' => 'Institution documents',
@@ -73,6 +74,7 @@ return [
         'conduct-records' => 'student_affairs',
         'graduation-clearances' => 'student_affairs',
         'certificate-collections' => 'certificate_collection',
+        'transcript-requests' => 'transcript_requests',
         'student-card-status' => 'student_card_status',
         'inventory-items' => 'inventory',
         'institution-documents' => 'institution_docs',
@@ -138,6 +140,7 @@ return [
             'staff_leave' => ['view', 'create', 'update'],
             'student_affairs' => ['view', 'create', 'update'],
             'certificate_collection' => ['view'],
+            'transcript_requests' => ['view'],
             'student_card_status' => ['view'],
             'inventory' => ['view', 'update'],
             'institution_docs' => ['view', 'create', 'update', 'delete'],
@@ -180,6 +183,7 @@ return [
             'institution_docs' => ['view', 'create', 'update'],
             'calendar' => ['view', 'create', 'update', 'delete'],
             'student_card_status' => ['view', 'create', 'update', 'delete'],
+            'transcript_requests' => ['view', 'update'],
         ],
 
         'accommodation_matron' => [
@@ -188,6 +192,7 @@ return [
             'finance_reports' => ['view'],
             'registrations' => ['view'],
             'college_comms' => ['view'],
+            'institution_docs' => ['view'],
             'calendar' => ['view', 'create', 'update'],
         ],
 
@@ -263,6 +268,7 @@ return [
             'calendar' => ['view', 'create', 'update', 'delete'],
             'certificate_collection' => ['view', 'create', 'update', 'delete'],
             'student_card_status' => ['view', 'create', 'update', 'delete'],
+            'transcript_requests' => ['view', 'update'],
         ],
 
         'examination_officer' => [
@@ -274,6 +280,7 @@ return [
             'courses' => ['view'],
             'semesters' => ['view'],
             'registrations' => ['view'],
+            'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
         ],
 
@@ -322,6 +329,8 @@ return [
             'clinical' => ['view', 'update'],
             'student_attendance' => ['view'],
             'students' => ['view'],
+            'institution_docs' => ['view'],
+            'calendar' => ['view'],
         ],
     ],
 
