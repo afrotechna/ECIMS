@@ -28,7 +28,11 @@
         <span class="small text-muted">{{ __('ui.charts.on_register_hint', ['count' => number_format($activeStudentCount ?? 0)]) }}</span>
     </div>
 
-    <div class="row g-3 mb-3">
+    @php
+        $hasPayments = auth()->user()->canModule('finance_payments', 'view');
+        $hasAcademics = auth()->user()->canAccessAcademics();
+    @endphp
+    <div class="row g-3">
         <div class="col-md-6 col-xl-4">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
@@ -97,15 +101,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    @php
-        $hasPayments = auth()->user()->canModule('finance_payments', 'view');
-        $hasAcademics = auth()->user()->canAccessAcademics();
-        $trendCol = ($hasPayments && $hasAcademics) ? 'col-6 col-xl-3' : (($hasPayments || $hasAcademics) ? 'col-md-6 col-lg-4' : 'col-12');
-    @endphp
-    <div class="row g-3">
-        <div class="{{ $trendCol }}">
+        <div class="col-md-6 col-xl-4">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
                     <i class="bi bi-graph-up-arrow text-primary"></i>
@@ -117,7 +113,7 @@
             </div>
         </div>
         @if($hasPayments)
-        <div class="{{ $trendCol }}">
+        <div class="col-md-6 col-xl-4">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
                     <i class="bi bi-currency-exchange text-success"></i>
@@ -128,7 +124,7 @@
                 </div>
             </div>
         </div>
-        <div class="{{ $trendCol }}">
+        <div class="col-md-6 col-xl-4">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
                     <i class="bi bi-wallet2 text-warning"></i>
@@ -157,7 +153,7 @@
         </div>
         @endif
         @if($hasAcademics)
-        <div class="{{ $trendCol }}">
+        <div class="col-md-6 col-xl-4">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
                     <i class="bi bi-ui-checks text-info"></i>
