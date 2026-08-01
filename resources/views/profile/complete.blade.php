@@ -74,9 +74,8 @@
                         @error('guardian_phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label for="guardian_relationship" class="form-label">Relationship <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('guardian_relationship') is-invalid @enderror" id="guardian_relationship" name="guardian_relationship" value="{{ old('guardian_relationship', $student->guardian_relationship) }}" placeholder="e.g. Father, Mother, Guardian" required>
-                        @error('guardian_relationship')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label for="guardian_relationship_choice" class="form-label">Relationship <span class="text-danger">*</span></label>
+                        @include('students.partials.guardian-relationship-field', ['currentValue' => old('guardian_relationship', $student->guardian_relationship), 'required' => true])
                     </div>
                 </div>
 

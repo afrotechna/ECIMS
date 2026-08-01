@@ -152,6 +152,12 @@ class Student extends Model
 
     public const STUDENT_TYPES = ['regular' => 'Regular', 'transferred' => 'Transferred'];
 
+    /** Common guardian/next-of-kin relationships offered in the dropdown; "Other" reveals a free-text field. */
+    public const GUARDIAN_RELATIONSHIPS = [
+        'Father', 'Mother', 'Brother', 'Sister', 'Uncle', 'Aunt',
+        'Grandfather', 'Grandmother', 'Spouse', 'Guardian', 'Other',
+    ];
+
     public const REPORTING_STATUSES = [
         'reported' => 'Reported',
         'not_reported' => 'Not reported',

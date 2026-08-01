@@ -232,8 +232,8 @@
                         <input type="text" name="guardian_phone" class="form-control" value="{{ old('guardian_phone', $student->guardian_phone) }}">
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Relationship</label>
-                        <input type="text" name="guardian_relationship" class="form-control" value="{{ old('guardian_relationship', $student->guardian_relationship) }}" placeholder="e.g. Father">
+                        <label for="guardian_relationship_choice" class="form-label">Relationship</label>
+                        @include('students.partials.guardian-relationship-field', ['currentValue' => old('guardian_relationship', $student->guardian_relationship)])
                     </div>
                 </div>
             @endif
