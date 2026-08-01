@@ -118,8 +118,8 @@ return [
         ],
 
         'principal' => [
-            'programmes' => ['view', 'update'],
-            'semesters' => ['view', 'update'],
+            'programmes' => ['view'],
+            'semesters' => ['view'],
             'courses' => ['view'],
             'registrations' => ['view', 'create', 'update'],
             'results' => ['view'],
