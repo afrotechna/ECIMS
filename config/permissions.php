@@ -8,7 +8,8 @@
  * - VP (AFP — Administrative, Financial & Planning): finance, procurement (inventory), accommodation oversight
  * - VP (ARC — Academic, Research & Consultancy): registration, results, exams, clinical, timetable, question bank (programmes, semesters & module catalogue: view only; ICT admin maintains catalogue)
  * - Academic team: VP (ARC), Admission, HOD CMT, HOD MLT, Examination Officer (+ tutors / clinical instructors)
- * - Finance team: VP (AFP), Accountant, Procurement Officer, Secretary (reports), Accommodation Matron
+ * - Finance team: VP (AFP), Accountant, Procurement Officer, Secretary (reports)
+ * - Matron: accommodation allocations only — no add/edit/delete on hostels or rooms
  * - Principal: oversight across portfolios
  * - ICT administrator: system + full access
  */
@@ -30,7 +31,8 @@ return [
         'finance_payments' => 'Payments & ledger charges',
         'finance_reports' => 'Financial & admission reports',
         'students' => 'Student records',
-        'accommodation' => 'Hostels, rooms & allocations',
+        'accommodation_facilities' => 'Hostels & rooms',
+        'accommodation' => 'Room allocations',
         'college_comms' => 'Announcements & message log',
         'staff_leave' => 'Staff leave applications',
         'student_affairs' => 'Conduct & graduation',
@@ -65,8 +67,8 @@ return [
         'students' => 'students',
         'student-documents' => 'students',
         'search' => 'students',
-        'hostels' => 'accommodation',
-        'rooms' => 'accommodation',
+        'hostels' => 'accommodation_facilities',
+        'rooms' => 'accommodation_facilities',
         'accommodation-allocations' => 'accommodation',
         'announcements' => 'college_comms',
         'message-logs' => 'college_comms',
@@ -135,6 +137,7 @@ return [
             'finance_payments' => ['view'],
             'finance_reports' => ['view'],
             'students' => ['view', 'create', 'update'],
+            'accommodation_facilities' => ['view', 'create', 'update'],
             'accommodation' => ['view', 'create', 'update'],
             'college_comms' => ['view', 'create', 'update', 'delete'],
             'staff_leave' => ['view', 'create', 'update'],
@@ -154,6 +157,7 @@ return [
             'finance_reports' => ['view'],
             'inventory' => ['view', 'create', 'update', 'delete'],
             'students' => ['view', 'update'],
+            'accommodation_facilities' => ['view', 'create', 'update', 'delete'],
             'accommodation' => ['view', 'create', 'update', 'delete'],
             'registrations' => ['view'],
             'programmes' => ['view'],
@@ -187,13 +191,10 @@ return [
         ],
 
         'accommodation_matron' => [
+            // Matron allocates students to rooms only — no add/edit/delete on hostels or rooms themselves.
+            'accommodation_facilities' => ['view'],
             'accommodation' => ['view', 'create', 'update', 'delete'],
-            'students' => ['view', 'update'],
-            'finance_reports' => ['view'],
-            'registrations' => ['view'],
-            'college_comms' => ['view'],
-            'institution_docs' => ['view'],
-            'calendar' => ['view', 'create', 'update'],
+            'students' => ['view'],
         ],
 
         'vice_principal_arc' => [
@@ -231,6 +232,7 @@ return [
             'staff_leave' => ['view', 'create', 'update'],
             'student_affairs' => ['view', 'create', 'update'],
             'college_comms' => ['view', 'create', 'update'],
+            'accommodation_facilities' => ['view'],
             'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
@@ -251,6 +253,7 @@ return [
             'staff_leave' => ['view', 'create', 'update'],
             'student_affairs' => ['view', 'create', 'update'],
             'college_comms' => ['view', 'create', 'update'],
+            'accommodation_facilities' => ['view'],
             'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
@@ -262,6 +265,7 @@ return [
             'programmes' => ['view'],
             'semesters' => ['view'],
             'courses' => ['view'],
+            'accommodation_facilities' => ['view', 'create', 'update', 'delete'],
             'accommodation' => ['view', 'create', 'update', 'delete'],
             'college_comms' => ['view', 'create', 'update'],
             'institution_docs' => ['view', 'create', 'update'],
@@ -320,6 +324,7 @@ return [
             'college_comms' => ['view'],
             'staff_leave' => ['view'],
             'student_affairs' => ['view'],
+            'accommodation_facilities' => ['view'],
             'accommodation' => ['view'],
             'calendar' => ['view'],
             'institution_docs' => ['view'],
@@ -362,6 +367,5 @@ return [
         'procurement_officer',
         'accountant',
         'secretary',
-        'accommodation_matron',
     ],
 ];

@@ -44,7 +44,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         'procurement_officer' => 'Procurement Officer',
         'accountant' => 'Accountant',
         'secretary' => 'College Secretary',
-        'accommodation_matron' => 'Accommodation Matron',
+        'accommodation_matron' => 'Matron',
         'hod_cmt' => 'Head of Department — Clinical Medicine (CMT)',
         'hod_mlt' => 'Head of Department — Medical Laboratory (MLT)',
         'admission_officer' => 'Admission Officer',
@@ -116,7 +116,6 @@ class User extends Authenticatable implements CanResetPasswordContract
         'procurement_officer',
         'accountant',
         'secretary',
-        'accommodation_matron',
     ];
 
     /** Roles that may use System menu (users, activity log, export). */

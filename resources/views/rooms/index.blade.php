@@ -16,7 +16,9 @@
     </div>
     <div class="d-flex flex-wrap align-items-center gap-2">
         <a href="{{ route('rooms.occupancy', request()->filled('hostel_id') ? ['hostel_id' => request('hostel_id')] : []) }}" class="btn btn-outline-light btn-sm border"><i class="bi bi-people me-1"></i> Live by room</a>
+        @canModule('accommodation_facilities', 'create')
         <a href="{{ route('rooms.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add Room</a>
+        @endcanModule
     </div>
 </div>
 
@@ -41,7 +43,7 @@
 @endif
 @php
     $bulkDelete = [
-        'bulkModule' => 'accommodation',
+        'bulkModule' => 'accommodation_facilities',
         'bulkAction' => route('rooms.bulk-destroy'),
         'bulkFormId' => 'bulkDeleteRooms',
         'bulkTableId' => 'roomsTable',
@@ -86,13 +88,17 @@
                 @foreach($group['rooms'] as $r)
                 <tr>
                     @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $r->id]))
-                    <td class="bg-light align-middle">{{ $r->blockLabel() ?? '—' }}</td>
+                    @if($loop->first)
+                    <td class="bg-light align-middle" rowspan="{{ count($group['rooms']) }}">{{ $r->blockLabel() ?? '—' }}</td>
+                    @endif
                     <td><strong class="font-monospace small">{{ $r->name }}</strong></td>
                     <td>{{ $r->bed_count }}</td>
                     <td>@if($r->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
                     <td class="text-end text-nowrap">
+                        @canModule('accommodation_facilities', 'update')
                         @include('partials.action-edit', ['href' => route('rooms.edit', $r), 'iconOnly' => true])
-                        @canModule('accommodation', 'delete')
+                        @endcanModule
+                        @canModule('accommodation_facilities', 'delete')
                         <form action="{{ route('rooms.destroy', $r) }}" method="POST" class="d-inline ms-1">
                             @csrf
                             @method('DELETE')

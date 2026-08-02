@@ -226,10 +226,16 @@
                     <li class="nav-group-sub-label">Attendance</li>
                     <li><a href="{{ route('student-attendance.index') }}" class="{{ request()->routeIs('student-attendance.*') ? 'active' : '' }}"><i class="bi bi-fingerprint"></i>Student attendance</a></li>
                     @endcanModule
+                    @if(auth()->user()->canModule('finance_reports', 'view') || auth()->user()->canModule('results', 'view'))
                     <li class="nav-group-sub-label">Reports</li>
+                    @endif
+                    @canModule('finance_reports', 'view')
                     <li><a href="{{ route('reports.class-list') }}" class="{{ request()->routeIs('reports.class-list') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Class list</a></li>
-                    <li><a href="{{ route('reports.academic-standing') }}" class="{{ request()->routeIs('reports.academic-standing') ? 'active' : '' }}"><i class="bi bi-award"></i>Academic standing</a></li>
                     <li><a href="{{ route('reports.nactvet-hub') }}" class="{{ request()->routeIs('reports.nactvet*') ? 'active' : '' }}"><i class="bi bi-building"></i>NACTVET reporting pack</a></li>
+                    @endcanModule
+                    @canModule('results', 'view')
+                    <li><a href="{{ route('reports.academic-standing') }}" class="{{ request()->routeIs('reports.academic-standing') ? 'active' : '' }}"><i class="bi bi-award"></i>Academic standing</a></li>
+                    @endcanModule
                 </ul>
             </div>
             @endif
@@ -292,28 +298,45 @@
                     @canModule('student_card_status', 'view')
                     <li><a href="{{ route('student-card-status.index') }}" class="{{ request()->routeIs('student-card-status.*') ? 'active' : '' }}"><i class="bi bi-person-vcard"></i>Student ID &amp; NHIF status</a></li>
                     @endcanModule
+                    @canModule('institution_docs', 'view')
                     <li class="nav-group-sub-label">Records</li>
                     <li><a href="{{ route('institution-documents.index') }}" class="{{ request()->routeIs('institution-documents.*') ? 'active' : '' }}"><i class="bi bi-folder2-open"></i>Institution documents</a></li>
+                    @endcanModule
+                    @canModule('calendar', 'view')
                     <li class="nav-group-sub-label">Planning</li>
                     <li><a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}"><i class="bi bi-calendar3"></i>College calendar</a></li>
+                    @endcanModule
+                    @if(auth()->user()->canModule('finance_reports', 'view') || auth()->user()->canModule('staff_leave', 'view') || auth()->user()->canModule('student_affairs', 'view'))
                     <li class="nav-group-sub-label">Reports</li>
+                    @endif
+                    @canModule('finance_reports', 'view')
                     <li><a href="{{ route('reports.admission-control-sheet') }}" class="{{ request()->routeIs('reports.admission-control-sheet*') ? 'active' : '' }}"><i class="bi bi-clipboard2-data"></i>Admission control sheet</a></li>
+                    @endcanModule
+                    @canModule('staff_leave', 'view')
                     <li><a href="{{ route('reports.students-on-leave') }}" class="{{ request()->routeIs('reports.students-on-leave') ? 'active' : '' }}"><i class="bi bi-calendar-x"></i>Students on leave</a></li>
+                    @endcanModule
+                    @canModule('student_affairs', 'view')
                     <li><a href="{{ route('reports.graduation-clearance') }}" class="{{ request()->routeIs('reports.graduation-clearance') ? 'active' : '' }}"><i class="bi bi-clipboard-check"></i>Graduation clearance report</a></li>
+                    @endcanModule
                 </ul>
             </div>
-            @canModule('accommodation', 'view')
+            @if(auth()->user()->canModule('accommodation_facilities', 'view') || auth()->user()->canModule('accommodation', 'view'))
             <div class="nav-group {{ request()->routeIs('hostels.*', 'rooms.*', 'rooms.occupancy*', 'accommodation-allocations.*') ? 'expanded' : '' }}" id="navGroupAccommodation">
                 <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('hostels.*', 'rooms.*', 'rooms.occupancy*', 'accommodation-allocations.*') ? 'true' : 'false' }}" aria-controls="navGroupAccommodationSub">
                     <i class="bi bi-building"></i><span>Accommodation</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupAccommodationSub">
+                    @canModule('accommodation_facilities', 'view')
                     <li class="nav-group-sub-label">Buildings</li>
                     <li><a href="{{ route('hostels.index') }}" class="{{ request()->routeIs('hostels.*') ? 'active' : '' }}"><i class="bi bi-building"></i>Hostels</a></li>
                     <li><a href="{{ route('rooms.index') }}" class="{{ request()->routeIs('rooms.index', 'rooms.create', 'rooms.edit') ? 'active' : '' }}"><i class="bi bi-door-open"></i>Rooms</a></li>
                     <li class="nav-group-sub-label">Occupancy</li>
                     <li><a href="{{ route('rooms.occupancy') }}" class="{{ request()->routeIs('rooms.occupancy*') ? 'active' : '' }}"><i class="bi bi-people"></i>Live by room</a></li>
+                    @endcanModule
+                    @canModule('accommodation', 'view')
+                    <li class="nav-group-sub-label">Allocations</li>
                     <li><a href="{{ route('accommodation-allocations.index') }}" class="{{ request()->routeIs('accommodation-allocations.*') ? 'active' : '' }}"><i class="bi bi-person-badge"></i>Allocations</a></li>
+                    @endcanModule
                 </ul>
             </div>
             @endcanModule

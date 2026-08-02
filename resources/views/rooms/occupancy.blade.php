@@ -84,7 +84,9 @@
                         $vac = max(0, $room->bed_count - $occ);
                     @endphp
                     <tr data-room-id="{{ $room->id }}">
-                        <td class="bg-light align-middle">{{ $room->blockLabel() ?? '—' }}</td>
+                        @if($loop->first)
+                        <td class="bg-light align-middle" rowspan="{{ count($group['rooms']) }}">{{ $room->blockLabel() ?? '—' }}</td>
+                        @endif
                         <td><strong class="font-monospace small">{{ $room->name }}</strong></td>
                         <td class="text-center" data-bed>{{ $room->bed_count }}</td>
                         <td class="text-center" data-occupied>{{ $occ }}</td>

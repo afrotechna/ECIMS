@@ -24,12 +24,14 @@
         <h1 class="page-title-landing"><i class="bi bi-building me-2 opacity-90"></i>Hostels</h1>
         <p class="page-subtitle-landing mb-0">Standard grid: <strong>14 blocks × 4 rooms</strong>, <strong>8 berths</strong> per room (4 double-decker beds).</p>
     </div>
+    @canModule('accommodation_facilities', 'create')
     <a href="{{ route('hostels.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add Hostel</a>
+    @endcanModule
 </div>
 
 @php
     $bulkDelete = [
-        'bulkModule' => 'accommodation',
+        'bulkModule' => 'accommodation_facilities',
         'bulkAction' => route('hostels.bulk-destroy'),
         'bulkFormId' => 'bulkDeleteHostels',
         'bulkTableId' => 'hostelsTable',
@@ -67,9 +69,11 @@
                         <td class="text-end">{{ (int) ($h->rooms_sum_bed_count ?? 0) }}</td>
                         <td>@if($h->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
                         <td class="text-end">
+                            @canModule('accommodation_facilities', 'update')
                             @include('partials.action-edit', ['href' => route('hostels.edit', $h), 'title' => 'Edit / generate', 'class' => 'me-1', 'iconOnly' => true])
+                            @endcanModule
                             <a href="{{ route('rooms.index', ['hostel_id' => $h->id]) }}" class="btn btn-sm btn-outline-primary me-1">Rooms</a>
-                            @canModule('accommodation', 'delete')
+                            @canModule('accommodation_facilities', 'delete')
                             <form action="{{ route('hostels.destroy', $h) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')

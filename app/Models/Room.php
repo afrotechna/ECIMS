@@ -57,6 +57,20 @@ class Room extends Model
         return $this->accommodationAllocations()->where('status', 'active')->count();
     }
 
+    /**
+     * Free berths against active allocations. Uses the eager-loaded
+     * accommodation_allocations_count (from withCount) when present, to avoid
+     * an extra query per room in a list; falls back to a live count otherwise.
+     */
+    public function remainingBerths(): int
+    {
+        $occupied = array_key_exists('accommodation_allocations_count', $this->attributes)
+            ? (int) $this->attributes['accommodation_allocations_count']
+            : $this->activeAllocationsCount();
+
+        return max(0, (int) $this->bed_count - $occupied);
+    }
+
     /** Residents counted for today (same rules as the live occupancy board). */
     public function effectiveOccupantsCount(): int
     {

@@ -25,6 +25,7 @@ class AccommodationAllocationController extends Controller
     public function create()
     {
         $students = Student::where('status', 'active')
+            ->whereDoesntHave('accommodationAllocations', fn ($q) => $q->where('status', 'active'))
             ->whereHas('semesterRegistrations', fn ($q) => $q->where('status', 'approved')->whereNull('wizard_step'))
             ->orderBy('reg_no')
             ->get();
@@ -145,7 +146,7 @@ class AccommodationAllocationController extends Controller
         return response()->json([
             'rooms' => $rooms->map(fn (Room $r) => [
                 'id' => $r->id,
-                'label' => $r->hostel->name.' — '.$r->name,
+                'label' => $r->hostel->name.' — '.$r->name.' ('.$r->remainingBerths().' remaining)',
             ])->values(),
         ])->header('Cache-Control', 'no-store');
     }

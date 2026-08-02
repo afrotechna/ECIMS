@@ -37,7 +37,7 @@
                     <label for="room_id" class="form-label">Room</label>
                     <select class="form-select @error('room_id') is-invalid @enderror" id="room_id" name="room_id" required data-no-search>
                         @foreach($rooms as $r)
-                            <option value="{{ $r->id }}" {{ old('room_id', $allocation->room_id) == $r->id ? 'selected' : '' }}>{{ $r->hostel->name }} — {{ $r->name }}</option>
+                            <option value="{{ $r->id }}" {{ old('room_id', $allocation->room_id) == $r->id ? 'selected' : '' }}>{{ $r->hostel->name }} — {{ $r->name }} ({{ $r->remainingBerths() }} remaining)</option>
                         @endforeach
                     </select>
                     <div class="form-text">Rooms that are fully booked (all berths have active allocations) are hidden, except the room for this allocation. Changing the student clears the room choice and reloads the list.</div>
