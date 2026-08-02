@@ -219,9 +219,8 @@
     line-height: 1.5 !important;
 }
 .swal2-icon {
-    width: 3.5em !important;
-    height: 3.5em !important;
-    margin: 1rem auto 1.25rem !important;
+    transform: scale(0.7);
+    margin: -0.6em auto 0.2em !important;
 }
 .swal2-actions {
     margin-top: 1rem !important;
