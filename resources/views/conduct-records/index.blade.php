@@ -1,14 +1,14 @@
 @extends('layouts.app')
-@section('title', 'Conduct records')
+@section('title', 'Student Conduct & Permits')
 @section('content')
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Dashboard</a>
     <span class="mx-2">/</span>
-    <span>Conduct records</span>
+    <span>Student Conduct &amp; Permits</span>
 </nav>
 <div class="page-header-landing">
-    <h1 class="page-title-landing">Conduct records</h1>
-    <p class="page-subtitle-landing mb-0">Discipline and sanctions.</p>
+    <h1 class="page-title-landing">Student Conduct &amp; Permits</h1>
+    <p class="page-subtitle-landing mb-0">Discipline, sanctions, and student permits (medical, emergency).</p>
 </div>
 <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
     <a href="{{ route('conduct-records.create') }}" class="btn btn-primary btn-sm">Add record</a>

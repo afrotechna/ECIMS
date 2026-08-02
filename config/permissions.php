@@ -35,7 +35,7 @@ return [
         'accommodation' => 'Room allocations',
         'college_comms' => 'Announcements & message log',
         'staff_leave' => 'Staff leave applications',
-        'conduct_records' => 'Conduct records & student permits',
+        'conduct_records' => 'Student conduct & permits',
         'student_affairs' => 'Graduation clearance',
         'certificate_collection' => 'Certificate collection',
         'transcript_requests' => 'Transcript requests',
