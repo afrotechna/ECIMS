@@ -317,21 +317,13 @@ class RegistrationWizardController extends Controller
                     $paymentData['slot_sem1_nactvet_qa'] = 0;
                 }
                 $paymentData['student_id'] = $student->id;
+                $paymentData['semester_two_only'] = true;
                 $paymentService->record($paymentData, auth()->id());
                 $payload['fees_confirmed_at'] = now()->toIso8601String();
             } elseif ($step === 2) {
                 $data = $request->validate([
-                    'joining_instructions_submitted' => ['nullable', 'string', 'max:10'],
-                    'submitted_certificates' => ['nullable', 'array'],
-                    'submitted_certificates.*' => ['string', Rule::in(array_keys(Student::CERTIFICATE_OPTIONS))],
-                    'academic_requirements' => ['nullable', 'string', 'max:255'],
                     'supply_gloves_submitted' => ['required', 'in:0,1'],
                     'supply_ream_submitted' => ['required', 'in:0,1'],
-                    'class_property_received' => ['nullable', 'string', 'max:10'],
-                    'chair_number' => ['nullable', 'string', 'max:30'],
-                    'table_number' => ['nullable', 'string', 'max:30'],
-                    'reporting_status' => ['nullable', 'string', 'in:reported,not_reported,postponed,absconded'],
-                    'reporting_date' => ['nullable', 'date'],
                 ]);
                 $ack = $student->physical_supplies_ack ?? [];
                 $key = Student::physicalSuppliesStorageKey((int) $semester->academic_year, (int) $semester->number);
@@ -339,13 +331,7 @@ class RegistrationWizardController extends Controller
                     'gloves' => (bool) (int) $data['supply_gloves_submitted'],
                     'ream' => (bool) (int) $data['supply_ream_submitted'],
                 ];
-                unset($data['supply_gloves_submitted'], $data['supply_ream_submitted']);
-                $data['physical_supplies_ack'] = $ack;
-                $data['submitted_certificates'] = array_values(array_unique(array_merge(
-                    $student->submitted_certificates ?? [],
-                    $data['submitted_certificates'] ?? []
-                )));
-                $student->update($data);
+                $student->update(['physical_supplies_ack' => $ack]);
             }
         }
 

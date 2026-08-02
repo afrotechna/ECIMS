@@ -19,6 +19,7 @@ class Payment extends Model
         'allocation',
         'notes',
         'tuition_category',
+        'covers_semester_two_only',
     ];
 
     protected $casts = [
@@ -26,6 +27,7 @@ class Payment extends Model
         'amount' => 'decimal:0',
         'paid_at' => 'datetime',
         'allocation' => 'array',
+        'covers_semester_two_only' => 'boolean',
     ];
 
     public function student(): BelongsTo
@@ -74,6 +76,10 @@ class Payment extends Model
      */
     public function semesterLabel(): ?string
     {
+        if ($this->covers_semester_two_only) {
+            return 'Semester II';
+        }
+
         return match ($this->tuition_category) {
             'new_student' => 'Semester I',
             'continue', 'repeat', 'transfer' => 'Semester I & II',

@@ -4,6 +4,7 @@
 @php
     $paymentTuitionDefault = $paymentTuitionDefault ?? 'continue';
     $chargesNhifQa = $chargesNhifQa ?? true;
+    $isFirstSem = $isFirstSem ?? true;
     $oldSlots = [
         'slot_sem1_nhif' => (int) old('slot_sem1_nhif', 0),
         'slot_sem1_nactvet_qa' => (int) old('slot_sem1_nactvet_qa', 0),
@@ -22,16 +23,22 @@
     </p>
 
     <div class="card border mb-3">
-        <div class="card-header py-2 fw-semibold small text-uppercase">Semester One &mdash; bank fees</div>
+        <div class="card-header py-2 fw-semibold small text-uppercase">{{ $isFirstSem ? 'Semester One — bank fees' : 'Semester Two — remaining fees' }}</div>
         <div class="card-body">
     <div class="row g-3">
         <div class="col-12">
             <label class="form-label" for="rw_tuition_category">Tuition fee</label>
             <select name="tuition_category" id="rw_tuition_category" class="form-select @error('tuition_category') is-invalid @enderror" required>
+                @if($isFirstSem)
                 <option value="new_student" {{ old('tuition_category', $paymentTuitionDefault) === 'new_student' ? 'selected' : '' }}>New student &mdash; Semester I tuition only</option>
                 <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing &mdash; Semester I + II (continuous rate)</option>
                 <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating &mdash; Semester I + II (repeat rate)</option>
                 <option value="transfer" {{ old('tuition_category', $paymentTuitionDefault) === 'transfer' ? 'selected' : '' }}>Transferred &mdash; Semester I + II (transfer / repeat rate)</option>
+                @else
+                <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing &mdash; Semester II remaining balance</option>
+                <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating &mdash; Semester II (repeat rate)</option>
+                <option value="transfer" {{ old('tuition_category', $paymentTuitionDefault) === 'transfer' ? 'selected' : '' }}>Transferred &mdash; Semester II (transfer / repeat rate)</option>
+                @endif
             </select>
             @error('tuition_category')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
         </div>
@@ -114,6 +121,7 @@
         var academicYear = @json((string) $paymentAcademicYear);
         var studentProgrammeId = @json($student->programme_id);
         var oldSlots = @json($oldSlots);
+        var isFirstSem = @json($isFirstSem);
         var submitBtn = document.getElementById('regWizardContinueBtn');
         var totalEl = document.getElementById('rw_fee_slot_total');
         var tuitionSel = document.getElementById('rw_tuition_category');
@@ -155,6 +163,13 @@
             var s1 = parseInt(slots.sem1_tuition, 10) || 0;
             var s2c = parseInt(slots.sem2_continuous, 10) || 0;
             var s2r = parseInt(slots.sem2_repeat, 10) || 0;
+            if (!isFirstSem) {
+                switch (category) {
+                    case 'repeat':
+                    case 'transfer': return s2r;
+                    default: return s2c;
+                }
+            }
             switch (category) {
                 case 'new_student': return s1;
                 case 'continue': return s1 + s2c;

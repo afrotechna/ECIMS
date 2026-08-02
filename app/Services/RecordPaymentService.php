@@ -21,7 +21,7 @@ class RecordPaymentService
     public const TUITION_CATEGORIES = ['new_student', 'continue', 'repeat', 'transfer'];
 
     /**
-     * @param  array<string, mixed>  $validated  Keys: student_id, academic_year, tuition_category, slot_sem1_nhif, slot_sem1_nactvet_qa, payment_method, reference_tuition, reference_nhif, reference_nactvet_qa, paid_at, notes
+     * @param  array<string, mixed>  $validated  Keys: student_id, academic_year, tuition_category, slot_sem1_nhif, slot_sem1_nactvet_qa, payment_method, reference_tuition, reference_nhif, reference_nactvet_qa, paid_at, notes, semester_two_only
      */
     public function record(array $validated, ?int $receivedByUserId = null): Payment
     {
@@ -43,7 +43,8 @@ class RecordPaymentService
             ]);
         }
 
-        [$sem1T, $sem2C, $sem2R] = $this->tuitionAmountsForCategory($category, $slots);
+        $semesterTwoOnly = (bool) ($validated['semester_two_only'] ?? false);
+        [$sem1T, $sem2C, $sem2R] = $this->tuitionAmountsForCategory($category, $slots, $semesterTwoOnly);
 
         $this->assertPaymentSlot($sem1T, $slots['sem1_tuition'], 'tuition_category');
         $this->assertPaymentSlot($sem2C, $slots['sem2_continuous'], 'tuition_category');
@@ -123,6 +124,7 @@ class RecordPaymentService
             'allocation' => $allocation,
             'notes' => $validated['notes'] ?? null,
             'tuition_category' => $category,
+            'covers_semester_two_only' => $semesterTwoOnly,
         ]);
 
         $methodLabel = Payment::methods()[$validated['payment_method']] ?? $validated['payment_method'];
@@ -181,13 +183,23 @@ class RecordPaymentService
 
     /**
      * @param  array{sem1_tuition: int, sem2_continuous: int, sem2_repeat: int, ...}  $slots
+     * @param  bool  $semesterTwoOnly  Semester II registration for a student who already paid Semester I
+     *                                 separately — charge just the remaining Semester II portion, not the
+     *                                 full annual amount again.
      * @return array{0: int, 1: int, 2: int} Sem I tuition, Sem II continuous, Sem II repeat (each 0 or full scheduled)
      */
-    public function tuitionAmountsForCategory(string $category, array $slots): array
+    public function tuitionAmountsForCategory(string $category, array $slots, bool $semesterTwoOnly = false): array
     {
         $s1 = (int) ($slots['sem1_tuition'] ?? 0);
         $s2c = (int) ($slots['sem2_continuous'] ?? 0);
         $s2r = (int) ($slots['sem2_repeat'] ?? 0);
+
+        if ($semesterTwoOnly) {
+            return match ($category) {
+                'repeat', 'transfer' => [0, 0, $s2r],
+                default => [0, $s2c, 0],
+            };
+        }
 
         return match ($category) {
             'new_student' => [$s1, 0, 0],

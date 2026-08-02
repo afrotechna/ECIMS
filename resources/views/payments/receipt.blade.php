@@ -62,6 +62,8 @@
             padding-top: .75rem; font-size: .95rem; font-weight: 700; border-bottom: none;
         }
         .receipt-total-row .amount { color: var(--receipt-navy-2); font-variant-numeric: tabular-nums; }
+        .receipt-grand-total-row td { padding-top: .35rem; font-size: .8125rem; font-weight: 600; color: var(--receipt-muted); }
+        .receipt-grand-total-row .amount { color: var(--receipt-ink); }
         .receipt-footer {
             margin-top: 1.25rem; padding: 1rem 1.5rem 1.4rem; text-align: center;
             font-size: .75rem; color: var(--receipt-muted); border-top: 1px solid var(--receipt-border);
@@ -145,6 +147,12 @@
                         <td>Total paid</td>
                         <td class="amount">{{ number_format($payment->amount, 0) }}</td>
                     </tr>
+                    @if(isset($grandTotal))
+                    <tr class="receipt-total-row receipt-grand-total-row">
+                        <td>Grand total (all payments to date)</td>
+                        <td class="amount">{{ number_format($grandTotal, 0) }}</td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>

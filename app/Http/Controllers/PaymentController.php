@@ -74,7 +74,9 @@ class PaymentController extends Controller
             abort(404, 'This payment record is orphaned (student no longer exists).');
         }
 
-        return view('payments.receipt', compact('payment'));
+        $grandTotal = Payment::where('student_id', $payment->student_id)->sum('amount');
+
+        return view('payments.receipt', compact('payment', 'grandTotal'));
     }
 
     public function reverseForm(Payment $payment)

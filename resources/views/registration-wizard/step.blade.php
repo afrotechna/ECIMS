@@ -246,6 +246,7 @@
                     'paymentMethods' => $paymentMethods ?? \App\Models\Payment::methods(),
                     'student' => $student,
                     'paymentTuitionDefault' => $isFirstSem ? $student->defaultTuitionCategory((int) $semester->academic_year) : 'continue',
+                    'isFirstSem' => $isFirstSem,
                 ])
             @endif
 
@@ -279,6 +280,7 @@
                         </select>
                         @error('supply_ream_submitted')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    @if($isFirstSem)
                     <div class="col-md-4">
                         <label class="form-label">Joining instructions (non-academic) submitted</label>
                         <select name="joining_instructions_submitted" class="form-select">
@@ -317,6 +319,7 @@
                         <label class="form-label">Reporting date</label>
                         <input type="date" name="reporting_date" class="form-control" value="{{ old('reporting_date', $student->reporting_date?->format('Y-m-d')) }}">
                     </div>
+                    @endif
                 </div>
             @endif
 
