@@ -136,23 +136,22 @@ class NactvetExamResultsSheet
             return null;
         }
 
-        if (preg_match('/^(.+?)\s+AVCA\b/i', $h, $m)) {
-            return ['code' => trim($m[1]), 'field' => 'ca'];
-        }
-        if (preg_match('/^(.+?)\s+AVES\b/i', $h, $m)) {
-            return ['code' => trim($m[1]), 'field' => 'se'];
-        }
-        if (preg_match('/^(.+?)\s+FSCORE\b/i', $h, $m)) {
-            return ['code' => trim($m[1]), 'field' => 'fscore'];
-        }
-        if (preg_match('/^(.+?)\s+GRADE\b/i', $h, $m)) {
-            return ['code' => trim($m[1]), 'field' => 'grade'];
-        }
-        if (preg_match('/^(.+?)\s+TH\s*COMP\b/i', $h, $m)) {
-            return ['code' => trim($m[1]), 'field' => 'theory'];
-        }
-        if (preg_match('/^(.+?)\s+(OSPE|OSCE|PRACTICAL|CLINICAL)\b/i', $h, $m)) {
-            return ['code' => trim($m[1]), 'field' => 'practical'];
+        $suffixPatterns = [
+            'ca' => '/^(.+?)\s+AVCA\b/i',
+            'se' => '/^(.+?)\s+AVES\b/i',
+            'fscore' => '/^(.+?)\s+FSCORE\b/i',
+            'grade' => '/^(.+?)\s+GRADE\b/i',
+            'theory' => '/^(.+?)\s+TH\s*COMP\b/i',
+            'practical' => '/^(.+?)\s+(?:OSPE|OSCE|PRACTICAL|CLINICAL)\b/i',
+        ];
+
+        foreach ($suffixPatterns as $field => $pattern) {
+            // Only accept the match if what precedes the suffix actually looks like a module
+            // code (e.g. "CMT04102 CLINICAL") — otherwise ordinary text containing one of these
+            // words (e.g. "ORDINARY DIPLOMA IN CLINICAL MEDICINE") gets misread as a header.
+            if (preg_match($pattern, $h, $m) && self::looksLikeModuleCode(trim($m[1]))) {
+                return ['code' => self::moduleColumnLabel($m[1]), 'field' => $field];
+            }
         }
 
         if (self::looksLikeModuleCode($h)) {
