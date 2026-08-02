@@ -80,9 +80,12 @@
         }
         .id-footer strong { color: #64748b; }
         .id-watermark {
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: .04; font-size: 6.5rem; font-weight: 900; color: #071d52;
-            transform: rotate(-18deg); overflow: hidden; z-index: 0;
+            position: absolute; inset: -40px; pointer-events: none; z-index: 0; overflow: hidden;
+            background-image: url('{{ asset('images/logo.png') }}');
+            background-repeat: repeat;
+            background-size: 68px 68px;
+            opacity: .06;
+            transform: rotate(-20deg);
         }
         .id-body > * { position: relative; z-index: 1; }
         .id-actions { max-width: 520px; margin: 1.25rem auto 0; text-align: center; }
@@ -108,7 +111,9 @@
             <span class="id-band-tag">{{ \App\Support\AcademicSession::label(\App\Support\AcademicSession::defaultStartYear()) }}</span>
         </div>
         <div class="id-body">
-            <div class="id-watermark">ID</div>
+            @if(file_exists(public_path('images/logo.png')))
+            <div class="id-watermark"></div>
+            @endif
             <div class="id-photo-col">
                 @if($photoUrl)
                 <img src="{{ $photoUrl }}" alt="" class="id-photo">
@@ -124,6 +129,11 @@
                 <div class="id-name">{{ $student->full_name }}</div>
                 <div class="id-role">{{ $student->programme->name ?? 'Student' }}</div>
                 <hr class="id-divider">
+                @php
+                    $intakeYear = $student->intake_year ?? \App\Support\AcademicSession::defaultStartYear();
+                    $validFrom = \Carbon\Carbon::create($intakeYear, 10, 1);
+                    $validTo = \Carbon\Carbon::create($intakeYear + 3, 10, 1);
+                @endphp
                 <div class="id-grid">
                     <div>
                         <div class="label">NACTVET Reg. No</div>
@@ -134,16 +144,12 @@
                         <div class="value">{{ $student->programme->code ?? '—' }}</div>
                     </div>
                     <div>
-                        <div class="label">NTA Level</div>
-                        <div class="value">{{ $student->nta_level ?? '—' }}</div>
-                    </div>
-                    <div>
                         <div class="label">Intake year</div>
                         <div class="value">{{ $student->intake_year ?? '—' }}</div>
                     </div>
                     <div>
-                        <div class="label">Valid through</div>
-                        <div class="value">{{ \App\Support\AcademicSession::defaultStartYear() + 1 }}</div>
+                        <div class="label">Valid</div>
+                        <div class="value">{{ $validFrom->format('M Y') }} – {{ $validTo->format('M Y') }}</div>
                     </div>
                 </div>
             </div>

@@ -24,7 +24,9 @@ class StudentCardStatusController extends Controller
         }
 
         $student->load('programme');
-        $photoUrl = $student->userAccount?->profile_photo_url;
+        $photoUrl = auth()->user()->isStudent()
+            ? auth()->user()->profile_photo_url
+            : $student->userAccount?->profile_photo_url;
 
         return view('student-card-status.card', compact('student', 'photoUrl'));
     }

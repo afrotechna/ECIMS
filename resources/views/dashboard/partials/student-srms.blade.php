@@ -392,11 +392,6 @@
                 <p class="sd-level mb-0">{{ $sd['year_of_study'] ?? 'Student' }}</p>
                 @php $badge = $sd['standing_badge'] ?? ['text' => 'Active student', 'class' => 'sd-badge-active']; @endphp
                 <span class="sd-standing {{ $badge['class'] }}">{{ $badge['text'] }}</span>
-                @if(auth()->user()->student)
-                <a href="{{ route('students.id-card', auth()->user()->student) }}" target="_blank" class="d-inline-flex align-items-center gap-1 small text-decoration-none mt-2" style="color:#0d3651;font-weight:700;">
-                    <i class="bi bi-person-vcard"></i> My ID card
-                </a>
-                @endif
             </div>
             <div class="sd-gpa-ring" aria-label="Overall GPA {{ number_format($gpa, 1) }}">
                 @php $circ = 2 * 3.14159 * 46; $offset = $circ * (1 - $gpaPct / 100); @endphp
