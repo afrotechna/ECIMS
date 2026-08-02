@@ -222,6 +222,11 @@
     font-size: 0.65em;
     margin: 1em auto .4em !important;
 }
+.swal2-icon.swal2-icon-show,
+.swal2-icon.swal2-icon-show * {
+    animation: none !important;
+    opacity: 1 !important;
+}
 .swal2-actions {
     margin-top: 1rem !important;
 }
