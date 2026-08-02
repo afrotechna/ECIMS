@@ -70,7 +70,6 @@
                         <th>NHIF FEE</th>
                         <th>NHIF PAID (TZS)</th>
                         <th>NHIF STATUS</th>
-                        <th>NHIF CONTROL NUMBER</th>
                         <th>NACTVET QA FEE (TZS)</th>
                         <th>NACTVET QA PAID (TZS)</th>
                         <th>NACTVET QA STATUS</th>
@@ -114,7 +113,6 @@
                             @endif
                         </td>
                         <td>{{ $r['nhif_status'] ?? '' }}</td>
-                        <td>{{ $r['nhif_payment_ref'] ?? $r['nhif_ref'] ?? '' }}</td>
                         <td class="text-end">
                             @if(is_numeric($r['nactvet_qa_fee']))
                                 {{ number_format($r['nactvet_qa_fee']) }}

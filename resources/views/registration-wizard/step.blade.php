@@ -310,17 +310,8 @@
                         <input type="text" name="table_number" class="form-control" value="{{ old('table_number', $student->table_number) }}">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Reporting status</label>
-                        <select name="reporting_status" class="form-select">
-                            <option value="">—</option>
-                            @foreach(\App\Models\Student::REPORTING_STATUSES as $k => $lbl)
-                                <option value="{{ $k }}" {{ old('reporting_status', $student->reporting_status) === $k ? 'selected' : '' }}>{{ $lbl }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Reporting date</label>
-                        <input type="date" name="reporting_date" class="form-control" value="{{ old('reporting_date', $student->reporting_date?->format('Y-m-d')) }}">
+                        <label class="form-label d-block">Reporting</label>
+                        <div class="form-text mt-0">Marked as <strong>Reported</strong> today, {{ now()->format('d M Y') }}, once this registration completes.</div>
                     </div>
                     @endif
                 </div>

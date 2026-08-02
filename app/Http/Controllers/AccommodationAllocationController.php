@@ -24,7 +24,10 @@ class AccommodationAllocationController extends Controller
 
     public function create()
     {
-        $students = Student::orderBy('reg_no')->get();
+        $students = Student::where('status', 'active')
+            ->whereHas('semesterRegistrations', fn ($q) => $q->where('status', 'approved')->whereNull('wizard_step'))
+            ->orderBy('reg_no')
+            ->get();
         $rooms = $this->roomsSelectableForAllocation(null);
         $roomOptionsUrl = route('accommodation-allocations.room-options');
 
@@ -77,6 +80,10 @@ class AccommodationAllocationController extends Controller
         $students = Student::query()
             ->where(function ($q) use ($allocation) {
                 $q->whereDoesntHave('accommodationAllocations', fn ($q2) => $q2->where('status', 'active'))
+                    ->orWhere('id', $allocation->student_id);
+            })
+            ->where(function ($q) use ($allocation) {
+                $q->whereHas('semesterRegistrations', fn ($q2) => $q2->where('status', 'approved')->whereNull('wizard_step'))
                     ->orWhere('id', $allocation->student_id);
             })
             ->orderBy('reg_no')

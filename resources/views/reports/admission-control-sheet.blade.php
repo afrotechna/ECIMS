@@ -92,7 +92,6 @@
                         <th>NHIF FEE<br><small class="text-muted fw-normal">College</small></th>
                         <th>NHIF PAID (TZS)</th>
                         <th>NHIF STATUS</th>
-                        <th>NHIF CONTROL NUMBER</th>
                         <th>NACTVET QA FEE (TZS)</th>
                         <th>NACTVET QA PAID (TZS)</th>
                         <th>NACTVET QA STATUS</th>
@@ -136,7 +135,6 @@
                             @endif
                         </td>
                         <td>{{ $r['nhif_status'] ?? '' }}</td>
-                        <td>{{ $r['nhif_payment_ref'] ?? $r['nhif_ref'] ?? '' }}</td>
                         <td class="text-end">
                             @if(is_numeric($r['nactvet_qa_fee']))
                                 {{ number_format($r['nactvet_qa_fee']) }}
@@ -158,14 +156,14 @@
                         <td>{{ $r['table_number'] ?? '' }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="29" class="text-center text-muted py-5">No students match the filter. Adjust NTA level, semester, intake year or programme.</td></tr>
+                    <tr><td colspan="28" class="text-center text-muted py-5">No students match the filter. Adjust NTA level, semester, intake year or programme.</td></tr>
                     @endforelse
                     @if(isset($sheetTotals) && $rows->isNotEmpty())
                     <tr class="table-secondary fw-semibold">
                         <td colspan="10" class="text-end">TOTAL (this page / filter)</td>
                         <td class="text-end">{{ number_format($sheetTotals['expected_tuition']) }}</td>
                         <td class="text-end">{{ number_format($sheetTotals['tuition_paid']) }}</td>
-                        <td colspan="17"></td>
+                        <td colspan="16"></td>
                     </tr>
                     @endif
                 </tbody>

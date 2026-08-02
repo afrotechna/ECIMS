@@ -277,8 +277,6 @@ class RegistrationWizardController extends Controller
                     'class_property_received' => ['nullable', 'string', 'max:10'],
                     'chair_number' => ['nullable', 'string', 'max:30'],
                     'table_number' => ['nullable', 'string', 'max:30'],
-                    'reporting_status' => ['nullable', 'string', 'in:reported,not_reported,postponed,absconded'],
-                    'reporting_date' => ['nullable', 'date'],
                 ]);
                 $ack = $student->physical_supplies_ack ?? [];
                 $key = Student::physicalSuppliesStorageKey((int) $semester->academic_year, (int) $semester->number);
@@ -346,6 +344,10 @@ class RegistrationWizardController extends Controller
             ]);
 
             if ($isFirstSem) {
+                $student->update([
+                    'reporting_status' => 'reported',
+                    'reporting_date' => now()->toDateString(),
+                ]);
                 $registry->assignIfMissing($student->fresh());
 
                 return $this->redirectRegistrationComplete($student, true);

@@ -30,6 +30,11 @@
                             <option value="{{ $s->id }}" {{ old('student_id') == $s->id ? 'selected' : '' }}>{{ $s->reg_no }} — {{ $s->full_name }}</option>
                         @endforeach
                     </select>
+                    @if($students->isEmpty())
+                    <div class="form-text text-warning">No students have completed registration yet. A student appears here once their semester registration is approved and finished.</div>
+                    @else
+                    <div class="form-text">Only students who have completed a semester registration are listed.</div>
+                    @endif
                     @error('student_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">

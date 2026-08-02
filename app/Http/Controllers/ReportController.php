@@ -383,7 +383,6 @@ class ReportController extends Controller
             'NHIF FEE (COLLEGE)',
             'NHIF PAID (TZS)',
             'NHIF STATUS',
-            'NHIF CONTROL NUMBER',
             'NACTVET QA FEE (TZS)',
             'NACTVET QA PAID (TZS)',
             'NACTVET QA STATUS',
@@ -432,6 +431,12 @@ class ReportController extends Controller
     {
         $fs = $this->resolveFeeStructureForStudent($feeStructures, $student);
         $expectedTuition = $fs ? $fs->expectedTuitionForSemester($semesterNumber, $student) : 0.0;
+        if ($fs && $semesterNumber === 2) {
+            $paidSemesterTwo = $student->payments->contains(fn ($p) => (bool) $p->covers_semester_two_only);
+            if ($paidSemesterTwo) {
+                $expectedTuition += $fs->expectedTuitionForSemester(1, $student);
+            }
+        }
         $tuitionPaid = $student->sumPaymentAllocation('tuition');
 
         $tuitionPaymentRef = $student->paymentRefsForComponent('tuition', $student->tuition_payment_ref);
@@ -493,8 +498,6 @@ class ReportController extends Controller
             'when_complete_tuition_csv' => $student->tuition_completion_pledge_date?->format('Y-m-d') ?? '',
             'nhif_fee' => $nhifFeeCell,
             'nhif_status' => $nhifStatus,
-            'nhif_ref' => $student->paymentRefsForComponent('nhif', $student->nhif_payment_ref),
-            'nhif_payment_ref' => $student->paymentRefsForComponent('nhif', $student->nhif_payment_ref),
             'nhif_paid' => $semesterNumber === 1 && ! $nhifExempt ? (int) round($nhifPaid) : '',
             'nactvet_qa_fee' => $nactvetQaFeeCell,
             'nactvet_qa_paid' => $semesterNumber === 1 ? (int) round($nactvetPaid) : '',
@@ -555,7 +558,6 @@ class ReportController extends Controller
             $row['nhif_fee'],
             $row['nhif_paid'],
             $row['nhif_status'],
-            $row['nhif_payment_ref'],
             $row['nactvet_qa_fee'],
             $row['nactvet_qa_paid'],
             $row['nactvet_qa_status'],
