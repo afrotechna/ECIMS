@@ -20,24 +20,6 @@
         margin-bottom: .2rem;
     }
     .pay-detail-item .value { font-size: .9375rem; font-weight: 600; color: #0f172a; }
-    .pay-control-rows { margin-bottom: 1.5rem; }
-    .pay-control-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        padding: .6rem 0;
-        border-bottom: 1px solid #f1f5f9;
-    }
-    .pay-control-row:last-child { border-bottom: none; }
-    .pay-control-row .pay-control-number { font-size: .9375rem; font-weight: 600; color: #0f172a; white-space: nowrap; }
-    .pay-control-row .pay-control-number code { font-weight: 700; }
-    .pay-control-row .pay-control-side { text-align: right; }
-    .pay-control-row .pay-control-side .label {
-        font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; color: #64748b;
-    }
-    .pay-control-row .pay-control-side .value { font-size: .9375rem; font-weight: 600; color: #0f172a; }
     .pay-breakdown {
         border: 1px solid #e2e8f0;
         border-radius: .625rem;
@@ -88,13 +70,6 @@
 <div class="card card-landing">
     <div class="card-header-landing"><i class="bi bi-info-circle me-2"></i>Details</div>
     <div class="card-body">
-        @php
-            $sem1Payment = ($session['semOne'] ?? collect())->first();
-            $sem2Payment = ($session['semTwo'] ?? collect())->first();
-            $sem1Ref = $sem1Payment?->componentReference('tuition') ?: $sem1Payment?->reference;
-            $sem2Ref = $sem2Payment?->componentReference('tuition') ?: $sem2Payment?->reference;
-            $semesterLabelVal = $session['label'] ?? $payment->semesterLabel();
-        @endphp
         <div class="pay-detail-grid">
             <div class="pay-detail-item">
                 <div class="label">Student</div>
@@ -106,6 +81,12 @@
                 <div class="value">{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</div>
             </div>
             @endif
+            @if($session['label'] ?? $payment->semesterLabel())
+            <div class="pay-detail-item">
+                <div class="label">Semester</div>
+                <div class="value">{{ $session['label'] ?? $payment->semesterLabel() }}</div>
+            </div>
+            @endif
             <div class="pay-detail-item">
                 <div class="label">Method</div>
                 <div class="value">{{ \App\Models\Payment::methods()[$payment->payment_method] ?? $payment->payment_method }}</div>
@@ -114,22 +95,26 @@
                 <div class="label">Date</div>
                 <div class="value">{{ $payment->paid_at->format('d M Y, H:i') }}</div>
             </div>
-        </div>
-
-        <div class="pay-control-rows">
-            <div class="pay-control-row">
-                <span class="pay-control-number">{{ $sem1Ref ? 'Semester I: ' : '' }}<code>{{ $sem1Ref ?: '—' }}</code></span>
-                <span class="pay-control-side">
-                    <span class="label d-block">Semester</span>
-                    <span class="value">{{ $semesterLabelVal ?? '—' }}</span>
-                </span>
+            <div class="pay-detail-item">
+                <div class="label">Control / reference no.</div>
+                <div class="value">
+                    @php
+                        $sem1Payment = ($session['semOne'] ?? collect())->first();
+                        $sem2Payment = ($session['semTwo'] ?? collect())->first();
+                        $sem1Ref = $sem1Payment?->componentReference('tuition') ?: $sem1Payment?->reference;
+                        $sem2Ref = $sem2Payment?->componentReference('tuition') ?: $sem2Payment?->reference;
+                    @endphp
+                    @if($sem1Ref || $sem2Ref)
+                        @if($sem1Ref)<div>Semester I: {{ $sem1Ref }}</div>@endif
+                        @if($sem2Ref)<div>Semester II: {{ $sem2Ref }}</div>@endif
+                    @else
+                        {{ $payment->reference ?: '—' }}
+                    @endif
+                </div>
             </div>
-            <div class="pay-control-row">
-                <span class="pay-control-number">{{ $sem2Ref ? 'Semester II: ' : '' }}<code>{{ $sem2Ref ?: '—' }}</code></span>
-                <span class="pay-control-side">
-                    <span class="label d-block">Received by</span>
-                    <span class="value">{{ $payment->receiver->name ?? '—' }}</span>
-                </span>
+            <div class="pay-detail-item">
+                <div class="label">Received by</div>
+                <div class="value">{{ $payment->receiver->name ?? '—' }}</div>
             </div>
         </div>
 
