@@ -400,6 +400,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::get('conduct-records', [\App\Http\Controllers\ConductRecordController::class, 'index'])->name('conduct-records.index');
         Route::get('conduct-records/create', [\App\Http\Controllers\ConductRecordController::class, 'create'])->name('conduct-records.create');
         Route::post('conduct-records', [\App\Http\Controllers\ConductRecordController::class, 'store'])->name('conduct-records.store');
+        Route::get('conduct-records/{conduct_record}/medical-form', [\App\Http\Controllers\ConductRecordController::class, 'downloadMedicalForm'])->name('conduct-records.medical-form');
         Route::get('message-logs', [\App\Http\Controllers\MessageLogController::class, 'index'])->name('message-logs.index');
         Route::get('message-logs/create', [\App\Http\Controllers\MessageLogController::class, 'create'])->name('message-logs.create');
         Route::post('message-logs', [\App\Http\Controllers\MessageLogController::class, 'store'])->name('message-logs.store');

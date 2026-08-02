@@ -31,7 +31,7 @@
 <div class="card card-landing">
     <div class="card-body p-0">
         <table class="table table-hover mb-0">
-            <thead><tr><th>Date</th><th>Student</th><th>Type</th><th>Sanction</th></tr></thead>
+            <thead><tr><th>Date</th><th>Student</th><th>Type</th><th>Sanction</th><th>Evidence</th></tr></thead>
             <tbody>
                 @forelse($records as $r)
                 <tr>
@@ -39,9 +39,16 @@
                     <td>{{ $r->student->reg_no ?? '' }} — {{ $r->student->full_name ?? '' }}</td>
                     <td>{{ \App\Models\ConductRecord::TYPES[$r->type] ?? $r->type }}</td>
                     <td>{{ Str::limit($r->sanction, 40) }}</td>
+                    <td>
+                        @if($r->medical_form_path)
+                        <a href="{{ route('conduct-records.medical-form', $r) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-medical me-1"></i>Medical form</a>
+                        @else
+                        <span class="text-muted">—</span>
+                        @endif
+                    </td>
                 </tr>
                 @empty
-                <tr><td colspan="4" class="text-center text-muted py-5">No conduct records.</td></tr>
+                <tr><td colspan="5" class="text-center text-muted py-5">No conduct records.</td></tr>
                 @endforelse
             </tbody>
         </table>

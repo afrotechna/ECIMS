@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AccommodationAllocation;
 use App\Models\Room;
 use App\Models\Student;
+use App\Notifications\RoomAllocatedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +53,7 @@ class AccommodationAllocationController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($validated) {
+            $allocation = DB::transaction(function () use ($validated) {
                 $existing = AccommodationAllocation::query()
                     ->where('student_id', $validated['student_id'])
                     ->where('status', 'active')
@@ -62,7 +63,7 @@ class AccommodationAllocationController extends Controller
                     throw new \RuntimeException('Student already has an active allocation. End it first.');
                 }
 
-                AccommodationAllocation::create($validated);
+                return AccommodationAllocation::create($validated);
             });
         } catch (\RuntimeException $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());
@@ -71,6 +72,11 @@ class AccommodationAllocationController extends Controller
                 return redirect()->back()->withInput()->with('error', 'Student already has an active allocation. End it first.');
             }
             throw $e;
+        }
+
+        if ($allocation->status === 'active') {
+            $studentUser = $allocation->student?->userAccount;
+            $studentUser?->notify(new RoomAllocatedNotification($allocation->load('room.hostel')));
         }
 
         return redirect()->route('accommodation-allocations.index')->with('success', 'Allocation created successfully.');

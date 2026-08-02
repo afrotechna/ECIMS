@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\ConductRecord;
 use App\Models\Student;
+use App\Notifications\ConductRecordNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ConductRecordController extends Controller
 {
+    private const MEDICAL_TYPES = ['medical_permit'];
+
     public function index(Request $request)
     {
         $query = ConductRecord::with(['student.programme', 'recordedBy']);
@@ -39,9 +43,34 @@ class ConductRecordController extends Controller
             'sanction' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string'],
             'effective_until' => ['nullable', 'date'],
+            'medical_form' => [
+                Rule::requiredIf(in_array($request->input('type'), self::MEDICAL_TYPES, true)),
+                'nullable', 'file', 'max:10240',
+            ],
         ]);
         $validated['recorded_by'] = auth()->id();
-        ConductRecord::create($validated);
+
+        if ($request->hasFile('medical_form')) {
+            $file = $request->file('medical_form');
+            $validated['medical_form_path'] = $file->store('conduct-records/'.$validated['student_id'], 'local');
+            $validated['medical_form_name'] = $file->getClientOriginalName();
+        }
+        unset($validated['medical_form']);
+
+        $record = ConductRecord::create($validated);
+
+        $studentUser = $record->student?->userAccount;
+        $studentUser?->notify(new ConductRecordNotification($record));
+
         return redirect()->route('conduct-records.index')->with('success', 'Conduct record added.');
+    }
+
+    public function downloadMedicalForm(ConductRecord $conduct_record)
+    {
+        if (! $conduct_record->medical_form_path || ! Storage::disk('local')->exists($conduct_record->medical_form_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->download($conduct_record->medical_form_path, $conduct_record->medical_form_name ?: 'medical-form');
     }
 }

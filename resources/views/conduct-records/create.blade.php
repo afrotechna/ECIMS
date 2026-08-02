@@ -13,7 +13,7 @@
 </div>
 <div class="card card-landing">
     <div class="card-body">
-        <form action="{{ route('conduct-records.store') }}" method="POST">
+        <form action="{{ route('conduct-records.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row g-3">
                 <div class="col-md-6">
@@ -45,6 +45,11 @@
                     <label for="effective_until" class="form-label">Effective until</label>
                     <input type="date" class="form-control" id="effective_until" name="effective_until" value="{{ old('effective_until') }}">
                 </div>
+                <div class="col-12" id="medicalFormWrap" style="display:none;">
+                    <label for="medical_form" class="form-label">Medical form <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="medical_form" name="medical_form">
+                    <div class="form-text">Evidence of medical treatment received (doctor's note, hospital form, etc.).</div>
+                </div>
                 <div class="col-12">
                     <label for="description" class="form-label">Description</label>
                     <textarea class="form-control" id="description" name="description" rows="3">{{ old('description') }}</textarea>
@@ -57,4 +62,21 @@
         </form>
     </div>
 </div>
+@push('scripts')
+<script>
+(function () {
+    var typeEl = document.getElementById('type');
+    var wrap = document.getElementById('medicalFormWrap');
+    var input = document.getElementById('medical_form');
+    if (!typeEl || !wrap || !input) return;
+    function sync() {
+        var isMedical = typeEl.value === 'medical_permit';
+        wrap.style.display = isMedical ? '' : 'none';
+        input.required = isMedical;
+    }
+    typeEl.addEventListener('change', sync);
+    sync();
+})();
+</script>
+@endpush
 @endsection

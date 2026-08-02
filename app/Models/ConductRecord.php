@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ConductRecord extends Model
 {
-    protected $fillable = ['student_id', 'date', 'type', 'sanction', 'description', 'recorded_by', 'effective_until'];
+    protected $fillable = ['student_id', 'date', 'type', 'sanction', 'description', 'recorded_by', 'effective_until', 'medical_form_path', 'medical_form_name'];
 
     protected $casts = ['date' => 'date', 'effective_until' => 'date'];
 
