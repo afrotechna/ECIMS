@@ -1,5 +1,6 @@
 @php
     $courses = $grid['courses'];
+    $moduleSummary = $grid['module_summary'] ?? [];
 @endphp
 <div class="mb-3">
     <p class="small text-muted mb-2">
@@ -8,6 +9,31 @@
         @if($grid['nta_level']) &middot; NTA Level {{ $grid['nta_level'] }} @endif
         &middot; {{ count($grid['rows']) }} student(s)
     </p>
+
+    <div class="table-responsive mb-2">
+        <table class="table table-sm table-bordered mb-0 ca-module-breakdown">
+            <thead class="table-light">
+                <tr>
+                    <th>Module</th>
+                    <th class="text-end">Pass</th>
+                    <th class="text-end">Fail</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($courses as $course)
+                    @php $m = $moduleSummary[$course->id] ?? ['total' => 0, 'pass' => 0, 'fail' => 0]; @endphp
+                    <tr>
+                        <td>{{ $course->code }}</td>
+                        <td class="text-end text-success fw-semibold">{{ $m['pass'] }}</td>
+                        <td class="text-end text-danger fw-semibold">{{ $m['fail'] }}</td>
+                        <td class="text-end">{{ $m['total'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
     <div class="table-responsive">
         <table class="table table-sm table-bordered ca-approval-grid mb-0">
             <thead class="table-light">

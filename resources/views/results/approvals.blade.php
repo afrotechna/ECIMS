@@ -41,7 +41,7 @@
 
 @forelse($pending as $row)
 @php
-    $group = $groups[$row->semester_id] ?? ['grids' => [], 'summary' => ['total' => 0, 'pass' => 0, 'fail' => 0]];
+    $group = $groups[$row->semester_id] ?? ['grids' => [], 'summary' => ['total' => 0, 'pass' => 0, 'fail' => 0], 'student_summary' => ['total' => 0, 'pass' => 0, 'fail' => 0]];
     $collapseId = 'approval-sem-'.$row->semester_id;
 @endphp
 <div class="card card-landing mb-3">
@@ -55,11 +55,11 @@
     >
         <div>
             <h2 class="h5 mb-0 fw-semibold">{{ $row->semester?->label ?? '—' }}</h2>
-            <div class="small text-muted">{{ $row->row_count }} module result(s) pending</div>
+            <div class="small text-muted">{{ $row->row_count }} module result(s) pending &middot; {{ $group['student_summary']['total'] }} student(s)</div>
         </div>
         <div class="d-flex align-items-center gap-4">
-            <div class="approval-summary-stat pass"><span class="value">{{ $group['summary']['pass'] }}</span><span class="label">Pass</span></div>
-            <div class="approval-summary-stat fail"><span class="value">{{ $group['summary']['fail'] }}</span><span class="label">Fail</span></div>
+            <div class="approval-summary-stat pass"><span class="value">{{ $group['student_summary']['pass'] }}</span><span class="label">Students passed</span></div>
+            <div class="approval-summary-stat fail"><span class="value">{{ $group['student_summary']['fail'] }}</span><span class="label">Students failed</span></div>
             @if($canApprove)
             <div class="d-flex gap-2" onclick="event.stopPropagation()">
                 <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ $row->semester_id }}">Approve</button>

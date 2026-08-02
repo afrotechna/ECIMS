@@ -61,6 +61,7 @@ class ResultApprovalController extends Controller
 
             $grids = [];
             $summary = ['total' => 0, 'pass' => 0, 'fail' => 0];
+            $studentSummary = ['total' => 0, 'pass' => 0, 'fail' => 0];
 
             foreach ($programmeLevelPairs as $pair) {
                 $programme = Programme::find($pair->programme_id);
@@ -77,9 +78,12 @@ class ResultApprovalController extends Controller
                 $summary['total'] += $grid['summary']['total'];
                 $summary['pass'] += $grid['summary']['pass'];
                 $summary['fail'] += $grid['summary']['fail'];
+                $studentSummary['total'] += $grid['student_summary']['total'];
+                $studentSummary['pass'] += $grid['student_summary']['pass'];
+                $studentSummary['fail'] += $grid['student_summary']['fail'];
             }
 
-            $groups[$row->semester_id] = ['grids' => $grids, 'summary' => $summary];
+            $groups[$row->semester_id] = ['grids' => $grids, 'summary' => $summary, 'student_summary' => $studentSummary];
         }
 
         return view('results.approvals', compact('pending', 'canApprove', 'groups'));

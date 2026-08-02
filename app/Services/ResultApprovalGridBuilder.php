@@ -19,7 +19,9 @@ class ResultApprovalGridBuilder
      *     nta_level: ?int,
      *     courses: \Illuminate\Support\Collection,
      *     rows: list<array{student: Student, cells: array<int, array|null>}>,
-     *     summary: array{total: int, pass: int, fail: int}
+     *     summary: array{total: int, pass: int, fail: int},
+     *     student_summary: array{total: int, pass: int, fail: int},
+     *     module_summary: array<int, array{total: int, pass: int, fail: int}>
      * }
      */
     public function build(Semester $semester, Programme $programme, ?int $ntaLevel): array
@@ -44,11 +46,18 @@ class ResultApprovalGridBuilder
             ->keyBy(fn ($r) => $r->student_id.'-'.$r->course_id);
 
         $summary = ['total' => 0, 'pass' => 0, 'fail' => 0];
+        $studentSummary = ['total' => 0, 'pass' => 0, 'fail' => 0];
+        $moduleSummary = [];
+        foreach ($courses as $course) {
+            $moduleSummary[$course->id] = ['total' => 0, 'pass' => 0, 'fail' => 0];
+        }
+
         $rows = [];
 
         foreach ($students as $student) {
             $cells = [];
             $hasAnyResult = false;
+            $studentFailed = false;
 
             foreach ($courses as $course) {
                 $result = $results->get($student->id.'-'.$course->id);
@@ -61,10 +70,14 @@ class ResultApprovalGridBuilder
                 $hasAnyResult = true;
                 $remark = $result->caModuleRemark();
                 $summary['total']++;
+                $moduleSummary[$course->id]['total']++;
                 if ($remark === 'FAIL') {
                     $summary['fail']++;
+                    $moduleSummary[$course->id]['fail']++;
+                    $studentFailed = true;
                 } elseif ($remark === 'PASS') {
                     $summary['pass']++;
+                    $moduleSummary[$course->id]['pass']++;
                 }
 
                 $cells[$course->id] = [
@@ -77,6 +90,12 @@ class ResultApprovalGridBuilder
 
             if ($hasAnyResult) {
                 $rows[] = ['student' => $student, 'cells' => $cells];
+                $studentSummary['total']++;
+                if ($studentFailed) {
+                    $studentSummary['fail']++;
+                } else {
+                    $studentSummary['pass']++;
+                }
             }
         }
 
@@ -86,6 +105,8 @@ class ResultApprovalGridBuilder
             'courses' => $courses,
             'rows' => $rows,
             'summary' => $summary,
+            'student_summary' => $studentSummary,
+            'module_summary' => $moduleSummary,
         ];
     }
 }
