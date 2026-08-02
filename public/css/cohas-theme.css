@@ -201,3 +201,53 @@
     background: rgba(255, 255, 255, .95);
     color: #0d3651;
 }
+
+/* SweetAlert2 — compact, modern sizing to match the app's normal type scale instead of the oversized defaults. */
+.swal2-popup {
+    width: 26em !important;
+    padding: 1.25rem !important;
+    border-radius: var(--cohas-radius-md, .75rem) !important;
+    font-family: var(--cohas-font-body, 'Inter', system-ui, sans-serif) !important;
+}
+.swal2-title {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    padding: .5rem 0 .25rem !important;
+}
+.swal2-html-container {
+    font-size: .9rem !important;
+    line-height: 1.5 !important;
+}
+.swal2-icon {
+    width: 3.5em !important;
+    height: 3.5em !important;
+    margin: 1rem auto 1.25rem !important;
+}
+.swal2-actions {
+    margin-top: 1rem !important;
+}
+.swal2-styled {
+    font-size: .85rem !important;
+    padding: .45rem 1.1rem !important;
+    border-radius: var(--cohas-radius-sm, .5rem) !important;
+}
+.swal2-input, .swal2-select, .swal2-textarea {
+    font-size: .85rem !important;
+    height: auto !important;
+    padding: .45rem .65rem !important;
+    border-radius: var(--cohas-radius-sm, .5rem) !important;
+}
+.swal2-toast {
+    padding: .6rem .9rem !important;
+}
+.swal2-toast .swal2-title {
+    font-size: .9rem !important;
+    padding: 0 !important;
+}
+[data-theme="dark"] .swal2-popup {
+    background: var(--cohas-surface, #1e293b) !important;
+    color: var(--cohas-text, #e2e8f0) !important;
+}
+[data-theme="dark"] .swal2-html-container {
+    color: var(--cohas-text-muted, #94a3b8) !important;
+}
