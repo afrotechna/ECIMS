@@ -101,6 +101,7 @@
 
         @php
             $feeLabels = ['tuition' => 'Tuition', 'nhif' => 'NHIF', 'nactvet_qa' => 'NACTVET QA'];
+            $feeIcons = ['tuition' => 'bi-mortarboard', 'nhif' => 'bi-heart-pulse', 'nactvet_qa' => 'bi-patch-check'];
             $breakdown = collect($payment->allocation ?? [])
                 ->filter(fn ($v, $k) => $k !== 'refs' && is_numeric($v) && (float) $v > 0);
         @endphp
@@ -109,7 +110,7 @@
         <div class="pay-breakdown mb-2">
             @foreach($breakdown as $key => $value)
             <div class="pay-breakdown-row">
-                <span class="fee-label"><i class="bi bi-dot"></i>{{ $feeLabels[$key] ?? \Illuminate\Support\Str::headline($key) }}</span>
+                <span class="fee-label"><i class="bi {{ $feeIcons[$key] ?? 'bi-cash-coin' }}"></i>{{ $feeLabels[$key] ?? \Illuminate\Support\Str::headline($key) }}</span>
                 <span class="fee-amount">{{ number_format((float) $value) }} TZS</span>
             </div>
             @endforeach
