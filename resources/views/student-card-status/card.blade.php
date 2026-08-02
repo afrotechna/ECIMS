@@ -74,8 +74,8 @@
         .id-band-side { flex-shrink: 0; display: flex; align-items: center; }
         .id-band-center { flex: 1; min-width: 0; text-align: center; }
         .id-band img { height: 46px; width: 46px; object-fit: contain; flex-shrink: 0; background: #fff; border-radius: 50%; padding: 3px; }
-        .id-band-country { font-size: .56rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1.3; opacity: .9; }
-        .id-band-ministry { font-size: .56rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3; opacity: .78; margin-bottom: .1rem; }
+        .id-band-country { font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1.3; opacity: .9; }
+        .id-band-ministry { font-size: .58rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3; opacity: .78; margin-bottom: .1rem; }
         .id-band h1 { margin: 0; font-size: .78rem; font-weight: 800; letter-spacing: .01em; text-transform: uppercase; line-height: 1.2; }
         .id-band .sub { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
         .id-body { padding: 1.1rem 1.25rem .4rem; position: relative; display: flex; gap: 1.1rem; }
