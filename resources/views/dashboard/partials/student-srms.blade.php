@@ -85,13 +85,13 @@
 
     .sd-gpa-ring {
         position: relative;
-        width: 88px;
-        height: 88px;
+        width: 112px;
+        height: 112px;
         flex-shrink: 0;
     }
     .sd-gpa-ring svg { transform: rotate(-90deg); }
-    .sd-gpa-ring .ring-bg { fill: none; stroke: #e2e8f0; stroke-width: 8; }
-    .sd-gpa-ring .ring-fg { fill: none; stroke: #16a34a; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .4s; }
+    .sd-gpa-ring .ring-bg { fill: none; stroke: #e2e8f0; stroke-width: 9; }
+    .sd-gpa-ring .ring-fg { fill: none; stroke: #16a34a; stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset .4s; }
     .sd-gpa-center {
         position: absolute;
         inset: 0;
@@ -101,8 +101,8 @@
         justify-content: center;
         text-align: center;
     }
-    .sd-gpa-center strong { font-size: 1.1rem; font-weight: 800; color: #0f172a; line-height: 1; }
-    .sd-gpa-center small { font-size: .58rem; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: .02em; }
+    .sd-gpa-center strong { font-size: 1.35rem; font-weight: 800; color: #0f172a; line-height: 1; }
+    .sd-gpa-center small { font-size: .65rem; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: .02em; margin-top: .15rem; }
 
     .sd-card {
         background: #fff;
@@ -392,12 +392,17 @@
                 <p class="sd-level mb-0">{{ $sd['year_of_study'] ?? 'Student' }}</p>
                 @php $badge = $sd['standing_badge'] ?? ['text' => 'Active student', 'class' => 'sd-badge-active']; @endphp
                 <span class="sd-standing {{ $badge['class'] }}">{{ $badge['text'] }}</span>
+                @if(auth()->user()->student)
+                <a href="{{ route('students.id-card', auth()->user()->student) }}" target="_blank" class="d-inline-flex align-items-center gap-1 small text-decoration-none mt-2" style="color:#0d3651;font-weight:700;">
+                    <i class="bi bi-person-vcard"></i> My ID card
+                </a>
+                @endif
             </div>
             <div class="sd-gpa-ring" aria-label="Overall GPA {{ number_format($gpa, 1) }}">
-                @php $circ = 2 * 3.14159 * 36; $offset = $circ * (1 - $gpaPct / 100); @endphp
-                <svg width="88" height="88" viewBox="0 0 88 88" aria-hidden="true">
-                    <circle class="ring-bg" cx="44" cy="44" r="36"></circle>
-                    <circle class="ring-fg" cx="44" cy="44" r="36"
+                @php $circ = 2 * 3.14159 * 46; $offset = $circ * (1 - $gpaPct / 100); @endphp
+                <svg width="112" height="112" viewBox="0 0 112 112" aria-hidden="true">
+                    <circle class="ring-bg" cx="56" cy="56" r="46"></circle>
+                    <circle class="ring-fg" cx="56" cy="56" r="46"
                             stroke-dasharray="{{ $circ }}"
                             stroke-dashoffset="{{ $offset }}"></circle>
                 </svg>

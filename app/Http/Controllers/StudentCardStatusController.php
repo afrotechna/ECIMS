@@ -13,6 +13,22 @@ use Illuminate\View\View;
 
 class StudentCardStatusController extends Controller
 {
+    public function card(Student $student): View
+    {
+        if (auth()->user()->isStudent()) {
+            if (! auth()->user()->student || auth()->user()->student->id !== $student->id) {
+                abort(403, 'You can only view your own ID card.');
+            }
+        } elseif (! auth()->user()->canModule('student_card_status', 'view')) {
+            abort(403);
+        }
+
+        $student->load('programme');
+        $photoUrl = $student->userAccount?->profile_photo_url;
+
+        return view('student-card-status.card', compact('student', 'photoUrl'));
+    }
+
     public function index(Request $request): View
     {
         $query = Student::query()->where('status', 'active')->with(['programme', 'cardStatuses']);

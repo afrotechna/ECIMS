@@ -55,6 +55,7 @@
                     <th>Programme</th>
                     <th>Student ID card</th>
                     <th>NHIF card</th>
+                    <th class="text-end">ID Card</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,9 +83,12 @@
                         </form>
                     </td>
                     @endforeach
+                    <td class="text-end">
+                        <a href="{{ route('students.id-card', $student) }}" class="btn btn-sm btn-outline-primary" target="_blank" title="Print ID card"><i class="bi bi-person-vcard"></i></a>
+                    </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center text-muted py-5">No active students found.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted py-5">No active students found.</td></tr>
                 @endforelse
             </tbody>
         </table>

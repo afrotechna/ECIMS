@@ -31,6 +31,9 @@
         <a href="{{ route('payments.index', ['student_id' => $student->id]) }}" class="btn btn-outline-light btn-sm"><i class="bi bi-clock-history me-1"></i> Payment history</a>
         @endcanModule
         <a href="{{ route('results.transcript.show', $student) }}" class="btn btn-outline-light btn-sm"><i class="bi bi-file-earmark-text me-1"></i> Transcript</a>
+        @canModule('student_card_status', 'view')
+        <a href="{{ route('students.id-card', $student) }}" class="btn btn-outline-light btn-sm" target="_blank"><i class="bi bi-person-vcard me-1"></i> ID card</a>
+        @endcanModule
         <a href="{{ route('students.edit', $student) }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-pencil me-1"></i> Edit</a>
         <a href="{{ route('students.index') }}" class="btn btn-outline-light btn-sm">Back to list</a>
     </div>

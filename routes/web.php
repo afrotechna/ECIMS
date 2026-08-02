@@ -73,6 +73,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(function () {
+    Route::post('profile/photo', [\App\Http\Controllers\ProfilePhotoController::class, 'update'])->name('profile.photo.update');
+    Route::delete('profile/photo', [\App\Http\Controllers\ProfilePhotoController::class, 'destroy'])->name('profile.photo.destroy');
+    Route::get('students/{student}/id-card', [\App\Http\Controllers\StudentCardStatusController::class, 'card'])->name('students.id-card');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::post('notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');

@@ -477,6 +477,9 @@
                         <strong>{{ $currentUser->name }}</strong>
                         <small>{{ $studentRecord ? $studentRecord->reg_no : $currentUser->email }}</small>
                     </div>
+                    <button type="button" class="profile-menu-item w-100 border-0" role="menuitem" data-bs-toggle="modal" data-bs-target="#profilePhotoModal">
+                        <i class="bi bi-camera me-2"></i>Change photo
+                    </button>
                     <form method="POST" action="{{ route('logout') }}" class="logout-form-topbar">
                         @csrf
                         <button type="button" class="profile-menu-item w-100 border-0" role="menuitem">
@@ -485,6 +488,66 @@
                     </form>
                 </div>
             </div>
+            <div class="modal fade" id="profilePhotoModal" tabindex="-1" aria-labelledby="profilePhotoModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="profilePhotoModalLabel"><i class="bi bi-camera me-2"></i>Profile photo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ route('profile.photo.update') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-body text-center">
+                                <div class="mb-3">
+                                    @if($currentUser->profile_photo_url)
+                                        <img src="{{ $currentUser->profile_photo_url }}" alt="" id="profilePhotoPreview" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;">
+                                    @else
+                                        <div id="profilePhotoPreviewWrap" style="width:120px;height:120px;border-radius:50%;background:#0d3651;color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;margin:0 auto;">{{ $currentUser->initials }}</div>
+                                        <img src="" alt="" id="profilePhotoPreview" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;display:none;">
+                                    @endif
+                                </div>
+                                <input type="file" name="photo" id="profilePhotoInput" class="form-control" accept="image/*" required>
+                                <div class="form-text">JPG or PNG, up to 2MB.</div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                @if($currentUser->profile_photo_url)
+                                <button type="submit" form="removePhotoForm" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Remove photo</button>
+                                @else
+                                <span></span>
+                                @endif
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-upload me-1"></i>Upload</button>
+                            </div>
+                        </form>
+                        @if($currentUser->profile_photo_url)
+                        <form method="POST" action="{{ route('profile.photo.destroy') }}" id="removePhotoForm" class="d-none">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @push('scripts')
+            <script>
+            (function () {
+                var input = document.getElementById('profilePhotoInput');
+                var preview = document.getElementById('profilePhotoPreview');
+                var initialsWrap = document.getElementById('profilePhotoPreviewWrap');
+                if (!input || !preview) return;
+                input.addEventListener('change', function () {
+                    var file = input.files && input.files[0];
+                    if (!file) return;
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'inline-block';
+                        if (initialsWrap) initialsWrap.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                });
+            })();
+            </script>
+            @endpush
             </div>
         </header>
         <main class="main-content" id="main-content">
