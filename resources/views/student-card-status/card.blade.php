@@ -17,14 +17,20 @@
             print-color-adjust: exact;
             color-adjust: exact;
         }
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #eef1f6;
             margin: 0;
             padding: 2.5rem 1rem;
+            overflow-x: hidden;
+        }
+        @media (max-width: 560px) {
+            body { padding: 1.5rem .6rem; }
         }
         .id-card-scene {
-            width: 520px;
+            width: 100%;
+            max-width: 520px;
             margin: 0 auto;
             perspective: 1800px;
         }
@@ -33,6 +39,7 @@
             width: 100%;
             transition: transform .7s cubic-bezier(.4, .1, .2, 1);
             transform-style: preserve-3d;
+            cursor: pointer;
         }
         .id-card-flipper.flipped { transform: rotateY(180deg); }
         .id-card {
@@ -53,7 +60,7 @@
         .id-band {
             background: linear-gradient(135deg, var(--id-navy-1) 0%, var(--id-navy-2) 100%);
             color: #fff;
-            padding: .6rem 1.1rem;
+            padding: .7rem 1.1rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -66,7 +73,7 @@
             background: linear-gradient(90deg, var(--id-gold) 0%, #f4e5b0 50%, var(--id-gold) 100%);
         }
         .id-band-brand { display: flex; align-items: center; gap: .6rem; min-width: 0; }
-        .id-band img { height: 30px; width: 30px; object-fit: contain; flex-shrink: 0; }
+        .id-band img { height: 46px; width: 46px; object-fit: contain; flex-shrink: 0; background: #fff; border-radius: 50%; padding: 3px; }
         .id-band h1 { margin: 0; font-size: .78rem; font-weight: 800; letter-spacing: .01em; text-transform: uppercase; line-height: 1.2; }
         .id-band .sub { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
         .id-band-tag {
@@ -98,8 +105,9 @@
         .id-grid .label { font-size: .6rem; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; font-weight: 700; margin-bottom: .1rem; }
         .id-grid .value { font-size: .84rem; font-weight: 700; color: #0f172a; }
         .id-footer {
-            padding: .5rem 1.25rem .8rem; text-align: center; font-size: .58rem; color: #94a3b8;
-            border-top: 1px solid #f1f5f9; letter-spacing: .02em; margin-top: .5rem;
+            padding: .55rem 1.5rem .9rem; text-align: center; font-size: .62rem; color: #94a3b8;
+            border-top: 1px solid #f1f5f9; letter-spacing: .01em; line-height: 1.5; margin-top: .5rem;
+            overflow-wrap: break-word; word-break: break-word;
         }
         .id-footer strong { color: #64748b; }
         .id-back-body { padding: 1.4rem 1.4rem 1rem; position: relative; text-align: center; }
@@ -134,7 +142,11 @@
             transform: rotate(-20deg);
         }
         .id-body > * { position: relative; z-index: 1; }
-        .id-actions { max-width: 520px; margin: 1.25rem auto 0; text-align: center; display: flex; justify-content: center; gap: .5rem; }
+        .id-flip-hint {
+            max-width: 520px; margin: .9rem auto 0; text-align: center;
+            font-size: .78rem; color: #64748b;
+        }
+        .id-actions { max-width: 520px; margin: .6rem auto 0; text-align: center; display: flex; justify-content: center; gap: .5rem; }
         @media print {
             body { background: #fff; padding: 0; }
             .id-card-scene { perspective: none; }
@@ -242,7 +254,7 @@
                     </div>
                     <div class="id-back-signature">
                         <div class="line">Holder's signature</div>
-                        <div class="line">Registrar</div>
+                        <div class="line">Principal</div>
                     </div>
                 </div>
                 <div class="id-footer">
@@ -251,13 +263,13 @@
             </div>
         </div>
     </div>
+    <div class="id-flip-hint no-print"><i class="bi bi-hand-index-thumb me-1"></i>Tap the card to flip it over</div>
     <div class="id-actions no-print">
-        <button type="button" id="flipCardBtn" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-repeat me-1"></i>Flip card</button>
         <button type="button" onclick="window.print()" class="btn btn-primary btn-sm"><i class="bi bi-printer me-1"></i>Print ID card</button>
     </div>
     <script>
-        document.getElementById('flipCardBtn').addEventListener('click', function () {
-            document.getElementById('idCardFlipper').classList.toggle('flipped');
+        document.getElementById('idCardFlipper').addEventListener('click', function () {
+            this.classList.toggle('flipped');
         });
     </script>
 </body>
