@@ -21,7 +21,7 @@ class RecordPaymentService
     public const TUITION_CATEGORIES = ['new_student', 'continue', 'repeat', 'transfer'];
 
     /**
-     * @param  array<string, mixed>  $validated  Keys: student_id, academic_year, tuition_category, slot_sem1_nhif, slot_sem1_nactvet_qa, payment_method, reference_tuition, reference_nhif, reference_nactvet_qa, paid_at, notes, semester_two_only
+     * @param  array<string, mixed>  $validated  Keys: student_id, academic_year, tuition_category, slot_sem1_nhif, slot_sem1_nactvet_qa, payment_method, reference_tuition, reference_nactvet_qa, paid_at, notes, semester_two_only
      */
     public function record(array $validated, ?int $receivedByUserId = null): Payment
     {
@@ -79,15 +79,6 @@ class RecordPaymentService
                 ]);
             }
             $refs['tuition'] = $ref;
-        }
-        if ($sem1H > 0) {
-            $ref = trim((string) ($validated['reference_nhif'] ?? ''));
-            if ($ref === '') {
-                throw ValidationException::withMessages([
-                    'reference_nhif' => 'Enter the NHIF control number.',
-                ]);
-            }
-            $refs['nhif'] = $ref;
         }
         if ($sem1Q > 0) {
             $ref = trim((string) ($validated['reference_nactvet_qa'] ?? ''));

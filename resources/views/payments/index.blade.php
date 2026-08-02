@@ -46,6 +46,10 @@
     .pay-breakdown-row.total { border-top: 2px solid #e2e8f0; border-bottom: none; margin-top: .5rem; padding-top: .75rem; }
     .pay-breakdown-row.total .fee-label { color: #0d3651; font-size: .9375rem; }
     .pay-breakdown-row.total .fee-amount { color: #0d3651; font-size: 1rem; }
+    .pay-breakdown-details { border: 1px dashed #e2e8f0; border-radius: .5rem; padding: .6rem .8rem; }
+    .pay-breakdown-details .label {
+        font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; color: #64748b;
+    }
     .pay-year-card .card-header-landing { background: #eef4fb; }
 </style>
 @endpush
@@ -125,6 +129,21 @@
             <span class="fs-5 fw-bold" style="color:#0d3651;">{{ number_format($grp['total']) }} <span class="fs-6 fw-semibold text-muted">TZS</span></span>
         </div>
         <div class="card-body">
+            @php
+                $sem1TuitionRef = $grp['semOne']->first()?->componentReference('tuition');
+                $sem2TuitionRef = $grp['semTwo']->first()?->componentReference('tuition');
+            @endphp
+            @if($sem1TuitionRef || $sem2TuitionRef)
+            <div class="pay-breakdown-details mb-3">
+                <div class="label mb-1">Tuition control numbers</div>
+                @if($sem1TuitionRef)
+                <div class="small text-muted">Semester I: <code>{{ $sem1TuitionRef }}</code></div>
+                @endif
+                @if($sem2TuitionRef)
+                <div class="small text-muted">Semester II: <code>{{ $sem2TuitionRef }}</code></div>
+                @endif
+            </div>
+            @endif
             @foreach(['semOne' => ['Semester I', ['sem1_tuition', 'sem1_nhif', 'sem1_nactvet_qa']], 'semTwo' => ['Semester II', ['sem2_tuition']]] as $semKey => $semMeta)
                 @php [$semTitle, $rowKeys] = $semMeta; $semPayments = $grp[$semKey]; @endphp
                 @if($semPayments->isNotEmpty())

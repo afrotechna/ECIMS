@@ -76,24 +76,20 @@
     <hr class="my-4">
     <p class="small fw-semibold text-uppercase text-muted mb-2">Control numbers (per fee line)</p>
     <div class="row g-3 mb-2">
-        <div class="col-md-4" id="rw_ref_tuition_wrap">
+        <div class="col-md-6" id="rw_ref_tuition_wrap">
             <label for="rw_reference_tuition" class="form-label">Tuition control no.</label>
             <input type="text" class="form-control @error('reference_tuition') is-invalid @enderror" id="rw_reference_tuition" name="reference_tuition" value="{{ old('reference_tuition') }}" maxlength="100" autocomplete="off" placeholder="Bank / GePG control number">
             @error('reference_tuition')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         @if($chargesNhifQa)
-        <div class="col-md-4" id="rw_ref_nhif_wrap">
-            <label for="rw_reference_nhif" class="form-label">NHIF control no.</label>
-            <input type="text" class="form-control @error('reference_nhif') is-invalid @enderror" id="rw_reference_nhif" name="reference_nhif" value="{{ old('reference_nhif') }}" maxlength="100" autocomplete="off" placeholder="NHIF payment reference">
-            @error('reference_nhif')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        </div>
-        <div class="col-md-4" id="rw_ref_nactvet_wrap">
+        <div class="col-md-6" id="rw_ref_nactvet_wrap">
             <label for="rw_reference_nactvet_qa" class="form-label">NACTVET QA control no.</label>
             <input type="text" class="form-control @error('reference_nactvet_qa') is-invalid @enderror" id="rw_reference_nactvet_qa" name="reference_nactvet_qa" value="{{ old('reference_nactvet_qa') }}" maxlength="100" autocomplete="off" placeholder="NACTVET QA reference">
             @error('reference_nactvet_qa')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         @endif
     </div>
+    <p class="small text-muted mb-2">NHIF has no control number here &mdash; it is collected in cash and the college pays NHIF in bulk under one control number.</p>
     <div class="row g-3">
         <div class="col-md-3">
             <label for="rw_payment_method" class="form-label">Payment method <span class="text-danger">*</span></label>
@@ -228,15 +224,11 @@
             var slots = getSlotsFromSchedule();
             var cat = tuitionSel ? tuitionSel.value : 'continue';
             var tuition = tuitionFromCategory(slots, cat);
-            var nhif = 0;
             var qa = 0;
-            var nhifEl = document.getElementById('rw_slot_sem1_nhif');
             var qaEl = document.getElementById('rw_slot_sem1_nactvet_qa');
-            if (nhifEl && !nhifEl.disabled) nhif = parseInt(nhifEl.value, 10) || 0;
             if (qaEl && !qaEl.disabled) qa = parseInt(qaEl.value, 10) || 0;
 
             setRefField('rw_ref_tuition_wrap', 'rw_reference_tuition', tuition > 0);
-            setRefField('rw_ref_nhif_wrap', 'rw_reference_nhif', nhif > 0);
             setRefField('rw_ref_nactvet_wrap', 'rw_reference_nactvet_qa', qa > 0);
         }
 
