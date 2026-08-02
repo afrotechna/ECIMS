@@ -173,6 +173,11 @@
 </div>
 
 <style>
+.admission-control-sheet-table { font-size: 0.72rem; }
+.admission-control-sheet-table th, .admission-control-sheet-table td {
+    padding: 4px 6px;
+    white-space: nowrap;
+}
 @media print {
     .student-breadcrumb, .page-header-landing .btn, .card-landing.mb-3 form, .alert, .nav, .topbar, .profile-dropdown, footer { display: none !important; }
     .admission-control-sheet-table { font-size: 0.65rem; }
