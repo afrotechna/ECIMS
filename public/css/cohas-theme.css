@@ -219,7 +219,7 @@
     line-height: 1.5 !important;
 }
 .swal2-icon {
-    --swal2-icon-zoom: 0.65;
+    font-size: 0.65em;
     margin: 1em auto .4em !important;
 }
 .swal2-actions {
