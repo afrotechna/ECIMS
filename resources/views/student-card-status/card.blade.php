@@ -117,7 +117,7 @@
                 @endif
                 <div class="id-barcode">
                     <div class="bars"></div>
-                    <div class="code">{{ $student->reg_no }}</div>
+                    <div class="code">{{ $student->nactvet_reg_no ?: '—' }}</div>
                 </div>
             </div>
             <div class="id-info-col">
@@ -126,19 +126,13 @@
                 <hr class="id-divider">
                 <div class="id-grid">
                     <div>
-                        <div class="label">Reg. No</div>
-                        <div class="value">{{ $student->reg_no }}</div>
+                        <div class="label">NACTVET Reg. No</div>
+                        <div class="value">{{ $student->nactvet_reg_no ?: '—' }}</div>
                     </div>
                     <div>
                         <div class="label">Programme</div>
                         <div class="value">{{ $student->programme->code ?? '—' }}</div>
                     </div>
-                    @if($student->nactvet_reg_no)
-                    <div>
-                        <div class="label">NACTVET</div>
-                        <div class="value">{{ $student->nactvet_reg_no }}</div>
-                    </div>
-                    @endif
                     <div>
                         <div class="label">NTA Level</div>
                         <div class="value">{{ $student->nta_level ?? '—' }}</div>
