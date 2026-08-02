@@ -19,7 +19,7 @@
             padding: 2.5rem 1rem;
         }
         .id-card {
-            width: 340px;
+            width: 520px;
             margin: 0 auto;
             background: #fff;
             border-radius: 16px;
@@ -30,8 +30,11 @@
         .id-band {
             background: linear-gradient(135deg, var(--id-navy-1) 0%, var(--id-navy-2) 100%);
             color: #fff;
-            padding: .85rem 1rem .75rem;
-            text-align: center;
+            padding: .6rem 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
             position: relative;
         }
         .id-band::after {
@@ -39,45 +42,50 @@
             position: absolute; left: 0; right: 0; bottom: -6px; height: 6px;
             background: linear-gradient(90deg, var(--id-gold) 0%, #f4e5b0 50%, var(--id-gold) 100%);
         }
-        .id-band img { height: 34px; object-fit: contain; margin-bottom: .3rem; }
-        .id-band h1 { margin: 0; font-size: .82rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; }
-        .id-band .sub { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; margin-top: .1rem; }
-        .id-body { padding: 1.2rem 1.25rem .5rem; position: relative; }
-        .id-photo-row { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: .9rem; }
+        .id-band-brand { display: flex; align-items: center; gap: .6rem; min-width: 0; }
+        .id-band img { height: 30px; width: 30px; object-fit: contain; flex-shrink: 0; }
+        .id-band h1 { margin: 0; font-size: .78rem; font-weight: 800; letter-spacing: .01em; text-transform: uppercase; line-height: 1.2; }
+        .id-band .sub { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+        .id-band-tag {
+            font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+            background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.35);
+            border-radius: 999px; padding: .25rem .7rem; white-space: nowrap;
+        }
+        .id-body { padding: 1.1rem 1.25rem .4rem; position: relative; display: flex; gap: 1.1rem; }
+        .id-photo-col { flex-shrink: 0; width: 116px; text-align: center; }
         .id-photo {
-            width: 84px; height: 96px; border-radius: 10px; object-fit: cover;
+            width: 116px; height: 136px; border-radius: 10px; object-fit: cover;
             border: 3px solid #fff; box-shadow: 0 0 0 1px #e2e8f0, 0 4px 10px rgba(10,22,40,.12);
-            flex-shrink: 0; background: #f1f5f9;
+            background: #f1f5f9; display: block;
         }
         .id-photo-fallback {
-            width: 84px; height: 96px; border-radius: 10px; flex-shrink: 0;
+            width: 116px; height: 136px; border-radius: 10px;
             background: linear-gradient(135deg, var(--id-navy-1), var(--id-navy-2)); color: #fff;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; font-weight: 800; box-shadow: 0 0 0 1px #e2e8f0, 0 4px 10px rgba(10,22,40,.12);
+            font-size: 2.1rem; font-weight: 800; box-shadow: 0 0 0 1px #e2e8f0, 0 4px 10px rgba(10,22,40,.12);
         }
-        .id-name { font-size: 1.02rem; font-weight: 800; color: #0f172a; line-height: 1.15; margin-bottom: .2rem; }
-        .id-role { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--id-navy-2); margin-bottom: .5rem; }
-        .id-meta-line { font-size: .78rem; color: #334155; margin-bottom: .18rem; }
-        .id-meta-line strong { color: #0f172a; }
-        .id-divider { border: none; border-top: 1px dashed #e2e8f0; margin: .6rem 0; }
-        .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem .75rem; margin-bottom: .3rem; }
+        .id-barcode { margin-top: .55rem; }
+        .id-barcode .bars { height: 20px; background: repeating-linear-gradient(90deg, #0f172a 0 2px, transparent 2px 4px); opacity: .85; }
+        .id-barcode .code { font-family: 'Courier New', monospace; letter-spacing: .18em; font-size: .68rem; font-weight: 700; color: #0f172a; margin-top: .2rem; }
+        .id-info-col { flex: 1; min-width: 0; }
+        .id-name { font-size: 1.15rem; font-weight: 800; color: #0f172a; line-height: 1.15; margin-bottom: .15rem; }
+        .id-role { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; color: var(--id-navy-2); margin-bottom: .6rem; }
+        .id-divider { border: none; border-top: 1px dashed #e2e8f0; margin: .5rem 0; }
+        .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem .9rem; }
         .id-grid .label { font-size: .6rem; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; font-weight: 700; margin-bottom: .1rem; }
-        .id-grid .value { font-size: .82rem; font-weight: 700; color: #0f172a; }
-        .id-barcode { text-align: center; margin: .6rem 0 .2rem; }
-        .id-barcode .code { font-family: 'Courier New', monospace; letter-spacing: .28em; font-size: .95rem; font-weight: 700; color: #0f172a; }
-        .id-barcode .bars { height: 26px; background: repeating-linear-gradient(90deg, #0f172a 0 2px, transparent 2px 4px); margin: .25rem auto 0; width: 90%; opacity: .85; }
+        .id-grid .value { font-size: .84rem; font-weight: 700; color: #0f172a; }
         .id-footer {
-            padding: .55rem 1.25rem .85rem; text-align: center; font-size: .6rem; color: #94a3b8;
-            border-top: 1px solid #f1f5f9; letter-spacing: .03em;
+            padding: .5rem 1.25rem .8rem; text-align: center; font-size: .58rem; color: #94a3b8;
+            border-top: 1px solid #f1f5f9; letter-spacing: .02em; margin-top: .5rem;
         }
         .id-footer strong { color: #64748b; }
         .id-watermark {
             position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: .04; font-size: 5.5rem; font-weight: 900; color: #071d52;
+            pointer-events: none; opacity: .04; font-size: 6.5rem; font-weight: 900; color: #071d52;
             transform: rotate(-18deg); overflow: hidden; z-index: 0;
         }
         .id-body > * { position: relative; z-index: 1; }
-        .id-actions { max-width: 340px; margin: 1.25rem auto 0; text-align: center; }
+        .id-actions { max-width: 520px; margin: 1.25rem auto 0; text-align: center; }
         @media print {
             body { background: #fff; padding: 0; }
             .id-card { box-shadow: none; }
@@ -88,51 +96,62 @@
 <body>
     <div class="id-card">
         <div class="id-band">
-            @if(file_exists(public_path('images/logo.png')))
-            <img src="{{ asset('images/logo.png') }}" alt="">
-            @endif
-            <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
-            <div class="sub">Student Identity Card</div>
+            <div class="id-band-brand">
+                @if(file_exists(public_path('images/logo.png')))
+                <img src="{{ asset('images/logo.png') }}" alt="">
+                @endif
+                <div>
+                    <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
+                    <div class="sub">Student Identity Card</div>
+                </div>
+            </div>
+            <span class="id-band-tag">{{ \App\Support\AcademicSession::label(\App\Support\AcademicSession::defaultStartYear()) }}</span>
         </div>
         <div class="id-body">
             <div class="id-watermark">ID</div>
-            <div class="id-photo-row">
+            <div class="id-photo-col">
                 @if($photoUrl)
                 <img src="{{ $photoUrl }}" alt="" class="id-photo">
                 @else
                 <div class="id-photo-fallback">{{ strtoupper(substr($student->first_name ?? '?', 0, 1).substr($student->last_name ?? '', 0, 1)) }}</div>
                 @endif
-                <div class="flex-grow-1">
-                    <div class="id-name">{{ $student->full_name }}</div>
-                    <div class="id-role">{{ $student->programme->name ?? 'Student' }}</div>
-                    <div class="id-meta-line">Reg. No: <strong>{{ $student->reg_no }}</strong></div>
+                <div class="id-barcode">
+                    <div class="bars"></div>
+                    <div class="code">{{ $student->reg_no }}</div>
+                </div>
+            </div>
+            <div class="id-info-col">
+                <div class="id-name">{{ $student->full_name }}</div>
+                <div class="id-role">{{ $student->programme->name ?? 'Student' }}</div>
+                <hr class="id-divider">
+                <div class="id-grid">
+                    <div>
+                        <div class="label">Reg. No</div>
+                        <div class="value">{{ $student->reg_no }}</div>
+                    </div>
+                    <div>
+                        <div class="label">Programme</div>
+                        <div class="value">{{ $student->programme->code ?? '—' }}</div>
+                    </div>
                     @if($student->nactvet_reg_no)
-                    <div class="id-meta-line">NACTVET: <strong>{{ $student->nactvet_reg_no }}</strong></div>
+                    <div>
+                        <div class="label">NACTVET</div>
+                        <div class="value">{{ $student->nactvet_reg_no }}</div>
+                    </div>
                     @endif
+                    <div>
+                        <div class="label">NTA Level</div>
+                        <div class="value">{{ $student->nta_level ?? '—' }}</div>
+                    </div>
+                    <div>
+                        <div class="label">Intake year</div>
+                        <div class="value">{{ $student->intake_year ?? '—' }}</div>
+                    </div>
+                    <div>
+                        <div class="label">Valid through</div>
+                        <div class="value">{{ \App\Support\AcademicSession::defaultStartYear() + 1 }}</div>
+                    </div>
                 </div>
-            </div>
-            <hr class="id-divider">
-            <div class="id-grid">
-                <div>
-                    <div class="label">Programme</div>
-                    <div class="value">{{ $student->programme->code ?? '—' }}</div>
-                </div>
-                <div>
-                    <div class="label">NTA Level</div>
-                    <div class="value">{{ $student->nta_level ?? '—' }}</div>
-                </div>
-                <div>
-                    <div class="label">Intake year</div>
-                    <div class="value">{{ $student->intake_year ?? '—' }}</div>
-                </div>
-                <div>
-                    <div class="label">Valid through</div>
-                    <div class="value">{{ \App\Support\AcademicSession::defaultStartYear() + 1 }}</div>
-                </div>
-            </div>
-            <div class="id-barcode">
-                <div class="bars"></div>
-                <div class="code">{{ $student->reg_no }}</div>
             </div>
         </div>
         <div class="id-footer">
