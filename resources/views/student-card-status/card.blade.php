@@ -105,7 +105,7 @@
         .id-grid .label { font-size: .6rem; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; font-weight: 700; margin-bottom: .1rem; }
         .id-grid .value { font-size: .84rem; font-weight: 700; color: #0f172a; }
         .id-footer {
-            padding: .55rem 1.5rem .9rem; text-align: center; font-size: .62rem; color: #94a3b8;
+            padding: .55rem 1.5rem 1.4rem; text-align: center; font-size: .62rem; color: #94a3b8;
             border-top: 1px solid #f1f5f9; letter-spacing: .01em; line-height: 1.5; margin-top: .5rem;
             overflow-wrap: break-word; word-break: break-word;
         }
