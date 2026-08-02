@@ -35,11 +35,32 @@ class PaymentController extends Controller
             return view('payments.index', compact('student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear', 'yearGroups'));
         }
 
-        $query = Payment::query()
+        $allMatching = Payment::query()
             ->with(['student.programme', 'receiver'])
             ->whereHas('student')
-            ->orderByDesc('paid_at');
-        $payments = $query->paginate(15)->withQueryString();
+            ->orderByDesc('paid_at')
+            ->get();
+
+        $groups = $allMatching
+            ->groupBy(fn ($p) => $p->student_id.'_'.$p->academic_year)
+            ->map(function ($group) {
+                $entry = $this->buildSessionBreakdown((int) $group->first()->academic_year, $group);
+                $entry['student'] = $group->first()->student;
+
+                return $entry;
+            })
+            ->sortByDesc('lastActivity')
+            ->values();
+
+        $perPage = 15;
+        $page = (int) $request->integer('page', 1);
+        $paymentGroups = new \Illuminate\Pagination\LengthAwarePaginator(
+            $groups->slice(($page - 1) * $perPage, $perPage)->values(),
+            $groups->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         $todayTotal = (float) Payment::query()->whereDate('paid_at', today())->whereHas('student')->sum('amount');
         $monthTotal = (float) Payment::query()
@@ -48,7 +69,7 @@ class PaymentController extends Controller
             ->sum('amount');
         $allTimeCount = (int) Payment::query()->whereHas('student')->count();
 
-        return view('payments.index', compact('payments', 'todayTotal', 'monthTotal', 'allTimeCount'));
+        return view('payments.index', compact('paymentGroups', 'todayTotal', 'monthTotal', 'allTimeCount'));
     }
 
     public function show(Payment $payment)

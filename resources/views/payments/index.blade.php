@@ -205,7 +205,7 @@
 <div class="card card-landing">
     <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
         <span><i class="bi bi-list-ul me-2"></i>All payments</span>
-        <span class="badge bg-light text-dark">{{ $payments->total() }} records</span>
+        <span class="badge bg-light text-dark">{{ $paymentGroups->total() }} student sessions</span>
     </div>
     <div class="card-body p-0 fin-pay-table-only">
         <table class="table fin-report-table mb-0">
@@ -221,32 +221,38 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($payments as $p)
+                @forelse($paymentGroups as $grp)
+                    @php
+                        $groupPayments = $grp['semOne']->merge($grp['semTwo'])->sortByDesc('paid_at')->values();
+                        $latest = $groupPayments->first();
+                        $methods = $groupPayments->pluck('payment_method')->unique();
+                    @endphp
                 <tr>
                     <td>
-                        <span class="d-block fw-semibold">{{ $p->paid_at->format('d/m/Y') }}</span>
-                        <span class="small text-muted">{{ $p->paid_at->format('H:i') }}</span>
+                        <span class="d-block fw-semibold">{{ $grp['lastActivity']->format('d/m/Y') }}</span>
+                        <span class="small text-muted">{{ $grp['lastActivity']->format('H:i') }}</span>
                     </td>
                     <td>
-                        @if($p->academic_year)
-                        <span class="badge bg-light text-dark border">{{ \App\Support\AcademicSession::label((int) $p->academic_year) }}</span>
-                        @else
-                        <span class="text-muted">—</span>
-                        @endif
-                        @if($p->semesterLabel())
-                        <span class="badge bg-light text-dark border d-block mt-1">{{ $p->semesterLabel() }}</span>
+                        <span class="badge bg-light text-dark border">{{ \App\Support\AcademicSession::label($grp['year']) }}</span>
+                        @if($grp['label'])
+                        <span class="badge bg-light text-dark border d-block mt-1">{{ $grp['label'] }}</span>
                         @endif
                     </td>
                     <td>
-                        <span class="d-block fw-semibold">{{ $p->student?->full_name ?? '—' }}</span>
-                        <span class="small text-muted">{{ $p->student?->reg_no ?? '—' }}</span>
+                        <span class="d-block fw-semibold">{{ $grp['student']?->full_name ?? '—' }}</span>
+                        <span class="small text-muted">{{ $grp['student']?->reg_no ?? '—' }}</span>
                     </td>
-                    <td><code class="small">{{ $p->reference ?? $p->id }}</code></td>
-                    <td class="fin-money fin-money--lg">{{ number_format($p->amount) }}</td>
-                    <td><span class="badge bg-secondary">{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</span></td>
+                    <td>
+                        <code class="small">{{ $latest->reference ?: $latest->id }}</code>
+                        @if($groupPayments->count() > 1)
+                        <span class="small text-muted d-block">{{ $groupPayments->count() }} receipts</span>
+                        @endif
+                    </td>
+                    <td class="fin-money fin-money--lg">{{ number_format($grp['total']) }}</td>
+                    <td><span class="badge bg-secondary">{{ $methods->count() > 1 ? 'Multiple' : (\App\Models\Payment::methods()[$latest->payment_method] ?? $latest->payment_method) }}</span></td>
                     <td class="text-end text-nowrap">
-                        @include('partials.action-view', ['href' => route('payments.show', $p)])
-                        <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
+                        @include('partials.action-view', ['href' => route('payments.show', $latest)])
+                        <a href="{{ route('payments.receipt', $latest) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
                     </td>
                 </tr>
                 @empty
@@ -258,33 +264,38 @@
         </table>
     </div>
     <div class="card-body fin-pay-cards-only">
-        @forelse($payments as $p)
+        @forelse($paymentGroups as $grp)
+            @php
+                $groupPaymentsCard = $grp['semOne']->merge($grp['semTwo'])->sortByDesc('paid_at')->values();
+                $latestCard = $groupPaymentsCard->first();
+                $methodsCard = $groupPaymentsCard->pluck('payment_method')->unique();
+            @endphp
         <article class="fin-pay-card">
             <div class="fin-pay-card-head">
                 <div>
-                    <div class="fw-semibold">{{ $p->student?->full_name ?? '—' }}</div>
-                    <div class="small text-muted">{{ $p->paid_at->format('d/m/Y H:i') }}</div>
+                    <div class="fw-semibold">{{ $grp['student']?->full_name ?? '—' }}</div>
+                    <div class="small text-muted">{{ $grp['lastActivity']->format('d/m/Y H:i') }}</div>
                 </div>
-                <div class="fin-pay-card-amount">{{ number_format($p->amount) }} TZS</div>
+                <div class="fin-pay-card-amount">{{ number_format($grp['total']) }} TZS</div>
             </div>
             <dl class="fin-pay-card-dl">
-                <dt>Reg no.</dt><dd>{{ $p->student?->reg_no ?? '—' }}</dd>
-                <dt>Session</dt><dd>{{ $p->academic_year ? \App\Support\AcademicSession::label((int) $p->academic_year) : '—' }}</dd>
-                <dt>Semester</dt><dd>{{ $p->semesterLabel() ?? '—' }}</dd>
-                <dt>Method</dt><dd>{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</dd>
-                <dt>Reference</dt><dd><code class="small">{{ $p->reference ?? $p->id }}</code></dd>
+                <dt>Reg no.</dt><dd>{{ $grp['student']?->reg_no ?? '—' }}</dd>
+                <dt>Session</dt><dd>{{ \App\Support\AcademicSession::label($grp['year']) }}</dd>
+                <dt>Semester</dt><dd>{{ $grp['label'] ?? '—' }}</dd>
+                <dt>Method</dt><dd>{{ $methodsCard->count() > 1 ? 'Multiple' : (\App\Models\Payment::methods()[$latestCard->payment_method] ?? $latestCard->payment_method) }}</dd>
+                <dt>Reference</dt><dd><code class="small">{{ $latestCard->reference ?: $latestCard->id }}</code></dd>
             </dl>
             <div class="d-flex gap-2 mt-2">
-                @include('partials.action-view', ['href' => route('payments.show', $p)])
-                <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
+                @include('partials.action-view', ['href' => route('payments.show', $latestCard)])
+                <a href="{{ route('payments.receipt', $latestCard) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
             </div>
         </article>
         @empty
         <p class="text-center text-muted py-4 mb-0">No payments recorded yet.</p>
         @endforelse
     </div>
-    @if($payments->hasPages())
-    <div class="card-footer bg-light border-0 py-2">{{ $payments->links('pagination::bootstrap-5') }}</div>
+    @if($paymentGroups->hasPages())
+    <div class="card-footer bg-light border-0 py-2">{{ $paymentGroups->links('pagination::bootstrap-5') }}</div>
     @endif
 </div>
 @endif
