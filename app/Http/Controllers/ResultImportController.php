@@ -98,7 +98,7 @@ class ResultImportController extends Controller
                 ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched']));
         }
 
-        $msg = "Imported {$out['rows_touched']} row(s). Pending approval before students/guardians can see them.";
+        $msg = "Imported {$out['rows_touched']} module result(s) (one per student per module on the sheet). Pending approval before students/guardians can see them.";
         if (count($out['errors'])) {
             $msg .= ' Notes: '.implode(' ', array_slice($out['errors'], 0, 5));
             if (count($out['errors']) > 5) {
@@ -206,7 +206,7 @@ class ResultImportController extends Controller
                 ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched']));
         }
 
-        $msg = "Imported {$out['rows_touched']} row(s). Pending approval before students/guardians can see them.";
+        $msg = "Imported {$out['rows_touched']} module result(s) (one per student per module on the sheet). Pending approval before students/guardians can see them.";
         if (count($out['errors'])) {
             $msg .= ' Notes: '.implode(' ', array_slice($out['errors'], 0, 5));
             if (count($out['errors']) > 5) {
