@@ -10,8 +10,14 @@ class ResultsPendingApprovalNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(private readonly Semester $semester, private readonly int $rowsTouched)
-    {
+    /**
+     * @param  array{total: int, pass: int, fail: int}  $summary  Snapshot of all pending results for this semester at send time.
+     */
+    public function __construct(
+        private readonly Semester $semester,
+        private readonly int $rowsTouched,
+        private readonly array $summary = ['total' => 0, 'pass' => 0, 'fail' => 0]
+    ) {
     }
 
     public function via(object $notifiable): array
@@ -26,6 +32,7 @@ class ResultsPendingApprovalNotification extends Notification
             'message' => $this->rowsTouched.' result row(s) imported for '.$this->semester->label.' are awaiting approval before publication.',
             'url' => route('results.approvals.index'),
             'kind' => 'results_pending_approval',
+            'summary' => $this->summary,
         ];
     }
 }

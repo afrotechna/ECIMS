@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Models\Programme;
 use App\Models\Result;
 use App\Models\Semester;
 use App\Models\User;
 use App\Notifications\ResultsRejectedNotification;
+use App\Services\ResultApprovalGridBuilder;
 use App\Services\ResultReleaseSmsService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -40,7 +42,47 @@ class ResultApprovalController extends Controller
             ->get()
             ->sortByDesc(fn ($row) => $row->semester?->id);
 
-        return view('results.approvals', compact('pending', 'canApprove'));
+        $builder = app(ResultApprovalGridBuilder::class);
+        $groups = [];
+
+        foreach ($pending as $row) {
+            $semester = $row->semester;
+            if (! $semester) {
+                continue;
+            }
+
+            $programmeLevelPairs = Result::query()
+                ->where('results.status', 'pending_approval')
+                ->where('results.semester_id', $semester->id)
+                ->join('courses', 'courses.id', '=', 'results.course_id')
+                ->selectRaw('courses.programme_id, courses.nta_level')
+                ->distinct()
+                ->get();
+
+            $grids = [];
+            $summary = ['total' => 0, 'pass' => 0, 'fail' => 0];
+
+            foreach ($programmeLevelPairs as $pair) {
+                $programme = Programme::find($pair->programme_id);
+                if (! $programme) {
+                    continue;
+                }
+
+                $grid = $builder->build($semester, $programme, $pair->nta_level);
+                if (empty($grid['rows'])) {
+                    continue;
+                }
+
+                $grids[] = $grid;
+                $summary['total'] += $grid['summary']['total'];
+                $summary['pass'] += $grid['summary']['pass'];
+                $summary['fail'] += $grid['summary']['fail'];
+            }
+
+            $groups[$row->semester_id] = ['grids' => $grids, 'summary' => $summary];
+        }
+
+        return view('results.approvals', compact('pending', 'canApprove', 'groups'));
     }
 
     public function approve(Request $request)

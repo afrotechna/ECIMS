@@ -202,9 +202,6 @@
                     @endif
                     @canModule('results', 'view')
                     <li><a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Results</a></li>
-                    @if(in_array(\App\Models\User::normalizeRoleSlug((string) auth()->user()->role), ['principal', 'vice_principal_arc'], true))
-                    <li><a href="{{ route('results.approvals.index') }}" class="{{ request()->routeIs('results.approvals.*') ? 'active' : '' }}"><i class="bi bi-check2-square"></i>Results approvals</a></li>
-                    @endif
                     @endcanModule
                     @canModule('question_bank', 'view')
                     <li><a href="{{ route('question-bank.index') }}" class="{{ request()->routeIs('question-bank.*') ? 'active' : '' }}"><i class="bi bi-question-circle"></i>Question bank</a></li>
@@ -410,17 +407,53 @@
                     </div>
                     <div class="notif-list">
                         @forelse($topbarNotifications as $n)
-                            <form method="POST" action="{{ route('notifications.read', $n->id) }}">
-                                @csrf
-                                <button type="submit" class="notif-item w-100 text-start border-0 bg-transparent">
-                                    <div class="d-flex justify-content-between gap-2">
+                            @if(($n->data['kind'] ?? null) === 'results_pending_approval')
+                                @php
+                                    $sum = $n->data['summary'] ?? ['total' => 0, 'pass' => 0, 'fail' => 0];
+                                    $expandId = 'notif-expand-'.$n->id;
+                                @endphp
+                                <div class="notif-item notif-item-expandable">
+                                    <div
+                                        class="d-flex justify-content-between gap-2 notif-expand-trigger collapsed"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#{{ $expandId }}"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-expanded="false"
+                                    >
                                         <span class="notif-item-title">{{ $n->data['title'] ?? 'Notification' }}</span>
-                                        @if(!$n->read_at)<span class="badge bg-primary">New</span>@endif
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if(!$n->read_at)<span class="badge bg-primary">New</span>@endif
+                                            <i class="bi bi-chevron-down small notif-expand-icon"></i>
+                                        </div>
                                     </div>
                                     <div class="notif-item-msg">{{ $n->data['message'] ?? '' }}</div>
                                     <div class="small text-muted mt-1">{{ $n->created_at?->diffForHumans() }}</div>
-                                </button>
-                            </form>
+                                    <div class="collapse mt-2" id="{{ $expandId }}">
+                                        <div class="d-flex gap-3 small mb-2">
+                                            <span><strong>{{ $sum['total'] }}</strong> total</span>
+                                            <span class="text-success"><strong>{{ $sum['pass'] }}</strong> pass</span>
+                                            <span class="text-danger"><strong>{{ $sum['fail'] }}</strong> fail</span>
+                                        </div>
+                                        <form method="POST" action="{{ route('notifications.read', $n->id) }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-primary w-100">Review &amp; decide</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @else
+                                <form method="POST" action="{{ route('notifications.read', $n->id) }}">
+                                    @csrf
+                                    <button type="submit" class="notif-item w-100 text-start border-0 bg-transparent">
+                                        <div class="d-flex justify-content-between gap-2">
+                                            <span class="notif-item-title">{{ $n->data['title'] ?? 'Notification' }}</span>
+                                            @if(!$n->read_at)<span class="badge bg-primary">New</span>@endif
+                                        </div>
+                                        <div class="notif-item-msg">{{ $n->data['message'] ?? '' }}</div>
+                                        <div class="small text-muted mt-1">{{ $n->created_at?->diffForHumans() }}</div>
+                                    </button>
+                                </form>
+                            @endif
                         @empty
                             <div class="p-3 text-muted small">No notifications yet.</div>
                         @endforelse

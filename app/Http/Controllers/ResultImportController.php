@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Programme;
+use App\Models\Result;
 use App\Models\User;
 use App\Notifications\ResultsPendingApprovalNotification;
 use App\Services\ResultImportCourseQuery;
@@ -91,11 +92,12 @@ class ResultImportController extends Controller
         }
 
         if ($out['rows_touched'] > 0) {
+            $summary = $this->pendingApprovalSummary($semester, 'ca');
             User::query()
                 ->whereIn('role', ['principal', 'vice_principal_arc', 'administrator'])
                 ->get()
                 ->each
-                ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched']));
+                ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched'], $summary));
         }
 
         $msg = "Imported {$out['rows_touched']} module result(s) (one per student per module on the sheet). Pending approval before students/guardians can see them.";
@@ -199,11 +201,12 @@ class ResultImportController extends Controller
         }
 
         if ($out['rows_touched'] > 0) {
+            $summary = $this->pendingApprovalSummary($semester, 'final');
             User::query()
                 ->whereIn('role', ['principal', 'vice_principal_arc', 'administrator'])
                 ->get()
                 ->each
-                ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched']));
+                ->notify(new ResultsPendingApprovalNotification($semester, $out['rows_touched'], $summary));
         }
 
         $msg = "Imported {$out['rows_touched']} module result(s) (one per student per module on the sheet). Pending approval before students/guardians can see them.";
@@ -215,5 +218,34 @@ class ResultImportController extends Controller
         }
 
         return redirect()->route('results.import.final', ['semester_id' => $semester->id])->with('success', $msg);
+    }
+
+    /**
+     * Snapshot of all pending results for this semester right now, for the approval notification.
+     *
+     * @return array{total: int, pass: int, fail: int}
+     */
+    private function pendingApprovalSummary(Semester $semester, string $mode): array
+    {
+        return Result::query()
+            ->where('semester_id', $semester->id)
+            ->where('status', 'pending_approval')
+            ->with('course')
+            ->get()
+            ->reduce(function (array $carry, Result $r) use ($mode) {
+                $carry['total']++;
+                $outcome = $mode === 'ca' ? $r->caModuleRemark() : match ($r->finalOutcome()) {
+                    'pass' => 'PASS',
+                    'fail' => 'FAIL',
+                    default => null,
+                };
+                if ($outcome === 'FAIL') {
+                    $carry['fail']++;
+                } elseif ($outcome === 'PASS') {
+                    $carry['pass']++;
+                }
+
+                return $carry;
+            }, ['total' => 0, 'pass' => 0, 'fail' => 0]);
     }
 }
