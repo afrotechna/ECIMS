@@ -154,6 +154,7 @@
                 <div class="col-md-4">
                     <label for="guardian_name" class="form-label">Guardian name</label>
                     <input type="text" class="form-control" id="guardian_name" name="guardian_name" value="{{ old('guardian_name') }}">
+                    <div class="form-text">Suggested from the student's middle &amp; last name &mdash; correct it if needed.</div>
                 </div>
                 <div class="col-md-4">
                     <label for="guardian_phone" class="form-label">Guardian phone</label>
@@ -177,6 +178,27 @@
 document.getElementById('student_type').addEventListener('change', function() {
     document.getElementById('transferFields').style.display = this.value === 'transferred' ? 'block' : 'none';
 });
+
+(function () {
+    var middleEl = document.getElementById('middle_name');
+    var lastEl = document.getElementById('last_name');
+    var guardianEl = document.getElementById('guardian_name');
+    if (!middleEl || !lastEl || !guardianEl) return;
+
+    var guardianEdited = guardianEl.value.trim() !== '';
+
+    function suggestGuardianName() {
+        if (guardianEdited) return;
+        var suggestion = (middleEl.value.trim() + ' ' + lastEl.value.trim()).trim();
+        guardianEl.value = suggestion;
+    }
+
+    guardianEl.addEventListener('input', function () {
+        guardianEdited = guardianEl.value.trim() !== '';
+    });
+    middleEl.addEventListener('input', suggestGuardianName);
+    lastEl.addEventListener('input', suggestGuardianName);
+})();
 </script>
 @endpush
 @endsection

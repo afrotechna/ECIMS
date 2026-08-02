@@ -223,15 +223,18 @@
 
             @if($isFirstSem && $step === 2)
                 <div class="row g-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label">Guardian / parent name</label>
-                        <input type="text" name="guardian_name" class="form-control" value="{{ old('guardian_name', $student->guardian_name) }}">
+                        <input type="text" name="guardian_name" class="form-control" value="{{ old('guardian_name', $student->guardian_name ?: $student->guardianNameSuggestion()) }}">
+                        @unless($student->guardian_name)
+                        <div class="form-text">Suggested from the student's name &mdash; correct it if needed.</div>
+                        @endunless
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="form-label">Guardian phone</label>
                         <input type="text" name="guardian_phone" class="form-control" value="{{ old('guardian_phone', $student->guardian_phone) }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="guardian_relationship_choice" class="form-label">Relationship</label>
                         @include('students.partials.guardian-relationship-field', ['currentValue' => old('guardian_relationship', $student->guardian_relationship)])
                     </div>

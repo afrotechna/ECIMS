@@ -394,6 +394,19 @@ class Student extends Model
         return implode(' ', $parts);
     }
 
+    /**
+     * Guardian name suggestion — middle name + surname, since a student's guardian
+     * is very often their father, who typically shares that middle name and surname
+     * under local naming convention. Purely a prefillable default; staff can edit it.
+     */
+    public function guardianNameSuggestion(): ?string
+    {
+        $parts = array_filter([$this->middle_name, $this->last_name]);
+        $suggestion = trim(implode(' ', $parts));
+
+        return $suggestion !== '' ? $suggestion : null;
+    }
+
     /** Single family name (last word only) for portal password. */
     public function singleSurname(): string
     {

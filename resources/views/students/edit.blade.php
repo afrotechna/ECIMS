@@ -142,7 +142,10 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label for="guardian_name" class="form-label">Guardian name</label>
-                    <input type="text" class="form-control" id="guardian_name" name="guardian_name" value="{{ old('guardian_name', $student->guardian_name) }}">
+                    <input type="text" class="form-control" id="guardian_name" name="guardian_name" value="{{ old('guardian_name', $student->guardian_name ?: $student->guardianNameSuggestion()) }}">
+                    @unless($student->guardian_name)
+                    <div class="form-text">Suggested from the student's name &mdash; correct it if needed.</div>
+                    @endunless
                 </div>
                 <div class="col-md-4">
                     <label for="guardian_phone" class="form-label">Guardian phone</label>
