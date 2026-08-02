@@ -139,8 +139,12 @@ class CourseController extends Controller
         if ($selectedProgrammeId && ! $programmes->firstWhere('id', $selectedProgrammeId)) {
             $selectedProgrammeId = null;
         }
+        $selectedNtaLevel = $request->integer('nta_level') ?: null;
+        if (! in_array($selectedNtaLevel, [4, 5, 6], true)) {
+            $selectedNtaLevel = null;
+        }
 
-        return view('courses.create', compact('programmes', 'semesters', 'selectedProgrammeId'));
+        return view('courses.create', compact('programmes', 'semesters', 'selectedProgrammeId', 'selectedNtaLevel'));
     }
 
     public function store(Request $request)
@@ -189,7 +193,10 @@ class CourseController extends Controller
         $course = Course::create($validated);
         $course->semesters()->sync($semesterIds);
 
-        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+        return redirect()->route('courses.create', [
+            'programme_id' => $validated['programme_id'],
+            'nta_level' => $validated['nta_level'],
+        ])->with('success', "Module {$course->code} added. Add another for the same programme, or go to the module catalogue when done.");
     }
 
     /**
@@ -279,8 +286,9 @@ class CourseController extends Controller
         if ($skipped !== []) {
             $msg .= ' Skipped (already exist): '.implode(', ', $skipped).'.';
         }
+        $msg .= ' Add more for the same programme, or go to the module catalogue when done.';
 
-        return redirect()->route('courses.index')->with('success', $msg);
+        return redirect()->route('courses.create', ['programme_id' => $programme->id])->with('success', $msg);
     }
 
     public function edit(Request $request, Course $course)

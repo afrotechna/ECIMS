@@ -60,7 +60,7 @@
                     <label for="nta_level" class="form-label">NTA Level <span class="text-danger">*</span></label>
                     <select class="form-select @error('nta_level') is-invalid @enderror" name="nta_level" id="nta_level" required>
                         @foreach([4 => 'NTA Level 4', 5 => 'NTA Level 5', 6 => 'NTA Level 6'] as $nv => $label)
-                            <option value="{{ $nv }}" {{ (int) old('nta_level', 4) === $nv ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $nv }}" {{ (int) old('nta_level', $selectedNtaLevel ?? 4) === $nv ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @error('nta_level')<div class="invalid-feedback">{{ $message }}</div>@enderror
