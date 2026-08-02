@@ -145,9 +145,6 @@ body {
 .topbar .notif-item-title { font-size: .82rem; font-weight: 600; }
 .topbar .notif-item-msg { font-size: .75rem; color: var(--cohas-text-muted); }
 .topbar .notif-menu-footer { padding: .55rem .9rem; text-align: center; }
-.topbar .notif-expand-trigger { cursor: pointer; user-select: none; }
-.topbar .notif-expand-icon { transition: transform .2s ease; }
-.topbar .notif-expand-trigger.collapsed .notif-expand-icon { transform: rotate(-90deg); }
 .topbar .topbar-avatar {
     width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; border: none; cursor: pointer; padding: 0;
     display: inline-flex; align-items: center; justify-content: center;
