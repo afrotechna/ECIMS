@@ -176,7 +176,18 @@
 .admission-control-sheet-table { font-size: 0.72rem; }
 .admission-control-sheet-table th, .admission-control-sheet-table td {
     padding: 4px 6px;
+}
+.admission-control-sheet-table td {
     white-space: nowrap;
+}
+.admission-control-sheet-table th {
+    max-width: 110px;
+    white-space: normal;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
 }
 @media print {
     .student-breadcrumb, .page-header-landing .btn, .card-landing.mb-3 form, .alert, .nav, .topbar, .profile-dropdown, footer { display: none !important; }
