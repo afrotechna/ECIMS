@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\BulkDestroysRecords;
+use App\Models\InstitutionDocument;
 use App\Models\Programme;
 use App\Models\ProgrammeNtaLevelDocument;
 use Illuminate\Http\Request;
@@ -72,8 +73,9 @@ class ProgrammeController extends Controller
             'file' => ['required', 'file', 'max:15360', 'mimes:pdf,doc,docx'],
         ]);
 
-        $path = $request->file('file')->store("programme-nta-docs/{$programme->id}", 'public');
-        $originalName = $request->file('file')->getClientOriginalName();
+        $file = $request->file('file');
+        $path = $file->store("programme-nta-docs/{$programme->id}", 'public');
+        $originalName = $file->getClientOriginalName();
 
         $existing = ProgrammeNtaLevelDocument::query()
             ->where('programme_id', $programme->id)
@@ -85,6 +87,29 @@ class ProgrammeController extends Controller
             $existing->delete();
         }
 
+        // Mirror into Institution Documents so it shows up in the matching folder
+        // (assessment_plan / practicum_guide / curriculum share the same category keys),
+        // tagged to this programme.
+        $institutionDocument = null;
+        if (InstitutionDocument::isStudentCategory($validated['document_type'])) {
+            $mirrorPath = $file->store(
+                'institution-documents/'.$validated['document_type'].'/'.date('Y'),
+                'local'
+            );
+            $typeLabel = ProgrammeNtaLevelDocument::typeLabels()[$validated['document_type']] ?? $validated['document_type'];
+            $institutionDocument = InstitutionDocument::create([
+                'title' => $programme->name.' — NTA Level '.$validated['nta_level'].' — '.$typeLabel,
+                'category' => $validated['document_type'],
+                'programme_id' => $programme->id,
+                'file_path' => $mirrorPath,
+                'original_name' => $originalName,
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'is_public' => false,
+                'uploaded_by' => auth()->id(),
+            ]);
+        }
+
         ProgrammeNtaLevelDocument::create([
             'programme_id' => $programme->id,
             'nta_level' => $validated['nta_level'],
@@ -92,11 +117,12 @@ class ProgrammeController extends Controller
             'file_path' => $path,
             'original_name' => $originalName,
             'uploaded_by' => auth()->id(),
+            'institution_document_id' => $institutionDocument?->id,
         ]);
 
         return redirect()
             ->to(route('programmes.edit', $programme).'#nta-level-documents')
-            ->with('success', 'Supporting document uploaded.');
+            ->with('success', 'Supporting document uploaded — also filed under Institution Documents → '.($institutionDocument?->categoryLabel() ?? 'the matching folder').'.');
     }
 
     public function destroyNtaLevelDocument(Programme $programme, int $document)

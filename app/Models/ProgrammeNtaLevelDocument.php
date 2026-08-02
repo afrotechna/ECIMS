@@ -34,6 +34,7 @@ class ProgrammeNtaLevelDocument extends Model
         'file_path',
         'original_name',
         'uploaded_by',
+        'institution_document_id',
     ];
 
     protected static function booted(): void
@@ -42,7 +43,15 @@ class ProgrammeNtaLevelDocument extends Model
             if ($document->file_path) {
                 Storage::disk('public')->delete($document->file_path);
             }
+            if ($document->institution_document_id) {
+                InstitutionDocument::find($document->institution_document_id)?->delete();
+            }
         });
+    }
+
+    public function institutionDocument(): BelongsTo
+    {
+        return $this->belongsTo(InstitutionDocument::class);
     }
 
     /**
