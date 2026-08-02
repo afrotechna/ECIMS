@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use App\Models\LedgerEntry;
 use App\Models\Payment;
+use App\Models\Student;
+use App\Support\AcademicSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -17,11 +19,22 @@ class PaymentController extends Controller
             ->whereHas('student')
             ->orderByDesc('paid_at');
 
+        $student = null;
         if ($request->filled('student_id')) {
+            $student = Student::with('programme')->find($request->integer('student_id'));
             $query->where('student_id', $request->student_id);
         }
 
         $payments = $query->paginate(15)->withQueryString();
+
+        if ($student) {
+            $currentYear = AcademicSession::defaultStartYear();
+            $studentTotal = (float) Payment::query()->where('student_id', $student->id)->sum('amount');
+            $studentYearTotal = (float) Payment::query()->where('student_id', $student->id)->where('academic_year', $currentYear)->sum('amount');
+            $studentReceiptCount = (int) Payment::query()->where('student_id', $student->id)->count();
+
+            return view('payments.index', compact('payments', 'student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear'));
+        }
 
         $todayTotal = (float) Payment::query()->whereDate('paid_at', today())->whereHas('student')->sum('amount');
         $monthTotal = (float) Payment::query()

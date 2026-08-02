@@ -27,6 +27,9 @@
         @if(auth()->user()->canAccessFinance())
         <a href="{{ route('students.ledger', $student) }}" class="btn btn-outline-light btn-sm"><i class="bi bi-wallet2 me-1"></i> Ledger</a>
         @endif
+        @canModule('finance_payments', 'view')
+        <a href="{{ route('payments.index', ['student_id' => $student->id]) }}" class="btn btn-outline-light btn-sm"><i class="bi bi-clock-history me-1"></i> Payment history</a>
+        @endcanModule
         <a href="{{ route('results.transcript.show', $student) }}" class="btn btn-outline-light btn-sm"><i class="bi bi-file-earmark-text me-1"></i> Transcript</a>
         <a href="{{ route('students.edit', $student) }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-pencil me-1"></i> Edit</a>
         <a href="{{ route('students.index') }}" class="btn btn-outline-light btn-sm">Back to list</a>
