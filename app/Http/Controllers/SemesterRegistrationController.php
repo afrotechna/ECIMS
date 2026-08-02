@@ -17,12 +17,23 @@ class SemesterRegistrationController extends Controller
             ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->whereHas('student', fn ($sq) => $sq->where('programme_id', $pid)))
             ->orderByDesc('created_at');
 
+        // No filters submitted at all (first visit, not an explicit "All") — default to the current semester only.
+        $noFilterSubmitted = ! $request->has('semester_id') && ! $request->has('academic_year') && ! $request->has('status');
+        $currentSemester = $noFilterSubmitted
+            ? Semester::where('is_active', true)->orderByDesc('academic_year')->orderByDesc('number')->first()
+            : null;
+
+        $selectedSemester = null;
         if ($request->filled('semester_id')) {
             $query->where('semester_id', $request->semester_id);
-        }
-        if ($request->filled('academic_year')) {
+            $selectedSemester = Semester::find($request->semester_id);
+        } elseif ($request->filled('academic_year')) {
             $query->whereHas('semester', fn ($q) => $q->where('academic_year', (int) $request->academic_year));
+        } elseif ($currentSemester) {
+            $query->where('semester_id', $currentSemester->id);
+            $selectedSemester = $currentSemester;
         }
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -36,7 +47,7 @@ class SemesterRegistrationController extends Controller
         $semesters = $semesterFilter->get();
         $academicYearOptions = Semester::academicYearOptionsForForms();
 
-        return view('semester-registrations.index', compact('registrations', 'semesters', 'academicYearOptions'));
+        return view('semester-registrations.index', compact('registrations', 'semesters', 'academicYearOptions', 'selectedSemester'));
     }
 
     public function create(Request $request)

@@ -18,9 +18,14 @@
     <div>
         <h1 class="page-title-landing"><i class="bi bi-calendar-check me-2 opacity-90"></i>Student registrations</h1>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{{ route('registration-wizard.start') }}" class="btn btn-primary btn-sm"><i class="bi bi-ui-checks-grid me-1"></i> Start registration (steps)</a>
-        <a href="{{ route('semester-registrations.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Quick submit only</a>
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+        @if($selectedSemester)
+        <span class="badge bg-secondary-subtle text-dark border fs-6 fw-normal py-2 px-3">{{ $selectedSemester->label }}</span>
+        @endif
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('registration-wizard.start') }}" class="btn btn-primary btn-sm"><i class="bi bi-ui-checks-grid me-1"></i> Start registration (steps)</a>
+            <a href="{{ route('semester-registrations.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Quick submit only</a>
+        </div>
     </div>
 </div>
 
@@ -115,7 +120,7 @@
                     <th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th>
                     @endif
                     <th>#</th>
-                    <th>Student</th><th>Semester</th><th>Status</th><th>Registered</th>
+                    <th>Student</th><th>Status</th><th>Registered</th>
                     @if($canManageRegistrations)
                     <th class="text-end">Actions</th>
                     @endif
@@ -129,7 +134,6 @@
                     @endif
                     <td>{{ $registrations->firstItem() + $loop->index }}</td>
                     <td>{{ $r->student?->full_name ?? '—' }}</td>
-                    <td>{{ $r->semester?->label ?? '—' }}</td>
                     <td>
                         @if($r->status === 'approved')<span class="badge bg-success">Approved</span>
                         @elseif($r->status === 'rejected')<span class="badge bg-danger">Rejected</span>
@@ -149,7 +153,7 @@
                     @endif
                 </tr>
                 @empty
-                <tr><td colspan="{{ $canManageRegistrations ? 7 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
+                <tr><td colspan="{{ $canManageRegistrations ? 6 : 4 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
                 @endforelse
             </tbody>
         </table>
