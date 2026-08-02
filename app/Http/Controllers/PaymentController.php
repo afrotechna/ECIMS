@@ -33,7 +33,16 @@ class PaymentController extends Controller
             $studentYearTotal = (float) Payment::query()->where('student_id', $student->id)->where('academic_year', $currentYear)->sum('amount');
             $studentReceiptCount = (int) Payment::query()->where('student_id', $student->id)->count();
 
-            return view('payments.index', compact('payments', 'student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear'));
+            $yearPayments = Payment::query()->where('student_id', $student->id)->where('academic_year', $currentYear)->get();
+            $semOnePayments = $yearPayments->where('covers_semester_two_only', false);
+            $feeBreakdown = [
+                'sem1_tuition' => $semOnePayments->sum(fn ($p) => $p->allocatedAmount('tuition')),
+                'sem1_nhif' => $semOnePayments->sum(fn ($p) => $p->allocatedAmount('nhif')),
+                'sem1_nactvet_qa' => $semOnePayments->sum(fn ($p) => $p->allocatedAmount('nactvet_qa')),
+                'sem2_tuition' => $yearPayments->where('covers_semester_two_only', true)->sum(fn ($p) => $p->allocatedAmount('tuition')),
+            ];
+
+            return view('payments.index', compact('payments', 'student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear', 'feeBreakdown'));
         }
 
         $todayTotal = (float) Payment::query()->whereDate('paid_at', today())->whereHas('student')->sum('amount');

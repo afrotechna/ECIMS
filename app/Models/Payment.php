@@ -71,8 +71,8 @@ class Payment extends Model
     }
 
     /**
-     * Which semester(s) this payment's tuition covers, from the category chosen at
-     * payment time — "new_student" is Semester I only, everything else covers both.
+     * Which semester this payment's tuition covers. Fees are billed one semester at a time,
+     * so a payment covers Semester I unless it was recorded during Semester II registration.
      */
     public function semesterLabel(): ?string
     {
@@ -80,10 +80,6 @@ class Payment extends Model
             return 'Semester II';
         }
 
-        return match ($this->tuition_category) {
-            'new_student' => 'Semester I',
-            'continue', 'repeat', 'transfer' => 'Semester I & II',
-            default => null,
-        };
+        return $this->tuition_category !== null ? 'Semester I' : null;
     }
 }

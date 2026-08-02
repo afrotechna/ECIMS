@@ -30,10 +30,10 @@
             <label class="form-label" for="rw_tuition_category">Tuition fee</label>
             <select name="tuition_category" id="rw_tuition_category" class="form-select @error('tuition_category') is-invalid @enderror" required>
                 @if($isFirstSem)
-                <option value="new_student" {{ old('tuition_category', $paymentTuitionDefault) === 'new_student' ? 'selected' : '' }}>New student &mdash; Semester I tuition only</option>
-                <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing &mdash; Semester I + II (continuous rate)</option>
-                <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating &mdash; Semester I + II (repeat rate)</option>
-                <option value="transfer" {{ old('tuition_category', $paymentTuitionDefault) === 'transfer' ? 'selected' : '' }}>Transferred &mdash; Semester I + II (transfer / repeat rate)</option>
+                <option value="new_student" {{ old('tuition_category', $paymentTuitionDefault) === 'new_student' ? 'selected' : '' }}>New student &mdash; Semester I tuition</option>
+                <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing &mdash; Semester I tuition</option>
+                <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating &mdash; Semester I tuition</option>
+                <option value="transfer" {{ old('tuition_category', $paymentTuitionDefault) === 'transfer' ? 'selected' : '' }}>Transferred &mdash; Semester I tuition</option>
                 @else
                 <option value="continue" {{ old('tuition_category', $paymentTuitionDefault) === 'continue' ? 'selected' : '' }}>Continuing &mdash; Semester II remaining balance</option>
                 <option value="repeat" {{ old('tuition_category', $paymentTuitionDefault) === 'repeat' ? 'selected' : '' }}>Repeating &mdash; Semester II (repeat rate)</option>
@@ -170,13 +170,7 @@
                     default: return s2c;
                 }
             }
-            switch (category) {
-                case 'new_student': return s1;
-                case 'continue': return s1 + s2c;
-                case 'repeat':
-                case 'transfer': return s1 + s2r;
-                default: return 0;
-            }
+            return s1;
         }
 
         function refreshFeeSlots() {

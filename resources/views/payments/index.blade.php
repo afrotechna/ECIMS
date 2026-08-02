@@ -31,6 +31,21 @@
     }
     .fin-student-hero-name { font-size: 1.15rem; font-weight: 800; color: #0f172a; }
     .fin-student-hero-meta { font-size: .8125rem; color: #64748b; }
+    .pay-breakdown-group + .pay-breakdown-group { margin-top: 1rem; }
+    .pay-breakdown-group-title {
+        font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700;
+        color: #64748b; margin-bottom: .5rem;
+    }
+    .pay-breakdown-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        padding: .55rem 0; border-bottom: 1px solid #f1f5f9; font-size: .875rem;
+    }
+    .pay-breakdown-row .fee-label { display: flex; align-items: center; gap: .5rem; font-weight: 600; color: #334155; }
+    .pay-breakdown-row .fee-label i { color: #94a3b8; }
+    .pay-breakdown-row .fee-amount { font-weight: 700; font-variant-numeric: tabular-nums; color: #0f172a; }
+    .pay-breakdown-row.total { border-top: 2px solid #e2e8f0; border-bottom: none; margin-top: .5rem; padding-top: .75rem; }
+    .pay-breakdown-row.total .fee-label { color: #0d3651; font-size: .9375rem; }
+    .pay-breakdown-row.total .fee-amount { color: #0d3651; font-size: 1rem; }
 </style>
 @endpush
 
@@ -91,6 +106,48 @@
         </div>
     </div>
 </div>
+
+@php
+    $fb = $feeBreakdown ?? [];
+    $fbSemOne = collect(['sem1_tuition' => 'Tuition Fee', 'sem1_nhif' => 'NHIF', 'sem1_nactvet_qa' => 'NACTVET QA'])
+        ->mapWithKeys(fn ($label, $key) => [$key => (float) ($fb[$key] ?? 0)])
+        ->filter(fn ($v) => $v > 0);
+    $fbSemTwo = (float) ($fb['sem2_tuition'] ?? 0);
+    $fbIcons = ['sem1_tuition' => 'bi-mortarboard', 'sem1_nhif' => 'bi-heart-pulse', 'sem1_nactvet_qa' => 'bi-patch-check'];
+    $fbLabels = ['sem1_tuition' => 'Tuition Fee', 'sem1_nhif' => 'NHIF', 'sem1_nactvet_qa' => 'NACTVET QA'];
+    $fbTotal = $fbSemOne->sum() + $fbSemTwo;
+@endphp
+@if($fbTotal > 0)
+<div class="card card-landing">
+    <div class="card-header-landing"><i class="bi bi-receipt-cutoff me-2"></i>Fee breakdown &mdash; {{ \App\Support\AcademicSession::label((int) $currentYear) }}</div>
+    <div class="card-body">
+        @if($fbSemOne->isNotEmpty())
+        <div class="pay-breakdown-group">
+            <div class="pay-breakdown-group-title">Semester I</div>
+            @foreach($fbSemOne as $key => $value)
+            <div class="pay-breakdown-row">
+                <span class="fee-label"><i class="bi {{ $fbIcons[$key] }}"></i>{{ $fbLabels[$key] }}</span>
+                <span class="fee-amount">{{ number_format($value) }} TZS</span>
+            </div>
+            @endforeach
+        </div>
+        @endif
+        @if($fbSemTwo > 0)
+        <div class="pay-breakdown-group">
+            <div class="pay-breakdown-group-title">Semester II</div>
+            <div class="pay-breakdown-row">
+                <span class="fee-label"><i class="bi bi-mortarboard"></i>Tuition Fee</span>
+                <span class="fee-amount">{{ number_format($fbSemTwo) }} TZS</span>
+            </div>
+        </div>
+        @endif
+        <div class="pay-breakdown-row total">
+            <span class="fee-label">Total</span>
+            <span class="fee-amount">{{ number_format($fbTotal) }} TZS</span>
+        </div>
+    </div>
+</div>
+@endif
 
 <div class="card card-landing">
     <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">

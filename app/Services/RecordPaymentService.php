@@ -182,10 +182,14 @@ class RecordPaymentService
     }
 
     /**
+     * Fees are billed per semester, one installment at a time — Semester I tuition when the
+     * student registers for Semester I, then the remaining Semester II tuition (continuous or
+     * repeat rate, depending on category) when they register for Semester II. A category never
+     * charges both installments in the same transaction.
+     *
      * @param  array{sem1_tuition: int, sem2_continuous: int, sem2_repeat: int, ...}  $slots
-     * @param  bool  $semesterTwoOnly  Semester II registration for a student who already paid Semester I
-     *                                 separately — charge just the remaining Semester II portion, not the
-     *                                 full annual amount again.
+     * @param  bool  $semesterTwoOnly  Semester II registration — charge the remaining Semester II
+     *                                 portion only; Semester I was already billed separately.
      * @return array{0: int, 1: int, 2: int} Sem I tuition, Sem II continuous, Sem II repeat (each 0 or full scheduled)
      */
     public function tuitionAmountsForCategory(string $category, array $slots, bool $semesterTwoOnly = false): array
@@ -201,11 +205,7 @@ class RecordPaymentService
             };
         }
 
-        return match ($category) {
-            'new_student' => [$s1, 0, 0],
-            'continue' => [$s1, $s2c, 0],
-            'repeat', 'transfer' => [$s1, 0, $s2r],
-        };
+        return [$s1, 0, 0];
     }
 
     private function assertPaymentSlot(int $submitted, int $scheduled, string $field): void
