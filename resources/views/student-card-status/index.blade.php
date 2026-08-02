@@ -49,7 +49,7 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-        <table class="table table-sm table-hover align-middle mb-0">
+        <table class="table table-sm table-hover align-middle mb-0 student-card-status-table">
             <thead class="table-light">
                 <tr>
                     <th class="text-center" style="width:2.5rem"><input type="checkbox" id="bulkCardStatusSelectAll" aria-label="Select all"></th>
@@ -99,6 +99,16 @@
     </div>
 </div>
 @if($students->hasPages())<div class="mt-3">{{ $students->links() }}</div>@endif
+
+<style>
+.student-card-status-table th,
+.student-card-status-table td {
+    white-space: nowrap;
+}
+.student-card-status-table td form {
+    flex-wrap: nowrap;
+}
+</style>
 
 <form id="bulkCardStatusForm" method="POST" action="{{ route('student-card-status.bulk-update') }}" class="d-none">
     @csrf
