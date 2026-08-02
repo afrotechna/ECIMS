@@ -477,7 +477,7 @@
                         <strong>{{ $currentUser->name }}</strong>
                         <small>{{ $studentRecord ? $studentRecord->reg_no : $currentUser->email }}</small>
                     </div>
-                    @if($studentRecord)
+                    @if($studentRecord && $studentRecord->idCardReady())
                     <a href="{{ route('students.id-card', $studentRecord) }}" target="_blank" class="profile-menu-item w-100 border-0 d-block text-decoration-none" role="menuitem">
                         <i class="bi bi-person-vcard me-2"></i>My ID card
                     </a>

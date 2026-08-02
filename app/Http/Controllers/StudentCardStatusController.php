@@ -19,6 +19,9 @@ class StudentCardStatusController extends Controller
             if (! auth()->user()->student || auth()->user()->student->id !== $student->id) {
                 abort(403, 'You can only view your own ID card.');
             }
+            if (! $student->idCardReady()) {
+                abort(403, 'Your ID card is not ready yet. It becomes available once the registrar has processed and printed it.');
+            }
         } elseif (! auth()->user()->canModule('student_card_status', 'view')) {
             abort(403);
         }

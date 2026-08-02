@@ -229,6 +229,15 @@ class Student extends Model
         return $this->hasMany(StudentCardStatus::class);
     }
 
+    /** The registrar/secretary has marked the physical student ID card as printed (or ready for collection). */
+    public function idCardReady(): bool
+    {
+        return $this->cardStatuses
+            ->where('document_type', 'student_id')
+            ->whereIn('status', ['printed', 'active'])
+            ->isNotEmpty();
+    }
+
     /** The student's own portal login account, matched via NACTVET reg. no. (mirrors User::student()). */
     public function userAccount(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
