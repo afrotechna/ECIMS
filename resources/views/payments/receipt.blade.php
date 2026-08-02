@@ -57,7 +57,11 @@
         }
         .receipt-items th:last-child, .receipt-items td:last-child { text-align: right; }
         .receipt-items td { padding: .45rem 0; font-size: .8125rem; border-bottom: 1px solid #f1f5f9; }
-        .receipt-items td.ref { color: var(--receipt-muted); font-size: .7rem; }
+        .receipt-items td.ref { color: var(--receipt-muted); font-size: .7rem; padding-top: 0; padding-bottom: .6rem; }
+        .receipt-items td.sem-header {
+            padding: .6rem 0 .2rem; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em;
+            font-weight: 700; color: var(--receipt-navy-2); border-bottom: none;
+        }
         .receipt-total-row td {
             padding-top: .75rem; font-size: .95rem; font-weight: 700; border-bottom: none;
         }
@@ -79,6 +83,9 @@
 </head>
 <body>
     @php
+        $feeLabels = ['sem1_tuition' => 'Tuition Fee', 'sem1_nhif' => 'NHIF', 'sem1_nactvet_qa' => 'NACTVET QA', 'sem2_tuition' => 'Tuition Fee'];
+        $semGroups = ['semOne' => ['Semester I', ['sem1_tuition', 'sem1_nhif', 'sem1_nactvet_qa']], 'semTwo' => ['Semester II', ['sem2_tuition']]];
+        $hasSessionBreakdown = isset($session) && (($session['semOne'] ?? collect())->isNotEmpty() || ($session['semTwo'] ?? collect())->isNotEmpty());
         $lines = [
             'tuition' => 'Tuition Fee',
             'nactvet_qa' => 'NACTVET QA',
@@ -107,7 +114,9 @@
                 @if($payment->academic_year)
                 <tr><td>Academic session</td><td>{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</td></tr>
                 @endif
-                <tr><td>Method</td><td>{{ ucfirst($payment->payment_method) }}</td></tr>
+                @unless($hasSessionBreakdown)
+                <tr><td>Method</td><td>{{ \App\Models\Payment::methods()[$payment->payment_method] ?? ucfirst($payment->payment_method) }}</td></tr>
+                @endunless
             </table>
 
             <hr class="receipt-divider">
@@ -117,41 +126,76 @@
                     <tr><th>Fee item</th><th>Amount (TZS)</th></tr>
                 </thead>
                 <tbody>
-                    @if($hasAnyLine)
-                        @foreach($lines as $key => $label)
-                            @php $lineAmount = $payment->allocatedAmount($key); @endphp
-                            @if($lineAmount > 0)
+                    @if($hasSessionBreakdown)
+                        @foreach($semGroups as $semKey => $semMeta)
+                            @php [$semTitle, $rowKeys] = $semMeta; $semPayments = $session[$semKey]; @endphp
+                            @if($semPayments->isNotEmpty())
+                            <tr><td colspan="2" class="sem-header">{{ $semTitle }}</td></tr>
+                            @foreach($rowKeys as $key)
+                                @if(($session['breakdown'][$key] ?? 0) > 0)
+                                <tr>
+                                    <td>{{ $feeLabels[$key] }}</td>
+                                    <td>{{ number_format($session['breakdown'][$key], 0) }}</td>
+                                </tr>
+                                @endif
+                            @endforeach
+                            @foreach($semPayments as $sp)
                             <tr>
-                                <td>
-                                    {{ $label }}
-                                    @if($payment->componentReference($key))
-                                    <div class="ref">Ref: {{ $payment->componentReference($key) }}</div>
-                                    @endif
+                                <td colspan="2" class="ref">
+                                    {{ $sp->paid_at->format('d M Y, H:i') }} &middot; {{ \App\Models\Payment::methods()[$sp->payment_method] ?? ucfirst($sp->payment_method) }}
+                                    @if($sp->reference) &middot; Ref: {{ $sp->reference }} @endif
                                 </td>
-                                <td>{{ number_format($lineAmount, 0) }}</td>
                             </tr>
+                            @endforeach
                             @endif
                         @endforeach
+                        <tr class="receipt-total-row">
+                            <td>Total paid this session</td>
+                            <td class="amount">{{ number_format($session['total'], 0) }}</td>
+                        </tr>
+                        @if(isset($grandTotal) && (float) $grandTotal > (float) $session['total'])
+                        <tr class="receipt-total-row receipt-grand-total-row">
+                            <td>Grand total (all payments to date)</td>
+                            <td class="amount">{{ number_format($grandTotal, 0) }}</td>
+                        </tr>
+                        @endif
                     @else
-                    <tr>
-                        <td>
-                            Payment
-                            @if($payment->reference)
-                            <div class="ref">Ref: {{ $payment->reference }}</div>
-                            @endif
-                        </td>
-                        <td>{{ number_format($payment->amount, 0) }}</td>
-                    </tr>
-                    @endif
-                    <tr class="receipt-total-row">
-                        <td>Total paid</td>
-                        <td class="amount">{{ number_format($payment->amount, 0) }}</td>
-                    </tr>
-                    @if(isset($grandTotal))
-                    <tr class="receipt-total-row receipt-grand-total-row">
-                        <td>Grand total (all payments to date)</td>
-                        <td class="amount">{{ number_format($grandTotal, 0) }}</td>
-                    </tr>
+                        @if($hasAnyLine)
+                            @foreach($lines as $key => $label)
+                                @php $lineAmount = $payment->allocatedAmount($key); @endphp
+                                @if($lineAmount > 0)
+                                <tr>
+                                    <td>
+                                        {{ $label }}
+                                        @if($payment->componentReference($key))
+                                        <div class="ref">Ref: {{ $payment->componentReference($key) }}</div>
+                                        @endif
+                                    </td>
+                                    <td>{{ number_format($lineAmount, 0) }}</td>
+                                </tr>
+                                @endif
+                            @endforeach
+                        @else
+                        <tr>
+                            <td>
+                                Payment
+                                @if($payment->reference)
+                                <div class="ref">Ref: {{ $payment->reference }}</div>
+                                @endif
+                            </td>
+                            <td>{{ number_format($payment->amount, 0) }}</td>
+                        </tr>
+                        @endif
+                        <tr class="receipt-total-row">
+                            <td>Total paid</td>
+                            <td class="amount">{{ number_format($payment->amount, 0) }}</td>
+                        </tr>
+                        @if(isset($grandTotal) && (float) $grandTotal > (float) $payment->amount)
+                        <tr class="receipt-total-row receipt-grand-total-row">
+                            <td>Grand total (all payments to date)</td>
+                            <td class="amount">{{ number_format($grandTotal, 0) }}</td>
+                        </tr>
+                        @endif
                     @endif
                 </tbody>
             </table>

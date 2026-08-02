@@ -28,31 +28,7 @@ class PaymentController extends Controller
 
             $yearGroups = $allPayments
                 ->groupBy('academic_year')
-                ->map(function ($group, $year) {
-                    $semOne = $group->where('covers_semester_two_only', false)->sortByDesc('paid_at')->values();
-                    $semTwo = $group->where('covers_semester_two_only', true)->sortByDesc('paid_at')->values();
-                    $label = match (true) {
-                        $semOne->isNotEmpty() && $semTwo->isNotEmpty() => 'Semester I + II',
-                        $semOne->isNotEmpty() => 'Semester I',
-                        $semTwo->isNotEmpty() => 'Semester II',
-                        default => null,
-                    };
-
-                    return [
-                        'year' => (int) $year,
-                        'label' => $label,
-                        'semOne' => $semOne,
-                        'semTwo' => $semTwo,
-                        'lastActivity' => $group->max('paid_at'),
-                        'total' => (float) $group->sum('amount'),
-                        'breakdown' => [
-                            'sem1_tuition' => $semOne->sum(fn ($p) => $p->allocatedAmount('tuition')),
-                            'sem1_nhif' => $semOne->sum(fn ($p) => $p->allocatedAmount('nhif')),
-                            'sem1_nactvet_qa' => $semOne->sum(fn ($p) => $p->allocatedAmount('nactvet_qa')),
-                            'sem2_tuition' => $semTwo->sum(fn ($p) => $p->allocatedAmount('tuition')),
-                        ],
-                    ];
-                })
+                ->map(fn ($group, $year) => $this->buildSessionBreakdown((int) $year, $group))
                 ->sortByDesc('lastActivity')
                 ->values();
 
@@ -103,9 +79,46 @@ class PaymentController extends Controller
             abort(404, 'This payment record is orphaned (student no longer exists).');
         }
 
+        $sessionPayments = Payment::where('student_id', $payment->student_id)
+            ->where('academic_year', $payment->academic_year)
+            ->orderBy('paid_at')
+            ->get();
+        $session = $this->buildSessionBreakdown((int) $payment->academic_year, $sessionPayments);
         $grandTotal = Payment::where('student_id', $payment->student_id)->sum('amount');
 
-        return view('payments.receipt', compact('payment', 'grandTotal'));
+        return view('payments.receipt', compact('payment', 'session', 'grandTotal'));
+    }
+
+    /**
+     * Group a student's payments for one academic year into Semester I / Semester II
+     * breakdowns — shared by the payment-history cards and the printed receipt, since
+     * both need to present a session's Sem I + Sem II payments as one consolidated view.
+     */
+    private function buildSessionBreakdown(int $year, \Illuminate\Support\Collection $group): array
+    {
+        $semOne = $group->where('covers_semester_two_only', false)->sortByDesc('paid_at')->values();
+        $semTwo = $group->where('covers_semester_two_only', true)->sortByDesc('paid_at')->values();
+        $label = match (true) {
+            $semOne->isNotEmpty() && $semTwo->isNotEmpty() => 'Semester I + II',
+            $semOne->isNotEmpty() => 'Semester I',
+            $semTwo->isNotEmpty() => 'Semester II',
+            default => null,
+        };
+
+        return [
+            'year' => $year,
+            'label' => $label,
+            'semOne' => $semOne,
+            'semTwo' => $semTwo,
+            'lastActivity' => $group->max('paid_at'),
+            'total' => (float) $group->sum('amount'),
+            'breakdown' => [
+                'sem1_tuition' => $semOne->sum(fn ($p) => $p->allocatedAmount('tuition')),
+                'sem1_nhif' => $semOne->sum(fn ($p) => $p->allocatedAmount('nhif')),
+                'sem1_nactvet_qa' => $semOne->sum(fn ($p) => $p->allocatedAmount('nactvet_qa')),
+                'sem2_tuition' => $semTwo->sum(fn ($p) => $p->allocatedAmount('tuition')),
+            ],
+        ];
     }
 
     public function reverseForm(Payment $payment)
