@@ -453,6 +453,27 @@ class Student extends Model
     }
 
     /**
+     * Best default for the registration payment step's tuition category — based on the
+     * student's actual admission year vs the semester being registered for, not on which
+     * semester number the form happens to be showing (Semester I says nothing about whether
+     * the student is new or continuing from a prior year).
+     */
+    public function defaultTuitionCategory(int $academicYear): string
+    {
+        if (($this->student_type ?? '') === 'transferred') {
+            return 'transfer';
+        }
+        if (($this->academic_standing ?? '') === 'repeat_year') {
+            return 'repeat';
+        }
+        if ($this->intake_year !== null && (int) $this->intake_year < $academicYear) {
+            return 'continue';
+        }
+
+        return 'new_student';
+    }
+
+    /**
      * NHIF / NACTVET QA status for control sheet (manual override if set, else from payments vs fee schedule).
      */
     public function admissionFeeComponentStatusLabel(

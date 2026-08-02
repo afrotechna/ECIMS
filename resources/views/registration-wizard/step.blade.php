@@ -245,7 +245,7 @@
                     'feeStructureResolved' => $feeStructureResolved,
                     'paymentMethods' => $paymentMethods ?? \App\Models\Payment::methods(),
                     'student' => $student,
-                    'paymentTuitionDefault' => $isFirstSem ? 'new_student' : 'continue',
+                    'paymentTuitionDefault' => $isFirstSem ? $student->defaultTuitionCategory((int) $semester->academic_year) : 'continue',
                 ])
             @endif
 
