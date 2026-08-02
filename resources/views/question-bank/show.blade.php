@@ -136,7 +136,7 @@
                                             <td class="small text-nowrap">{{ str_replace('_', ' ', $material->material_type) }}</td>
                                             <td class="small">
                                                 @if($material->file_path)
-                                                    <a href="{{ Storage::disk('public')->url($material->file_path) }}" target="_blank" rel="noopener" class="text-break">Download file</a>
+                                                    <a href="{{ asset('storage/'.$material->file_path) }}" target="_blank" rel="noopener" class="text-break">Download file</a>
                                                 @else
                                                     <span class="text-muted">Pasted text</span>
                                                 @endif

@@ -107,7 +107,7 @@
                                     <div class="fw-semibold mb-2">{{ $typeLabel }}</div>
                                     @if($current)
                                         <div class="d-flex flex-wrap align-items-center gap-2 mb-2 small">
-                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($current->file_path) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ asset('storage/'.$current->file_path) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-file-earmark-arrow-down me-1"></i>{{ \Illuminate\Support\Str::limit($current->original_name ?: 'Download', 48) }}
                                             </a>
                                             @if($current->uploader)

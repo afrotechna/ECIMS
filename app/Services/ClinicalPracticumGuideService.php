@@ -49,7 +49,7 @@ class ClinicalPracticumGuideService
             if ($doc?->file_path && Storage::disk('public')->exists($doc->file_path)) {
                 return [
                     'title' => $doc->original_name ?: $title,
-                    'url' => Storage::disk('public')->url($doc->file_path),
+                    'url' => asset('storage/'.$doc->file_path),
                     'source' => $source,
                     'uploaded' => true,
                     'hint' => null,

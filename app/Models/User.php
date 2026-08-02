@@ -394,7 +394,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         }
 
         return Storage::disk('public')->exists($this->profile_photo_path)
-            ? Storage::disk('public')->url($this->profile_photo_path)
+            ? asset('storage/'.$this->profile_photo_path)
             : null;
     }
 

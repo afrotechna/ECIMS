@@ -12,6 +12,11 @@
             --id-navy-2: #1a4fb5;
             --id-gold: #d4af37;
         }
+        html {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #eef1f6;
@@ -21,7 +26,7 @@
         .id-card {
             width: 520px;
             margin: 0 auto;
-            background: #fff;
+            background: linear-gradient(160deg, #ffffff 0%, #f3f6fc 55%, #e9eef8 100%);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 14px 34px rgba(7, 29, 82, .22);
@@ -91,6 +96,11 @@
         .id-actions { max-width: 520px; margin: 1.25rem auto 0; text-align: center; }
         @media print {
             body { background: #fff; padding: 0; }
+            .id-card, .id-band, .id-watermark, .id-photo-fallback, .id-band-tag, .id-barcode .bars {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
+            }
             .id-card { box-shadow: none; }
             .no-print { display: none !important; }
         }
