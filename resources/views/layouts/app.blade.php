@@ -281,12 +281,17 @@
                     <li><a href="{{ route('message-logs.index') }}" class="{{ request()->routeIs('message-logs.*') ? 'active' : '' }}"><i class="bi bi-chat-dots"></i>Message log</a></li>
                     <li><a href="{{ route('announcements.index') }}" class="{{ request()->routeIs('announcements.*') ? 'active' : '' }}"><i class="bi bi-megaphone"></i>Announcements</a></li>
                     @endcanModule
-                    <li class="nav-group-sub-label">Student affairs</li>
                     @canModule('staff_leave', 'view')
+                    <li class="nav-group-sub-label">Staff leave</li>
                     <li><a href="{{ route('leave-applications.index') }}" class="{{ request()->routeIs('leave-applications.*') ? 'active' : '' }}"><i class="bi bi-calendar-x"></i>Leave applications</a></li>
                     @endcanModule
+                    @if(auth()->user()->canModule('student_affairs', 'view') || auth()->user()->canModule('conduct_records', 'view'))
+                    <li class="nav-group-sub-label">Student affairs</li>
+                    @endif
                     @canModule('student_affairs', 'view')
                     <li><a href="{{ route('graduation-clearances.index') }}" class="{{ request()->routeIs('graduation-clearances.*') ? 'active' : '' }}"><i class="bi bi-clipboard-check"></i>Graduation clearance</a></li>
+                    @endcanModule
+                    @canModule('conduct_records', 'view')
                     <li><a href="{{ route('conduct-records.index') }}" class="{{ request()->routeIs('conduct-records.*') ? 'active' : '' }}"><i class="bi bi-shield-exclamation"></i>Conduct records</a></li>
                     @endcanModule
                     @canModule('transcript_requests', 'view')

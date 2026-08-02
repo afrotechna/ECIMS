@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ConductRecord;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ConductRecordController extends Controller
 {
@@ -34,7 +35,7 @@ class ConductRecordController extends Controller
         $validated = $request->validate([
             'student_id' => ['required', 'exists:students,id'],
             'date' => ['required', 'date'],
-            'type' => ['required', 'string', 'in:warning,reprimand,suspension,fine,other'],
+            'type' => ['required', 'string', Rule::in(array_keys(ConductRecord::TYPES))],
             'sanction' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string'],
             'effective_until' => ['nullable', 'date'],

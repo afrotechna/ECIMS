@@ -11,7 +11,15 @@ class ConductRecord extends Model
 
     protected $casts = ['date' => 'date', 'effective_until' => 'date'];
 
-    public const TYPES = ['warning' => 'Warning', 'reprimand' => 'Reprimand', 'suspension' => 'Suspension', 'fine' => 'Fine', 'other' => 'Other'];
+    public const TYPES = [
+        'warning' => 'Warning',
+        'reprimand' => 'Reprimand',
+        'suspension' => 'Suspension',
+        'fine' => 'Fine',
+        'medical_permit' => 'Medical Permit (Sick)',
+        'emergency_permit' => 'Emergency Permission (Home)',
+        'other' => 'Other',
+    ];
 
     public function student(): BelongsTo
     {
