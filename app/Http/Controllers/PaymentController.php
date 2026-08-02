@@ -14,36 +14,56 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
+        $student = null;
+        if ($request->filled('student_id')) {
+            $student = Student::with('programme')->find($request->integer('student_id'));
+        }
+
+        if ($student) {
+            $currentYear = AcademicSession::defaultStartYear();
+            $allPayments = Payment::query()->where('student_id', $student->id)->orderByDesc('paid_at')->get();
+            $studentTotal = (float) $allPayments->sum('amount');
+            $studentYearTotal = (float) $allPayments->where('academic_year', $currentYear)->sum('amount');
+            $studentReceiptCount = $allPayments->count();
+
+            $yearGroups = $allPayments
+                ->groupBy('academic_year')
+                ->map(function ($group, $year) {
+                    $semOne = $group->where('covers_semester_two_only', false)->sortByDesc('paid_at')->values();
+                    $semTwo = $group->where('covers_semester_two_only', true)->sortByDesc('paid_at')->values();
+                    $label = match (true) {
+                        $semOne->isNotEmpty() && $semTwo->isNotEmpty() => 'Semester I + II',
+                        $semOne->isNotEmpty() => 'Semester I',
+                        $semTwo->isNotEmpty() => 'Semester II',
+                        default => null,
+                    };
+
+                    return [
+                        'year' => (int) $year,
+                        'label' => $label,
+                        'semOne' => $semOne,
+                        'semTwo' => $semTwo,
+                        'lastActivity' => $group->max('paid_at'),
+                        'total' => (float) $group->sum('amount'),
+                        'breakdown' => [
+                            'sem1_tuition' => $semOne->sum(fn ($p) => $p->allocatedAmount('tuition')),
+                            'sem1_nhif' => $semOne->sum(fn ($p) => $p->allocatedAmount('nhif')),
+                            'sem1_nactvet_qa' => $semOne->sum(fn ($p) => $p->allocatedAmount('nactvet_qa')),
+                            'sem2_tuition' => $semTwo->sum(fn ($p) => $p->allocatedAmount('tuition')),
+                        ],
+                    ];
+                })
+                ->sortByDesc('lastActivity')
+                ->values();
+
+            return view('payments.index', compact('student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear', 'yearGroups'));
+        }
+
         $query = Payment::query()
             ->with(['student.programme', 'receiver'])
             ->whereHas('student')
             ->orderByDesc('paid_at');
-
-        $student = null;
-        if ($request->filled('student_id')) {
-            $student = Student::with('programme')->find($request->integer('student_id'));
-            $query->where('student_id', $request->student_id);
-        }
-
         $payments = $query->paginate(15)->withQueryString();
-
-        if ($student) {
-            $currentYear = AcademicSession::defaultStartYear();
-            $studentTotal = (float) Payment::query()->where('student_id', $student->id)->sum('amount');
-            $studentYearTotal = (float) Payment::query()->where('student_id', $student->id)->where('academic_year', $currentYear)->sum('amount');
-            $studentReceiptCount = (int) Payment::query()->where('student_id', $student->id)->count();
-
-            $yearPayments = Payment::query()->where('student_id', $student->id)->where('academic_year', $currentYear)->get();
-            $semOnePayments = $yearPayments->where('covers_semester_two_only', false);
-            $feeBreakdown = [
-                'sem1_tuition' => $semOnePayments->sum(fn ($p) => $p->allocatedAmount('tuition')),
-                'sem1_nhif' => $semOnePayments->sum(fn ($p) => $p->allocatedAmount('nhif')),
-                'sem1_nactvet_qa' => $semOnePayments->sum(fn ($p) => $p->allocatedAmount('nactvet_qa')),
-                'sem2_tuition' => $yearPayments->where('covers_semester_two_only', true)->sum(fn ($p) => $p->allocatedAmount('tuition')),
-            ];
-
-            return view('payments.index', compact('payments', 'student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear', 'feeBreakdown'));
-        }
 
         $todayTotal = (float) Payment::query()->whereDate('paid_at', today())->whereHas('student')->sum('amount');
         $monthTotal = (float) Payment::query()
