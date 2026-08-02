@@ -138,6 +138,14 @@
             background-size: 260px 260px;
             opacity: .07;
         }
+        .id-watermark-tiled {
+            inset: -40px;
+            background-repeat: repeat;
+            background-position: 0 0;
+            background-size: 68px 68px;
+            opacity: .06;
+            transform: rotate(-20deg);
+        }
         .id-photo-col, .id-info-col { position: relative; z-index: 1; }
         .id-flip-hint {
             max-width: 520px; margin: .9rem auto 0; text-align: center;
@@ -251,7 +259,7 @@
                 </div>
                 <div class="id-back-body">
                     @if(file_exists(public_path('images/logo.png')))
-                    <div class="id-watermark"></div>
+                    <div class="id-watermark id-watermark-tiled"></div>
                     @endif
                     <div class="id-back-barcode">
                         <div class="bars"></div>
