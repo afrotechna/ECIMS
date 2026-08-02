@@ -74,6 +74,8 @@
         .id-band-side { flex-shrink: 0; display: flex; align-items: center; }
         .id-band-center { flex: 1; min-width: 0; text-align: center; }
         .id-band img { height: 46px; width: 46px; object-fit: contain; flex-shrink: 0; background: #fff; border-radius: 50%; padding: 3px; }
+        .id-band-country { font-size: .56rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1.3; opacity: .9; }
+        .id-band-ministry { font-size: .56rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3; opacity: .78; margin-bottom: .1rem; }
         .id-band h1 { margin: 0; font-size: .78rem; font-weight: 800; letter-spacing: .01em; text-transform: uppercase; line-height: 1.2; }
         .id-band .sub { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
         .id-body { padding: 1.1rem 1.25rem .4rem; position: relative; display: flex; gap: 1.1rem; }
@@ -129,12 +131,12 @@
             font-size: .58rem; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; font-weight: 700;
         }
         .id-watermark {
-            position: absolute; inset: -40px; pointer-events: none; z-index: 0; overflow: hidden;
+            position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
             background-image: url('{{ asset('images/logo.png') }}');
-            background-repeat: repeat;
-            background-size: 68px 68px;
-            opacity: .06;
-            transform: rotate(-20deg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 260px 260px;
+            opacity: .07;
         }
         .id-photo-col, .id-info-col { position: relative; z-index: 1; }
         .id-flip-hint {
@@ -169,6 +171,8 @@
                         @endif
                     </div>
                     <div class="id-band-center">
+                        <div class="id-band-country">United Republic of Tanzania</div>
+                        <div class="id-band-ministry">Ministry of Health</div>
                         <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
                         <div class="sub">Student Identity Card</div>
                     </div>
@@ -234,6 +238,8 @@
                         @endif
                     </div>
                     <div class="id-band-center">
+                        <div class="id-band-country">United Republic of Tanzania</div>
+                        <div class="id-band-ministry">Ministry of Health</div>
                         <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
                         <div class="sub">Student Identity Card</div>
                     </div>
