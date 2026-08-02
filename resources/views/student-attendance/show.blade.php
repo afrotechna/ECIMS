@@ -11,7 +11,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-fingerprint me-2 opacity-90"></i>{{ $student->full_name }}</h1>
-    <p class="page-subtitle-landing mb-0"><code>{{ $student->reg_no }}</code> · Biometric ID: {{ $student->biometric_id ?? 'not mapped' }}</p>
+    <p class="page-subtitle-landing mb-0"><code>{{ $student->nactvet_reg_no ?: '—' }}</code> · Biometric ID: {{ $student->biometric_id ?? 'not mapped' }}</p>
 </div>
 
 <div class="card card-landing mb-3">

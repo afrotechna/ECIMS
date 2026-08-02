@@ -175,7 +175,6 @@
                         @canModule('students', 'update')
                         <th scope="col" class="text-center"><input type="checkbox" id="bulkSmsSelectAll" aria-label="Select all"></th>
                         @endcanModule
-                        <th scope="col">Reg no.</th>
                         <th scope="col">Registration</th>
                         <th scope="col">Name</th>
                         <th scope="col">Programme</th>
@@ -192,7 +191,6 @@
                         @canModule('students', 'update')
                         <td class="text-center"><input type="checkbox" class="bulk-sms-cb" value="{{ $s->id }}" aria-label="Select {{ $s->full_name }}"></td>
                         @endcanModule
-                        <td class="reg-cell text-nowrap">{{ $s->reg_no }}</td>
                         <td class="nacte-cell"><code>{{ $s->nactvet_reg_no }}</code></td>
                         <td class="name-cell">
                             <span class="name-text" title="{{ $s->full_name }}">{{ $s->full_name }}</span>
@@ -235,7 +233,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ auth()->user()->canModule('students', 'update') ? 10 : 9 }}" class="text-center text-muted py-5">
+                        <td colspan="{{ auth()->user()->canModule('students', 'update') ? 9 : 8 }}" class="text-center text-muted py-5">
                             <p class="mb-2">No students found.</p>
                             <a href="{{ route('students.create') }}" class="btn btn-sm btn-primary">Register a student</a>
                             <span class="mx-1 text-muted">or</span>

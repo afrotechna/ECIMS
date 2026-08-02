@@ -114,7 +114,7 @@
                     @if($canManageRegistrations)
                     <th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th>
                     @endif
-                    <th>Student</th><th>Reg No</th><th>Semester</th><th>Status</th><th>Registered</th><th class="text-end">Actions</th>
+                    <th>Student</th><th>Semester</th><th>Status</th><th>Registered</th><th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -124,7 +124,6 @@
                     <td>@if($r->status === 'pending' && $r->wizard_step === null)<input type="checkbox" class="form-check-input pending-cb" name="ids[]" value="{{ $r->id }}">@else<span class="text-muted">—</span>@endif</td>
                     @endif
                     <td>{{ $r->student?->full_name ?? '—' }}</td>
-                    <td><code>{{ $r->student?->reg_no ?? '—' }}</code></td>
                     <td>{{ $r->semester?->label ?? '—' }}</td>
                     <td>
                         @if($r->status === 'approved')<span class="badge bg-success">Approved</span>
@@ -143,7 +142,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="{{ $canManageRegistrations ? 7 : 6 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
+                <tr><td colspan="{{ $canManageRegistrations ? 6 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
                 @endforelse
             </tbody>
         </table>

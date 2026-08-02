@@ -32,18 +32,17 @@
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
-                <thead><tr><th>Reg No</th><th>Name</th><th>Programme</th><th>Academic standing</th><th></th></tr></thead>
+                <thead><tr><th>Name</th><th>Programme</th><th>Academic standing</th><th></th></tr></thead>
                 <tbody>
                     @forelse($students as $s)
                     <tr>
-                        <td>{{ $s->reg_no }}</td>
                         <td>{{ $s->full_name }}</td>
                         <td>{{ $s->programme->code ?? '-' }}</td>
                         <td>{{ $s->academic_standing ? (\App\Models\Student::ACADEMIC_STANDINGS[$s->academic_standing] ?? $s->academic_standing) : '—' }}</td>
                         <td>@include('partials.action-edit', ['href' => route('students.edit', $s), 'iconOnly' => true])</td>
                     </tr>
                     @empty
-                    <tr><td colspan="5" class="text-center text-muted py-5">No students match the filter.</td></tr>
+                    <tr><td colspan="4" class="text-center text-muted py-5">No students match the filter.</td></tr>
                     @endforelse
                 </tbody>
             </table>

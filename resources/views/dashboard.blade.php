@@ -65,7 +65,7 @@
             <tbody>
                 @foreach($arrearsFollowUp as $s)
                 <tr>
-                    <td><a href="{{ route('students.show', $s) }}">{{ $s->reg_no }} — {{ $s->full_name }}</a></td>
+                    <td><a href="{{ route('students.show', $s) }}">{{ $s->full_name }}</a></td>
                     <td>{{ $s->programme->code ?? '' }}</td>
                     <td class="text-end fw-semibold text-danger">{{ number_format($s->balance) }} TZS</td>
                 </tr>
@@ -291,7 +291,7 @@
                             <tr>
                                 <td>{{ $p->paid_at->format('d/m/Y H:i') }}</td>
                                 <td><code>{{ $p->reference ?? $p->id }}</code></td>
-                                <td>{{ $p->student?->full_name ?? '—' }} ({{ $p->student?->reg_no ?? '' }})</td>
+                                <td>{{ $p->student?->full_name ?? '—' }}</td>
                                 <td>{{ number_format($p->amount, 0) }}</td>
                                 <td>{{ ucfirst($p->payment_method ?? '—') }}</td>
                                 <td>{{ number_format($p->student?->balance ?? 0, 0) }}</td>

@@ -27,7 +27,7 @@
                         <option value="{{ $s->id }}"
                             data-phone="{{ $s->phone }}"
                             {{ (string) old('student_id') === (string) $s->id ? 'selected' : '' }}>
-                            {{ $s->reg_no }} — {{ $s->full_name }} ({{ $s->programme->code ?? '' }})
+                            {{ $s->full_name }} ({{ $s->programme->code ?? '' }})
                         </option>
                     @endforeach
                 </select>

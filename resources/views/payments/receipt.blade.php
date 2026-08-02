@@ -107,7 +107,6 @@
                 <tr><td>Receipt No.</td><td>#{{ str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT) }}</td></tr>
                 <tr><td>Date</td><td>{{ $payment->paid_at->format('d M Y, H:i') }}</td></tr>
                 <tr><td>Student</td><td>{{ $payment->student->full_name }}</td></tr>
-                <tr><td>Reg. No.</td><td>{{ $payment->student->reg_no }}</td></tr>
                 @if($payment->student->programme?->code)
                 <tr><td>Programme</td><td>{{ $payment->student->programme->code }}</td></tr>
                 @endif

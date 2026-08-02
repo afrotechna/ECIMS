@@ -42,7 +42,7 @@
                 <select name="student_id" class="form-select form-select-sm">
                     <option value="">All</option>
                     @foreach($students as $st)
-                    <option value="{{ $st->id }}" {{ request('student_id') == $st->id ? 'selected' : '' }}>{{ $st->reg_no }}</option>
+                    <option value="{{ $st->id }}" {{ request('student_id') == $st->id ? 'selected' : '' }}>{{ $st->full_name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -79,7 +79,7 @@
             <tbody>
                 @forelse($results as $r)
                 <tr>
-                    <td>{{ $r->student->reg_no }} {{ $r->student->full_name }}</td>
+                    <td>{{ $r->student->full_name }}</td>
                     <td>{{ $r->course->code }}</td>
                     <td>{{ $r->semester->label }}</td>
                     <td class="text-end">{{ $r->ca_mark !== null ? number_format($r->ca_mark, 1) : '-' }}</td>

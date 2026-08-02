@@ -1,14 +1,14 @@
 @extends('layouts.app')
-@section('title', 'Ledger - ' . $student->reg_no)
+@section('title', 'Ledger - ' . $student->full_name)
 @section('content')
 <div class="mb-4">
-    <a href="{{ route('students.show', $student) }}" class="text-decoration-none"><i class="bi bi-arrow-left me-1"></i> {{ $student->reg_no }}</a>
+    <a href="{{ route('students.show', $student) }}" class="text-decoration-none"><i class="bi bi-arrow-left me-1"></i> {{ $student->full_name }}</a>
 </div>
 <h2 class="h4 mb-4">Ledger / Statement</h2>
 <div class="card border-0 shadow-sm mb-3">
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6"><strong>{{ $student->full_name }}</strong> ({{ $student->reg_no }})</div>
+            <div class="col-md-6"><strong>{{ $student->full_name }}</strong></div>
             @php $feeBal = $student->balanceSummary(); @endphp
             <div class="col-md-6 text-md-end"><strong>{{ $feeBal['label'] }}:</strong> <span class="text-{{ $feeBal['class'] }}">{{ number_format($feeBal['amount'], 0) }} TZS</span></div>
         </div>

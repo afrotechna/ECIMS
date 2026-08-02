@@ -27,7 +27,7 @@
                 <select name="student_id" class="form-select" required>
                 <option value="">— Select student —</option>
                     @foreach($students as $st)
-                    <option value="{{ $st->id }}">{{ $st->reg_no }} — {{ $st->full_name }}</option>
+                    <option value="{{ $st->id }}">{{ $st->full_name }}</option>
                     @endforeach
                 </select>
             </div>

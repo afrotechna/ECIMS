@@ -16,7 +16,7 @@
         <select name="student_id" class="form-select form-select-sm" style="width:auto">
             <option value="">All students</option>
             @foreach($students as $s)
-                <option value="{{ $s->id }}" {{ request('student_id') == $s->id ? 'selected' : '' }}>{{ $s->reg_no }}</option>
+                <option value="{{ $s->id }}" {{ request('student_id') == $s->id ? 'selected' : '' }}>{{ $s->full_name }}</option>
             @endforeach
         </select>
         <select name="type" class="form-select form-select-sm" style="width:auto">
@@ -36,7 +36,7 @@
                 @forelse($records as $r)
                 <tr>
                     <td>{{ $r->date->format('d/m/Y') }}</td>
-                    <td>{{ $r->student->reg_no ?? '' }} — {{ $r->student->full_name ?? '' }}</td>
+                    <td>{{ $r->student->full_name ?? '' }}</td>
                     <td>{{ \App\Models\ConductRecord::TYPES[$r->type] ?? $r->type }}</td>
                     <td>{{ Str::limit($r->sanction, 40) }}</td>
                     <td>

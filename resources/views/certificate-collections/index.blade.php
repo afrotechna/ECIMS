@@ -50,7 +50,7 @@
                 @forelse($collections as $c)
                 <tr>
                     <td>{{ $c->collected_on?->format('d M Y') }}</td>
-                    <td><a href="{{ route('students.show', $c->student) }}">{{ $c->student->reg_no ?? '' }} — {{ $c->student->full_name ?? '' }}</a></td>
+                    <td><a href="{{ route('students.show', $c->student) }}">{{ $c->student->full_name ?? '' }}</a></td>
                     <td>{{ $c->student->gender ?? '' }}</td>
                     <td>{{ $c->certificate_number }}</td>
                     <td>{{ $c->academic_year }}/{{ $c->academic_year + 1 }}</td>

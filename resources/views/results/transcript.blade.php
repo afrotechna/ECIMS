@@ -16,7 +16,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-file-text me-2 opacity-90"></i>Academic Transcript</h1>
-        <p class="page-subtitle-landing mb-0">{{ $student->full_name }} · {{ $student->reg_no }} · {{ $student->programme->name ?? '' }} ({{ $student->programme->code ?? '' }}) · Intake {{ $student->intake_year }}</p>
+        <p class="page-subtitle-landing mb-0">{{ $student->full_name }} · {{ $student->programme->name ?? '' }} ({{ $student->programme->code ?? '' }}) · Intake {{ $student->intake_year }}</p>
     </div>
     <div class="d-flex gap-2">
     <a href="{{ route('results.transcript.print', $student) }}" target="_blank" class="btn btn-outline-light btn-sm"><i class="bi bi-printer me-1"></i>Print</a>
@@ -29,7 +29,6 @@
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-4"><span class="text-muted small d-block">Name</span><strong>{{ $student->full_name }}</strong></div>
-            <div class="col-md-2"><span class="text-muted small d-block">Reg No</span><strong>{{ $student->reg_no }}</strong></div>
             <div class="col-md-2"><span class="text-muted small d-block">NACTVET</span><code class="small">{{ $student->nactvet_reg_no }}</code></div>
             <div class="col-md-4"><span class="text-muted small d-block">Programme</span>{{ $student->programme->name ?? '—' }} ({{ $student->programme->code ?? '—' }}) · Intake {{ $student->intake_year }}</div>
         </div>

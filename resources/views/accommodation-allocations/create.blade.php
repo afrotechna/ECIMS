@@ -27,7 +27,7 @@
                     <select class="form-select @error('student_id') is-invalid @enderror" id="student_id" name="student_id" required>
                         <option value="">Select student</option>
                         @foreach($students as $s)
-                            <option value="{{ $s->id }}" {{ old('student_id') == $s->id ? 'selected' : '' }}>{{ $s->reg_no }} — {{ $s->full_name }}</option>
+                            <option value="{{ $s->id }}" {{ old('student_id') == $s->id ? 'selected' : '' }}>{{ $s->full_name }}</option>
                         @endforeach
                     </select>
                     @if($students->isEmpty())

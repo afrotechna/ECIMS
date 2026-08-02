@@ -61,7 +61,7 @@
                             <td class="info-cell">
                                 <div class="card-name">{{ $s->full_name }}</div>
                                 <div class="card-line"><span class="card-label">Programme</span> {{ $s->programme->code ?? '—' }}</div>
-                                <div class="card-line"><span class="card-label">Reg. No</span> {{ $s->nactvet_reg_no ?: $s->reg_no }}</div>
+                                <div class="card-line"><span class="card-label">Reg. No</span> {{ $s->nactvet_reg_no ?: '—' }}</div>
                                 @php
                                     $intakeYear = $s->intake_year ?? \App\Support\AcademicSession::defaultStartYear();
                                 @endphp
@@ -98,7 +98,7 @@
                         </tr></table>
                     </div>
                     <div class="back-body">
-                        <span class="back-code">{{ $s->nactvet_reg_no ?: $s->reg_no }}</span>
+                        <span class="back-code">{{ $s->nactvet_reg_no ?: '—' }}</span>
                         <div class="back-terms">
                             This card is the property of <strong>{{ config('college.institution_name', config('app.name')) }}</strong> and must be surrendered on request.
                             Non-transferable; carry at all times on campus. Report loss to the registrar's office immediately.

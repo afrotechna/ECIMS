@@ -414,7 +414,7 @@
                     </form>
                 @endunless
                 @if($studentRecord)
-                    <span class="login-as">{{ __('ui.nav.login_as') }} <strong class="topbar-reg-no">{{ $studentRecord->registrationNumberDisplay() ?: $studentRecord->reg_no }}</strong></span>
+                    <span class="login-as">{{ __('ui.nav.login_as') }} <strong class="topbar-reg-no">{{ $studentRecord->registrationNumberDisplay() ?: $studentRecord->full_name }}</strong></span>
                 @elseif($currentUser->staff_id)
                     <span class="topbar-reg-no">ID: {{ $currentUser->staff_id }}</span>
                 @else
@@ -475,7 +475,7 @@
                 <div class="profile-menu" id="profileMenu" role="menu">
                     <div class="profile-menu-header">
                         <strong>{{ $currentUser->name }}</strong>
-                        <small>{{ $studentRecord ? $studentRecord->reg_no : $currentUser->email }}</small>
+                        <small>{{ $studentRecord ? ($studentRecord->registrationNumberDisplay() ?: $studentRecord->full_name) : $currentUser->email }}</small>
                     </div>
                     @if($studentRecord && $studentRecord->idCardReady())
                     <a href="{{ route('students.id-card', $studentRecord) }}" target="_blank" class="profile-menu-item w-100 border-0 d-block text-decoration-none" role="menuitem">

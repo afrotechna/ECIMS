@@ -21,7 +21,7 @@
                     <select class="form-select" id="student_id" name="student_id" required>
                         <option value="">Select student</option>
                         @foreach($students as $s)
-                            <option value="{{ $s->id }}" {{ old('student_id', $studentId) == $s->id ? 'selected' : '' }}>{{ $s->reg_no }} — {{ $s->full_name }}</option>
+                            <option value="{{ $s->id }}" {{ old('student_id', $studentId) == $s->id ? 'selected' : '' }}>{{ $s->full_name }}</option>
                         @endforeach
                     </select>
                 </div>

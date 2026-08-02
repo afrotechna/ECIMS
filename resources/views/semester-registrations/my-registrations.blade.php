@@ -8,7 +8,7 @@
 </nav>
 <div class="page-header-landing">
     <h1 class="page-title-landing">My Registrations</h1>
-    <p class="page-subtitle-landing mb-0">{{ $student->reg_no }} — status of your semester registration (completed by college staff after payment).</p>
+    <p class="page-subtitle-landing mb-0">{{ $student->full_name }} — status of your semester registration (completed by college staff after payment).</p>
 </div>
 
 

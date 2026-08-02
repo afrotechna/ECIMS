@@ -50,7 +50,7 @@
                 <tbody>
                     @forelse($clearances as $c)
                     <tr>
-                        <td>{{ $c->student->reg_no ?? '' }} — {{ $c->student->full_name ?? '' }}</td>
+                        <td>{{ $c->student->full_name ?? '' }}</td>
                         <td>{{ $c->library_cleared === 'yes' ? 'Yes' : 'No' }}</td>
                         <td>{{ $c->finance_cleared === 'yes' ? 'Yes' : 'No' }}</td>
                         <td>{{ $c->accommodation_cleared === 'yes' ? 'Yes' : 'No' }}</td>

@@ -10,7 +10,7 @@
 </nav>
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-clipboard-check me-2 opacity-90"></i>Edit clearance</h1>
-    <p class="page-subtitle-landing mb-0">{{ $graduation_clearance->student->reg_no ?? '' }} — {{ $graduation_clearance->student->full_name ?? '' }}</p>
+    <p class="page-subtitle-landing mb-0">{{ $graduation_clearance->student->full_name ?? '' }}</p>
 </div>
 <div class="card card-landing">
     <div class="card-body">

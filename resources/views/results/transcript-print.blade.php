@@ -10,7 +10,6 @@
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-4"><span class="text-muted small d-block">Name</span><strong>{{ $student->full_name }}</strong></div>
-            <div class="col-md-2"><span class="text-muted small d-block">Reg No</span><strong>{{ $student->reg_no }}</strong></div>
             <div class="col-md-2"><span class="text-muted small d-block">NACTVET</span><code class="small">{{ $student->nactvet_reg_no }}</code></div>
             <div class="col-md-4"><span class="text-muted small d-block">Programme</span>{{ $student->programme->name ?? '—' }} ({{ $student->programme->code ?? '—' }}) · Intake {{ $student->intake_year }}</div>
         </div>

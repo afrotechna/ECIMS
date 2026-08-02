@@ -90,7 +90,7 @@ class StudentCardStatusController extends Controller
             $studentUser = $student->userAccount;
             $photoPath = $studentUser?->profile_photo_path;
             if (! $photoPath || ! Storage::disk('public')->exists($photoPath)) {
-                $missingPhoto[] = "{$student->full_name} ({$student->reg_no})";
+                $missingPhoto[] = "{$student->full_name} ({$student->nactvet_reg_no})";
 
                 continue;
             }

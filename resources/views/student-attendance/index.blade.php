@@ -36,13 +36,13 @@
         <div class="table-responsive">
             <table class="table table-sm table-hover align-middle mb-0">
                 <thead>
-                    <tr><th>Reg No</th><th>Student</th><th>Status</th><th>First punch</th><th>Last punch</th><th class="text-end">Actions</th></tr>
+                    <tr><th>NACTVET No</th><th>Student</th><th>Status</th><th>First punch</th><th>Last punch</th><th class="text-end">Actions</th></tr>
                 </thead>
                 <tbody>
                     @forelse($students as $s)
                     @php $summary = $summaries->get($s->id); @endphp
                     <tr>
-                        <td><code>{{ $s->reg_no }}</code></td>
+                        <td><code>{{ $s->nactvet_reg_no ?: '—' }}</code></td>
                         <td>{{ $s->full_name }}</td>
                         <td>
                             @if($summary)

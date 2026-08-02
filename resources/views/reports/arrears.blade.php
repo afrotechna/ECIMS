@@ -55,7 +55,6 @@
             <div>
                 <div class="fin-prog-name">{{ $s->full_name }}</div>
                 <div class="fin-prog-meta">
-                    <span class="me-2"><strong>{{ $s->reg_no }}</strong></span>
                     {{ $s->programme->code ?? '—' }}
                     @if($s->programme?->name)<span class="text-muted"> · {{ $s->programme->name }}</span>@endif
                 </div>

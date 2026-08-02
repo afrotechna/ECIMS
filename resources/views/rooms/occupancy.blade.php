@@ -104,7 +104,6 @@
                                     @foreach($res as $a)
                                     <li class="mb-1">
                                         <span class="fw-medium">{{ $a->student->full_name }}</span>
-                                        <span class="text-muted">({{ $a->student->reg_no }})</span>
                                         @if($a->student->phone)
                                             <br><span class="text-muted"><i class="bi bi-telephone me-1"></i>{{ $a->student->phone }}</span>
                                         @endif
@@ -158,8 +157,7 @@
         }
         var html = '<ul class="list-unstyled mb-0">';
         students.forEach(function (st) {
-            html += '<li class="mb-1"><span class="fw-medium">' + escapeHtml(st.full_name) + '</span> ';
-            html += '<span class="text-muted">(' + escapeHtml(String(st.reg_no)) + ')</span>';
+            html += '<li class="mb-1"><span class="fw-medium">' + escapeHtml(st.full_name) + '</span>';
             if (st.phone) {
                 html += '<br><span class="text-muted"><i class="bi bi-telephone me-1"></i>' + escapeHtml(String(st.phone)) + '</span>';
             }

@@ -53,7 +53,7 @@
             <thead class="table-light">
                 <tr>
                     <th class="text-center" style="width:2.5rem"><input type="checkbox" id="bulkCardStatusSelectAll" aria-label="Select all"></th>
-                    <th>Reg. no</th>
+                    <th>NACTVET No</th>
                     <th>Student</th>
                     <th>Programme</th>
                     <th>Student ID card</th>
@@ -68,7 +68,7 @@
                 @endphp
                 <tr>
                     <td class="text-center"><input type="checkbox" class="bulk-card-status-cb" value="{{ $student->id }}" aria-label="Select {{ $student->full_name }}"></td>
-                    <td class="fw-medium">{{ $student->reg_no }}</td>
+                    <td class="fw-medium">{{ $student->nactvet_reg_no ?: '—' }}</td>
                     <td>{{ $student->full_name }}</td>
                     <td>{{ $student->programme->code ?? '—' }}</td>
                     @foreach(\App\Models\StudentCardStatus::DOCUMENT_TYPES as $type => $label)

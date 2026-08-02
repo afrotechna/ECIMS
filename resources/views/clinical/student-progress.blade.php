@@ -25,7 +25,7 @@
 <div class="page-header-landing d-flex flex-wrap justify-content-between gap-2">
     <div>
         <h1 class="page-title-landing mb-0">Clinical progress</h1>
-        <p class="page-subtitle-landing mb-0">{{ $student->reg_no }} · {{ $student->programme?->name }} · NTA {{ $student->nta_level }}</p>
+        <p class="page-subtitle-landing mb-0">{{ $student->full_name }} · {{ $student->programme?->name }} · NTA {{ $student->nta_level }}</p>
     </div>
     <a href="{{ route('clinical.print.student', $student) }}" class="btn btn-outline-light btn-sm" target="_blank"><i class="bi bi-printer me-1"></i>Print logbook</a>
 </div>

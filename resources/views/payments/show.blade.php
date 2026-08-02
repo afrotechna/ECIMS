@@ -56,7 +56,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-receipt me-2 opacity-90"></i>Payment #{{ $payment->id }}</h1>
-        <p class="page-subtitle-landing mb-0">{{ $payment->student->full_name ?? '—' }} &middot; {{ $payment->student->reg_no ?? '—' }}</p>
+        <p class="page-subtitle-landing mb-0">{{ $payment->student->full_name ?? '—' }}</p>
     </div>
     <div class="fin-kpi" style="margin:0;">
         <div class="fin-kpi-icon fin-kpi-icon--green"><i class="bi bi-cash-stack"></i></div>

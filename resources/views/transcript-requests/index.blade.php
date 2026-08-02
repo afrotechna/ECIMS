@@ -28,7 +28,7 @@
                 <tbody>
                     @forelse($requests as $req)
                     <tr>
-                        <td>{{ $req->student->reg_no }} — {{ $req->student->full_name }}</td>
+                        <td>{{ $req->student->full_name }}</td>
                         <td class="small">{{ $req->purpose ?? '—' }}</td>
                         <td class="small">{{ $req->created_at->format('d/m/Y H:i') }}</td>
                         <td><span class="badge bg-{{ $req->status === 'ready' ? 'success' : ($req->status === 'rejected' ? 'danger' : 'warning text-dark') }}">{{ \App\Models\TranscriptRequest::STATUSES[$req->status] ?? $req->status }}</span></td>

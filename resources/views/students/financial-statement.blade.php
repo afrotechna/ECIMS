@@ -43,7 +43,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 fin-stmt-no-print">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-receipt-cutoff me-2 opacity-90"></i>Financial Statement</h1>
-        <p class="page-subtitle-landing mb-0">{{ $student->full_name }} · {{ $student->reg_no }}</p>
+        <p class="page-subtitle-landing mb-0">{{ $student->full_name }}</p>
     </div>
     <a href="#" class="btn btn-light btn-sm text-dark" onclick="window.print(); return false;">
         <i class="bi bi-printer me-1"></i>Print statement
@@ -66,7 +66,7 @@
                 </tr>
                 <tr>
                     <th>Registration Number</th>
-                    <td>{{ $student->reg_no }}</td>
+                    <td>{{ $student->nactvet_reg_no ?: '—' }}</td>
                 </tr>
                 <tr>
                     <th>Programme</th>

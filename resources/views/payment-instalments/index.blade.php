@@ -22,7 +22,7 @@
                 <select name="student_id" class="form-select form-select-sm" onchange="this.form.submit()">
                     <option value="">All students</option>
                     @foreach($students as $s)
-                    <option value="{{ $s->id }}" {{ (string) $studentId === (string) $s->id ? 'selected' : '' }}>{{ $s->reg_no }} — {{ $s->full_name }}</option>
+                    <option value="{{ $s->id }}" {{ (string) $studentId === (string) $s->id ? 'selected' : '' }}>{{ $s->full_name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -47,7 +47,7 @@
                         <select name="student_id" id="student_id" class="form-select @error('student_id') is-invalid @enderror" required>
                             <option value="">Select student</option>
                             @foreach($students as $s)
-                            <option value="{{ $s->id }}" {{ old('student_id', $studentId) == $s->id ? 'selected' : '' }}>{{ $s->reg_no }} — {{ $s->full_name }}</option>
+                            <option value="{{ $s->id }}" {{ old('student_id', $studentId) == $s->id ? 'selected' : '' }}>{{ $s->full_name }}</option>
                             @endforeach
                         </select>
                         @error('student_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -92,8 +92,7 @@
                             @forelse($instalments as $inst)
                             <tr>
                                 <td class="small">
-                                    <strong>{{ $inst->student->reg_no }}</strong><br>
-                                    <span class="text-muted">{{ $inst->student->full_name }}</span>
+                                    <strong>{{ $inst->student->full_name }}</strong>
                                 </td>
                                 <td>{{ $inst->label ?? '—' }}</td>
                                 <td class="small">{{ $inst->due_date->format('d/m/Y') }}</td>

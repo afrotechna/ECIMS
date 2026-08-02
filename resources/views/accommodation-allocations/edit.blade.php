@@ -13,7 +13,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-pencil-square me-2 opacity-90"></i>Edit Allocation</h1>
-    <p class="page-subtitle-landing mb-0">{{ $allocation->student->reg_no }} — {{ $allocation->room->name }}</p>
+    <p class="page-subtitle-landing mb-0">{{ $allocation->student->full_name }} — {{ $allocation->room->name }}</p>
 </div>
 
 <div class="card card-landing">
@@ -28,7 +28,7 @@
                     <label for="student_id" class="form-label">Student</label>
                     <select class="form-select @error('student_id') is-invalid @enderror" id="student_id" name="student_id" required>
                         @foreach($students as $s)
-                            <option value="{{ $s->id }}" {{ old('student_id', $allocation->student_id) == $s->id ? 'selected' : '' }}>{{ $s->reg_no }} — {{ $s->full_name }}</option>
+                            <option value="{{ $s->id }}" {{ old('student_id', $allocation->student_id) == $s->id ? 'selected' : '' }}>{{ $s->full_name }}</option>
                         @endforeach
                     </select>
                     @error('student_id')<div class="invalid-feedback">{{ $message }}</div>@enderror

@@ -17,7 +17,7 @@
 <body>
     <p class="no-print"><button onclick="window.print()">Print / Save as PDF</button></p>
     <h1>{{ config('college.institution_name', 'Musoma COHAS') }}</h1>
-    <p class="meta">Clinical logbook · {{ $student->full_name }} · {{ $student->reg_no }} · {{ $student->programme?->code }} · NTA {{ $student->nta_level }}</p>
+    <p class="meta">Clinical logbook · {{ $student->full_name }} · {{ $student->programme?->code }} · NTA {{ $student->nta_level }}</p>
 
     <p><strong>Competency checklist:</strong>
         @if($overview['competency_met'] ?? false) All required procedures met.

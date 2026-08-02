@@ -94,7 +94,6 @@
                     </td>
                     <td>
                         <span class="d-block fw-semibold">{{ $p->student->full_name ?? '—' }}</span>
-                        <span class="small text-muted">{{ $p->student->reg_no ?? '—' }}</span>
                     </td>
                     <td><span class="badge bg-light text-dark border">{{ $p->student->programme->code ?? '—' }}</span></td>
                     <td><code class="small">{{ $p->reference ?? $p->id }}</code></td>
@@ -117,7 +116,7 @@
             <div class="fin-pay-card-head">
                 <div>
                     <div class="fw-semibold">{{ $p->student->full_name ?? '—' }}</div>
-                    <div class="small text-muted">{{ $p->paid_at->format('d/m/Y H:i') }} · {{ $p->student->reg_no ?? '—' }}</div>
+                    <div class="small text-muted">{{ $p->paid_at->format('d/m/Y H:i') }}</div>
                 </div>
                 <div class="fin-pay-card-amount">{{ number_format($p->amount) }} TZS</div>
             </div>

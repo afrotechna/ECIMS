@@ -53,7 +53,7 @@
                 <tr>
                     <td>
                         <div class="fw-semibold">{{ $entry->student->full_name }}</div>
-                        <div class="small text-muted">{{ $entry->student->reg_no }} · {{ $entry->student->programme?->code }}</div>
+                        <div class="small text-muted">{{ $entry->student->programme?->code }}</div>
                     </td>
                     <td>{{ $entry->procedure?->code }} — {{ $entry->procedure?->name }}</td>
                     <td>{{ $entry->performed_on->format('j M Y') }}</td>

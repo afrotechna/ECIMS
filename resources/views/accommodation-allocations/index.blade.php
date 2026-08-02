@@ -44,7 +44,7 @@
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
-                        <th>Student</th><th>Reg No</th><th>Room</th><th>Hostel</th><th>From</th><th>To</th><th>Status</th>
+                        <th>Student</th><th>Room</th><th>Hostel</th><th>From</th><th>To</th><th>Status</th>
                         @if($showAllocationActions)
                         <th class="text-end">Actions</th>
                         @endif
@@ -54,7 +54,6 @@
                     @forelse($allocations as $a)
                     <tr>
                         <td>{{ $a->student->full_name }}</td>
-                        <td><code>{{ $a->student->reg_no }}</code></td>
                         <td>{{ $a->room->name }}</td>
                         <td>{{ $a->room->hostel->name }}</td>
                         <td>{{ $a->from_date->format('d/m/Y') }}</td>
@@ -77,7 +76,7 @@
                         @endif
                     </tr>
                     @empty
-                    <tr><td colspan="{{ $showAllocationActions ? 8 : 7 }}" class="text-center text-muted py-5">No allocations yet. <a href="{{ route('accommodation-allocations.create') }}">Create one</a>.</td></tr>
+                    <tr><td colspan="{{ $showAllocationActions ? 7 : 6 }}" class="text-center text-muted py-5">No allocations yet. <a href="{{ route('accommodation-allocations.create') }}">Create one</a>.</td></tr>
                     @endforelse
                 </tbody>
             </table>

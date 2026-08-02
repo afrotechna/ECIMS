@@ -15,11 +15,10 @@
     <div class="min-w-0">
         <h1 class="page-title-landing text-truncate"><i class="bi bi-person-badge me-2 opacity-90"></i>{{ $student->full_name }}</h1>
         <p class="page-subtitle-landing mb-0 text-break">
-            <span class="text-nowrap">{{ $student->reg_no }}</span>
             @if($student->official_registry_no)
-                · <span class="badge bg-secondary">{{ $student->official_registry_no }}</span>
+                <span class="badge bg-secondary">{{ $student->official_registry_no }}</span> ·
             @endif
-            · <span class="text-nowrap">{{ $student->registrationNumberDisplay() }}</span>
+            <span class="text-nowrap">{{ $student->registrationNumberDisplay() }}</span>
             · {{ $student->programme->code ?? '—' }}
         </p>
     </div>
@@ -45,9 +44,6 @@
             <div class="card-header-landing py-2"><i class="bi bi-info-circle me-2"></i>Student details</div>
             <div class="card-body">
                 <dl class="row student-detail-dl mb-0 small">
-                    <dt class="col-sm-4 col-md-3 text-muted">System reg. no.</dt>
-                    <dd class="col-sm-8 col-md-9"><strong class="text-dark">{{ $student->reg_no }}</strong></dd>
-
                     <dt class="col-sm-4 col-md-3 text-muted">NACTVET / NACTE / index</dt>
                     <dd class="col-sm-8 col-md-9"><code class="small bg-light px-2 py-1 rounded">{{ $student->registrationNumberDisplay() ?: '—' }}</code></dd>
 
@@ -261,10 +257,6 @@
         <div class="card card-landing student-glance-card border-0 shadow-sm sticky-top" style="top: 0.75rem;">
             <div class="card-header-landing py-2"><i class="bi bi-card-heading me-2"></i>At a glance</div>
             <div class="card-body py-3">
-                <div class="glance-item">
-                    <div class="glance-label">System reg. no.</div>
-                    <div class="glance-value font-monospace small">{{ $student->reg_no }}</div>
-                </div>
                 <div class="glance-item">
                     <div class="glance-label">Registration</div>
                     <div class="glance-value font-monospace small">{{ $student->registrationNumberDisplay() ?: '—' }}</div>

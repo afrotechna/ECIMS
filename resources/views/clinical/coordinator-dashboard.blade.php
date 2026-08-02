@@ -63,7 +63,6 @@
                 <tr>
                     <td>
                         <div class="fw-semibold">{{ $row['student']->full_name }}</div>
-                        <div class="small text-muted">{{ $row['student']->reg_no }}</div>
                     </td>
                     <td class="small">{{ $row['group']->name }}</td>
                     <td>{{ $row['attendance']['days_present'] }}/{{ $row['attendance']['days_total'] }}</td>

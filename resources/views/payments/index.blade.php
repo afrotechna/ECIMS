@@ -82,8 +82,7 @@
     <div class="flex-grow-1">
         <div class="fin-student-hero-name">{{ $student->full_name }}</div>
         <div class="fin-student-hero-meta">
-            {{ $student->reg_no ?? '—' }}
-            @if($student->programme) &middot; {{ $student->programme->name }} ({{ $student->programme->code }}) @endif
+            @if($student->programme) {{ $student->programme->name }} ({{ $student->programme->code }}) @endif
         </div>
     </div>
 </div>
@@ -261,7 +260,6 @@
                     </td>
                     <td>
                         <span class="d-block fw-semibold">{{ $grp['student']?->full_name ?? '—' }}</span>
-                        <span class="small text-muted">{{ $grp['student']?->reg_no ?? '—' }}</span>
                     </td>
                     <td>
                         <code class="small">{{ $latest->reference ?: $latest->id }}</code>
@@ -300,7 +298,6 @@
                 <div class="fin-pay-card-amount">{{ number_format($grp['total']) }} TZS</div>
             </div>
             <dl class="fin-pay-card-dl">
-                <dt>Reg no.</dt><dd>{{ $grp['student']?->reg_no ?? '—' }}</dd>
                 <dt>Session</dt><dd>{{ \App\Support\AcademicSession::label($grp['year']) }}</dd>
                 <dt>Semester</dt><dd>{{ $grp['label'] ?? '—' }}</dd>
                 <dt>Method</dt><dd>{{ $methodsCard->count() > 1 ? 'Multiple' : (\App\Models\Payment::methods()[$latestCard->payment_method] ?? $latestCard->payment_method) }}</dd>

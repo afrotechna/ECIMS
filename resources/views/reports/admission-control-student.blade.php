@@ -16,7 +16,6 @@
         <h1 class="page-title-landing"><i class="bi bi-clipboard2-data me-2 opacity-90"></i>Admission control sheet</h1>
         <p class="page-subtitle-landing mb-0">
             <strong>{{ $student->full_name }}</strong>
-            · System reg: {{ $student->reg_no }}
             @if($student->official_registry_no)
                 · Official registry: <code>{{ $student->official_registry_no }}</code>
             @endif

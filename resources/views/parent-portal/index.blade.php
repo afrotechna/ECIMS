@@ -8,7 +8,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-people me-2 opacity-90"></i>Parent / guardian portal</h1>
-    <p class="page-subtitle-landing mb-0">Viewing: <strong>{{ $student->full_name }}</strong> ({{ $student->reg_no }}) — {{ $student->programme->code ?? '' }}</p>
+    <p class="page-subtitle-landing mb-0">Viewing: <strong>{{ $student->full_name }}</strong> — {{ $student->programme->code ?? '' }}</p>
 </div>
 
 <div class="row g-3">

@@ -8,7 +8,7 @@
 </nav>
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-building me-2 opacity-90"></i>My Accommodation</h1>
-    <p class="page-subtitle-landing mb-0">{{ $student->reg_no }}</p>
+    <p class="page-subtitle-landing mb-0">{{ $student->full_name }}</p>
 </div>
 @if($allocation)
 <div class="card card-landing">

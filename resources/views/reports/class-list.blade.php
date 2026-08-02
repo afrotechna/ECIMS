@@ -48,18 +48,17 @@
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
-                    <tr><th>Reg No</th><th>NACTVET No</th><th>Name</th><th>Programme</th></tr>
+                    <tr><th>NACTVET No</th><th>Name</th><th>Programme</th></tr>
                 </thead>
                 <tbody>
                     @forelse($students as $s)
                     <tr>
-                        <td><code>{{ $s->reg_no }}</code></td>
                         <td><code class="small">{{ $s->nactvet_reg_no }}</code></td>
                         <td>{{ $s->full_name }}</td>
                         <td>{{ $s->programme->code ?? '-' }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="4" class="text-center text-muted py-5">Select a semester and course above.</td></tr>
+                    <tr><td colspan="3" class="text-center text-muted py-5">Select a semester and course above.</td></tr>
                     @endforelse
                 </tbody>
             </table>

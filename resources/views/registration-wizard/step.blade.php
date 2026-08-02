@@ -118,7 +118,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-ui-checks-grid me-2 opacity-90"></i>{{ $currentLabel }}</h1>
-    <p class="page-subtitle-landing mb-0">{{ $semester->label }} · {{ $student->reg_no }} — {{ $student->full_name }}</p>
+    <p class="page-subtitle-landing mb-0">{{ $semester->label }} · {{ $student->full_name }}</p>
 </div>
 
 <div class="card card-landing mb-3 border-0 shadow-sm">

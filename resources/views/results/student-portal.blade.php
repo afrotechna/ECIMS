@@ -37,7 +37,6 @@
     <div class="card-header-landing"><i class="bi bi-person-badge me-2"></i>{{ $student->full_name }}</div>
     <div class="card-body">
         <div class="row g-3 small">
-            <div class="col-md-4"><span class="text-muted d-block">Registration</span><strong>{{ $student->reg_no }}</strong></div>
             <div class="col-md-4"><span class="text-muted d-block">NACTVET reg.</span><code>{{ $student->nactvet_reg_no ?: '—' }}</code></div>
             <div class="col-md-4"><span class="text-muted d-block">Programme</span>{{ $student->programme->name ?? '—' }}</div>
         </div>

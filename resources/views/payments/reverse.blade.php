@@ -17,7 +17,7 @@
 <div class="card card-landing">
     <div class="card-header-landing">Confirm reversal</div>
     <div class="card-body">
-        <p class="mb-3">Payment #{{ $payment->id }}: <strong>{{ number_format($payment->amount) }} TZS</strong> for {{ $payment->student->full_name }} ({{ $payment->student->reg_no }}) on {{ $payment->paid_at->format('d/m/Y') }}.</p>
+        <p class="mb-3">Payment #{{ $payment->id }}: <strong>{{ number_format($payment->amount) }} TZS</strong> for {{ $payment->student->full_name }} on {{ $payment->paid_at->format('d/m/Y') }}.</p>
         <form action="{{ route('payments.reverse', $payment) }}" method="POST">
             @csrf
             <div class="mb-3">
