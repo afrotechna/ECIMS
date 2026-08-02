@@ -230,11 +230,14 @@ return [
             'system' => ['view'],
         ],
 
+        // HOD scope: academic oversight of their own programme only. Not responsible for
+        // student registration approval (registrar's job) or accommodation (Matron's job) —
+        // deliberately no grant on either, so those nav items/tables don't appear for them at
+        // all, rather than appearing with every action hidden.
         'hod_cmt' => [
             'programmes' => ['view'],
             'semesters' => ['view'],
             'courses' => ['view'],
-            'registrations' => ['view', 'update'],
             'results' => ['view', 'create', 'update'],
             'exams' => ['view', 'create', 'update'],
             'timetable' => ['view', 'create', 'update'],
@@ -246,8 +249,6 @@ return [
             'conduct_records' => ['view', 'create', 'update'],
             'student_affairs' => ['view', 'create', 'update'],
             'college_comms' => ['view', 'create', 'update'],
-            'accommodation_facilities' => ['view'],
-            'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
         ],
@@ -256,7 +257,6 @@ return [
             'programmes' => ['view'],
             'semesters' => ['view'],
             'courses' => ['view'],
-            'registrations' => ['view', 'update'],
             'results' => ['view', 'create', 'update'],
             'exams' => ['view', 'create', 'update'],
             'timetable' => ['view', 'create', 'update'],
@@ -268,8 +268,6 @@ return [
             'conduct_records' => ['view', 'create', 'update'],
             'student_affairs' => ['view', 'create', 'update'],
             'college_comms' => ['view', 'create', 'update'],
-            'accommodation_facilities' => ['view'],
-            'accommodation' => ['view'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create'],
         ],
