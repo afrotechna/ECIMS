@@ -97,7 +97,20 @@
             </div>
             <div class="pay-detail-item">
                 <div class="label">Control / reference no.</div>
-                <div class="value">{{ $payment->reference ?: '—' }}</div>
+                <div class="value">
+                    @php
+                        $sem1Payment = ($session['semOne'] ?? collect())->first();
+                        $sem2Payment = ($session['semTwo'] ?? collect())->first();
+                        $sem1Ref = $sem1Payment?->componentReference('tuition') ?: $sem1Payment?->reference;
+                        $sem2Ref = $sem2Payment?->componentReference('tuition') ?: $sem2Payment?->reference;
+                    @endphp
+                    @if($sem1Ref || $sem2Ref)
+                        @if($sem1Ref)<div>Semester I: {{ $sem1Ref }}</div>@endif
+                        @if($sem2Ref)<div>Semester II: {{ $sem2Ref }}</div>@endif
+                    @else
+                        {{ $payment->reference ?: '—' }}
+                    @endif
+                </div>
             </div>
             <div class="pay-detail-item">
                 <div class="label">Received by</div>

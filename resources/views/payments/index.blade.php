@@ -130,8 +130,10 @@
         </div>
         <div class="card-body">
             @php
-                $sem1TuitionRef = $grp['semOne']->first()?->componentReference('tuition');
-                $sem2TuitionRef = $grp['semTwo']->first()?->componentReference('tuition');
+                $sem1TuitionPayment = $grp['semOne']->first();
+                $sem2TuitionPayment = $grp['semTwo']->first();
+                $sem1TuitionRef = $sem1TuitionPayment?->componentReference('tuition') ?: $sem1TuitionPayment?->reference;
+                $sem2TuitionRef = $sem2TuitionPayment?->componentReference('tuition') ?: $sem2TuitionPayment?->reference;
             @endphp
             @if($sem1TuitionRef || $sem2TuitionRef)
             <div class="pay-breakdown-details mb-3">
