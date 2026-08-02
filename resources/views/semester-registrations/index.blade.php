@@ -114,7 +114,11 @@
                     @if($canManageRegistrations)
                     <th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th>
                     @endif
-                    <th>Student</th><th>Semester</th><th>Status</th><th>Registered</th><th class="text-end">Actions</th>
+                    <th>#</th>
+                    <th>Student</th><th>Semester</th><th>Status</th><th>Registered</th>
+                    @if($canManageRegistrations)
+                    <th class="text-end">Actions</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -123,6 +127,7 @@
                     @if($canManageRegistrations)
                     <td>@if($r->status === 'pending' && $r->wizard_step === null)<input type="checkbox" class="form-check-input pending-cb" name="ids[]" value="{{ $r->id }}">@else<span class="text-muted">—</span>@endif</td>
                     @endif
+                    <td>{{ $registrations->firstItem() + $loop->index }}</td>
                     <td>{{ $r->student?->full_name ?? '—' }}</td>
                     <td>{{ $r->semester?->label ?? '—' }}</td>
                     <td>
@@ -132,17 +137,19 @@
                         @else<span class="badge bg-warning text-dark">Pending</span>@endif
                     </td>
                     <td>{{ $r->registered_at ? $r->registered_at->format('d/m/Y') : '-' }}</td>
+                    @if($canManageRegistrations)
                     <td class="text-end">
                         @if($r->wizard_step)
                             <a href="{{ route('registration-wizard.step', [$r, $r->wizard_step]) }}" class="btn btn-sm btn-primary">Continue steps</a>
-                        @elseif($r->status === 'pending' && $canManageRegistrations)
+                        @elseif($r->status === 'pending')
                             <form action="{{ route('semester-registrations.approve', $r) }}" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-sm btn-success me-1">Approve</button></form>
                             <form action="{{ route('semester-registrations.reject', $r) }}" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-sm btn-outline-danger">Reject</button></form>
                         @endif
                     </td>
+                    @endif
                 </tr>
                 @empty
-                <tr><td colspan="{{ $canManageRegistrations ? 6 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
+                <tr><td colspan="{{ $canManageRegistrations ? 7 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
                 @endforelse
             </tbody>
         </table>
