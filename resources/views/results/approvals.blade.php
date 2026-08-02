@@ -8,15 +8,42 @@
     .ca-remark-cell.incomplete { background: #bfdbfe; color: #1e3a8a; }
     .ca-approval-grid thead th { font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; white-space: nowrap; }
     .ca-approval-grid td { vertical-align: middle; font-size: .8125rem; }
-    .approval-summary-stat { text-align: center; }
-    .approval-summary-stat .value { font-size: 1.5rem; font-weight: 800; display: block; line-height: 1.1; }
-    .approval-summary-stat .label { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; }
-    .approval-summary-stat.pass .value { color: #14532d; }
-    .approval-summary-stat.fail .value { color: #9f1239; }
     .approvals-fold-trigger { cursor: pointer; user-select: none; }
     .approvals-fold-icon { transition: transform 0.2s ease; display: inline-block; }
     .approvals-fold-trigger.collapsed .approvals-fold-icon { transform: rotate(-90deg); }
+    .ca-module-breakdown tbody tr { cursor: pointer; }
+    .ca-module-breakdown tbody tr:hover { background: var(--cohas-hover, #f1f5f9); }
+    .ca-module-breakdown tbody tr.active { background: #dbeafe; }
 </style>
+@endpush
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.ca-module-breakdown').forEach(function (table) {
+        var gridId = table.getAttribute('data-grid');
+        var grid = document.querySelector('.ca-approval-grid[data-grid="' + gridId + '"]');
+        if (!grid) return;
+
+        table.querySelectorAll('tbody tr[data-filter-module]').forEach(function (tr) {
+            tr.addEventListener('click', function () {
+                var isActive = tr.classList.contains('active');
+                table.querySelectorAll('tbody tr').forEach(function (r) { r.classList.remove('active'); });
+
+                if (isActive) {
+                    grid.querySelectorAll('[data-module]').forEach(function (cell) { cell.style.display = ''; });
+                    return;
+                }
+
+                tr.classList.add('active');
+                var module = tr.getAttribute('data-filter-module');
+                grid.querySelectorAll('[data-module]').forEach(function (cell) {
+                    cell.style.display = (cell.getAttribute('data-module') === module) ? '' : 'none';
+                });
+            });
+        });
+    });
+});
+</script>
 @endpush
 @section('content')
 <nav class="student-breadcrumb">
@@ -58,8 +85,6 @@
             <div class="small text-muted">{{ $row->row_count }} module result(s) pending &middot; {{ $group['student_summary']['total'] }} student(s)</div>
         </div>
         <div class="d-flex align-items-center gap-4">
-            <div class="approval-summary-stat pass"><span class="value">{{ $group['student_summary']['pass'] }}</span><span class="label">Students passed</span></div>
-            <div class="approval-summary-stat fail"><span class="value">{{ $group['student_summary']['fail'] }}</span><span class="label">Students failed</span></div>
             @if($canApprove)
             <div class="d-flex gap-2" onclick="event.stopPropagation()">
                 <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ $row->semester_id }}">Approve</button>
@@ -72,7 +97,7 @@
     <div id="{{ $collapseId }}" class="collapse border-top border-light-subtle">
         <div class="card-body">
             @forelse($group['grids'] as $grid)
-                @include('results.partials.ca-approval-grid', ['grid' => $grid])
+                @include('results.partials.ca-approval-grid', ['grid' => $grid, 'gridId' => 'grid-'.$row->semester_id.'-'.$loop->index])
             @empty
                 <p class="text-muted small mb-0">No student-level breakdown available for this semester.</p>
             @endforelse
