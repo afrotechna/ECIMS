@@ -184,6 +184,7 @@ class RegistrationWizardController extends Controller
             'feeStructureResolved' => $feeStructureResolved,
             'paymentMethods' => \App\Models\Payment::methods(),
             'isPaymentStep' => $isPaymentStep,
+            'chargesNhifQa' => $this->chargesNhifQa($semester, $student),
         ]);
     }
 
@@ -259,6 +260,10 @@ class RegistrationWizardController extends Controller
                         'academic_year' => 'Payment session must match the semester you are registering for ('.$semester->academic_year.'/'.($semester->academic_year + 1).').',
                     ]);
                 }
+                if (! $this->chargesNhifQa($semester, $student)) {
+                    $paymentData['slot_sem1_nhif'] = 0;
+                    $paymentData['slot_sem1_nactvet_qa'] = 0;
+                }
                 $paymentData['student_id'] = $student->id;
                 $paymentService->record($paymentData, auth()->id());
                 $payload['fees_confirmed_at'] = now()->toIso8601String();
@@ -306,6 +311,10 @@ class RegistrationWizardController extends Controller
                     return redirect()->back()->withInput()->withErrors([
                         'academic_year' => 'Payment session must match the semester you are registering for ('.$semester->academic_year.'/'.($semester->academic_year + 1).').',
                     ]);
+                }
+                if (! $this->chargesNhifQa($semester, $student)) {
+                    $paymentData['slot_sem1_nhif'] = 0;
+                    $paymentData['slot_sem1_nactvet_qa'] = 0;
                 }
                 $paymentData['student_id'] = $student->id;
                 $paymentService->record($paymentData, auth()->id());
@@ -416,5 +425,16 @@ class RegistrationWizardController extends Controller
     private function totalStepsForSemester(Semester $semester): int
     {
         return $this->isFirstSemester($semester) ? 4 : 2;
+    }
+
+    /**
+     * NHIF and NACTVET QA are one-time-per-academic-year charges collected in Semester I.
+     * Semester II only charges them again for a transfer or repeat student.
+     */
+    private function chargesNhifQa(Semester $semester, Student $student): bool
+    {
+        return $this->isFirstSemester($semester)
+            || $student->student_type === 'transferred'
+            || $student->academic_standing === 'repeat_year';
     }
 }

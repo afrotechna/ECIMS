@@ -30,8 +30,15 @@ class StudentModuleResultsService
     public function yearSections(Student $student): Collection
     {
         // A module only appears here once its final/SE exam mark has been recorded — CA-only
-        // progress belongs on "My Assessments", not the final module results page.
+        // progress belongs on "My Assessments", not the final module results page. Also only
+        // for semesters the student actually completed registration (and payment) for — unless
+        // their registration history isn't tracked at all (legacy/imported students), in which
+        // case nothing is filtered so existing visibility isn't broken.
+        $gateByRegistration = $student->hasAnySemesterRegistrationTracked();
+        $registeredSemesterIds = $gateByRegistration ? $student->registeredCompleteSemesterIds() : null;
+
         $semesters = Semester::query()
+            ->when($gateByRegistration, fn ($q) => $q->whereIn('id', $registeredSemesterIds))
             ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved()->whereNotNull('exam_mark'))
             ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->whereNotNull('exam_mark')->with('course')->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'))])
             ->orderBy('academic_year')

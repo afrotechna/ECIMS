@@ -3,6 +3,7 @@
 --}}
 @php
     $paymentTuitionDefault = $paymentTuitionDefault ?? 'continue';
+    $chargesNhifQa = $chargesNhifQa ?? true;
     $oldSlots = [
         'slot_sem1_nhif' => (int) old('slot_sem1_nhif', 0),
         'slot_sem1_nactvet_qa' => (int) old('slot_sem1_nactvet_qa', 0),
@@ -34,6 +35,7 @@
             </select>
             @error('tuition_category')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
         </div>
+        @if($chargesNhifQa)
         <div class="col-md-6 col-lg-4">
             <label class="form-label" for="rw_slot_sem1_nhif">NHIF (Semester I)</label>
             <select name="slot_sem1_nhif" id="rw_slot_sem1_nhif" class="form-select fee-slot-select rw-fee-slot" required></select>
@@ -44,6 +46,16 @@
             <select name="slot_sem1_nactvet_qa" id="rw_slot_sem1_nactvet_qa" class="form-select fee-slot-select rw-fee-slot" required></select>
             @error('slot_sem1_nactvet_qa')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
         </div>
+        @else
+        <input type="hidden" name="slot_sem1_nhif" value="0">
+        <input type="hidden" name="slot_sem1_nactvet_qa" value="0">
+        <div class="col-12">
+            <div class="alert alert-light border py-2 mb-0 small text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                NHIF and NACTVET QA are already covered for this academic year — not charged again this semester.
+            </div>
+        </div>
+        @endif
         <div class="col-12">
             <div class="alert alert-light border py-2 mb-0 d-flex flex-wrap align-items-center justify-content-between gap-2">
                 <span class="fw-semibold">Receipt total</span>
@@ -62,6 +74,7 @@
             <input type="text" class="form-control @error('reference_tuition') is-invalid @enderror" id="rw_reference_tuition" name="reference_tuition" value="{{ old('reference_tuition') }}" maxlength="100" autocomplete="off" placeholder="Bank / GePG control number">
             @error('reference_tuition')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
+        @if($chargesNhifQa)
         <div class="col-md-4" id="rw_ref_nhif_wrap">
             <label for="rw_reference_nhif" class="form-label">NHIF control no.</label>
             <input type="text" class="form-control @error('reference_nhif') is-invalid @enderror" id="rw_reference_nhif" name="reference_nhif" value="{{ old('reference_nhif') }}" maxlength="100" autocomplete="off" placeholder="NHIF payment reference">
@@ -72,6 +85,7 @@
             <input type="text" class="form-control @error('reference_nactvet_qa') is-invalid @enderror" id="rw_reference_nactvet_qa" name="reference_nactvet_qa" value="{{ old('reference_nactvet_qa') }}" maxlength="100" autocomplete="off" placeholder="NACTVET QA reference">
             @error('reference_nactvet_qa')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
+        @endif
     </div>
     <div class="row g-3">
         <div class="col-md-3">

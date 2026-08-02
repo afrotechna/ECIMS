@@ -114,7 +114,14 @@ class ResultController extends Controller
         }
         $student->load('programme');
 
+        // Only gate visibility by registration/payment for students whose registration history
+        // is actually tracked here — legacy/imported students with no SemesterRegistration rows
+        // keep seeing whatever approved results they already had, unfiltered.
+        $gateByRegistration = $student->hasAnySemesterRegistrationTracked();
+        $registeredSemesterIds = $gateByRegistration ? $student->registeredCompleteSemesterIds() : null;
+
         $semestersWithResults = Semester::query()
+            ->when($gateByRegistration, fn ($q) => $q->whereIn('id', $registeredSemesterIds))
             ->whereHas('results', fn ($q) => $q->where('student_id', $student->id)->approved())
             ->with(['results' => fn ($q) => $q->where('student_id', $student->id)->approved()->with('course')->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'))])
             ->orderBy('academic_year')

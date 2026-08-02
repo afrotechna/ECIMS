@@ -318,6 +318,31 @@ class Student extends Model
             ->exists();
     }
 
+    /**
+     * IDs of semesters this student has actually completed registration (and payment) for —
+     * CA/SE results should only be visible for these, not every semester with a result row.
+     *
+     * @return \Illuminate\Support\Collection<int, int>
+     */
+    public function registeredCompleteSemesterIds(): \Illuminate\Support\Collection
+    {
+        return $this->semesterRegistrations()
+            ->where('status', 'approved')
+            ->whereNull('wizard_step')
+            ->pluck('semester_id');
+    }
+
+    /**
+     * Whether this student has any SemesterRegistration history tracked at all. Students whose
+     * records predate the registration wizard (imported/seeded directly) have none — for them,
+     * the paid+registered result-visibility gate is skipped entirely rather than hiding
+     * everything they could already see.
+     */
+    public function hasAnySemesterRegistrationTracked(): bool
+    {
+        return $this->semesterRegistrations()->exists();
+    }
+
     public function ledgerEntries(): HasMany
     {
         return $this->hasMany(LedgerEntry::class);
