@@ -76,33 +76,33 @@
                 <thead class="table-light">
                     <tr>
                         <th>S/N</th>
-                        <th>NAME (FIRST, MIDDLE & SURNAME)</th>
+                        <th title="Name (first, middle & surname)">NAME</th>
                         <th>GENDER</th>
-                        <th>NACTVET / FORM IV REG. NO.</th>
-                        <th>NTA LEVEL</th>
-                        <th>PROGRAMME OF STUDY</th>
-                        <th>YEAR OF STUDY</th>
-                        <th>REPORTING STATUS</th>
-                        <th>REPORTING DATE</th>
-                        <th>TUITION FEE STATUS</th>
-                        <th>EXPECTED TUITION (TZS)<br><small class="text-muted fw-normal">Sem {{ $semesterNumber ?? 1 }}</small></th>
-                        <th>TUITION PAID (TZS)</th>
-                        <th>TUITION CONTROL NUMBER</th>
-                        <th>WHEN WILL COMPLETE TUITION FEE?<br><small class="text-muted">(Specify date & Submit commitment letter)</small></th>
-                        <th>NHIF FEE<br><small class="text-muted fw-normal">College</small></th>
-                        <th>NHIF PAID (TZS)</th>
+                        <th title="NACTVET / Form IV reg. no.">REG. NO.</th>
+                        <th title="NTA level">NTA LVL</th>
+                        <th title="Programme of study">PROGRAMME</th>
+                        <th title="Year of study">YEAR</th>
+                        <th title="Reporting status">REPORTING</th>
+                        <th title="Reporting date">REPORT DATE</th>
+                        <th title="Tuition fee status">TUITION STATUS</th>
+                        <th title="Expected tuition (TZS)">EXP. TUITION<br><small class="text-muted fw-normal">Sem {{ $semesterNumber ?? 1 }}</small></th>
+                        <th title="Tuition paid (TZS)">TUITION PAID</th>
+                        <th title="Tuition control number">CONTROL NO.</th>
+                        <th title="When will complete tuition fee? Specify date & submit commitment letter">COMPLETION DATE</th>
+                        <th title="NHIF fee (college)">NHIF FEE</th>
+                        <th title="NHIF paid (TZS)">NHIF PAID</th>
                         <th>NHIF STATUS</th>
-                        <th>NACTVET QA FEE (TZS)</th>
-                        <th>NACTVET QA PAID (TZS)</th>
-                        <th>NACTVET QA STATUS</th>
-                        <th>NACTVET QA CONTROL NUMBER</th>
-                        <th>JOINING INSTRUCTION NON ACADEMIC REQUIREMENTS SUBMITTED</th>
-                        <th>CERTIFICATES SUBMITTED</th>
-                        <th>HOSTEL ALLOCATION (BLOCK NO.)</th>
+                        <th title="NACTVET QA fee (TZS)">QA FEE</th>
+                        <th title="NACTVET QA paid (TZS)">QA PAID</th>
+                        <th title="NACTVET QA status">QA STATUS</th>
+                        <th title="NACTVET QA control number">QA CONTROL NO.</th>
+                        <th title="Joining instruction / non-academic requirements submitted">JOINING REQ.</th>
+                        <th title="Certificates submitted">CERTIFICATES</th>
+                        <th title="Hostel allocation (block no.)">HOSTEL BLOCK</th>
                         <th>CLASS</th>
-                        <th>CLASS PROPERTY RECEIVED</th>
-                        <th>CHAIR NUMBER</th>
-                        <th>TABLE NUMBER</th>
+                        <th title="Class property received">PROPERTY RECV.</th>
+                        <th title="Chair number">CHAIR NO.</th>
+                        <th title="Table number">TABLE NO.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,18 +176,7 @@
 .admission-control-sheet-table { font-size: 0.72rem; }
 .admission-control-sheet-table th, .admission-control-sheet-table td {
     padding: 4px 6px;
-}
-.admission-control-sheet-table td {
     white-space: nowrap;
-}
-.admission-control-sheet-table th {
-    max-width: 110px;
-    white-space: normal;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
 }
 @media print {
     .student-breadcrumb, .page-header-landing .btn, .card-landing.mb-3 form, .alert, .nav, .topbar, .profile-dropdown, footer { display: none !important; }
