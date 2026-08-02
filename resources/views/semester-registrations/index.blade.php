@@ -120,7 +120,7 @@
                     <th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th>
                     @endif
                     <th>#</th>
-                    <th>Student</th><th>Status</th><th>Registered</th>
+                    <th>Student</th><th>Programme</th><th>Status</th><th>Registered</th>
                     @if($canManageRegistrations)
                     <th class="text-end">Actions</th>
                     @endif
@@ -134,6 +134,7 @@
                     @endif
                     <td>{{ $registrations->firstItem() + $loop->index }}</td>
                     <td>{{ $r->student?->full_name ?? '—' }}</td>
+                    <td>{{ $r->student?->programme->code ?? '—' }}</td>
                     <td>
                         @if($r->status === 'approved')<span class="badge bg-success">Approved</span>
                         @elseif($r->status === 'rejected')<span class="badge bg-danger">Rejected</span>
@@ -153,7 +154,7 @@
                     @endif
                 </tr>
                 @empty
-                <tr><td colspan="{{ $canManageRegistrations ? 6 : 4 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
+                <tr><td colspan="{{ $canManageRegistrations ? 7 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
                 @endforelse
             </tbody>
         </table>
