@@ -6,10 +6,14 @@ use App\Models\ActivityLog;
 use App\Models\Student;
 use App\Models\StudentCardStatus;
 use App\Notifications\StudentCardStatusNotification;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class StudentCardStatusController extends Controller
 {
@@ -65,6 +69,81 @@ class StudentCardStatusController extends Controller
         $programmes = \App\Models\Programme::orderBy('code')->get();
 
         return view('student-card-status.index', compact('students', 'programmes'));
+    }
+
+    public function downloadPdf(Request $request): Response|RedirectResponse
+    {
+        $validated = Validator::make($request->all(), [
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:students,id'],
+        ])->validate();
+
+        $students = Student::whereIn('id', $validated['ids'])->with('programme')->orderBy('reg_no')->get();
+
+        $cards = [];
+        $missingPhoto = [];
+        foreach ($students as $student) {
+            if (! $this->hasCompletedPayment($student)) {
+                continue;
+            }
+
+            $studentUser = $student->userAccount;
+            $photoPath = $studentUser?->profile_photo_path;
+            if (! $photoPath || ! Storage::disk('public')->exists($photoPath)) {
+                $missingPhoto[] = "{$student->full_name} ({$student->reg_no})";
+
+                continue;
+            }
+
+            $cards[] = [
+                'student' => $student,
+                'photoUri' => $this->fileUri(Storage::disk('public')->path($photoPath)),
+            ];
+        }
+
+        if ($missingPhoto !== []) {
+            return back()->with('error', 'Cannot generate the batch PDF yet — these students have not uploaded a profile photo: '.implode(', ', $missingPhoto).'.');
+        }
+
+        if ($cards === []) {
+            return back()->with('error', 'None of the selected students are eligible (registered and fee balance cleared).');
+        }
+
+        if (! class_exists(Dompdf::class)) {
+            abort(503, 'PDF export is not available yet: run `composer install` on the server after enabling the PHP zip extension (php.ini: extension=zip).');
+        }
+
+        $logoPath = public_path('images/logo.png');
+        $emblemPath = public_path('images/national-emblem.png');
+
+        $html = view('student-card-status.batch-pdf', [
+            'cards' => $cards,
+            'logoUri' => file_exists($logoPath) ? $this->fileUri($logoPath) : null,
+            'emblemUri' => file_exists($emblemPath) ? $this->fileUri($emblemPath) : null,
+        ])->render();
+
+        $options = new Options;
+        $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $name = 'student-id-cards-'.now()->format('Y-m-d-His').'.pdf';
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+        ]);
+    }
+
+    /** Dompdf needs a file:// URI (not an http asset URL) to embed local images without enabling remote fetches. */
+    private function fileUri(string $absolutePath): string
+    {
+        return 'file:///'.ltrim(str_replace('\\', '/', $absolutePath), '/');
     }
 
     public function update(Student $student, Request $request): RedirectResponse

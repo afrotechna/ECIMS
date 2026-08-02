@@ -39,7 +39,10 @@
 <div class="card card-landing">
     <div class="card-header-landing d-flex flex-wrap align-items-center gap-2">
         <span class="fw-semibold"><i class="bi bi-list-check me-1"></i>Students</span>
-        <button type="button" id="bulkCardStatusBtn" class="btn btn-sm btn-outline-primary ms-auto d-none" title="Apply to selected" aria-label="Apply to selected">
+        <button type="button" id="bulkCardPdfBtn" class="btn btn-sm btn-outline-secondary ms-auto d-none" title="Download batch PDF" aria-label="Download batch PDF">
+            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> Download batch PDF
+        </button>
+        <button type="button" id="bulkCardStatusBtn" class="btn btn-sm btn-outline-primary d-none" title="Apply to selected" aria-label="Apply to selected">
             <i class="bi bi-pencil-square" aria-hidden="true"></i> Apply to selected
             <span class="badge bg-primary ms-1" id="bulkCardStatusCount">0</span>
         </button>
@@ -109,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var selectAll = document.getElementById('bulkCardStatusSelectAll');
     var btn = document.getElementById('bulkCardStatusBtn');
     var countEl = document.getElementById('bulkCardStatusCount');
+    var pdfBtn = document.getElementById('bulkCardPdfBtn');
     var documentTypes = @json(\App\Models\StudentCardStatus::DOCUMENT_TYPES);
     var statuses = @json(\App\Models\StudentCardStatus::STATUSES);
 
@@ -120,6 +124,10 @@ document.addEventListener('DOMContentLoaded', function () {
         countEl.textContent = n;
         btn.disabled = n === 0;
         btn.classList.toggle('d-none', n === 0);
+        if (pdfBtn) {
+            pdfBtn.disabled = n === 0;
+            pdfBtn.classList.toggle('d-none', n === 0);
+        }
         if (selectAll) {
             var all = document.querySelectorAll('.bulk-card-status-cb');
             selectAll.checked = all.length > 0 && n === all.length;
@@ -176,6 +184,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('bulkCardStatusValue').value = result.value.status;
                 document.getElementById('bulkCardStatusForm').submit();
             });
+        });
+    }
+    if (pdfBtn) {
+        pdfBtn.addEventListener('click', function () {
+            var ids = checkedBoxes().map(function (cb) { return cb.value; });
+            if (ids.length === 0) return;
+            var params = ids.map(function (id) { return 'ids[]=' + encodeURIComponent(id); }).join('&');
+            window.location.href = '{{ route('student-card-status.download-pdf') }}?' + params;
         });
     }
 });

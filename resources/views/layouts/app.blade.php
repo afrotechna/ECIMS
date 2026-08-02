@@ -511,8 +511,8 @@
                                         <img src="" alt="" id="profilePhotoPreview" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;display:none;">
                                     @endif
                                 </div>
-                                <input type="file" name="photo" id="profilePhotoInput" class="form-control" accept="image/*" required>
-                                <div class="form-text">JPG or PNG, up to 2MB.</div>
+                                <input type="file" name="photo" id="profilePhotoInput" class="form-control" accept="image/jpeg,image/png" required>
+                                <div class="form-text">JPG or PNG, up to 2MB, at least 200x200px. For the best fit on your profile and ID card, use a square or portrait passport-style photo with your face centered.</div>
                             </div>
                             <div class="modal-footer justify-content-between">
                                 @if($currentUser->profile_photo_url)
