@@ -16,7 +16,9 @@ class StudentAttendanceController extends Controller
     {
         $date = $request->date('date') ?? now()->toDateString();
 
-        $students = Student::where('status', 'active')->orderBy('reg_no')->get();
+        $students = Student::where('status', 'active')
+            ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->orderBy('reg_no')->get();
 
         $logsForDay = StudentAttendanceLog::whereDate('punched_at', $date)
             ->orderBy('punched_at')
@@ -101,7 +103,9 @@ class StudentAttendanceController extends Controller
 
     public function mappingForm()
     {
-        $students = Student::where('status', 'active')->orderBy('reg_no')->get();
+        $students = Student::where('status', 'active')
+            ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->orderBy('reg_no')->get();
 
         return view('student-attendance.mapping', compact('students'));
     }

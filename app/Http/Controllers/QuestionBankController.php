@@ -27,12 +27,17 @@ class QuestionBankController extends Controller
 
     public function index()
     {
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+
         $banks = QuestionBank::with(['course', 'creator'])
             ->withCount(['materials', 'questions', 'exams'])
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->whereHas('course', fn ($cq) => $cq->where('programme_id', $pid)))
             ->latest()
             ->paginate(15);
 
-        $courses = Course::where('is_active', true)->orderBy('code')->get();
+        $courses = Course::where('is_active', true)
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->orderBy('code')->get();
 
         return view('question-bank.index', compact('banks', 'courses'));
     }

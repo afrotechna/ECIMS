@@ -16,7 +16,8 @@ class TimetableSlotController extends Controller
     {
         $semesterId = $request->get('semester_id');
         $semesters = Semester::where('is_active', true)->orderByDesc('academic_year')->orderBy('number')->get();
-        $query = TimetableSlot::with(['semester', 'course']);
+        $query = TimetableSlot::with(['semester', 'course'])
+            ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->whereHas('course', fn ($cq) => $cq->where('programme_id', $pid)));
         if ($semesterId) {
             $query->where('semester_id', $semesterId);
         }

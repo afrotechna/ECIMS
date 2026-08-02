@@ -205,6 +205,25 @@ class User extends Authenticatable implements CanResetPasswordContract
         return in_array(self::normalizeRoleSlug((string) $this->role), self::SYSTEM_ADMIN_ROLES, true);
     }
 
+    /** Head of Department roles are scoped to one programme's data only. */
+    public const HOD_PROGRAMME_CODES = [
+        'hod_cmt' => 'CMT',
+        'hod_mlt' => 'MLT',
+    ];
+
+    public function hodProgrammeCode(): ?string
+    {
+        return self::HOD_PROGRAMME_CODES[$this->role] ?? null;
+    }
+
+    /** Programme id this HOD is restricted to, or null for roles that see every programme. */
+    public function hodProgrammeId(): ?int
+    {
+        $code = $this->hodProgrammeCode();
+
+        return $code ? Programme::where('code', $code)->value('id') : null;
+    }
+
     /** Roles that actually handle physical printing for e-Office documents. */
     protected const OFFICE_DOCUMENT_PRINTER_ROLES = [
         'secretary',

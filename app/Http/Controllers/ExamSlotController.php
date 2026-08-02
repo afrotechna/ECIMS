@@ -29,15 +29,18 @@ class ExamSlotController extends Controller
 
     public function index(Request $request)
     {
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
         $semesterId = $request->filled('semester_id') ? $request->integer('semester_id') : null;
-        $programmeId = $request->filled('programme_id') ? $request->integer('programme_id') : null;
+        $programmeId = $hodProgrammeId ?: ($request->filled('programme_id') ? $request->integer('programme_id') : null);
         $assessmentType = $request->get('assessment_type');
         if (! in_array($assessmentType, ['cat1', 'cat2', ''], true)) {
             $assessmentType = '';
         }
 
         $semesters = Semester::where('is_active', true)->orderByDesc('academic_year')->orderBy('number')->get();
-        $programmes = Programme::where('is_active', true)->orderBy('code')->get();
+        $programmes = Programme::where('is_active', true)
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('id', $pid))
+            ->orderBy('code')->get();
 
         $query = ExamSlot::with(['semester', 'course.programme']);
 

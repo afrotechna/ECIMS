@@ -14,6 +14,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $query = Student::with('programme')
+            ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->where('programme_id', $pid))
             ->orderByRaw('LOWER(last_name)')
             ->orderByRaw('LOWER(first_name)')
             ->orderByRaw('LOWER(COALESCE(middle_name, \'\'))');
@@ -41,13 +42,18 @@ class StudentController extends Controller
         }
 
         $students = $query->paginate(15)->withQueryString();
-        $programmes = Programme::where('is_active', true)->orderBy('code')->get();
-        $intakeYears = Student::distinct()->pluck('intake_year')->filter()->sort()->values();
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+        $programmes = Programme::where('is_active', true)
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('id', $pid))
+            ->orderBy('code')->get();
+        $intakeYears = Student::distinct()
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->pluck('intake_year')->filter()->sort()->values();
         $emailsWithUser = \App\Models\User::whereNotNull('email')->pluck('email')->toArray();
         $activeNtaLevel = $request->filled('nta_level') && in_array((int) $request->nta_level, [4, 5, 6], true)
             ? (int) $request->nta_level
             : null;
-        $activeProgrammeId = $request->filled('programme_id') ? (int) $request->programme_id : null;
+        $activeProgrammeId = $hodProgrammeId ?: ($request->filled('programme_id') ? (int) $request->programme_id : null);
 
         $ntaNavCountQuery = Student::query()
             ->when($activeProgrammeId, fn ($q) => $q->where('programme_id', $activeProgrammeId));
@@ -59,7 +65,8 @@ class StudentController extends Controller
             ->pluck('total', 'nta_level');
 
         $programmeNavCountQuery = Student::query()
-            ->when($activeNtaLevel, fn ($q) => $q->where('nta_level', $activeNtaLevel));
+            ->when($activeNtaLevel, fn ($q) => $q->where('nta_level', $activeNtaLevel))
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid));
 
         $programmeFilterCounts = (clone $programmeNavCountQuery)
             ->selectRaw('programme_id, COUNT(*) as total')

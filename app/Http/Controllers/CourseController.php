@@ -18,11 +18,14 @@ class CourseController extends Controller
 
     public function index(Request $request)
     {
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
         $semestersForFilter = Semester::where('is_active', true)->orderByDesc('academic_year')->orderBy('number')->get();
-        $programmesForFilter = Programme::where('is_active', true)->orderBy('code')->get();
+        $programmesForFilter = Programme::where('is_active', true)
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('id', $pid))
+            ->orderBy('code')->get();
 
         $semesterId = $request->get('semester_id');
-        $programmeId = $request->get('programme_id');
+        $programmeId = $hodProgrammeId ?: $request->get('programme_id');
 
         $filteredCourses = collect();
         $filteredCreditsTotal = 0.0;
@@ -56,6 +59,7 @@ class CourseController extends Controller
         $programmesTree = [];
         if (! $catalogueFilterActive) {
             $courses = Course::with(['programme', 'semesters'])
+                ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
                 ->orderBy('code')
                 ->get();
 

@@ -14,9 +14,12 @@ class ResultController extends Controller
 {
     public function index(Request $request)
     {
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+
         $query = Result::query()
             ->with(['student.programme', 'course', 'semester'])
             ->whereHas('student')
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->whereHas('student', fn ($sq) => $sq->where('programme_id', $pid)))
             ->orderByDesc('semester_id')
             ->orderBy('student_id')
             ->orderBy(Course::select('code')->whereColumn('id', 'results.course_id'));
@@ -30,7 +33,9 @@ class ResultController extends Controller
 
         $results = $query->paginate(20)->withQueryString();
         $semesters = Semester::where('is_active', true)->orderByDesc('academic_year')->orderBy('number')->get();
-        $students = Student::where('status', 'active')->orderBy('reg_no')->get(['id', 'reg_no', 'first_name', 'last_name']);
+        $students = Student::where('status', 'active')
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->orderBy('reg_no')->get(['id', 'reg_no', 'first_name', 'last_name']);
 
         return view('results.index', compact('results', 'semesters', 'students'));
     }

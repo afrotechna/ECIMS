@@ -14,6 +14,7 @@ class SemesterRegistrationController extends Controller
         $query = SemesterRegistration::query()
             ->with(['student.programme', 'semester', 'approver'])
             ->whereHas('student')
+            ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->whereHas('student', fn ($sq) => $sq->where('programme_id', $pid)))
             ->orderByDesc('created_at');
 
         if ($request->filled('semester_id')) {

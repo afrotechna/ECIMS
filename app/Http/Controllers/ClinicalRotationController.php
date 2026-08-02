@@ -28,11 +28,16 @@ class ClinicalRotationController extends Controller
 
     public function index()
     {
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+
         $rounds = ClinicalRotationRound::query()
             ->with(['semester', 'programme', 'groups'])
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
             ->latest()
             ->paginate(15);
-        $programmes = Programme::query()->where('is_active', true)->orderBy('code')->get();
+        $programmes = Programme::query()->where('is_active', true)
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('id', $pid))
+            ->orderBy('code')->get();
         $defaultScheduleMonday = Carbon::now()->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
 
         return view('clinical-rotations.index', compact('rounds', 'programmes', 'defaultScheduleMonday'));
