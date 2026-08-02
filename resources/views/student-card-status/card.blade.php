@@ -63,8 +63,7 @@
             padding: .7rem 1.1rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: .75rem;
+            gap: .6rem;
             position: relative;
         }
         .id-band::after {
@@ -72,15 +71,11 @@
             position: absolute; left: 0; right: 0; bottom: -6px; height: 6px;
             background: linear-gradient(90deg, var(--id-gold) 0%, #f4e5b0 50%, var(--id-gold) 100%);
         }
-        .id-band-brand { display: flex; align-items: center; gap: .6rem; min-width: 0; }
+        .id-band-side { flex-shrink: 0; display: flex; align-items: center; }
+        .id-band-center { flex: 1; min-width: 0; text-align: center; }
         .id-band img { height: 46px; width: 46px; object-fit: contain; flex-shrink: 0; background: #fff; border-radius: 50%; padding: 3px; }
         .id-band h1 { margin: 0; font-size: .78rem; font-weight: 800; letter-spacing: .01em; text-transform: uppercase; line-height: 1.2; }
         .id-band .sub { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
-        .id-band-tag {
-            font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
-            background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.35);
-            border-radius: 999px; padding: .25rem .7rem; white-space: nowrap;
-        }
         .id-body { padding: 1.1rem 1.25rem .4rem; position: relative; display: flex; gap: 1.1rem; }
         .id-photo-col { flex-shrink: 0; width: 116px; text-align: center; }
         .id-photo {
@@ -111,7 +106,7 @@
         }
         .id-footer strong { color: #64748b; }
         .id-back-body { padding: 1.4rem 1.4rem 1rem; position: relative; text-align: center; }
-        .id-back-body > * { position: relative; z-index: 1; }
+        .id-back-barcode, .id-back-terms, .id-back-signature { position: relative; z-index: 1; }
         .id-back-barcode .bars {
             height: 42px;
             background: repeating-linear-gradient(90deg, #0f172a 0 3px, transparent 3px 6px);
@@ -141,7 +136,7 @@
             opacity: .06;
             transform: rotate(-20deg);
         }
-        .id-body > * { position: relative; z-index: 1; }
+        .id-photo-col, .id-info-col { position: relative; z-index: 1; }
         .id-flip-hint {
             max-width: 520px; margin: .9rem auto 0; text-align: center;
             font-size: .78rem; color: #64748b;
@@ -153,7 +148,7 @@
             .id-card-flipper, .id-card-flipper.flipped { transform: none !important; transition: none !important; }
             .id-card { position: relative !important; backface-visibility: visible !important; margin-bottom: 14px; }
             .id-card-back { position: relative !important; inset: auto !important; transform: none !important; page-break-before: always; }
-            .id-card, .id-band, .id-watermark, .id-photo-fallback, .id-band-tag, .id-barcode .bars, .id-back-barcode .bars {
+            .id-card, .id-band, .id-watermark, .id-photo-fallback, .id-barcode .bars, .id-back-barcode .bars {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 color-adjust: exact;
@@ -168,16 +163,20 @@
         <div class="id-card-flipper" id="idCardFlipper">
             <div class="id-card">
                 <div class="id-band">
-                    <div class="id-band-brand">
+                    <div class="id-band-side">
+                        @if(file_exists(public_path('images/national-emblem.png')))
+                        <img src="{{ asset('images/national-emblem.png') }}" alt="">
+                        @endif
+                    </div>
+                    <div class="id-band-center">
+                        <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
+                        <div class="sub">Student Identity Card</div>
+                    </div>
+                    <div class="id-band-side">
                         @if(file_exists(public_path('images/logo.png')))
                         <img src="{{ asset('images/logo.png') }}" alt="">
                         @endif
-                        <div>
-                            <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
-                            <div class="sub">Student Identity Card</div>
-                        </div>
                     </div>
-                    <span class="id-band-tag">{{ \App\Support\AcademicSession::label(\App\Support\AcademicSession::defaultStartYear()) }}</span>
                 </div>
                 <div class="id-body">
                     @if(file_exists(public_path('images/logo.png')))
@@ -229,14 +228,19 @@
             </div>
             <div class="id-card id-card-back">
                 <div class="id-band">
-                    <div class="id-band-brand">
+                    <div class="id-band-side">
+                        @if(file_exists(public_path('images/national-emblem.png')))
+                        <img src="{{ asset('images/national-emblem.png') }}" alt="">
+                        @endif
+                    </div>
+                    <div class="id-band-center">
+                        <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
+                        <div class="sub">Student Identity Card</div>
+                    </div>
+                    <div class="id-band-side">
                         @if(file_exists(public_path('images/logo.png')))
                         <img src="{{ asset('images/logo.png') }}" alt="">
                         @endif
-                        <div>
-                            <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
-                            <div class="sub">Student Identity Card</div>
-                        </div>
                     </div>
                 </div>
                 <div class="id-back-body">
