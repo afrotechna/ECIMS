@@ -46,6 +46,8 @@
     .pay-breakdown-row.total { border-top: 2px solid #e2e8f0; border-bottom: none; margin-top: .5rem; padding-top: .75rem; }
     .pay-breakdown-row.total .fee-label { color: #0d3651; font-size: .9375rem; }
     .pay-breakdown-row.total .fee-amount { color: #0d3651; font-size: 1rem; }
+    .fin-pay-year-total td { background: #f8fafc; font-weight: 700; color: #0d3651; border-top: 2px solid #e2e8f0; }
+    .fin-pay-year-group-total { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: .5rem; padding: .6rem .9rem; margin: .35rem 0 1rem; display: flex; justify-content: space-between; font-weight: 700; color: #0d3651; }
 </style>
 @endpush
 
@@ -167,30 +169,45 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($payments as $p)
-                <tr>
-                    <td>
-                        <span class="d-block fw-semibold">{{ $p->paid_at->format('d/m/Y') }}</span>
-                        <span class="small text-muted">{{ $p->paid_at->format('H:i') }}</span>
-                    </td>
-                    <td>
-                        @if($p->academic_year)
-                        <span class="badge bg-light text-dark border">{{ \App\Support\AcademicSession::label((int) $p->academic_year) }}</span>
-                        @else
-                        <span class="text-muted">—</span>
-                        @endif
-                        @if($p->semesterLabel())
-                        <span class="badge bg-light text-dark border d-block mt-1">{{ $p->semesterLabel() }}</span>
-                        @endif
-                    </td>
-                    <td><code class="small">{{ $p->reference ?? $p->id }}</code></td>
-                    <td class="fin-money fin-money--lg">{{ number_format($p->amount) }}</td>
-                    <td><span class="badge bg-secondary">{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</span></td>
-                    <td class="text-end text-nowrap">
-                        @include('partials.action-view', ['href' => route('payments.show', $p)])
-                        <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
-                    </td>
-                </tr>
+                @php
+                    $paymentGroups = collect($payments->items())
+                        ->groupBy('academic_year')
+                        ->sortKeysDesc();
+                @endphp
+                @forelse($paymentGroups as $year => $group)
+                    @php $sortedGroup = $group->sortBy(fn ($gp) => $gp->covers_semester_two_only ? 1 : 0); @endphp
+                    @foreach($sortedGroup as $p)
+                    <tr>
+                        <td>
+                            <span class="d-block fw-semibold">{{ $p->paid_at->format('d/m/Y') }}</span>
+                            <span class="small text-muted">{{ $p->paid_at->format('H:i') }}</span>
+                        </td>
+                        <td>
+                            @if($p->academic_year)
+                            <span class="badge bg-light text-dark border">{{ \App\Support\AcademicSession::label((int) $p->academic_year) }}</span>
+                            @else
+                            <span class="text-muted">—</span>
+                            @endif
+                            @if($p->semesterLabel())
+                            <span class="badge bg-light text-dark border d-block mt-1">{{ $p->semesterLabel() }}</span>
+                            @endif
+                        </td>
+                        <td><code class="small">{{ $p->reference ?? $p->id }}</code></td>
+                        <td class="fin-money fin-money--lg">{{ number_format($p->amount) }}</td>
+                        <td><span class="badge bg-secondary">{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</span></td>
+                        <td class="text-end text-nowrap">
+                            @include('partials.action-view', ['href' => route('payments.show', $p)])
+                            <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                    @if($sortedGroup->count() > 1)
+                    <tr class="fin-pay-year-total">
+                        <td colspan="3" class="text-end">Grand total &mdash; {{ \App\Support\AcademicSession::label((int) $year) }}</td>
+                        <td class="fin-money fin-money--lg">{{ number_format($sortedGroup->sum('amount')) }}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    @endif
                 @empty
                 <tr>
                     <td colspan="6" class="text-center text-muted py-5">No payments recorded yet.</td>
@@ -200,25 +217,34 @@
         </table>
     </div>
     <div class="card-body fin-pay-cards-only">
-        @forelse($payments as $p)
-        <article class="fin-pay-card">
-            <div class="fin-pay-card-head">
-                <div>
-                    <div class="fw-semibold">{{ $p->paid_at->format('d/m/Y H:i') }}</div>
-                    <div class="small text-muted">{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</div>
+        @forelse($paymentGroups as $year => $group)
+            @php $sortedGroupCards = $group->sortBy(fn ($gp) => $gp->covers_semester_two_only ? 1 : 0); @endphp
+            @foreach($sortedGroupCards as $p)
+            <article class="fin-pay-card">
+                <div class="fin-pay-card-head">
+                    <div>
+                        <div class="fw-semibold">{{ $p->paid_at->format('d/m/Y H:i') }}</div>
+                        <div class="small text-muted">{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</div>
+                    </div>
+                    <div class="fin-pay-card-amount">{{ number_format($p->amount) }} TZS</div>
                 </div>
-                <div class="fin-pay-card-amount">{{ number_format($p->amount) }} TZS</div>
+                <dl class="fin-pay-card-dl">
+                    <dt>Session</dt><dd>{{ $p->academic_year ? \App\Support\AcademicSession::label((int) $p->academic_year) : '—' }}</dd>
+                    <dt>Semester</dt><dd>{{ $p->semesterLabel() ?? '—' }}</dd>
+                    <dt>Reference</dt><dd><code class="small">{{ $p->reference ?? $p->id }}</code></dd>
+                </dl>
+                <div class="d-flex gap-2 mt-2">
+                    @include('partials.action-view', ['href' => route('payments.show', $p)])
+                    <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
+                </div>
+            </article>
+            @endforeach
+            @if($sortedGroupCards->count() > 1)
+            <div class="fin-pay-year-group-total">
+                <span>Grand total &mdash; {{ \App\Support\AcademicSession::label((int) $year) }}</span>
+                <span>{{ number_format($sortedGroupCards->sum('amount')) }} TZS</span>
             </div>
-            <dl class="fin-pay-card-dl">
-                <dt>Session</dt><dd>{{ $p->academic_year ? \App\Support\AcademicSession::label((int) $p->academic_year) : '—' }}</dd>
-                <dt>Semester</dt><dd>{{ $p->semesterLabel() ?? '—' }}</dd>
-                <dt>Reference</dt><dd><code class="small">{{ $p->reference ?? $p->id }}</code></dd>
-            </dl>
-            <div class="d-flex gap-2 mt-2">
-                @include('partials.action-view', ['href' => route('payments.show', $p)])
-                <a href="{{ route('payments.receipt', $p) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
-            </div>
-        </article>
+            @endif
         @empty
         <p class="text-center text-muted py-4 mb-0">No payments recorded yet.</p>
         @endforelse
