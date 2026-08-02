@@ -81,10 +81,10 @@
                 <div class="value">{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</div>
             </div>
             @endif
-            @if($payment->semesterLabel())
+            @if($session['label'] ?? $payment->semesterLabel())
             <div class="pay-detail-item">
                 <div class="label">Semester</div>
-                <div class="value">{{ $payment->semesterLabel() }}</div>
+                <div class="value">{{ $session['label'] ?? $payment->semesterLabel() }}</div>
             </div>
             @endif
             <div class="pay-detail-item">
@@ -106,23 +106,38 @@
         </div>
 
         @php
-            $feeLabels = ['tuition' => 'Tuition', 'nhif' => 'NHIF', 'nactvet_qa' => 'NACTVET QA'];
-            $feeIcons = ['tuition' => 'bi-mortarboard', 'nhif' => 'bi-heart-pulse', 'nactvet_qa' => 'bi-patch-check'];
-            $breakdown = collect($payment->allocation ?? [])
-                ->filter(fn ($v, $k) => $k !== 'refs' && is_numeric($v) && (float) $v > 0);
+            $feeLabels = ['sem1_tuition' => 'Tuition Fee', 'sem1_nhif' => 'NHIF', 'sem1_nactvet_qa' => 'NACTVET QA', 'sem2_tuition' => 'Tuition Fee'];
+            $feeIcons = ['sem1_tuition' => 'bi-mortarboard', 'sem1_nhif' => 'bi-heart-pulse', 'sem1_nactvet_qa' => 'bi-patch-check', 'sem2_tuition' => 'bi-mortarboard'];
+            $semGroups = ['semOne' => ['Semester I', ['sem1_tuition', 'sem1_nhif', 'sem1_nactvet_qa']], 'semTwo' => ['Semester II', ['sem2_tuition']]];
+            $hasSessionBreakdown = isset($session) && (($session['semOne'] ?? collect())->isNotEmpty() || ($session['semTwo'] ?? collect())->isNotEmpty());
         @endphp
-        @if($breakdown->isNotEmpty())
-        <div class="label mb-2">Fee breakdown</div>
+        @if($hasSessionBreakdown)
+        <div class="label mb-2">Fee breakdown{{ ($session['semOne']->isNotEmpty() && $session['semTwo']->isNotEmpty()) ? ' — full session' : '' }}</div>
         <div class="pay-breakdown mb-2">
-            @foreach($breakdown as $key => $value)
-            <div class="pay-breakdown-row">
-                <span class="fee-label"><i class="bi {{ $feeIcons[$key] ?? 'bi-cash-coin' }}"></i>{{ $feeLabels[$key] ?? \Illuminate\Support\Str::headline($key) }}</span>
-                <span class="fee-amount">{{ number_format((float) $value) }} TZS</span>
-            </div>
+            @foreach($semGroups as $semKey => $semMeta)
+                @php [$semTitle, $rowKeys] = $semMeta; $semPayments = $session[$semKey]; @endphp
+                @if($semPayments->isNotEmpty())
+                <div class="pay-breakdown-row" style="background:#f8fafc;">
+                    <span class="fee-label" style="color:#0d3651;">{{ $semTitle }}</span>
+                    <span class="small text-muted">
+                        @foreach($semPayments as $sp)
+                            {{ $sp->paid_at->format('d/m/Y') }}@if(!$loop->last), @endif
+                        @endforeach
+                    </span>
+                </div>
+                @foreach($rowKeys as $key)
+                    @if(($session['breakdown'][$key] ?? 0) > 0)
+                    <div class="pay-breakdown-row">
+                        <span class="fee-label"><i class="bi {{ $feeIcons[$key] }}"></i>{{ $feeLabels[$key] }}</span>
+                        <span class="fee-amount">{{ number_format($session['breakdown'][$key]) }} TZS</span>
+                    </div>
+                    @endif
+                @endforeach
+                @endif
             @endforeach
             <div class="pay-breakdown-row total">
-                <span class="fee-label">Total</span>
-                <span class="fee-amount">{{ number_format($breakdown->sum()) }} TZS</span>
+                <span class="fee-label">Grand total</span>
+                <span class="fee-amount">{{ number_format($session['total']) }} TZS</span>
             </div>
         </div>
         @endif

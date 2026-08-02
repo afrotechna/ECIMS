@@ -58,7 +58,13 @@ class PaymentController extends Controller
             abort(404, 'This payment record is orphaned (student no longer exists).');
         }
 
-        return view('payments.show', compact('payment'));
+        $sessionPayments = Payment::where('student_id', $payment->student_id)
+            ->where('academic_year', $payment->academic_year)
+            ->orderBy('paid_at')
+            ->get();
+        $session = $this->buildSessionBreakdown((int) $payment->academic_year, $sessionPayments);
+
+        return view('payments.show', compact('payment', 'session'));
     }
 
     public function receipt(Payment $payment)
