@@ -48,7 +48,6 @@
         </button>
     </div>
     <div class="card-body p-0">
-        <div class="table-responsive">
         <table class="table table-sm table-hover align-middle mb-0 student-card-status-table">
             <thead class="table-light">
                 <tr>
@@ -95,18 +94,25 @@
                 @endforelse
             </tbody>
         </table>
-        </div>
     </div>
 </div>
 @if($students->hasPages())<div class="mt-3">{{ $students->links() }}</div>@endif
 
 <style>
+.student-card-status-table {
+    font-size: .82rem;
+}
 .student-card-status-table th,
 .student-card-status-table td {
     white-space: nowrap;
+    padding: .4rem .5rem;
 }
 .student-card-status-table td form {
     flex-wrap: nowrap;
+}
+.student-card-status-table select.form-select-sm {
+    font-size: .78rem;
+    padding: .2rem 1.5rem .2rem .5rem;
 }
 </style>
 
