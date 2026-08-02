@@ -122,6 +122,7 @@ class RecordPaymentService
             'received_by' => $receivedByUserId,
             'allocation' => $allocation,
             'notes' => $validated['notes'] ?? null,
+            'tuition_category' => $category,
         ]);
 
         $methodLabel = Payment::methods()[$validated['payment_method']] ?? $validated['payment_method'];

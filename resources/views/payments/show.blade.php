@@ -81,6 +81,12 @@
                 <div class="value">{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</div>
             </div>
             @endif
+            @if($payment->semesterLabel())
+            <div class="pay-detail-item">
+                <div class="label">Semester</div>
+                <div class="value">{{ $payment->semesterLabel() }}</div>
+            </div>
+            @endif
             <div class="pay-detail-item">
                 <div class="label">Method</div>
                 <div class="value">{{ \App\Models\Payment::methods()[$payment->payment_method] ?? $payment->payment_method }}</div>

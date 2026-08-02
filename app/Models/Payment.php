@@ -18,6 +18,7 @@ class Payment extends Model
         'receipt_path',
         'allocation',
         'notes',
+        'tuition_category',
     ];
 
     protected $casts = [
@@ -65,5 +66,18 @@ class Payment extends Model
         $ref = trim((string) ($a['refs'][$component] ?? ''));
 
         return $ref !== '' ? $ref : null;
+    }
+
+    /**
+     * Which semester(s) this payment's tuition covers, from the category chosen at
+     * payment time — "new_student" is Semester I only, everything else covers both.
+     */
+    public function semesterLabel(): ?string
+    {
+        return match ($this->tuition_category) {
+            'new_student' => 'Semester I',
+            'continue', 'repeat', 'transfer' => 'Semester I & II',
+            default => null,
+        };
     }
 }

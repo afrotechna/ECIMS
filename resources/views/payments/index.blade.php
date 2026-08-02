@@ -122,6 +122,9 @@
                         @else
                         <span class="text-muted">—</span>
                         @endif
+                        @if($p->semesterLabel())
+                        <span class="badge bg-light text-dark border d-block mt-1">{{ $p->semesterLabel() }}</span>
+                        @endif
                     </td>
                     <td><code class="small">{{ $p->reference ?? $p->id }}</code></td>
                     <td class="fin-money fin-money--lg">{{ number_format($p->amount) }}</td>
@@ -151,6 +154,7 @@
             </div>
             <dl class="fin-pay-card-dl">
                 <dt>Session</dt><dd>{{ $p->academic_year ? \App\Support\AcademicSession::label((int) $p->academic_year) : '—' }}</dd>
+                <dt>Semester</dt><dd>{{ $p->semesterLabel() ?? '—' }}</dd>
                 <dt>Reference</dt><dd><code class="small">{{ $p->reference ?? $p->id }}</code></dd>
             </dl>
             <div class="d-flex gap-2 mt-2">
@@ -239,6 +243,9 @@
                         @else
                         <span class="text-muted">—</span>
                         @endif
+                        @if($p->semesterLabel())
+                        <span class="badge bg-light text-dark border d-block mt-1">{{ $p->semesterLabel() }}</span>
+                        @endif
                     </td>
                     <td>
                         <span class="d-block fw-semibold">{{ $p->student?->full_name ?? '—' }}</span>
@@ -273,6 +280,7 @@
             <dl class="fin-pay-card-dl">
                 <dt>Reg no.</dt><dd>{{ $p->student?->reg_no ?? '—' }}</dd>
                 <dt>Session</dt><dd>{{ $p->academic_year ? \App\Support\AcademicSession::label((int) $p->academic_year) : '—' }}</dd>
+                <dt>Semester</dt><dd>{{ $p->semesterLabel() ?? '—' }}</dd>
                 <dt>Method</dt><dd>{{ \App\Models\Payment::methods()[$p->payment_method] ?? $p->payment_method }}</dd>
                 <dt>Reference</dt><dd><code class="small">{{ $p->reference ?? $p->id }}</code></dd>
             </dl>
