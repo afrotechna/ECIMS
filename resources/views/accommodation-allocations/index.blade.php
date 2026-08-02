@@ -38,9 +38,17 @@
     <div class="card-header-landing"><i class="bi bi-list-ul me-2"></i>Allocations</div>
     <div class="card-body p-0">
         <div class="table-responsive">
+            @php
+                $showAllocationActions = auth()->user()->canModule('accommodation', 'update') || auth()->user()->canModule('accommodation', 'create');
+            @endphp
             <table class="table table-hover align-middle mb-0">
                 <thead>
-                    <tr><th>Student</th><th>Reg No</th><th>Room</th><th>Hostel</th><th>From</th><th>To</th><th>Status</th><th class="text-end">Actions</th></tr>
+                    <tr>
+                        <th>Student</th><th>Reg No</th><th>Room</th><th>Hostel</th><th>From</th><th>To</th><th>Status</th>
+                        @if($showAllocationActions)
+                        <th class="text-end">Actions</th>
+                        @endif
+                    </tr>
                 </thead>
                 <tbody>
                     @forelse($allocations as $a)
@@ -52,18 +60,24 @@
                         <td>{{ $a->from_date->format('d/m/Y') }}</td>
                         <td>{{ $a->to_date ? $a->to_date->format('d/m/Y') : '-' }}</td>
                         <td>@if($a->status === 'active')<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Ended</span>@endif</td>
+                        @if($showAllocationActions)
                         <td class="text-end">
+                            @canModule('accommodation', 'update')
                             @include('partials.action-edit', ['href' => route('accommodation-allocations.edit', $a), 'class' => 'me-1', 'iconOnly' => true])
+                            @endcanModule
+                            @canModule('accommodation', 'create')
                             @if($a->status === 'active')
                             <form action="{{ route('accommodation-allocations.end', $a) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="button" class="btn btn-sm btn-outline-warning" data-swal-confirm data-swal-title="End this allocation?" data-swal-text="Sets the end date to today.">End</button>
                             </form>
                             @endif
+                            @endcanModule
                         </td>
+                        @endif
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="text-center text-muted py-5">No allocations yet. <a href="{{ route('accommodation-allocations.create') }}">Create one</a>.</td></tr>
+                    <tr><td colspan="{{ $showAllocationActions ? 8 : 7 }}" class="text-center text-muted py-5">No allocations yet. <a href="{{ route('accommodation-allocations.create') }}">Create one</a>.</td></tr>
                     @endforelse
                 </tbody>
             </table>

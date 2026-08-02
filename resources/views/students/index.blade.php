@@ -227,7 +227,9 @@
                                 @if(auth()->user()->canAccessFinance())
                                 <a href="{{ route('students.ledger', $s) }}" class="btn btn-outline-info" title="Fee ledger"><i class="bi bi-wallet2"></i></a>
                                 @endif
+                                @canModule('students', 'update')
                                 @include('partials.action-edit', ['href' => route('students.edit', $s), 'iconOnly' => true])
+                                @endcanModule
                             </div>
                         </td>
                     </tr>

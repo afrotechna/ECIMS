@@ -2,7 +2,10 @@
 @section('title', 'Semester Registrations')
 @section('content')
 @php
-    $pendingOnPage = $registrations->getCollection()->filter(fn ($r) => $r->student && $r->status === 'pending' && $r->wizard_step === null);
+    $canManageRegistrations = auth()->user()->canModule('registrations', 'update');
+    $pendingOnPage = $canManageRegistrations
+        ? $registrations->getCollection()->filter(fn ($r) => $r->student && $r->status === 'pending' && $r->wizard_step === null)
+        : collect();
 @endphp
 
 <nav class="student-breadcrumb">
@@ -61,7 +64,7 @@
     </div>
 </div>
 
-@if($pendingOnPage->isNotEmpty())
+@if($canManageRegistrations && $pendingOnPage->isNotEmpty())
 <div class="card card-landing mb-3">
     <div class="card-body py-3">
         <form id="bulkApproveForm" method="POST" action="{{ route('semester-registrations.bulk-approve') }}" class="d-inline">
@@ -107,12 +110,19 @@
         <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead>
-                <tr><th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th><th>Student</th><th>Reg No</th><th>Semester</th><th>Status</th><th>Registered</th><th class="text-end">Actions</th></tr>
+                <tr>
+                    @if($canManageRegistrations)
+                    <th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th>
+                    @endif
+                    <th>Student</th><th>Reg No</th><th>Semester</th><th>Status</th><th>Registered</th><th class="text-end">Actions</th>
+                </tr>
             </thead>
             <tbody>
                 @forelse($registrations as $r)
                 <tr>
+                    @if($canManageRegistrations)
                     <td>@if($r->status === 'pending' && $r->wizard_step === null)<input type="checkbox" class="form-check-input pending-cb" name="ids[]" value="{{ $r->id }}">@else<span class="text-muted">—</span>@endif</td>
+                    @endif
                     <td>{{ $r->student?->full_name ?? '—' }}</td>
                     <td><code>{{ $r->student?->reg_no ?? '—' }}</code></td>
                     <td>{{ $r->semester?->label ?? '—' }}</td>
@@ -126,14 +136,14 @@
                     <td class="text-end">
                         @if($r->wizard_step)
                             <a href="{{ route('registration-wizard.step', [$r, $r->wizard_step]) }}" class="btn btn-sm btn-primary">Continue steps</a>
-                        @elseif($r->status === 'pending')
+                        @elseif($r->status === 'pending' && $canManageRegistrations)
                             <form action="{{ route('semester-registrations.approve', $r) }}" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-sm btn-success me-1">Approve</button></form>
                             <form action="{{ route('semester-registrations.reject', $r) }}" method="POST" class="d-inline">@csrf<button type="submit" class="btn btn-sm btn-outline-danger">Reject</button></form>
                         @endif
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="7" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
+                <tr><td colspan="{{ $canManageRegistrations ? 7 : 6 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
                 @endforelse
             </tbody>
         </table>

@@ -33,7 +33,7 @@
                         <td class="small">{{ $req->created_at->format('d/m/Y H:i') }}</td>
                         <td><span class="badge bg-{{ $req->status === 'ready' ? 'success' : ($req->status === 'rejected' ? 'danger' : 'warning text-dark') }}">{{ \App\Models\TranscriptRequest::STATUSES[$req->status] ?? $req->status }}</span></td>
                         <td class="text-end">
-                            @if($req->status === 'pending')
+                            @if($req->status === 'pending' && auth()->user()->canModule('transcript_requests', 'update'))
                             <form action="{{ route('transcript-requests.update', $req) }}" method="POST" class="d-inline-flex gap-1 align-items-start flex-wrap justify-content-end">
                                 @csrf
                                 @method('PATCH')
@@ -47,6 +47,8 @@
                                 <input type="hidden" name="status" value="rejected">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
                             </form>
+                            @elseif($req->status === 'pending')
+                            <span class="small text-muted">Pending</span>
                             @else
                             <span class="small text-muted">{{ $req->processor?->name ?? '—' }} {{ $req->processed_at?->format('d/m/Y') }}</span>
                             @endif

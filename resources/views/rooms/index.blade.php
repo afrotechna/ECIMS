@@ -58,11 +58,17 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
+        @php
+            $showRoomActions = auth()->user()->canModule('accommodation_facilities', 'update') || auth()->user()->canModule('accommodation_facilities', 'delete');
+        @endphp
         <table class="table table-hover align-middle mb-0" id="roomsTable">
             <thead>
                 <tr>
                     @include('partials.bulk-delete.th', $bulkDelete)
-                    <th>Block</th><th>Room code</th><th>Berths</th><th>Status</th><th class="text-end">Actions</th>
+                    <th>Block</th><th>Room code</th><th>Berths</th><th>Status</th>
+                    @if($showRoomActions)
+                    <th class="text-end">Actions</th>
+                    @endif
                 </tr>
             </thead>
             @forelse($roomGroups as $group)
@@ -94,6 +100,7 @@
                     <td><strong class="font-monospace small">{{ $r->name }}</strong></td>
                     <td>{{ $r->bed_count }}</td>
                     <td>@if($r->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
+                    @if($showRoomActions)
                     <td class="text-end text-nowrap">
                         @canModule('accommodation_facilities', 'update')
                         @include('partials.action-edit', ['href' => route('rooms.edit', $r), 'iconOnly' => true])
@@ -106,12 +113,13 @@
                         </form>
                         @endcanModule
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>
             @empty
             <tbody>
-                <tr><td colspan="6" class="text-center text-muted py-5">No rooms yet. Add one or create a hostel first.</td></tr>
+                <tr><td colspan="{{ $showRoomActions ? 6 : 5 }}" class="text-center text-muted py-5">No rooms yet. Add one or create a hostel first.</td></tr>
             </tbody>
             @endforelse
         </table>

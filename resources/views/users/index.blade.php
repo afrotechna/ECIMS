@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Users')
 @section('content')
+@php
+    $isAdmin = auth()->user()->isAdmin();
+@endphp
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Dashboard</a>
     <span class="mx-2">/</span>
@@ -119,7 +122,9 @@
                         <th>Name</th>
                         <th>NACTVET</th>
                         <th>Class</th>
+                        @if($isAdmin)
                         <th class="text-end">Action</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -128,6 +133,7 @@
                         <td class="fw-medium">{{ $s->full_name }}</td>
                         <td><code class="small">{{ $s->nactvet_reg_no }}</code></td>
                         <td class="small text-muted">{{ $s->class_group ?: '—' }}</td>
+                        @if($isAdmin)
                         <td class="text-end">
                             <form action="{{ route('users.create-student-login', $s) }}" method="POST" class="d-inline">
                                 @csrf
@@ -140,6 +146,7 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-swal-confirm data-swal-title="Create login for {{ $s->full_name }}?" data-swal-text="Password will be surname (lowercase)."><i class="bi bi-key me-1"></i> Create login</button>
                             </form>
                         </td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>
@@ -163,7 +170,7 @@
         @endif
     </div>
 
-    @if($type === 'student')
+    @if($type === 'student' && $isAdmin)
     <div class="users-actions-bar">
         <form action="{{ route('users.create-all-student-logins') }}" method="POST" class="d-inline">
             @csrf
@@ -189,7 +196,9 @@
                         <th scope="col">Login ID</th>
                         <th scope="col">Position</th>
                         <th scope="col">Email</th>
+                        @if($isAdmin)
                         <th scope="col" class="text-end pe-4">Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -211,14 +220,16 @@
                             <span class="staff-role-pill">{{ \App\Models\User::roleLabel($u->role) }}</span>
                         </td>
                         <td class="small text-secondary text-truncate" style="max-width: 12rem;">{{ $u->email ?: '—' }}</td>
+                        @if($isAdmin)
                         <td class="text-end text-nowrap pe-4">
                             <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-light border shadow-sm me-1" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock text-primary"></i></a>
                             <a href="{{ route('users.edit', $u) }}" class="btn btn-sm btn-light border shadow-sm" title="Edit staff account" aria-label="Edit"><i class="bi bi-pencil-square text-primary"></i></a>
                         </td>
+                        @endif
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5">
+                        <td colspan="{{ $isAdmin ? 5 : 4 }}" class="text-center py-5">
                             <div class="staff-empty-state mx-auto">
                                 <i class="bi bi-briefcase display-6 text-muted opacity-50"></i>
                                 <p class="mt-3 mb-0 fw-medium">No staff accounts yet</p>
@@ -237,7 +248,9 @@
                         <th scope="col">Name</th>
                         <th scope="col">Login</th>
                         <th scope="col">Email</th>
+                        @if($isAdmin)
                         <th scope="col" class="text-end">Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -246,6 +259,7 @@
                         <td class="fw-medium">{{ $u->name }}</td>
                         <td><code class="small">{{ $u->loginIdentifier() }}</code></td>
                         <td class="small text-muted">{{ $u->email }}</td>
+                        @if($isAdmin)
                         <td class="text-end text-nowrap">
                             <form action="{{ route('users.issue-temporary-password', $u) }}" method="POST" class="d-inline">
                                 @csrf
@@ -254,10 +268,11 @@
                             </form>
                             @include('partials.action-edit', ['href' => route('users.edit', $u), 'iconOnly' => true])
                         </td>
+                        @endif
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-5">
+                        <td colspan="{{ $isAdmin ? 4 : 3 }}" class="text-center text-muted py-5">
                             <p class="mb-2">No student portal accounts yet.</p>
                             <p class="small mb-2">If students are already on the register, use <strong>Create logins + CSV</strong> above or the list above this table.</p>
                             <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Add one student login</a>

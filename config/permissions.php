@@ -116,6 +116,13 @@ return [
         'results.approvals.index' => ['results', 'view'],
         'results.approvals.approve' => ['results', 'view'],
         'results.approvals.reject' => ['results', 'view'],
+        // Approving/rejecting a registration is a status update, not a new record — map to 'update' so
+        // roles granted registrations:update (e.g. HODs) can actually use it, instead of the generic
+        // POST-request default of 'create', which they don't have.
+        'semester-registrations.approve' => ['registrations', 'update'],
+        'semester-registrations.reject' => ['registrations', 'update'],
+        'semester-registrations.bulk-approve' => ['registrations', 'update'],
+        'semester-registrations.bulk-reject' => ['registrations', 'update'],
     ],
 
     'matrix' => [
