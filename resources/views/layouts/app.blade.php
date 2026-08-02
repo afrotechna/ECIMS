@@ -175,8 +175,8 @@
                     || auth()->user()->canModule('student_attendance', 'view');
             @endphp
             @if($showAcademicMenu)
-            <div class="nav-group {{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'question-bank.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*') ?'expanded' : '' }}" id="navGroupAcademics">
-                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'question-bank.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*') ?'true' : 'false' }}" aria-controls="navGroupAcademicsSub">
+            <div class="nav-group {{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'question-bank.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*', 'reports.class-list', 'reports.academic-standing', 'reports.nactvet*') ?'expanded' : '' }}" id="navGroupAcademics">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'question-bank.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*', 'reports.class-list', 'reports.academic-standing', 'reports.nactvet*') ?'true' : 'false' }}" aria-controls="navGroupAcademicsSub">
                     <i class="bi bi-mortarboard-fill"></i><span>{{ __('ui.nav.academics') }}</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupAcademicsSub">
@@ -226,6 +226,10 @@
                     <li class="nav-group-sub-label">Attendance</li>
                     <li><a href="{{ route('student-attendance.index') }}" class="{{ request()->routeIs('student-attendance.*') ? 'active' : '' }}"><i class="bi bi-fingerprint"></i>Student attendance</a></li>
                     @endcanModule
+                    <li class="nav-group-sub-label">Reports</li>
+                    <li><a href="{{ route('reports.class-list') }}" class="{{ request()->routeIs('reports.class-list') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Class list</a></li>
+                    <li><a href="{{ route('reports.academic-standing') }}" class="{{ request()->routeIs('reports.academic-standing') ? 'active' : '' }}"><i class="bi bi-award"></i>Academic standing</a></li>
+                    <li><a href="{{ route('reports.nactvet-hub') }}" class="{{ request()->routeIs('reports.nactvet*') ? 'active' : '' }}"><i class="bi bi-building"></i>NACTVET reporting pack</a></li>
                 </ul>
             </div>
             @endif
@@ -235,8 +239,8 @@
                     || auth()->user()->canModule('finance_reports', 'view');
             @endphp
             @if($showFinanceMenu)
-            <div class="nav-group {{ request()->routeIs('fee-structures.*', 'payments.*', 'payment-instalments.*', 'reports.*') ? 'expanded' : '' }}" id="navGroupFinance">
-                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('fee-structures.*', 'payments.*', 'reports.*') ? 'true' : 'false' }}" aria-controls="navGroupFinanceSub">
+            <div class="nav-group {{ request()->routeIs('fee-structures.*', 'payments.*', 'payment-instalments.*', 'reports.index', 'reports.income', 'reports.arrears', 'reports.payment-by-programme', 'reports.fee-collection-summary', 'reports.enrollment') ? 'expanded' : '' }}" id="navGroupFinance">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('fee-structures.*', 'payments.*', 'payment-instalments.*', 'reports.index', 'reports.income', 'reports.arrears', 'reports.payment-by-programme', 'reports.fee-collection-summary', 'reports.enrollment') ? 'true' : 'false' }}" aria-controls="navGroupFinanceSub">
                     <i class="bi bi-currency-exchange"></i><span>{{ __('ui.nav.finance') }}</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupFinanceSub">
@@ -253,13 +257,12 @@
                     <li class="nav-group-sub-label">Reports</li>
                     <li><a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.index') ? 'active' : '' }}"><i class="bi bi-graph-up"></i>Financial reports</a></li>
                     <li><a href="{{ route('reports.payment-by-programme') }}" class="{{ request()->routeIs('reports.payment-by-programme') ? 'active' : '' }}"><i class="bi bi-pie-chart"></i>Payments by programme</a></li>
-                    <li><a href="{{ route('reports.nactvet-hub') }}" class="{{ request()->routeIs('reports.nactvet*') ? 'active' : '' }}"><i class="bi bi-building"></i>NACTVET pack</a></li>
                     @endcanModule
                 </ul>
             </div>
             @endif
-            <div class="nav-group {{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'transcript-requests.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*') ? 'expanded' : '' }}" id="navGroupCollegeOffice">
-                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*') ? 'true' : 'false' }}" aria-controls="navGroupCollegeOfficeSub">
+            <div class="nav-group {{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'transcript-requests.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*', 'reports.admission-control-sheet*', 'reports.students-on-leave', 'reports.graduation-clearance') ? 'expanded' : '' }}" id="navGroupCollegeOffice">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*', 'reports.admission-control-sheet*', 'reports.students-on-leave', 'reports.graduation-clearance') ? 'true' : 'false' }}" aria-controls="navGroupCollegeOfficeSub">
                     <i class="bi bi-briefcase"></i><span>Registrar's office</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupCollegeOfficeSub">
@@ -293,6 +296,10 @@
                     <li><a href="{{ route('institution-documents.index') }}" class="{{ request()->routeIs('institution-documents.*') ? 'active' : '' }}"><i class="bi bi-folder2-open"></i>Institution documents</a></li>
                     <li class="nav-group-sub-label">Planning</li>
                     <li><a href="{{ route('calendar.index') }}" class="{{ request()->routeIs('calendar.*') ? 'active' : '' }}"><i class="bi bi-calendar3"></i>College calendar</a></li>
+                    <li class="nav-group-sub-label">Reports</li>
+                    <li><a href="{{ route('reports.admission-control-sheet') }}" class="{{ request()->routeIs('reports.admission-control-sheet*') ? 'active' : '' }}"><i class="bi bi-clipboard2-data"></i>Admission control sheet</a></li>
+                    <li><a href="{{ route('reports.students-on-leave') }}" class="{{ request()->routeIs('reports.students-on-leave') ? 'active' : '' }}"><i class="bi bi-calendar-x"></i>Students on leave</a></li>
+                    <li><a href="{{ route('reports.graduation-clearance') }}" class="{{ request()->routeIs('reports.graduation-clearance') ? 'active' : '' }}"><i class="bi bi-clipboard-check"></i>Graduation clearance report</a></li>
                 </ul>
             </div>
             @canModule('accommodation', 'view')
