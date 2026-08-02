@@ -11,6 +11,12 @@ return [
     /** Minimum % of ca_max_mark required to PASS CA and sit the end-of-semester exam for that module. */
     'ca_pass_percent' => (float) env('COLLEGE_CA_PASS_PERCENT', 40),
 
+    /** CA theory-component average must be strictly greater than this to count toward CA (used to explain a CA(40%) = 0.0 fail). */
+    'ca_theory_pass_mark' => (float) env('COLLEGE_CA_THEORY_PASS_MARK', 10.1),
+
+    /** CA practical-component average must be strictly greater than this to count toward CA (used to explain a CA(40%) = 0.0 fail). */
+    'ca_practical_pass_mark' => (float) env('COLLEGE_CA_PRACTICAL_PASS_MARK', 50),
+
     /** End-of-semester exam (AVES) is marked out of this maximum (e.g. 60 for the "60%" component). */
     'exam_max_mark' => (float) env('COLLEGE_EXAM_MAX_MARK', 60),
 

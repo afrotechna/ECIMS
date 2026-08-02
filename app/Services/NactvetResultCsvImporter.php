@@ -158,9 +158,23 @@ class NactvetResultCsvImporter
         }
 
         if ($this->mode === 'ca') {
+            if (isset($marks['theory']) && $marks['theory'] !== '') {
+                $result->ca_theory = round((float) str_replace(',', '.', $marks['theory']), 2);
+            }
+            if (isset($marks['practical']) && $marks['practical'] !== '') {
+                $result->ca_practical = round((float) str_replace(',', '.', $marks['practical']), 2);
+            }
             if (isset($marks['ca']) && $marks['ca'] !== '') {
                 $result->ca_mark = round((float) str_replace(',', '.', $marks['ca']), 2);
-                $result->ca_eligibility = Result::caRemarkFromMark($result->ca_mark);
+
+                // Theory column present on THIS row (current template): gate on the theory/
+                // practical thresholds, since a no-practical module's CA(40%) is theory alone
+                // and can't be judged by the generic percent-of-ca_max_mark check. Whether a
+                // theory value happens to already be stored from an earlier import doesn't
+                // count — only what this row's file actually supplied.
+                $result->ca_eligibility = (isset($marks['theory']) && $marks['theory'] !== '')
+                    ? $result->caEligibilityFromComponents()
+                    : Result::caRemarkFromMark($result->ca_mark);
             }
         } else {
             if (isset($marks['ca']) && $marks['ca'] !== '') {
@@ -408,6 +422,8 @@ class NactvetResultCsvImporter
             'course_code', 'code', 'module_code', 'subject_code' => 'course_code',
             'course_name', 'module_name', 'subject' => 'course_name',
             'ca', 'ca_marks', 'ca_mark', 'continuous', 'continuous_assessment', 'avca', 'avca_40' => 'ca',
+            'th_comp', 'theory', 'theory_comp', 'theory_average', 'ca_theory' => 'theory',
+            'ospe', 'osce', 'practical', 'clinical', 'ca_practical' => 'practical',
             'se', 'se_marks', 'exam', 'semester_exam', 'semester_examination', 'final_exam', 'aves', 'aves_60' => 'se',
             'fscore', 'final_score', 'final', 'total', 'final_mark' => 'fscore',
             'grade', 'letter_grade' => 'grade',
@@ -455,6 +471,12 @@ class NactvetResultCsvImporter
         $marks = [];
         if (isset($assoc['ca'])) {
             $marks['ca'] = $assoc['ca'];
+        }
+        if (isset($assoc['theory'])) {
+            $marks['theory'] = $assoc['theory'];
+        }
+        if (isset($assoc['practical'])) {
+            $marks['practical'] = $assoc['practical'];
         }
         if (isset($assoc['se'])) {
             $marks['se'] = $assoc['se'];

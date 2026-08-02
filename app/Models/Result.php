@@ -13,6 +13,7 @@ class Result extends Model
         'course_id',
         'semester_id',
         'ca_mark',
+        'ca_theory',
         'ca_test1',
         'ca_test2',
         'ca_assignment1',
@@ -32,6 +33,7 @@ class Result extends Model
 
     protected $casts = [
         'ca_mark' => 'decimal:2',
+        'ca_theory' => 'decimal:2',
         'ca_test1' => 'decimal:2',
         'ca_test2' => 'decimal:2',
         'ca_assignment1' => 'decimal:2',
@@ -142,6 +144,34 @@ class Result extends Model
         }
 
         return self::caRemarkFromMark($this->ca_mark);
+    }
+
+    /**
+     * PASS/FAIL from the theory/practical component thresholds rather than a generic
+     * percent-of-ca_max_mark check — needed because a no-practical module's CA(40%) is
+     * theory alone and would never clear the combined-scale percentage.
+     * A department-given CA(40%) of 0 (or less) is treated as an authoritative FAIL.
+     */
+    public function caEligibilityFromComponents(): string
+    {
+        if ($this->ca_mark !== null && $this->ca_mark !== '' && (float) $this->ca_mark <= 0) {
+            return 'FAIL';
+        }
+
+        $theoryPass = (float) config('college.ca_theory_pass_mark', 10.1);
+        if ($this->ca_theory === null || $this->ca_theory === '' || (float) $this->ca_theory <= $theoryPass) {
+            return 'FAIL';
+        }
+
+        $course = $this->course ?? $this->course()->first();
+        if ($course && $course->has_practical) {
+            $practicalPass = (float) config('college.ca_practical_pass_mark', 50);
+            if ($this->ca_practical === null || $this->ca_practical === '' || (float) $this->ca_practical <= $practicalPass) {
+                return 'FAIL';
+            }
+        }
+
+        return 'PASS';
     }
 
     public static function caRemarkFromMark(mixed $caMark): ?string
@@ -282,6 +312,40 @@ class Result extends Model
         }
 
         return (float) $this->ca_practical < (array_sum($others) / count($others));
+    }
+
+    /**
+     * Which CA sub-component(s) fell below their pass mark, explaining a CA(40%) = 0.0 fail.
+     *
+     * @return list<string>
+     */
+    public function caFailureComponents(): array
+    {
+        if (! $this->caFailedModule()) {
+            return [];
+        }
+
+        $course = $this->course ?? $this->course()->first();
+        $reasons = [];
+
+        $theoryPass = (float) config('college.ca_theory_pass_mark', 10.1);
+        if ($this->ca_theory !== null && $this->ca_theory !== '' && (float) $this->ca_theory <= $theoryPass) {
+            $reasons[] = 'Theory ('.number_format((float) $this->ca_theory, 1).', needs above '.number_format($theoryPass, 1).')';
+        }
+
+        if ($course && $course->has_practical) {
+            $practicalPass = (float) config('college.ca_practical_pass_mark', 50);
+            if ($this->ca_practical !== null && $this->ca_practical !== '' && (float) $this->ca_practical <= $practicalPass) {
+                $label = $this->practicalComponentLabel() ?: 'Practical';
+                $reasons[] = $label.' ('.number_format((float) $this->ca_practical, 1).', needs above '.number_format($practicalPass, 1).')';
+            }
+        }
+
+        if (! $reasons) {
+            $reasons[] = 'Continuous assessment (CA)';
+        }
+
+        return $reasons;
     }
 
     /**

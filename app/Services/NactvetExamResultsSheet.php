@@ -84,7 +84,11 @@ class NactvetExamResultsSheet
         foreach ($courses as $course) {
             $code = self::moduleColumnLabel($course->code);
             if ($mode === 'ca') {
-                $headers[] = $code;
+                $headers[] = $code.' TH COMP';
+                if (! empty($course->has_practical)) {
+                    $headers[] = $code.' '.self::practicalHeaderLabel($course);
+                }
+                $headers[] = $code.' AVCA (40%)';
             } else {
                 $headers[] = $code.' AVCA (40%)';
                 $headers[] = $code.' AVES (60%)';
@@ -94,6 +98,16 @@ class NactvetExamResultsSheet
         }
 
         return $headers;
+    }
+
+    /** Header label for a module's practical/skills column (OSPE, OSCE, PRACTICAL, or CLINICAL). */
+    public static function practicalHeaderLabel(\App\Models\Course $course): string
+    {
+        if (! empty($course->requires_clinical_rotation)) {
+            return 'CLINICAL';
+        }
+
+        return strtoupper($course->practicalColumnLabel()) ?: 'PRACTICAL';
     }
 
     /** Module column header e.g. CMT04101 (no spaces). */
@@ -133,6 +147,12 @@ class NactvetExamResultsSheet
         }
         if (preg_match('/^(.+?)\s+GRADE\b/i', $h, $m)) {
             return ['code' => trim($m[1]), 'field' => 'grade'];
+        }
+        if (preg_match('/^(.+?)\s+TH\s*COMP\b/i', $h, $m)) {
+            return ['code' => trim($m[1]), 'field' => 'theory'];
+        }
+        if (preg_match('/^(.+?)\s+(OSPE|OSCE|PRACTICAL|CLINICAL)\b/i', $h, $m)) {
+            return ['code' => trim($m[1]), 'field' => 'practical'];
         }
 
         if (self::looksLikeModuleCode($h)) {

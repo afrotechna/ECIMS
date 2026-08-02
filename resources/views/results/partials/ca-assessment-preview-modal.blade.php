@@ -1,17 +1,37 @@
 @php
     $course = $result->course;
     $modalId = 'ca-preview-'.($semesterId ?? 0).'-'.$result->id;
-    $components = [
+    $theoryPass = (float) config('college.ca_theory_pass_mark', 10.1);
+    $practicalPass = (float) config('college.ca_practical_pass_mark', 50);
+
+    $components = [];
+    if ($result->ca_theory !== null && $result->ca_theory !== '') {
+        $components['Theory average'] = [
+            'value' => $result->ca_theory,
+            'pass' => (float) $result->ca_theory > $theoryPass,
+            'threshold' => $theoryPass,
+        ];
+    }
+    if ($course && $course->has_practical && $result->ca_practical !== null && $result->ca_practical !== '') {
+        $label = $course->practicalColumnLabel() ?: 'Practical';
+        $components[$label.' average'] = [
+            'value' => $result->ca_practical,
+            'pass' => (float) $result->ca_practical > $practicalPass,
+            'threshold' => $practicalPass,
+        ];
+    }
+    foreach ([
         'Test 1' => $result->ca_test1,
         'Test 2' => $result->ca_test2,
         'Assignment 1' => $result->ca_assignment1,
         'Assignment 2' => $result->ca_assignment2,
-    ];
-    if ($course && $course->has_practical) {
-        $label = $course->practicalColumnLabel() ?: 'Practical';
-        $components[$label] = $result->ca_practical;
+    ] as $label => $value) {
+        if ($value !== null && $value !== '') {
+            $components[$label] = ['value' => $value, 'pass' => null, 'threshold' => null];
+        }
     }
-    $hasComponents = collect($components)->contains(fn ($v) => $v !== null && $v !== '');
+    $hasComponents = count($components) > 0;
+    $failureReasons = $result->caFailureComponents();
 @endphp
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -41,16 +61,26 @@
                 <p class="small text-muted mb-2">CA components</p>
                 <table class="table table-sm table-bordered mb-0">
                     <tbody>
-                        @foreach($components as $label => $value)
-                        @if($value !== null && $value !== '')
+                        @foreach($components as $label => $c)
                         <tr>
                             <td class="text-muted">{{ $label }}</td>
-                            <td class="text-end fw-medium">{{ number_format((float) $value, 1) }}</td>
+                            <td class="text-end fw-medium">
+                                {{ number_format((float) $c['value'], 1) }}
+                                @if($c['pass'] !== null)
+                                <span class="badge rounded-0 ms-1 {{ $c['pass'] ? 'text-bg-success' : 'text-bg-danger' }}">
+                                    {{ $c['pass'] ? 'Pass' : 'Below '.number_format($c['threshold'], 1) }}
+                                </span>
+                                @endif
+                            </td>
                         </tr>
-                        @endif
                         @endforeach
                     </tbody>
                 </table>
+                @endif
+                @if(! empty($failureReasons))
+                <div class="alert alert-danger small mt-3 mb-0">
+                    <strong>Failed:</strong> {{ implode(', ', $failureReasons) }} — not eligible for the end-of-semester exam in this module.
+                </div>
                 @endif
             </div>
             <div class="modal-footer">

@@ -135,9 +135,7 @@ class ResultImportCsvTemplate
 
             foreach ($courses as $courseIndex => $course) {
                 if ($mode === 'ca') {
-                    $row[] = $withDemoMarks
-                        ? (string) ResultImportDemoData::caMark($sn - 1, $courseIndex)
-                        : '';
+                    $this->appendCaCells($row, $course, $sn - 1, $courseIndex, $withDemoMarks);
                 } else {
                     if ($withDemoMarks) {
                         $marks = ResultImportDemoData::finalMarks($sn - 1, $courseIndex);
@@ -162,9 +160,7 @@ class ResultImportCsvTemplate
             $example = ['1', 'EXAMPLE CANDIDATE', 'M', 'NACTE000000', $mode === 'ca' ? '' : 'EXAM0001', 'ACTIVE', 'FIRST SITTING'];
             foreach ($courses as $courseIndex => $course) {
                 if ($mode === 'ca') {
-                    $example[] = $withDemoMarks
-                        ? (string) ResultImportDemoData::caMark(0, $courseIndex)
-                        : '';
+                    $this->appendCaCells($example, $course, 0, $courseIndex, $withDemoMarks);
                 } else {
                     if ($withDemoMarks) {
                         $marks = ResultImportDemoData::finalMarks(0, $courseIndex);
@@ -178,6 +174,33 @@ class ResultImportCsvTemplate
         }
 
         return $rows;
+    }
+
+    /**
+     * Append this module's CA cells (theory, [practical], CA(40%)) to a row in place.
+     *
+     * @param  list<string>  $row
+     */
+    private function appendCaCells(array &$row, \App\Models\Course $course, int $rowIndex, int $courseIndex, bool $withDemoMarks): void
+    {
+        $hasPractical = (bool) $course->has_practical;
+
+        if (! $withDemoMarks) {
+            $row[] = '';
+            if ($hasPractical) {
+                $row[] = '';
+            }
+            $row[] = '';
+
+            return;
+        }
+
+        $demo = ResultImportDemoData::caComponents($rowIndex, $courseIndex, $hasPractical);
+        $row[] = (string) $demo['theory'];
+        if ($hasPractical) {
+            $row[] = (string) $demo['practical'];
+        }
+        $row[] = (string) $demo['ca'];
     }
 
     private function qualificationLine(Programme $programme): string
