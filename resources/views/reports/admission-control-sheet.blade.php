@@ -71,8 +71,27 @@
 
 <div class="card card-landing">
     <div class="card-body p-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-3 py-2 border-bottom no-print">
+            <div class="d-flex align-items-center gap-2">
+                <label for="acsPageSize" class="form-label small mb-0">Show</label>
+                <select id="acsPageSize" class="form-select form-select-sm" style="width:auto">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                </select>
+                <span class="small text-muted">rows</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="small text-muted" id="acsRangeText"></span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="acsPrevBtn"><i class="bi bi-chevron-left"></i></button>
+                <span class="small text-muted" id="acsPageText"></span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="acsNextBtn"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
         <div class="table-responsive">
-            <table class="table table-bordered table-sm align-middle mb-0 admission-control-sheet-table">
+            <table class="table table-bordered table-sm align-middle mb-0 admission-control-sheet-table" id="acsTable">
                 <thead class="table-light">
                     <tr>
                         <th>S/N</th>
@@ -107,7 +126,7 @@
                 </thead>
                 <tbody>
                     @forelse($rows as $r)
-                    <tr>
+                    <tr class="acs-row">
                         <td>{{ $r['sn'] }}</td>
                         <td>{{ $r['name'] }}</td>
                         <td>{{ $r['gender'] }}</td>
@@ -179,9 +198,50 @@
     white-space: nowrap;
 }
 @media print {
-    .student-breadcrumb, .page-header-landing .btn, .card-landing.mb-3 form, .alert, .nav, .topbar, .profile-dropdown, footer { display: none !important; }
+    .student-breadcrumb, .page-header-landing .btn, .card-landing.mb-3 form, .alert, .nav, .topbar, .profile-dropdown, footer, .no-print { display: none !important; }
     .admission-control-sheet-table { font-size: 0.65rem; }
     .admission-control-sheet-table th, .admission-control-sheet-table td { padding: 2px 4px; }
+    .admission-control-sheet-table .acs-row { display: table-row !important; }
 }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var select = document.getElementById('acsPageSize');
+    var prevBtn = document.getElementById('acsPrevBtn');
+    var nextBtn = document.getElementById('acsNextBtn');
+    var rangeText = document.getElementById('acsRangeText');
+    var pageText = document.getElementById('acsPageText');
+    var rows = Array.from(document.querySelectorAll('#acsTable tbody tr.acs-row'));
+    var page = 0;
+
+    function pageSize() {
+        return select.value === 'all' ? rows.length : parseInt(select.value, 10);
+    }
+
+    function render() {
+        var size = pageSize() || rows.length;
+        var totalPages = Math.max(1, Math.ceil(rows.length / size));
+        page = Math.min(page, totalPages - 1);
+        var start = page * size;
+        var end = Math.min(start + size, rows.length);
+
+        rows.forEach(function (row, i) {
+            row.style.display = (i >= start && i < end) ? '' : 'none';
+        });
+
+        rangeText.textContent = rows.length === 0 ? '' : ('Showing ' + (start + 1) + '–' + end + ' of ' + rows.length);
+        pageText.textContent = 'Page ' + (page + 1) + ' of ' + totalPages;
+        prevBtn.disabled = page === 0;
+        nextBtn.disabled = page >= totalPages - 1;
+    }
+
+    select.addEventListener('change', function () { page = 0; render(); });
+    prevBtn.addEventListener('click', function () { if (page > 0) { page--; render(); } });
+    nextBtn.addEventListener('click', function () { page++; render(); });
+
+    if (rows.length > 0) {
+        render();
+    }
+});
+</script>
 @endsection
