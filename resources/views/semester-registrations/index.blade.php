@@ -18,14 +18,9 @@
     <div>
         <h1 class="page-title-landing"><i class="bi bi-calendar-check me-2 opacity-90"></i>Student registrations</h1>
     </div>
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-        @if($selectedSemester)
-        <span class="badge bg-secondary-subtle text-dark border fs-6 fw-normal py-2 px-3">{{ $selectedSemester->label }}</span>
-        @endif
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="{{ route('registration-wizard.start') }}" class="btn btn-primary btn-sm"><i class="bi bi-ui-checks-grid me-1"></i> Start registration (steps)</a>
-            <a href="{{ route('semester-registrations.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Quick submit only</a>
-        </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ route('registration-wizard.start') }}" class="btn btn-primary btn-sm"><i class="bi bi-ui-checks-grid me-1"></i> Start registration (steps)</a>
+        <a href="{{ route('semester-registrations.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Quick submit only</a>
     </div>
 </div>
 
@@ -110,7 +105,12 @@
 @endif
 
 <div class="card card-landing">
-    <div class="card-header-landing"><i class="bi bi-list-ul me-2"></i>Registrations</div>
+    <div class="card-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <span><i class="bi bi-list-ul me-2"></i>Registrations</span>
+        @if($selectedSemester)
+        <span class="badge bg-primary fs-6 fw-normal py-2 px-3">{{ $selectedSemester->label }}</span>
+        @endif
+    </div>
     <div class="card-body p-0">
         <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
