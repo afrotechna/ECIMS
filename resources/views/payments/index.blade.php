@@ -222,10 +222,40 @@
     </div>
 </div>
 
+<div class="card card-landing mb-3">
+    <div class="card-body py-3">
+        <form method="GET" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small mb-0">Academic year</label>
+                <select name="academic_year" class="form-select form-select-sm" data-no-search>
+                    <option value="" {{ $selectedAcademicYear === null ? 'selected' : '' }}>All</option>
+                    @foreach($academicYearOptions as $start => $label)
+                    <option value="{{ $start }}" {{ (string) $selectedAcademicYear === (string) $start ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small mb-0">Semester</label>
+                <select name="semester" class="form-select form-select-sm" data-no-search>
+                    <option value="both" {{ $selectedSemester === 'both' ? 'selected' : '' }}>Semester I &amp; II</option>
+                    <option value="one" {{ $selectedSemester === 'one' ? 'selected' : '' }}>Semester I</option>
+                    <option value="two" {{ $selectedSemester === 'two' ? 'selected' : '' }}>Semester II</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-funnel me-1"></i> Filter</button>
+                @if(request()->hasAny(['academic_year', 'semester']))
+                    <a href="{{ route('payments.index') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card card-landing">
     <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
         <span><i class="bi bi-list-ul me-2"></i>All payments</span>
-        <span class="badge bg-light text-dark">{{ $paymentGroups->total() }} student sessions</span>
+        <span class="badge bg-light text-dark">{{ $paymentGroups->total() }} payment records</span>
     </div>
     <div class="card-body p-0 fin-pay-table-only">
         <div class="table-responsive">
@@ -233,11 +263,8 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Session</th>
                     <th>Student</th>
-                    <th>Reference</th>
                     <th class="fin-money">Amount</th>
-                    <th>Method</th>
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
@@ -246,7 +273,6 @@
                     @php
                         $groupPayments = $grp['semOne']->merge($grp['semTwo'])->sortByDesc('paid_at')->values();
                         $latest = $groupPayments->first();
-                        $methods = $groupPayments->pluck('payment_method')->unique();
                     @endphp
                 <tr>
                     <td>
@@ -254,30 +280,17 @@
                         <span class="small text-muted">{{ $grp['lastActivity']->format('H:i') }}</span>
                     </td>
                     <td>
-                        <span class="badge bg-light text-dark border">{{ \App\Support\AcademicSession::label($grp['year']) }}</span>
-                        @if($grp['label'])
-                        <span class="badge bg-light text-dark border d-block mt-1">{{ $grp['label'] }}</span>
-                        @endif
-                    </td>
-                    <td>
                         <span class="d-block fw-semibold">{{ $grp['student']?->full_name ?? '—' }}</span>
                     </td>
-                    <td>
-                        <code class="small">{{ $latest->reference ?: $latest->id }}</code>
-                        @if($groupPayments->count() > 1)
-                        <span class="small text-muted d-block">{{ $groupPayments->count() }} receipts</span>
-                        @endif
-                    </td>
                     <td class="fin-money fin-money--lg">{{ number_format($grp['total']) }}</td>
-                    <td><span class="badge bg-secondary">{{ $methods->count() > 1 ? 'Multiple' : (\App\Models\Payment::methods()[$latest->payment_method] ?? $latest->payment_method) }}</span></td>
                     <td class="text-end text-nowrap">
                         @include('partials.action-view', ['href' => route('payments.show', $latest)])
-                        <a href="{{ route('payments.receipt', $latest) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
+                        <a href="{{ route('payments.receipt', $latest) }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="Receipt" aria-label="Receipt"><i class="bi bi-receipt" aria-hidden="true"></i></a>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-5">No payments recorded yet.</td>
+                    <td colspan="4" class="text-center text-muted py-5">No payments recorded yet.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -289,7 +302,6 @@
             @php
                 $groupPaymentsCard = $grp['semOne']->merge($grp['semTwo'])->sortByDesc('paid_at')->values();
                 $latestCard = $groupPaymentsCard->first();
-                $methodsCard = $groupPaymentsCard->pluck('payment_method')->unique();
             @endphp
         <article class="fin-pay-card">
             <div class="fin-pay-card-head">
@@ -299,15 +311,9 @@
                 </div>
                 <div class="fin-pay-card-amount">{{ number_format($grp['total']) }} TZS</div>
             </div>
-            <dl class="fin-pay-card-dl">
-                <dt>Session</dt><dd>{{ \App\Support\AcademicSession::label($grp['year']) }}</dd>
-                <dt>Semester</dt><dd>{{ $grp['label'] ?? '—' }}</dd>
-                <dt>Method</dt><dd>{{ $methodsCard->count() > 1 ? 'Multiple' : (\App\Models\Payment::methods()[$latestCard->payment_method] ?? $latestCard->payment_method) }}</dd>
-                <dt>Reference</dt><dd><code class="small">{{ $latestCard->reference ?: $latestCard->id }}</code></dd>
-            </dl>
             <div class="d-flex gap-2 mt-2">
                 @include('partials.action-view', ['href' => route('payments.show', $latestCard)])
-                <a href="{{ route('payments.receipt', $latestCard) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Receipt</a>
+                <a href="{{ route('payments.receipt', $latestCard) }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="Receipt" aria-label="Receipt"><i class="bi bi-receipt" aria-hidden="true"></i></a>
             </div>
         </article>
         @empty

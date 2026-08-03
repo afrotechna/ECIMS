@@ -35,11 +35,30 @@ class PaymentController extends Controller
             return view('payments.index', compact('student', 'studentTotal', 'studentYearTotal', 'studentReceiptCount', 'currentYear', 'yearGroups'));
         }
 
-        $allMatching = Payment::query()
+        $academicYearOptions = \App\Models\Semester::academicYearOptionsForForms();
+        if ($request->has('academic_year')) {
+            // Filter form was submitted: an empty value means "All years" was chosen deliberately.
+            $selectedAcademicYear = $request->filled('academic_year') ? $request->integer('academic_year') : null;
+        } else {
+            $selectedAcademicYear = AcademicSession::defaultStartYear();
+        }
+        $selectedSemester = $request->get('semester', 'both');
+
+        $allMatchingQuery = Payment::query()
             ->with(['student.programme', 'receiver'])
             ->whereHas('student')
-            ->orderByDesc('paid_at')
-            ->get();
+            ->orderByDesc('paid_at');
+
+        if ($selectedAcademicYear) {
+            $allMatchingQuery->where('academic_year', $selectedAcademicYear);
+        }
+        if ($selectedSemester === 'one') {
+            $allMatchingQuery->where('covers_semester_two_only', false);
+        } elseif ($selectedSemester === 'two') {
+            $allMatchingQuery->where('covers_semester_two_only', true);
+        }
+
+        $allMatching = $allMatchingQuery->get();
 
         $groups = $allMatching
             ->groupBy(fn ($p) => $p->student_id.'_'.$p->academic_year)
@@ -69,7 +88,7 @@ class PaymentController extends Controller
             ->sum('amount');
         $allTimeCount = (int) Payment::query()->whereHas('student')->count();
 
-        return view('payments.index', compact('paymentGroups', 'todayTotal', 'monthTotal', 'allTimeCount'));
+        return view('payments.index', compact('paymentGroups', 'todayTotal', 'monthTotal', 'allTimeCount', 'academicYearOptions', 'selectedAcademicYear', 'selectedSemester'));
     }
 
     public function show(Payment $payment)
