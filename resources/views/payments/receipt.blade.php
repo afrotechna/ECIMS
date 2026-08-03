@@ -149,10 +149,7 @@
                             @endforeach
                             @foreach($semPayments as $sp)
                             <tr>
-                                <td colspan="3" class="ref">
-                                    {{ $sp->paid_at->format('d M Y, H:i') }} &middot; {{ \App\Models\Payment::methods()[$sp->payment_method] ?? ucfirst($sp->payment_method) }}
-                                    @if($sp->reference) &middot; Ref: {{ $sp->reference }} @endif
-                                </td>
+                                <td colspan="3" class="ref">{{ $sp->paid_at->format('d M Y, H:i') }}</td>
                             </tr>
                             @endforeach
                             @endif
