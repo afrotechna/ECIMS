@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Payment Receipt - {{ config('app.name') }}</title>
+    @unless($isPdf ?? false)
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
+    @endunless
     <style>
         :root {
             --receipt-navy-1: #071d52;
@@ -100,7 +102,7 @@
             @endif
             <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
             <div class="sub">Official Payment Receipt</div>
-            <div class="receipt-status"><i class="bi bi-check-circle-fill"></i> Payment Confirmed</div>
+            <div class="receipt-status">@unless($isPdf ?? false)<i class="bi bi-check-circle-fill"></i> @endunless Payment Confirmed</div>
         </div>
         <div class="receipt-body">
             <table class="receipt-meta">
@@ -111,7 +113,7 @@
                 <tr><td>Programme</td><td>{{ $payment->student->programme->code }}</td></tr>
                 @endif
                 @if($payment->academic_year)
-                <tr><td>Academic session</td><td>{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</td></tr>
+                <tr><td>Academic Year</td><td>{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</td></tr>
                 @endif
                 @unless($hasSessionBreakdown)
                 <tr><td>Method</td><td>{{ \App\Models\Payment::methods()[$payment->payment_method] ?? ucfirst($payment->payment_method) }}</td></tr>
@@ -204,9 +206,12 @@
             Generated on {{ now()->format('d M Y, H:i') }}
         </div>
     </div>
+    @unless($isPdf ?? false)
     <div class="receipt-actions no-print">
-        <button type="button" onclick="window.print()" class="btn btn-primary btn-sm"><i class="bi bi-printer me-1"></i>Print receipt</button>
+        <a href="{{ route('payments.receipt-pdf', $payment) }}" class="btn btn-primary btn-sm"><i class="bi bi-file-earmark-pdf me-1"></i>Download PDF</a>
+        <button type="button" onclick="window.print()" class="btn btn-outline-primary btn-sm ms-1"><i class="bi bi-printer me-1"></i>Print receipt</button>
         <a href="{{ route('payments.show', $payment) }}" class="btn btn-outline-secondary btn-sm ms-1">Back to payment</a>
     </div>
+    @endunless
 </body>
 </html>

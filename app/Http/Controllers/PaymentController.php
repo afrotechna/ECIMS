@@ -90,6 +90,42 @@ class PaymentController extends Controller
 
     public function receipt(Payment $payment)
     {
+        $data = $this->receiptData($payment);
+
+        return view('payments.receipt', $data);
+    }
+
+    public function receiptPdf(Payment $payment)
+    {
+        if (! class_exists(\Dompdf\Dompdf::class)) {
+            abort(503, 'PDF export is not available yet: run `composer install` on the server after enabling the PHP zip extension (php.ini: extension=zip).');
+        }
+
+        $data = $this->receiptData($payment);
+        $data['isPdf'] = true;
+
+        $html = view('payments.receipt', $data)->render();
+
+        $options = new \Dompdf\Options;
+        $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
+
+        $dompdf = new \Dompdf\Dompdf($options);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $name = 'receipt-'.str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT).'.pdf';
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+        ]);
+    }
+
+    private function receiptData(Payment $payment): array
+    {
         if (auth()->user()->isStudent()) {
             if (! auth()->user()->student || $payment->student_id !== auth()->user()->student->id) {
                 abort(403, 'You can only view your own payment receipts.');
@@ -113,7 +149,7 @@ class PaymentController extends Controller
         $session = $this->buildSessionBreakdown((int) $payment->academic_year, $sessionPayments);
         $grandTotal = Payment::where('student_id', $payment->student_id)->sum('amount');
 
-        return view('payments.receipt', compact('payment', 'session', 'grandTotal'));
+        return compact('payment', 'session', 'grandTotal');
     }
 
     /**

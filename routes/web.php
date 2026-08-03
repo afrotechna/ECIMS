@@ -470,6 +470,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
     Route::post('transcript-requests', [TranscriptRequestController::class, 'store'])->name('transcript-requests.store');
 
     Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
+    Route::get('payments/{payment}/receipt/pdf', [PaymentController::class, 'receiptPdf'])->name('payments.receipt-pdf');
     Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
     Route::get('students/{student}/ledger', [StudentController::class, 'ledger'])->name('students.ledger');
     Route::get('results/my-results', [ResultController::class, 'studentPortal'])->name('results.portal');

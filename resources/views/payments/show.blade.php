@@ -77,7 +77,7 @@
             </div>
             @if($payment->academic_year)
             <div class="pay-detail-item">
-                <div class="label">Academic session</div>
+                <div class="label">Academic Year</div>
                 <div class="value">{{ \App\Support\AcademicSession::label((int) $payment->academic_year) }}</div>
             </div>
             @endif
