@@ -220,16 +220,16 @@ body {
     color: var(--cohas-text-muted); font-weight: 700; padding: .65rem .85rem;
     border-bottom: 2px solid var(--cohas-border); background: var(--cohas-surface-muted) !important;
 }
-.card-landing .table-students-landing tbody td { padding: .65rem .85rem; vertical-align: middle; border-color: var(--cohas-border); }
+.card-landing .table-students-landing tbody td { padding: .65rem .85rem; vertical-align: middle; border-color: var(--cohas-border); white-space: nowrap; }
 .card-landing .table-students-landing tbody tr:nth-child(even) { background: var(--cohas-surface-muted); }
 .card-landing .table-students-landing tbody tr:hover { background: var(--cohas-hover) !important; }
 .card-landing .table-students-landing .reg-cell { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--cohas-text); }
 .card-landing .table-students-landing .nacte-cell code {
     font-size: .74rem; color: var(--cohas-text); background: var(--cohas-surface-muted);
-    padding: .15rem .35rem; border-radius: .25rem; word-break: break-word; white-space: normal; line-height: 1.35;
+    padding: .15rem .35rem; border-radius: .25rem; white-space: nowrap; line-height: 1.35;
 }
-.card-landing .table-students-landing .name-cell { min-width: 9rem; max-width: 14rem; }
-.card-landing .table-students-landing .name-cell .name-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; }
+.card-landing .table-students-landing .name-cell { max-width: 14rem; }
+.card-landing .table-students-landing .name-cell .name-text { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.35; }
 .card-landing .table-students-landing .actions-cell { width: 1%; white-space: nowrap; }
 .card-landing .table-students-landing .actions-cell .btn { padding: .35rem .5rem; font-size: .8125rem; }
 .card-landing .table-students-landing .actions-cell .btn-group .btn { border-radius: .4rem; }

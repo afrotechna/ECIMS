@@ -168,7 +168,6 @@
         @endcanModule
     </div>
     <div class="card-body p-0">
-        <div class="table-responsive table-responsive-students-landing">
             <table class="table table-hover align-middle mb-0 table-students-landing">
                 <thead>
                     <tr>
@@ -178,10 +177,9 @@
                         <th scope="col">Registration</th>
                         <th scope="col">Name</th>
                         <th scope="col">Programme</th>
-                        <th scope="col" class="text-center">Intake</th>
+                        <th scope="col" class="text-center">Academic Year</th>
                         <th scope="col" class="text-center">NTA</th>
                         <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Portal</th>
                         <th scope="col" class="text-end actions-cell">Actions</th>
                     </tr>
                 </thead>
@@ -201,7 +199,7 @@
                                 <span class="d-none d-xl-inline text-muted small"> · {{ \Illuminate\Support\Str::limit($s->programme->name, 28) }}</span>
                             @endif
                         </td>
-                        <td class="text-center text-nowrap">{{ $s->intake_year }}</td>
+                        <td class="text-center text-nowrap">{{ $s->intake_year ? \App\Support\AcademicSession::label((int) $s->intake_year) : '—' }}</td>
                         <td class="text-center">
                             @if($s->nta_level)
                                 <span class="badge bg-secondary">{{ $s->nta_level }}</span>
@@ -211,13 +209,6 @@
                         </td>
                         <td class="text-center">
                             <span class="badge bg-{{ $s->status === 'active' ? 'success' : 'secondary' }}">{{ $s->status }}</span>
-                        </td>
-                        <td class="text-center">
-                            @if($s->email && in_array($s->email, $emailsWithUser ?? []))
-                                <span class="badge bg-primary">Yes</span>
-                            @else
-                                <span class="text-muted small">—</span>
-                            @endif
                         </td>
                         <td class="text-end actions-cell">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Actions for {{ $s->full_name }}">
@@ -233,7 +224,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ auth()->user()->canModule('students', 'update') ? 9 : 8 }}" class="text-center text-muted py-5">
+                        <td colspan="{{ auth()->user()->canModule('students', 'update') ? 8 : 7 }}" class="text-center text-muted py-5">
                             <p class="mb-2">No students found.</p>
                             <a href="{{ route('students.create') }}" class="btn btn-sm btn-primary">Register a student</a>
                             <span class="mx-1 text-muted">or</span>
@@ -243,7 +234,6 @@
                     @endforelse
                 </tbody>
             </table>
-        </div>
     </div>
     @if($students->hasPages())
     <div class="card-footer bg-light border-0 py-3 d-flex justify-content-center">
