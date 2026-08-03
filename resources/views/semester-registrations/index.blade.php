@@ -6,6 +6,8 @@
     $pendingOnPage = $canManageRegistrations
         ? $registrations->getCollection()->filter(fn ($r) => $r->student && $r->status === 'pending' && $r->wizard_step === null)
         : collect();
+    $hasActionableRow = $canManageRegistrations
+        && $registrations->getCollection()->contains(fn ($r) => $r->wizard_step || $r->status === 'pending');
 @endphp
 
 <nav class="student-breadcrumb">
@@ -116,12 +118,12 @@
         <table class="table table-hover align-middle mb-0">
             <thead>
                 <tr>
-                    @if($canManageRegistrations)
+                    @if($hasActionableRow)
                     <th>@if($pendingOnPage->isNotEmpty())<input type="checkbox" id="selectAllPending" aria-label="Select all pending">@endif</th>
                     @endif
                     <th>#</th>
                     <th>Student</th><th>Programme</th><th>Status</th><th>Registered</th>
-                    @if($canManageRegistrations)
+                    @if($hasActionableRow)
                     <th class="text-end">Actions</th>
                     @endif
                 </tr>
@@ -129,7 +131,7 @@
             <tbody>
                 @forelse($registrations as $r)
                 <tr>
-                    @if($canManageRegistrations)
+                    @if($hasActionableRow)
                     <td>@if($r->status === 'pending' && $r->wizard_step === null)<input type="checkbox" class="form-check-input pending-cb" name="ids[]" value="{{ $r->id }}">@else<span class="text-muted">—</span>@endif</td>
                     @endif
                     <td>{{ $registrations->firstItem() + $loop->index }}</td>
@@ -142,7 +144,7 @@
                         @else<span class="badge bg-warning text-dark">Pending</span>@endif
                     </td>
                     <td>{{ $r->registered_at ? $r->registered_at->format('d/m/Y') : '-' }}</td>
-                    @if($canManageRegistrations)
+                    @if($hasActionableRow)
                     <td class="text-end">
                         @if($r->wizard_step)
                             <a href="{{ route('registration-wizard.step', [$r, $r->wizard_step]) }}" class="btn btn-sm btn-primary">Continue steps</a>
@@ -154,7 +156,7 @@
                     @endif
                 </tr>
                 @empty
-                <tr><td colspan="{{ $canManageRegistrations ? 7 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
+                <tr><td colspan="{{ $hasActionableRow ? 7 : 5 }}" class="text-center text-muted py-5">No registrations yet. <a href="{{ route('registration-wizard.start') }}">Start registration wizard</a> or <a href="{{ route('semester-registrations.create') }}">quick submit</a>.</td></tr>
                 @endforelse
             </tbody>
         </table>
