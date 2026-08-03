@@ -224,6 +224,8 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         Route::middleware('tutor_or_admin')->group(function () {
             Route::get('academics', [AcademicController::class, 'index'])->name('academics.index');
             Route::post('semesters/bulk-destroy', [SemesterController::class, 'bulkDestroy'])->name('semesters.bulk-destroy');
+            Route::post('semesters/{semester}/open-registration', [SemesterController::class, 'openRegistration'])->name('semesters.open-registration');
+            Route::post('semesters/{semester}/complete-registration', [SemesterController::class, 'completeRegistration'])->name('semesters.complete-registration');
             Route::resource('semesters', SemesterController::class)->except(['show']);
             Route::post('courses/bulk-destroy', [CourseController::class, 'bulkDestroy'])->name('courses.bulk-destroy');
             Route::resource('courses', CourseController::class)->except(['show']);

@@ -84,6 +84,33 @@ class SemesterController extends Controller
         return redirect()->route('semesters.index')->with('success', 'Semester updated successfully.');
     }
 
+    public function openRegistration(Semester $semester)
+    {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Only an administrator can open a semester for registration.');
+        }
+
+        $blockedReason = $semester->canOpenRegistration();
+        if ($blockedReason !== null) {
+            return redirect()->route('semesters.index')->with('error', $blockedReason);
+        }
+
+        $semester->update(['registration_status' => Semester::REGISTRATION_OPEN]);
+
+        return redirect()->route('semesters.index')->with('success', $semester->label.' is now open for registration.');
+    }
+
+    public function completeRegistration(Semester $semester)
+    {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Only an administrator can mark a semester complete.');
+        }
+
+        $semester->update(['registration_status' => Semester::REGISTRATION_COMPLETE]);
+
+        return redirect()->route('semesters.index')->with('success', $semester->label.' has been marked complete.');
+    }
+
     public function destroy(Semester $semester)
     {
         if ($semester->semesterRegistrations()->exists() || $semester->results()->exists()) {

@@ -23,16 +23,19 @@ class RegistrationWizardController extends Controller
 
         $academicYearOptions = Semester::academicYearOptionsForForms();
         $selectedAcademicYear = (int) request('academic_year', \App\Support\AcademicSession::defaultStartYear());
-        $semesters = Semester::forAcademicYear($selectedAcademicYear, true);
+        $semesters = Semester::forAcademicYear($selectedAcademicYear, true)
+            ->where('registration_status', Semester::REGISTRATION_OPEN)->values();
 
         if ($semesters->isEmpty() && ! request()->has('academic_year')) {
             $fallbackYear = Semester::query()
                 ->where('is_active', true)
+                ->where('registration_status', Semester::REGISTRATION_OPEN)
                 ->orderByDesc('academic_year')
                 ->value('academic_year');
             if ($fallbackYear !== null) {
                 $selectedAcademicYear = (int) $fallbackYear;
-                $semesters = Semester::forAcademicYear($selectedAcademicYear, true);
+                $semesters = Semester::forAcademicYear($selectedAcademicYear, true)
+                    ->where('registration_status', Semester::REGISTRATION_OPEN)->values();
             }
         }
 
@@ -77,6 +80,14 @@ class RegistrationWizardController extends Controller
 
         if ($existing) {
             return $this->redirectForExistingRegistration($existing);
+        }
+
+        $semester = Semester::findOrFail($semesterId);
+        if (! $semester->isRegistrationOpen()) {
+            return redirect()->back()->withInput()->with(
+                'error',
+                $semester->label.' is not open for registration yet. An administrator must open it first.'
+            );
         }
 
         try {

@@ -96,6 +96,7 @@
                         <th>Start</th>
                         <th>End</th>
                         <th>Status</th>
+                        <th>Registration</th>
                         @if($showSemesterActions)
                         <th class="text-end">Actions</th>
                         @endif
@@ -110,6 +111,36 @@
                         <td>@if($s->start_date){{ $s->start_date->format('d/m/Y') }}@else—@endif</td>
                         <td>@if($s->end_date){{ $s->end_date->format('d/m/Y') }}@else—@endif</td>
                         <td>@if($s->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
+                        <td>
+                            @php
+                                $regBadge = match ($s->registration_status) {
+                                    \App\Models\Semester::REGISTRATION_OPEN => 'bg-success',
+                                    \App\Models\Semester::REGISTRATION_COMPLETE => 'bg-primary',
+                                    default => 'bg-secondary',
+                                };
+                            @endphp
+                            <span class="badge {{ $regBadge }}">{{ $s->registrationStatusLabel() }}</span>
+                            @if(auth()->user()->isAdmin())
+                                @if($s->registration_status !== \App\Models\Semester::REGISTRATION_COMPLETE)
+                                    @php $blockedReason = $s->canOpenRegistration(); @endphp
+                                    @if($s->registration_status === \App\Models\Semester::REGISTRATION_NOT_STARTED)
+                                        @if($blockedReason)
+                                            <span class="d-block small text-muted mt-1">{{ $blockedReason }}</span>
+                                        @else
+                                            <form action="{{ route('semesters.open-registration', $s) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-success mt-1">Open</button>
+                                            </form>
+                                        @endif
+                                    @elseif($s->registration_status === \App\Models\Semester::REGISTRATION_OPEN)
+                                        <form action="{{ route('semesters.complete-registration', $s) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Mark complete</button>
+                                        </form>
+                                    @endif
+                                @endif
+                            @endif
+                        </td>
                         @if($showSemesterActions)
                         <td class="text-end">
                             @canModule('semesters', 'update')
@@ -126,7 +157,7 @@
                         @endif
                     </tr>
                     @empty
-                    <tr><td colspan="{{ $showSemesterActions ? 7 : 6 }}" class="text-center text-muted py-5">
+                    <tr><td colspan="{{ $showSemesterActions ? 8 : 7 }}" class="text-center text-muted py-5">
                         No semesters yet.
                         @canModule('semesters', 'create')
                         <a href="{{ route('semesters.create') }}">Add one</a>

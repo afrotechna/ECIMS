@@ -57,8 +57,8 @@ class SemesterRegistrationController extends Controller
         $selectedAcademicYear = $request->filled('academic_year') ? $request->integer('academic_year') : null;
 
         $semesters = $selectedAcademicYear !== null
-            ? Semester::forAcademicYear($selectedAcademicYear, true)
-            : Semester::where('is_active', true)->orderByDesc('academic_year')->orderBy('number')->get();
+            ? Semester::forAcademicYear($selectedAcademicYear, true)->where('registration_status', Semester::REGISTRATION_OPEN)->values()
+            : Semester::where('is_active', true)->where('registration_status', Semester::REGISTRATION_OPEN)->orderByDesc('academic_year')->orderBy('number')->get();
 
         $preselectedStudent = $request->get('student_id');
         $preselectedSemester = $request->get('semester_id');
@@ -99,6 +99,14 @@ class SemesterRegistrationController extends Controller
             ->where('semester_id', $validated['semester_id'])->first();
         if ($exists) {
             return redirect()->back()->withInput()->with('error', 'This student is already registered for the selected semester.');
+        }
+
+        $semester = Semester::findOrFail($validated['semester_id']);
+        if (! $semester->isRegistrationOpen()) {
+            return redirect()->back()->withInput()->with(
+                'error',
+                $semester->label.' is not open for registration yet. An administrator must open it first.'
+            );
         }
 
         $validated['status'] = 'pending';

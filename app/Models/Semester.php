@@ -20,6 +20,15 @@ class Semester extends Model
     /** Second teaching period of the academic year (often roughly Mar–Jul). */
     public const PERIOD_SECOND = 2;
 
+    /** Registration window not yet opened by an administrator. */
+    public const REGISTRATION_NOT_STARTED = 'not_started';
+
+    /** Administrator has opened this semester — students may be registered. */
+    public const REGISTRATION_OPEN = 'open';
+
+    /** Administrator has closed this semester's registration window. */
+    public const REGISTRATION_COMPLETE = 'complete';
+
     protected $fillable = [
         'name',
         'academic_year',
@@ -27,6 +36,7 @@ class Semester extends Model
         'start_date',
         'end_date',
         'is_active',
+        'registration_status',
     ];
 
     protected $casts = [
@@ -53,6 +63,46 @@ class Semester extends Model
     public function getLabelAttribute(): string
     {
         return $this->academicYearRange().' · '.$this->periodName();
+    }
+
+    /** Whether students may currently be registered into this semester. */
+    public function isRegistrationOpen(): bool
+    {
+        return $this->registration_status === self::REGISTRATION_OPEN;
+    }
+
+    public function registrationStatusLabel(): string
+    {
+        return match ($this->registration_status) {
+            self::REGISTRATION_OPEN => 'Open',
+            self::REGISTRATION_COMPLETE => 'Complete',
+            default => 'Not started',
+        };
+    }
+
+    /**
+     * Semester I can be opened any time. Semester II can only be opened once the same
+     * academic year's Semester I has been marked complete by an administrator.
+     */
+    public function canOpenRegistration(): ?string
+    {
+        if ((int) $this->number !== self::PERIOD_SECOND) {
+            return null;
+        }
+
+        $semesterOne = static::where('academic_year', $this->academic_year)
+            ->where('number', self::PERIOD_FIRST)
+            ->first();
+
+        if (! $semesterOne) {
+            return 'Semester I for '.$this->academicYearRange().' does not exist yet.';
+        }
+
+        if ($semesterOne->registration_status !== self::REGISTRATION_COMPLETE) {
+            return 'Semester I for '.$this->academicYearRange().' must be marked complete before Semester II can open.';
+        }
+
+        return null;
     }
 
     /** Display form e.g. "2025/2026" (July–June style year starting in calendar year). */
