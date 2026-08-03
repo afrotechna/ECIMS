@@ -46,6 +46,39 @@ class Payment extends Model
     }
 
     /**
+     * A 14-digit, all-numeric receipt number: 2-digit college code + 2-digit year + 6-digit
+     * payment id, followed by a 4-digit check block derived from those 10 digits via HMAC
+     * (keyed on the app's own secret key). The id makes it unique per payment; the check
+     * digits make it infeasible to fabricate a number that passes verifyReceiptNumber()
+     * without knowing the app key, since any made-up digits won't produce a matching HMAC.
+     */
+    public function receiptNumber(): string
+    {
+        $collegeCode = str_pad(substr(preg_replace('/\D/', '', (string) config('college.receipt_college_code', '00')), 0, 2), 2, '0', STR_PAD_LEFT);
+        $year = ($this->paid_at ?? $this->created_at ?? now())->format('y');
+        $seq = str_pad((string) $this->id, 6, '0', STR_PAD_LEFT);
+        $base = $collegeCode.$year.$seq;
+
+        return $base.static::receiptCheckDigits($base);
+    }
+
+    public static function receiptCheckDigits(string $base): string
+    {
+        $hash = hash_hmac('sha256', $base, (string) config('app.key'));
+
+        return str_pad((string) (hexdec(substr($hash, 0, 8)) % 10000), 4, '0', STR_PAD_LEFT);
+    }
+
+    public static function verifyReceiptNumber(string $receiptNumber): bool
+    {
+        if (! preg_match('/^\d{14}$/', $receiptNumber)) {
+            return false;
+        }
+
+        return static::receiptCheckDigits(substr($receiptNumber, 0, 10)) === substr($receiptNumber, 10, 4);
+    }
+
+    /**
      * Amount of this payment attributed to tuition, NHIF, or NACTVET QA (split receipts).
      */
     public function allocatedAmount(string $key): float

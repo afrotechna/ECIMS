@@ -119,7 +119,7 @@ class PaymentController extends Controller
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $name = 'receipt-'.str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT).'.pdf';
+        $name = 'receipt-'.$payment->receiptNumber().'.pdf';
 
         return response($dompdf->output(), 200, [
             'Content-Type' => 'application/pdf',

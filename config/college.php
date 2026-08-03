@@ -5,6 +5,9 @@ return [
     'school_name' => env('COLLEGE_SCHOOL_NAME', 'MUSOMA COLLEGE OF HEALTH AND ALLIED SCIENCES'),
     'results_board' => env('COLLEGE_RESULTS_BOARD', 'TANGANYIKA MEDICAL TRAINING BOARD'),
 
+    /** Two-digit numeric college code embedded in payment receipt numbers (see Payment::receiptNumber()). */
+    'receipt_college_code' => env('COLLEGE_RECEIPT_CODE', '07'),
+
     /** CA (AVCA) is marked out of this maximum (e.g. 40 for “40%” component). */
     'ca_max_mark' => (float) env('COLLEGE_CA_MAX_MARK', 40),
 
