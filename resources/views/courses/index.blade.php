@@ -129,7 +129,6 @@
                         return '<a href="'.$url.'" class="text-decoration-none text-reset d-inline-flex align-items-center gap-1">'.$label.' <i class="bi '.$icon.' small"></i></a>';
                     };
                 @endphp
-                <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
@@ -173,8 +172,10 @@
                         </tbody>
                         <tfoot class="table-light">
                             <tr>
+                                @if($canDeleteCourses && $courseCountOnPage > 0)
                                 <td class="border-top"></td>
-                                <td colspan="7" class="fw-semibold border-top">Total credits (all matching modules)</td>
+                                @endif
+                                <td colspan="7" class="fw-semibold border-top text-start">Total credits (all matching modules)</td>
                                 <td class="fw-semibold border-top">{{ number_format($filteredCreditsTotal, 2, '.', '') }}</td>
                                 @canModule('courses', 'update')
                                 <td class="border-top"></td>
@@ -182,7 +183,6 @@
                             </tr>
                         </tfoot>
                     </table>
-                </div>
                 @if($filteredCourses->hasPages())
                 <div class="card-footer bg-transparent">
                     {{ $filteredCourses->appends(request()->query())->links() }}
@@ -288,7 +288,7 @@
                                     <i class="bi bi-chevron-down courses-fold-icon flex-shrink-0"></i>
                                 </div>
                                 <div id="sem-{{ $pid }}-{{ $level }}-{{ $semNum }}" class="collapse {{ $semUncollapsed ? 'show' : '' }}">
-                                    <div class="table-responsive rounded border">
+                                    <div class="rounded border">
                                         <table class="table table-hover align-middle mb-0 table-sm">
                                             <thead class="table-light">
                                                 <tr>
@@ -335,9 +335,10 @@
                                             </tbody>
                                             <tfoot class="table-light">
                                                 <tr>
+                                                    @if($canDeleteCourses && $courseCountOnPage > 0)
                                                     <td class="border-top"></td>
-                                                    <td class="fw-semibold border-top">Total credits</td>
-                                                    <td class="border-top" colspan="3"></td>
+                                                    @endif
+                                                    <td colspan="4" class="fw-semibold border-top text-start">Total credits</td>
                                                     <td class="fw-semibold border-top">{{ number_format($semesterCreditsTotal, 2, '.', '') }}</td>
                                                     @canModule('courses', 'update')
                                                     <td class="border-top"></td>
