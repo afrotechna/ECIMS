@@ -57,7 +57,7 @@
                     <th>Programme</th>
                     <th>Student ID card</th>
                     <th>NHIF card</th>
-                    <th class="text-end">ID Card</th>
+                    <th class="text-end" style="width:3.5rem">ID Card</th>
                 </tr>
             </thead>
             <tbody>
