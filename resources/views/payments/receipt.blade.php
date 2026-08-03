@@ -55,6 +55,7 @@
         }
         .receipt-items th:last-child, .receipt-items td:last-child { text-align: right; }
         .receipt-items td { padding: .45rem 0; font-size: .8125rem; border-bottom: 1px solid #f1f5f9; }
+        .receipt-items th.control-no, .receipt-items td.control-no { text-align: center; width: 30%; color: #64748b; font-size: .75rem; }
         .receipt-items td.ref { color: #64748b; font-size: .7rem; padding-top: 0; padding-bottom: .6rem; }
         .receipt-items td.sem-header {
             padding: .6rem 0 .2rem; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em;
@@ -82,6 +83,7 @@
 <body class="{{ ($isPdf ?? false) ? 'pdf-mode' : '' }}">
     @php
         $feeLabels = ['sem1_tuition' => 'Tuition Fee', 'sem1_nhif' => 'NHIF', 'sem1_nactvet_qa' => 'NACTVET QA', 'sem2_tuition' => 'Tuition Fee'];
+        $componentKeyFor = ['sem1_tuition' => 'tuition', 'sem1_nhif' => 'nhif', 'sem1_nactvet_qa' => 'nactvet_qa', 'sem2_tuition' => 'tuition'];
         $semGroups = ['semOne' => ['Semester I', ['sem1_tuition', 'sem1_nhif', 'sem1_nactvet_qa']], 'semTwo' => ['Semester II', ['sem2_tuition']]];
         $hasSessionBreakdown = isset($session) && (($session['semOne'] ?? collect())->isNotEmpty() || ($session['semTwo'] ?? collect())->isNotEmpty());
         $lines = [
@@ -106,6 +108,9 @@
                 <tr><td>Receipt No.</td><td>#{{ str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT) }}</td></tr>
                 <tr><td>Date</td><td>{{ $payment->paid_at->format('d M Y, H:i') }}</td></tr>
                 <tr><td>Student</td><td>{{ $payment->student->full_name }}</td></tr>
+                @if($payment->student->nactvet_reg_no)
+                <tr><td>NACTVET Reg. No.</td><td>{{ $payment->student->nactvet_reg_no }}</td></tr>
+                @endif
                 @if($payment->student->programme?->code)
                 <tr><td>Programme</td><td>{{ $payment->student->programme->code }}</td></tr>
                 @endif
@@ -121,25 +126,30 @@
 
             <table class="receipt-items">
                 <thead>
-                    <tr><th>Fee item</th><th>Amount (TZS)</th></tr>
+                    <tr><th>Fee item</th><th class="control-no">Control No.</th><th>Amount (TZS)</th></tr>
                 </thead>
                 <tbody>
                     @if($hasSessionBreakdown)
                         @foreach($semGroups as $semKey => $semMeta)
                             @php [$semTitle, $rowKeys] = $semMeta; $semPayments = $session[$semKey]; @endphp
                             @if($semPayments->isNotEmpty())
-                            <tr><td colspan="2" class="sem-header">{{ $semTitle }}</td></tr>
+                            <tr><td colspan="3" class="sem-header">{{ $semTitle }}</td></tr>
                             @foreach($rowKeys as $key)
                                 @if(($session['breakdown'][$key] ?? 0) > 0)
+                                @php
+                                    $componentKey = $componentKeyFor[$key];
+                                    $controlNo = $componentKey === 'nhif' ? null : $semPayments->map(fn ($p) => $p->componentReference($componentKey))->filter()->first();
+                                @endphp
                                 <tr>
                                     <td>{{ $feeLabels[$key] }}</td>
+                                    <td class="control-no">{{ $controlNo ?: '—' }}</td>
                                     <td>{{ number_format($session['breakdown'][$key], 0) }}</td>
                                 </tr>
                                 @endif
                             @endforeach
                             @foreach($semPayments as $sp)
                             <tr>
-                                <td colspan="2" class="ref">
+                                <td colspan="3" class="ref">
                                     {{ $sp->paid_at->format('d M Y, H:i') }} &middot; {{ \App\Models\Payment::methods()[$sp->payment_method] ?? ucfirst($sp->payment_method) }}
                                     @if($sp->reference) &middot; Ref: {{ $sp->reference }} @endif
                                 </td>
@@ -148,12 +158,12 @@
                             @endif
                         @endforeach
                         <tr class="receipt-total-row">
-                            <td>Total paid</td>
+                            <td colspan="2">Total paid</td>
                             <td class="amount">{{ number_format($session['total'], 0) }}</td>
                         </tr>
                         @if(isset($grandTotal) && (float) $grandTotal > (float) $session['total'])
                         <tr class="receipt-total-row receipt-grand-total-row">
-                            <td>Grand total (all payments to date)</td>
+                            <td colspan="2">Grand total (all payments to date)</td>
                             <td class="amount">{{ number_format($grandTotal, 0) }}</td>
                         </tr>
                         @endif
@@ -163,19 +173,15 @@
                                 @php $lineAmount = $payment->allocatedAmount($key); @endphp
                                 @if($lineAmount > 0)
                                 <tr>
-                                    <td>
-                                        {{ $label }}
-                                        @if($payment->componentReference($key))
-                                        <div class="ref">Ref: {{ $payment->componentReference($key) }}</div>
-                                        @endif
-                                    </td>
+                                    <td>{{ $label }}</td>
+                                    <td class="control-no">{{ $key === 'nhif' ? '—' : ($payment->componentReference($key) ?: '—') }}</td>
                                     <td>{{ number_format($lineAmount, 0) }}</td>
                                 </tr>
                                 @endif
                             @endforeach
                         @else
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 Payment
                                 @if($payment->reference)
                                 <div class="ref">Ref: {{ $payment->reference }}</div>
@@ -185,12 +191,12 @@
                         </tr>
                         @endif
                         <tr class="receipt-total-row">
-                            <td>Total paid</td>
+                            <td colspan="2">Total paid</td>
                             <td class="amount">{{ number_format($payment->amount, 0) }}</td>
                         </tr>
                         @if(isset($grandTotal) && (float) $grandTotal > (float) $payment->amount)
                         <tr class="receipt-total-row receipt-grand-total-row">
-                            <td>Grand total (all payments to date)</td>
+                            <td colspan="2">Grand total (all payments to date)</td>
                             <td class="amount">{{ number_format($grandTotal, 0) }}</td>
                         </tr>
                         @endif
