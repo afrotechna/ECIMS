@@ -103,6 +103,8 @@ class PaymentController extends Controller
 
         $data = $this->receiptData($payment);
         $data['isPdf'] = true;
+        $logoPath = public_path('images/logo.png');
+        $data['logoUri'] = file_exists($logoPath) ? $this->fileUri($logoPath) : null;
 
         $html = view('payments.receipt', $data)->render();
 
@@ -110,6 +112,7 @@ class PaymentController extends Controller
         $options->set('defaultFont', 'DejaVu Sans');
         $options->set('isRemoteEnabled', false);
         $options->set('isHtml5ParserEnabled', true);
+        $options->setChroot([base_path()]);
 
         $dompdf = new \Dompdf\Dompdf($options);
         $dompdf->loadHtml($html, 'UTF-8');
@@ -122,6 +125,18 @@ class PaymentController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="'.$name.'"',
         ]);
+    }
+
+    /**
+     * Dompdf needs a file:// URI (not an http asset URL) to embed local images without enabling
+     * remote fetches. Windows absolute paths already start with a drive letter (C:/...), and
+     * Unix ones already start with a slash (/var/...), so appending straight after "file://"
+     * yields the right number of slashes on each OS. Stripping the leading slash (as a naive
+     * "file:///" prefix would require) breaks path resolution on Linux.
+     */
+    private function fileUri(string $absolutePath): string
+    {
+        return 'file://'.str_replace('\\', '/', $absolutePath);
     }
 
     private function receiptData(Payment $payment): array

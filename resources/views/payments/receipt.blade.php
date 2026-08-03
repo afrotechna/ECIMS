@@ -9,19 +9,12 @@
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
     @endunless
     <style>
-        :root {
-            --receipt-navy-1: #071d52;
-            --receipt-navy-2: #1a4fb5;
-            --receipt-ink: #0f172a;
-            --receipt-muted: #64748b;
-            --receipt-border: #e2e8f0;
-        }
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #eef1f6;
             margin: 0;
             padding: 2rem 1rem;
-            color: var(--receipt-ink);
+            color: #0f172a;
         }
         .receipt-card {
             max-width: 460px;
@@ -32,11 +25,14 @@
             box-shadow: 0 10px 30px rgba(15, 23, 42, .12);
         }
         .receipt-band {
-            background: linear-gradient(135deg, var(--receipt-navy-1) 0%, var(--receipt-navy-2) 100%);
+            background: linear-gradient(135deg, #071d52 0%, #1a4fb5 100%);
             color: #fff;
             padding: 1.5rem 1.5rem 1.25rem;
             text-align: center;
         }
+        /* Dompdf doesn't render CSS gradients, which left this band blank (white text on a
+           missing background) in the downloaded PDF — fall back to a solid navy there. */
+        body.pdf-mode .receipt-band { background: #10357f; }
         .receipt-band img { height: 46px; margin-bottom: .5rem; object-fit: contain; }
         .receipt-band h1 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: .01em; }
         .receipt-band .sub { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; opacity: .85; margin-top: .15rem; }
@@ -49,32 +45,32 @@
         .receipt-body { padding: 1.4rem 1.5rem .5rem; }
         .receipt-meta { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
         .receipt-meta td { padding: .3rem 0; font-size: .8125rem; vertical-align: top; }
-        .receipt-meta td:first-child { color: var(--receipt-muted); width: 42%; }
+        .receipt-meta td:first-child { color: #64748b; width: 42%; }
         .receipt-meta td:last-child { font-weight: 600; text-align: right; }
-        .receipt-divider { border: none; border-top: 1px dashed var(--receipt-border); margin: .5rem 0 1rem; }
+        .receipt-divider { border: none; border-top: 1px dashed #e2e8f0; margin: .5rem 0 1rem; }
         .receipt-items { width: 100%; border-collapse: collapse; margin-bottom: .25rem; }
         .receipt-items th {
-            font-size: .65rem; text-transform: uppercase; letter-spacing: .06em; color: var(--receipt-muted);
-            text-align: left; font-weight: 600; padding-bottom: .4rem; border-bottom: 1px solid var(--receipt-border);
+            font-size: .65rem; text-transform: uppercase; letter-spacing: .06em; color: #64748b;
+            text-align: left; font-weight: 600; padding-bottom: .4rem; border-bottom: 1px solid #e2e8f0;
         }
         .receipt-items th:last-child, .receipt-items td:last-child { text-align: right; }
         .receipt-items td { padding: .45rem 0; font-size: .8125rem; border-bottom: 1px solid #f1f5f9; }
-        .receipt-items td.ref { color: var(--receipt-muted); font-size: .7rem; padding-top: 0; padding-bottom: .6rem; }
+        .receipt-items td.ref { color: #64748b; font-size: .7rem; padding-top: 0; padding-bottom: .6rem; }
         .receipt-items td.sem-header {
             padding: .6rem 0 .2rem; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em;
-            font-weight: 700; color: var(--receipt-navy-2); border-bottom: none;
+            font-weight: 700; color: #1a4fb5; border-bottom: none;
         }
         .receipt-total-row td {
             padding-top: .75rem; font-size: .95rem; font-weight: 700; border-bottom: none;
         }
-        .receipt-total-row .amount { color: var(--receipt-navy-2); font-variant-numeric: tabular-nums; }
-        .receipt-grand-total-row td { padding-top: .35rem; font-size: .8125rem; font-weight: 600; color: var(--receipt-muted); }
-        .receipt-grand-total-row .amount { color: var(--receipt-ink); }
+        .receipt-total-row .amount { color: #1a4fb5; font-variant-numeric: tabular-nums; }
+        .receipt-grand-total-row td { padding-top: .35rem; font-size: .8125rem; font-weight: 600; color: #64748b; }
+        .receipt-grand-total-row .amount { color: #0f172a; }
         .receipt-footer {
             margin-top: 1.25rem; padding: 1rem 1.5rem 1.4rem; text-align: center;
-            font-size: .75rem; color: var(--receipt-muted); border-top: 1px solid var(--receipt-border);
+            font-size: .75rem; color: #64748b; border-top: 1px solid #e2e8f0;
         }
-        .receipt-footer strong { color: var(--receipt-ink); }
+        .receipt-footer strong { color: #0f172a; }
         .receipt-actions { max-width: 460px; margin: 1.25rem auto 0; text-align: center; }
         @media print {
             body { background: #fff; padding: 0; }
@@ -83,7 +79,7 @@
         }
     </style>
 </head>
-<body>
+<body class="{{ ($isPdf ?? false) ? 'pdf-mode' : '' }}">
     @php
         $feeLabels = ['sem1_tuition' => 'Tuition Fee', 'sem1_nhif' => 'NHIF', 'sem1_nactvet_qa' => 'NACTVET QA', 'sem2_tuition' => 'Tuition Fee'];
         $semGroups = ['semOne' => ['Semester I', ['sem1_tuition', 'sem1_nhif', 'sem1_nactvet_qa']], 'semTwo' => ['Semester II', ['sem2_tuition']]];
@@ -97,8 +93,9 @@
     @endphp
     <div class="receipt-card">
         <div class="receipt-band">
-            @if(file_exists(public_path('images/logo.png')))
-            <img src="{{ asset('images/logo.png') }}" alt="">
+            @php $logoSrc = $logoUri ?? (file_exists(public_path('images/logo.png')) ? asset('images/logo.png') : null); @endphp
+            @if($logoSrc)
+            <img src="{{ $logoSrc }}" alt="">
             @endif
             <h1>{{ config('college.institution_name', config('app.name')) }}</h1>
             <div class="sub">Official Payment Receipt</div>
@@ -151,7 +148,7 @@
                             @endif
                         @endforeach
                         <tr class="receipt-total-row">
-                            <td>Total paid this session</td>
+                            <td>Total paid</td>
                             <td class="amount">{{ number_format($session['total'], 0) }}</td>
                         </tr>
                         @if(isset($grandTotal) && (float) $grandTotal > (float) $session['total'])
