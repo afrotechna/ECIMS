@@ -106,6 +106,13 @@
     background: var(--cohas-surface) !important;
     color: var(--cohas-text);
 }
+.table > tbody > tr > td {
+    white-space: nowrap;
+}
+.table > thead > tr > th {
+    white-space: normal;
+}
+
 [data-theme="dark"] .card-landing .table thead th {
     background: var(--cohas-surface-muted) !important;
     color: var(--cohas-text) !important;

@@ -86,6 +86,7 @@
     <div class="card card-landing mb-3">
         <div class="card-header-landing"><i class="bi bi-list-check me-2"></i>Competency checklist</div>
         <div class="card-body p-0">
+            <div class="table-responsive">
             <table class="table table-sm mb-0">
                 <thead class="table-light"><tr><th>Procedure</th><th>Progress</th></tr></thead>
                 <tbody>
@@ -97,6 +98,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
     @endif

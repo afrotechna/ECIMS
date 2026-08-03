@@ -20,6 +20,7 @@
 @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 <div class="card card-landing">
+    <div class="table-responsive">
     <table class="table table-sm mb-0">
         <thead class="table-light"><tr><th>Student</th><th>Decision</th><th>By</th><th>Date</th><th>Notes</th></tr></thead>
         <tbody>
@@ -36,6 +37,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     @if($decisions->hasPages())<div class="card-body">{{ $decisions->links() }}</div>@endif
 </div>
 @endsection

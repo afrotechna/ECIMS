@@ -15,6 +15,7 @@
 <div class="card card-landing">
     <div class="card-header-landing">My registrations</div>
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr><th>Semester</th><th>Status</th><th>Registered</th></tr></thead>
             <tbody>
@@ -37,6 +38,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection

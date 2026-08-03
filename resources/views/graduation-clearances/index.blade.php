@@ -34,6 +34,7 @@
 </div>
 <div class="card card-landing">
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr><th>Student</th><th>Library</th><th>Finance</th><th>Accommodation</th><th>Academic</th><th></th></tr></thead>
             <tbody>
@@ -51,6 +52,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @if($clearances->hasPages())<div class="mt-3">{{ $clearances->links() }}</div>@endif

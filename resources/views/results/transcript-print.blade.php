@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Transcript — Print')
 @section('content')
+<style>
+.transcript-print-table > tbody > tr > td {
+    white-space: normal;
+}
+</style>
 <div class="d-print-none mb-3">
     <button type="button" class="btn btn-primary" onclick="window.print();"><i class="bi bi-printer me-1"></i>Print transcript</button>
     <a href="{{ route('results.transcript.show', $student) }}" class="btn btn-outline-secondary">Back</a>
@@ -27,7 +32,7 @@
     </div>
     @endif
     <div class="card-body p-0">
-        <table class="table table-bordered table-sm mb-0" style="font-size: 11px">
+        <table class="table table-bordered table-sm mb-0 transcript-print-table" style="font-size: 11px">
             <thead>
                 <tr>
                     <th>Code</th><th>Module</th>

@@ -45,6 +45,7 @@
 <div class="card card-landing">
     <div class="card-header-landing">Available Banks</div>
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
@@ -73,6 +74,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 <div class="mt-3">{{ $banks->links('pagination::bootstrap-5') }}</div>

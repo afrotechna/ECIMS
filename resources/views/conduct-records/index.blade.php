@@ -30,6 +30,7 @@
 </div>
 <div class="card card-landing">
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr><th>Date</th><th>Student</th><th>Type</th><th>Sanction</th><th>Evidence</th></tr></thead>
             <tbody>
@@ -52,6 +53,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @if($records->hasPages())<div class="mt-3">{{ $records->links() }}</div>@endif

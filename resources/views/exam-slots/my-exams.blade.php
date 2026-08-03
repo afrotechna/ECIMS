@@ -29,6 +29,7 @@
 @endif
 <div class="card card-landing">
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr><th>Date</th><th>Time</th><th>Course</th><th>Format</th><th>Assessment</th><th>Room</th></tr></thead>
             <tbody>
@@ -46,6 +47,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection

@@ -164,6 +164,7 @@
         </div>
     </div>
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0" id="examSlotsTable">
             <thead>
                 <tr>
@@ -230,6 +231,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @if($slots instanceof \Illuminate\Contracts\Pagination\Paginator && $slots->hasPages())
@@ -251,6 +253,7 @@
     }
     .exam-slot-icon-btn i { font-size: 1rem; line-height: 1; }
     .exam-timetable-table th, .exam-timetable-table td { vertical-align: middle; font-size: 0.9rem; }
+    .exam-timetable-table > tbody > tr > td { white-space: normal; }
     .timetable-letterhead { line-height: 1.35; }
     .exam-timetable-doc-footer { page-break-inside: avoid; }
     @media print {

@@ -8,6 +8,7 @@
 </div>
 <div class="card card-landing">
 <div class="card-body p-0">
+<div class="table-responsive">
 <table class="table table-hover mb-0">
 <thead><tr><th>Date</th><th>Channel</th><th>Recipient</th><th>Body</th><th>Status</th></tr></thead>
 <tbody>
@@ -16,6 +17,7 @@
 @endforeach
 </tbody>
 </table>
+</div>
 </div>
 </div>
 @if($logs->isEmpty())<p class="p-4 text-muted">No messages.</p>@endif

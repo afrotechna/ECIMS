@@ -73,6 +73,7 @@
         <span class="badge bg-light text-dark">{{ $payments->total() }} total</span>
     </div>
     <div class="card-body p-0 fin-pay-table-only">
+        <div class="table-responsive">
         <table class="table fin-report-table mb-0">
             <thead>
                 <tr>
@@ -109,6 +110,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
     <div class="card-body fin-pay-cards-only">
         @forelse($payments as $p)

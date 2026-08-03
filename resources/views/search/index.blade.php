@@ -26,6 +26,7 @@
 <div class="card card-landing">
     <div class="card-header-landing">Students @if($students->isNotEmpty())({{ $students->count() }})@endif</div>
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead><tr><th>NACTVET No</th><th>Name</th><th>Programme</th><th></th></tr></thead>
             <tbody>
@@ -41,6 +42,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endif
