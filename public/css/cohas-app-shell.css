@@ -232,7 +232,8 @@ body {
 .card-landing .table-students-landing .name-cell .name-text { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.35; }
 .card-landing .table-students-landing .actions-cell { width: 1%; white-space: nowrap; }
 .card-landing .table-students-landing .actions-cell .btn { padding: .35rem .5rem; font-size: .8125rem; }
-.card-landing .table-students-landing .actions-cell .btn-group .btn { border-radius: .4rem; }
+.card-landing .table-students-landing .actions-cell .btn-group { gap: .35rem; }
+.card-landing .table-students-landing .actions-cell .btn-group .btn { border-radius: .4rem; margin-left: 0 !important; }
 .table-responsive-students-landing { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .students-toolbar {
