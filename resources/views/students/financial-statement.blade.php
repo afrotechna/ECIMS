@@ -85,7 +85,7 @@
     <form method="GET" action="{{ route('students.ledger', $student) }}" class="row g-2 align-items-end">
         <div class="col-auto">
             <label for="academic_year" class="form-label small mb-0">Financial year</label>
-            <select name="academic_year" id="academic_year" class="form-select form-select-sm" onchange="this.form.submit()">
+            <select name="academic_year" id="academic_year" class="form-select form-select-sm" onchange="this.form.submit()" data-no-search>
                 @foreach($availableYears as $year)
                 <option value="{{ $year }}" {{ (int) $academicYear === (int) $year ? 'selected' : '' }}>{{ $year }}/{{ $year + 1 }}</option>
                 @endforeach

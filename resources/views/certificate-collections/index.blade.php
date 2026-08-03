@@ -21,7 +21,7 @@
         <form method="GET" action="{{ route('certificate-collections.index') }}" class="row g-3 align-items-end">
             <div class="col-md-3">
                 <label class="form-label">Academic year</label>
-                <select name="academic_year" class="form-select" onchange="this.form.submit()">
+                <select name="academic_year" class="form-select" onchange="this.form.submit()" data-no-search>
                     <option value="">All</option>
                     @foreach($academicYears as $y)
                         <option value="{{ $y }}" {{ (string) request('academic_year') === (string) $y ? 'selected' : '' }}>{{ \App\Support\AcademicSession::label((int) $y) }}</option>

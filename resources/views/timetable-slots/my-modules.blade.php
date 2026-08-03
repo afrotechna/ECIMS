@@ -29,7 +29,7 @@
         <form method="GET" action="{{ route('my.modules') }}" class="row g-3 align-items-end">
             <div class="col-md-6">
                 <label for="academic_year" class="form-label">Session</label>
-                <select name="academic_year" id="academic_year" class="form-select">
+                <select name="academic_year" id="academic_year" class="form-select" data-no-search>
                     @foreach($academicYearOptions ?? [] as $year => $label)
                     <option value="{{ $year }}" {{ (int) ($academicYearStart ?? 0) === (int) $year ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach

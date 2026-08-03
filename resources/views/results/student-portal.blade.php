@@ -48,7 +48,7 @@
         <div class="row g-3 align-items-end">
             <div class="col-md-5">
                 <label class="form-label small mb-0">Year of study</label>
-                <select name="academic_year" class="form-select">
+                <select name="academic_year" class="form-select" data-no-search>
                     <option value="">Select academic year…</option>
                     @foreach($distinctYears as $y)
                     <option value="{{ $y }}" {{ (int) $selectedYear === (int) $y ? 'selected' : '' }}>{{ $yearLabels[$y] ?? $y }}</option>

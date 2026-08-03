@@ -24,7 +24,7 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label for="academic_year" class="form-label">Session <span class="text-danger">*</span></label>
-                    <select class="form-select @error('academic_year') is-invalid @enderror" id="academic_year" name="academic_year" required>
+                    <select class="form-select @error('academic_year') is-invalid @enderror" id="academic_year" name="academic_year" required data-no-search>
                         @foreach($sessionYears as $start => $label)
                             <option value="{{ $start }}" {{ (int) old('academic_year', \App\Support\AcademicSession::defaultStartYear()) === (int) $start ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach

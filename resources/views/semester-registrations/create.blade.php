@@ -24,7 +24,7 @@
             @endif
             <div class="col-md-4">
                 <label for="academic_year" class="form-label">Academic year</label>
-                <select name="academic_year" id="academic_year" class="form-select" onchange="this.form.submit()">
+                <select name="academic_year" id="academic_year" class="form-select" onchange="this.form.submit()" data-no-search>
                     <option value="">All active semesters</option>
                     @foreach($academicYearOptions as $start => $label)
                         <option value="{{ $start }}" {{ (string) ($selectedAcademicYear ?? '') === (string) $start ? 'selected' : '' }}>{{ $label }}</option>

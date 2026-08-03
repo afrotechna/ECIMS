@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="academic_year" class="form-label">Academic year <span class="text-danger">*</span></label>
-                    <select class="form-select @error('academic_year') is-invalid @enderror" id="academic_year" name="academic_year" required>
+                    <select class="form-select @error('academic_year') is-invalid @enderror" id="academic_year" name="academic_year" required data-no-search>
                         <option value="">Select</option>
                         @foreach(\App\Support\AcademicSession::yearOptions() as $year => $label)
                             <option value="{{ $year }}" {{ (string) old('academic_year') === (string) $year ? 'selected' : '' }}>{{ $label }}</option>

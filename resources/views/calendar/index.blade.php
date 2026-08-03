@@ -27,7 +27,7 @@
         @endif
         <form method="get" class="ms-auto d-flex align-items-center gap-2">
             <label class="small text-muted mb-0 d-none d-md-inline">Academic year</label>
-            <select name="academic_year" class="form-select form-select-sm gcal-year" onchange="this.form.submit()">
+            <select name="academic_year" class="form-select form-select-sm gcal-year" onchange="this.form.submit()" data-no-search>
                 @foreach($academicYearOptions as $start => $label)
                 <option value="{{ $start }}" @selected($academicYear == $start)>{{ $label }}</option>
                 @endforeach

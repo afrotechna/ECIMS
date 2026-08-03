@@ -31,7 +31,7 @@
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-md-3">
                 <label class="form-label small mb-0">Academic year</label>
-                <select name="academic_year" class="form-select form-select-sm">
+                <select name="academic_year" class="form-select form-select-sm" data-no-search>
                     <option value="">All</option>
                     @foreach($academicYearOptions as $start => $label)
                     <option value="{{ $start }}" {{ (string) request('academic_year') === (string) $start ? 'selected' : '' }}>{{ $label }}</option>

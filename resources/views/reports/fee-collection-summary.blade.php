@@ -23,7 +23,7 @@
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-auto">
                 <label class="form-label">Session</label>
-                <select name="academic_year" class="form-select form-select-sm">
+                <select name="academic_year" class="form-select form-select-sm" data-no-search>
                     @foreach($yearOptions as $y => $label)
                     <option value="{{ $y }}" {{ (int) $academicYear === (int) $y ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
