@@ -195,9 +195,6 @@
                         </td>
                         <td>
                             <span class="fw-semibold text-nowrap">{{ $s->programme->code ?? '—' }}</span>
-                            @if($s->programme)
-                                <span class="d-none d-xl-inline text-muted small"> · {{ \Illuminate\Support\Str::limit($s->programme->name, 28) }}</span>
-                            @endif
                         </td>
                         <td class="text-center text-nowrap">{{ $s->intake_year ? \App\Support\AcademicSession::label((int) $s->intake_year) : '—' }}</td>
                         <td class="text-center">
