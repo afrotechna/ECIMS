@@ -8,7 +8,8 @@
 <form action="{{ route('timetable-slots.store') }}" method="POST">
 @csrf
 <div class="row g-3">
-<div class="col-md-6"><label class="form-label">Semester</label><select class="form-select" name="semester_id" id="slotSemester" required><option value="">Select</option>@foreach($semesters as $s)<option value="{{ $s->id }}">{{ $s->label }}</option>@endforeach</select></div>
+<div class="col-md-4"><label class="form-label">Semester</label><select class="form-select" name="semester_id" id="slotSemester" required><option value="">Select</option>@foreach($semesters as $s)<option value="{{ $s->id }}">{{ $s->label }}</option>@endforeach</select></div>
+<div class="col-md-2"><label class="form-label">Level</label><select class="form-select" id="slotLevel"><option value="">All</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
 <div class="col-md-6"><label class="form-label">Course</label><select class="form-select" name="course_id" id="slotCourse" required><option value="">Select a semester first</option>@foreach($courses as $c)<option value="{{ $c->id }}">{{ $c->code }} — {{ $c->name }}</option>@endforeach</select></div>
 <div class="col-md-4"><label class="form-label">Day</label><select class="form-select" name="day_of_week" required>@foreach(\App\Models\TimetableSlot::DAYS as $d => $label)<option value="{{ $d }}">{{ $label }}</option>@endforeach</select></div>
 <div class="col-md-2"><label class="form-label">Start</label><input type="time" class="form-control" name="start_time" required></div>
@@ -31,17 +32,20 @@
 <script>
 (function () {
     var semesterSelect = document.getElementById('slotSemester');
+    var levelSelect = document.getElementById('slotLevel');
     var courseSelect = document.getElementById('slotCourse');
     if (!semesterSelect || !courseSelect) return;
 
-    semesterSelect.addEventListener('change', function () {
+    function loadCourses() {
         var semesterId = semesterSelect.value;
         courseSelect.innerHTML = '<option value="">Loading…</option>';
         if (!semesterId) {
             courseSelect.innerHTML = '<option value="">Select a semester first</option>';
             return;
         }
-        fetch('{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId))
+        var url = '{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId);
+        if (levelSelect.value) url += '&nta_level=' + encodeURIComponent(levelSelect.value);
+        fetch(url)
             .then(function (r) { return r.json(); })
             .then(function (courses) {
                 if (!courses.length) {
@@ -52,7 +56,10 @@
                     return '<option value="' + c.id + '">' + c.code + ' — ' + c.name + '</option>';
                 }).join('');
             });
-    });
+    }
+
+    semesterSelect.addEventListener('change', loadCourses);
+    levelSelect.addEventListener('change', loadCourses);
 })();
 </script>
 @endpush

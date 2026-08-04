@@ -47,6 +47,15 @@
                     </select>
                 </div>
                 <div class="col-auto">
+                    <label class="form-label small mb-0">Level</label>
+                    <select id="autoGenLevel" class="form-select form-select-sm">
+                        <option value="">All levels</option>
+                        <option value="4">NTA Level 4</option>
+                        <option value="5">NTA Level 5</option>
+                        <option value="6">NTA Level 6</option>
+                    </select>
+                </div>
+                <div class="col-auto">
                     <button type="submit" class="btn btn-sm btn-primary" id="autoGenSubmit" disabled><i class="bi bi-magic me-1"></i> Generate randomly</button>
                 </div>
             </div>
@@ -183,6 +192,7 @@
 <script>
 (function () {
     var semesterSelect = document.getElementById('autoGenSemester');
+    var levelSelect = document.getElementById('autoGenLevel');
     var modulesWrap = document.getElementById('autoGenModulesWrap');
     var modulesList = document.getElementById('autoGenModulesList');
     var emptyMsg = document.getElementById('autoGenEmpty');
@@ -197,13 +207,17 @@
 
     function loadModules() {
         var semesterId = semesterSelect.value;
+        var level = levelSelect.value;
         modulesList.innerHTML = '';
         modulesWrap.classList.add('d-none');
         emptyMsg.classList.add('d-none');
         submitBtn.disabled = true;
         if (!semesterId) return;
 
-        fetch('{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId))
+        var url = '{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId);
+        if (level) url += '&nta_level=' + encodeURIComponent(level);
+
+        fetch(url)
             .then(function (r) { return r.json(); })
             .then(function (courses) {
                 if (!courses.length) {
@@ -226,6 +240,7 @@
     }
 
     semesterSelect.addEventListener('change', loadModules);
+    levelSelect.addEventListener('change', loadModules);
     selectAll.addEventListener('change', function () {
         modulesList.querySelectorAll('input[name="course_ids[]"]').forEach(function (cb) { cb.checked = selectAll.checked; });
         setSubmitEnabled();

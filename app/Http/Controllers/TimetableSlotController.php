@@ -129,11 +129,12 @@ class TimetableSlotController extends Controller
             ->with('success', 'Weekly timetable randomly generated for '.$courses->count().' module(s) — two sessions each, Monday to Friday.');
     }
 
-    /** JSON list of active modules under a semester, for the semester-driven course pickers. */
+    /** JSON list of active modules under a semester (optionally narrowed by NTA level), for the semester-driven course pickers. */
     public function coursesForSemester(Request $request)
     {
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
+            'nta_level' => ['nullable', 'integer', 'min:4', 'max:6'],
         ]);
 
         $hodProgrammeId = auth()->user()->hodProgrammeId();
@@ -141,6 +142,7 @@ class TimetableSlotController extends Controller
         $courses = Course::where('is_active', true)
             ->whereHas('semesters', fn ($q) => $q->where('semesters.id', $validated['semester_id']))
             ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->when($validated['nta_level'] ?? null, fn ($q, $level) => $q->where('nta_level', $level))
             ->orderBy('code')
             ->get(['id', 'code', 'name']);
 
