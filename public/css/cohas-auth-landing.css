@@ -874,6 +874,18 @@
         justify-content: flex-start;
     }
 
+    /* Welcome/landing page: skip the promo carousel and center the
+       hero content on its own so mobile visitors land straight on it
+       without an extra scroll past duplicate marketing copy. */
+    .auth-split.is-landing .auth-promo {
+        display: none;
+    }
+
+    .auth-split.is-landing .landing-main {
+        min-height: 100vh;
+        justify-content: center;
+    }
+
     .auth-main-shell {
         margin: 0;
         max-width: 100%;
@@ -968,6 +980,40 @@
     .landing-footer {
         font-size: 0.7rem;
         padding: 0.75rem 1rem 1rem;
+    }
+}
+
+/* Short mobile viewports: tighten the landing hero so it still fits
+   without scrolling (e.g. iPhone SE-class heights). */
+@media (max-width: 991.98px) and (max-height: 720px) {
+    .auth-split.is-landing .landing-panel {
+        padding: 0.75rem 1rem;
+    }
+
+    .landing-welcome .logo-hero {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 0.75rem;
+    }
+
+    .landing-welcome h1 {
+        margin-bottom: 0.4rem;
+    }
+
+    .landing-welcome .tagline {
+        margin-bottom: 1rem;
+    }
+
+    .landing-welcome .landing-actions {
+        margin-bottom: 1.25rem;
+    }
+
+    .landing-pill {
+        padding: 0.5rem 0.65rem;
+    }
+
+    .auth-split.is-landing .landing-footer {
+        padding: 0.5rem 1rem 0.65rem;
     }
 }
 

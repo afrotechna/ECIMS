@@ -17,7 +17,7 @@
 <body class="cohas-split-page">
     @include('layouts.partials.cohas-page-loader')
 
-    <div class="auth-split">
+    <div class="auth-split is-landing">
         @include('layouts.partials.cohas-promo-aside', [
             'promoCtaHref' => route('login.create'),
             'promoCtaLabel' => 'Sign in to portal',
