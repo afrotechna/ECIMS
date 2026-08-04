@@ -16,15 +16,18 @@
 
     <div class="auth-field">
         <label for="login" class="form-label">Username</label>
-        <input type="text"
-               class="form-control @error('login') is-invalid @enderror"
-               id="login"
-               name="login"
-               value="{{ old('login') }}"
-               required
-               autofocus
-               autocomplete="username"
-               placeholder="NACTVET reg. no., Staff ID, or email">
+        <div class="auth-input-group">
+            <i class="bi bi-person auth-input-icon" aria-hidden="true"></i>
+            <input type="text"
+                   class="form-control @error('login') is-invalid @enderror"
+                   id="login"
+                   name="login"
+                   value="{{ old('login') }}"
+                   required
+                   autofocus
+                   autocomplete="username"
+                   placeholder="NACTVET reg. no., Staff ID, or email">
+        </div>
         @error('login')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
@@ -33,13 +36,19 @@
 
     <div class="auth-field">
         <label for="password" class="form-label">Password</label>
-        <input type="password"
-               class="form-control @error('password') is-invalid @enderror"
-               id="password"
-               name="password"
-               required
-               autocomplete="current-password"
-               placeholder="Enter your password">
+        <div class="auth-input-group">
+            <i class="bi bi-lock auth-input-icon" aria-hidden="true"></i>
+            <input type="password"
+                   class="form-control auth-input-with-toggle @error('password') is-invalid @enderror"
+                   id="password"
+                   name="password"
+                   required
+                   autocomplete="current-password"
+                   placeholder="Enter your password">
+            <button type="button" class="auth-input-toggle" id="togglePassword" aria-label="Show password" aria-pressed="false">
+                <i class="bi bi-eye" aria-hidden="true"></i>
+            </button>
+        </div>
         @error('password')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
@@ -47,13 +56,10 @@
 
     <div class="auth-login-options">
         <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="showPassword" aria-label="Show password">
-            <label class="form-check-label" for="showPassword">Show password</label>
-        </div>
-        <div class="form-check">
             <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
             <label class="form-check-label" for="remember">Remember me</label>
         </div>
+        <a href="{{ route('password.request') }}" class="auth-forgot-link" id="forgotPasswordLink">Forgot password?</a>
     </div>
 
     <button type="submit" class="btn btn-signin" id="btnSignIn">
@@ -61,18 +67,18 @@
     </button>
 </form>
 
-<p class="auth-login-footer-link">
-    <a href="{{ route('password.request') }}" id="forgotPasswordLink">Forgot password?</a>
-</p>
-
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var pw = document.getElementById('password');
-    var show = document.getElementById('showPassword');
-    if (show && pw) {
-        show.addEventListener('change', function () {
-            pw.type = this.checked ? 'text' : 'password';
+    var toggle = document.getElementById('togglePassword');
+    if (toggle && pw) {
+        toggle.addEventListener('click', function () {
+            var willShow = pw.type === 'password';
+            pw.type = willShow ? 'text' : 'password';
+            toggle.setAttribute('aria-pressed', willShow ? 'true' : 'false');
+            toggle.setAttribute('aria-label', willShow ? 'Hide password' : 'Show password');
+            toggle.querySelector('i').className = willShow ? 'bi bi-eye-slash' : 'bi bi-eye';
         });
     }
 

@@ -538,6 +538,67 @@
     box-shadow: 0 0 0 3px rgba(26, 79, 181, 0.15);
 }
 
+.auth-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-input-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: #94a3b8;
+    font-size: 0.9375rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.auth-input-group .form-control {
+    padding-left: 2.15rem;
+}
+
+.auth-input-with-toggle {
+    padding-right: 2.25rem !important;
+}
+
+.auth-input-toggle {
+    position: absolute;
+    right: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    background: none;
+    border: none;
+    border-radius: 0.3rem;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+}
+
+.auth-input-toggle:hover {
+    color: var(--cohas-blue-700);
+    background: #eef4fc;
+}
+
+.auth-input-toggle:focus-visible {
+    outline: 2px solid var(--cohas-blue-700);
+    outline-offset: 1px;
+}
+
+.auth-forgot-link {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--cohas-blue-700);
+    text-decoration: none;
+}
+
+.auth-forgot-link:hover {
+    color: var(--cohas-blue-900);
+    text-decoration: underline;
+}
+
 .auth-field-hint {
     font-size: 0.75rem;
     color: #64748b;
@@ -941,6 +1002,24 @@
     background: #071d52;
     border-color: #334155;
     color: #f1f5f9;
+}
+
+[data-theme="dark"] .auth-input-icon,
+[data-theme="dark"] .auth-input-toggle {
+    color: #64748b;
+}
+
+[data-theme="dark"] .auth-input-toggle:hover {
+    color: #7eb8ff;
+    background: rgba(126, 184, 255, 0.12);
+}
+
+[data-theme="dark"] .auth-forgot-link {
+    color: #7eb8ff !important;
+}
+
+[data-theme="dark"] .auth-forgot-link:hover {
+    color: #a8d0ff !important;
 }
 
 [data-theme="dark"] .auth-login-footer-link {
