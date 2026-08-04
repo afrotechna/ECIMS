@@ -235,7 +235,8 @@
                     </div>
                 </div>
                 <div class="id-footer">
-                    If found, please return to <strong>{{ config('college.institution_name', config('app.name')) }}</strong> registrar's office.
+                    If found, please return to <strong>{{ config('college.institution_name', config('app.name')) }}</strong> registrar's office.<br>
+                    P.O. Box 518, Musoma Mara &middot; Email: principal.musomacotc@afya.go.tz
                 </div>
             </div>
             <div class="id-card id-card-back">
@@ -276,7 +277,8 @@
                     </div>
                 </div>
                 <div class="id-footer">
-                    If found, please return to <strong>{{ config('college.institution_name', config('app.name')) }}</strong> registrar's office.
+                    If found, please return to <strong>{{ config('college.institution_name', config('app.name')) }}</strong> registrar's office.<br>
+                    P.O. Box 518, Musoma Mara &middot; Email: principal.musomacotc@afya.go.tz
                 </div>
             </div>
         </div>

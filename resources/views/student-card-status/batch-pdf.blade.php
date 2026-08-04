@@ -101,7 +101,8 @@
                         <span class="back-code">{{ $s->nactvet_reg_no ?: '—' }}</span>
                         <div class="back-terms">
                             This card is the property of <strong>{{ config('college.institution_name', config('app.name')) }}</strong> and must be surrendered on request.
-                            Non-transferable; carry at all times on campus. Report loss to the registrar's office immediately.
+                            Non-transferable; carry at all times on campus. Report loss to the registrar's office immediately.<br>
+                            P.O. Box 518, Musoma Mara &middot; Email: principal.musomacotc@afya.go.tz
                         </div>
                         <table class="sig-table"><tr>
                             <td>Holder's signature</td>
