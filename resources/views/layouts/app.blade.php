@@ -175,8 +175,8 @@
                     || auth()->user()->canModule('student_attendance', 'view');
             @endphp
             @if($showAcademicMenu)
-            <div class="nav-group {{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'question-bank.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*', 'reports.class-list', 'reports.academic-standing', 'reports.nactvet*') ?'expanded' : '' }}" id="navGroupAcademics">
-                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'question-bank.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*', 'reports.class-list', 'reports.academic-standing', 'reports.nactvet*') ?'true' : 'false' }}" aria-controls="navGroupAcademicsSub">
+            <div class="nav-group {{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'assessment-studio.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*', 'reports.class-list', 'reports.academic-standing', 'reports.nactvet*') ?'expanded' : '' }}" id="navGroupAcademics">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('programmes.*', 'semesters.*', 'courses.*', 'semester-registrations.*', 'registration-wizard.*', 'results.*', 'exam-slots.*', 'timetable-slots.*', 'assessment-studio.*', 'clinical-rotations.*', 'clinical-procedures.*', 'clinical-logbook.*', 'clinical.framework', 'student-attendance.*', 'reports.class-list', 'reports.academic-standing', 'reports.nactvet*') ?'true' : 'false' }}" aria-controls="navGroupAcademicsSub">
                     <i class="bi bi-mortarboard-fill"></i><span>{{ __('ui.nav.academics') }}</span><i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="nav-group-sub" id="navGroupAcademicsSub">
@@ -204,7 +204,7 @@
                     <li><a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Results</a></li>
                     @endcanModule
                     @canModule('question_bank', 'view')
-                    <li><a href="{{ route('question-bank.index') }}" class="{{ request()->routeIs('question-bank.*') ? 'active' : '' }}"><i class="bi bi-question-circle"></i>Question bank</a></li>
+                    <li><a href="{{ route('assessment-studio.index') }}" class="{{ request()->routeIs('assessment-studio.*') ? 'active' : '' }}"><i class="bi bi-clipboard2-check"></i>Assessment Studio</a></li>
                     @endcanModule
                     @if(auth()->user()->canModule('exams', 'view') || auth()->user()->canModule('timetable', 'view'))
                     <li class="nav-group-sub-label">Timetables</li>

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\BulkDestroysRecords;
+use App\Http\Controllers\Concerns\HasNactvetSectionMap;
 use App\Models\Course;
 use App\Models\ExamPaper;
 use App\Models\ExamPaperItem;
 use App\Models\QuestionBank;
 use App\Models\QuestionItem;
 use App\Models\QuestionMaterial;
-use App\Services\QuestionGenerationService;
+use App\Services\QuestionGeneration\QuestionGeneratorContract;
 use App\Support\PdfTextExtractor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ use ZipArchive as PhpZipArchive;
 class QuestionBankController extends Controller
 {
     use BulkDestroysRecords;
+    use HasNactvetSectionMap;
 
     public function index()
     {
@@ -39,7 +41,7 @@ class QuestionBankController extends Controller
             ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
             ->orderBy('code')->get();
 
-        return view('question-bank.index', compact('banks', 'courses'));
+        return view('assessment-studio.index', compact('banks', 'courses'));
     }
 
     public function storeBank(Request $request)
@@ -53,7 +55,7 @@ class QuestionBankController extends Controller
         $validated['created_by'] = auth()->id();
         QuestionBank::create($validated);
 
-        return redirect()->route('question-bank.index')->with('success', 'Question bank created.');
+        return redirect()->route('assessment-studio.index')->with('success', 'Bank created.');
     }
 
     public function show(QuestionBank $questionBank)
@@ -62,9 +64,9 @@ class QuestionBankController extends Controller
             'course',
             'materials' => fn ($q) => $q->with('uploader')->latest('id'),
         ]);
-        $questions = $questionBank->questions()->latest()->paginate(20);
+        $questions = $questionBank->questions()->withCount('examItems')->latest()->paginate(20);
         $exams = $questionBank->exams()->latest()->take(10)->get();
-        $requiredBySection = ['A' => 20, 'B' => 4, 'C' => 2, 'D' => 6, 'E' => 2];
+        $requiredBySection = $this->requiredCountsBySection();
         $typeBySection = $this->sectionTypeMap();
         $labelsBySection = ['A' => 'Multiple Choice', 'B' => 'Multiple True/False', 'C' => 'Matching', 'D' => 'Short Answer', 'E' => 'Guided Essay'];
         $existingByType = $questionBank->questions()
@@ -120,7 +122,9 @@ class QuestionBankController extends Controller
         }
         unset($meta);
 
-        return view('question-bank.show', compact('questionBank', 'questions', 'exams', 'sectionProgress', 'purgeableAiCount', 'purgeableByType'));
+        $typeLabels = $this->questionTypeLabels();
+
+        return view('assessment-studio.show', compact('questionBank', 'questions', 'exams', 'sectionProgress', 'purgeableAiCount', 'purgeableByType', 'typeLabels'));
     }
 
     public function uploadMaterial(Request $request, QuestionBank $questionBank)
@@ -148,7 +152,7 @@ class QuestionBankController extends Controller
 
         $textContent = isset($validated['text_content']) ? trim((string) $validated['text_content']) : '';
         if ($files === [] && $textContent === '') {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->withInput()
                 ->withErrors(['material_file' => 'Add at least one file or paste text content.']);
         }
@@ -197,7 +201,7 @@ class QuestionBankController extends Controller
         }
 
         $message = $created === 1 ? 'Material uploaded.' : "{$created} materials uploaded.";
-        $redirect = redirect()->route('question-bank.show', $questionBank)->with('success', $message);
+        $redirect = redirect()->route('assessment-studio.show', $questionBank)->with('success', $message);
 
         if ($pdfExtractWarnings !== []) {
             $redirect->with(
@@ -210,7 +214,7 @@ class QuestionBankController extends Controller
         return $redirect;
     }
 
-    public function generate(Request $request, QuestionBank $questionBank, QuestionGenerationService $generationService)
+    public function generate(Request $request, QuestionBank $questionBank, QuestionGeneratorContract $generationService)
     {
         $validated = $request->validate([
             'question_material_id' => ['required', 'exists:question_materials,id'],
@@ -227,12 +231,12 @@ class QuestionBankController extends Controller
         $text = $this->extractGenerationText($material);
 
         if (trim($text) === '') {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('error', $this->materialExtractionFailedMessage());
         }
 
         $maxPerType = array_flip($this->sectionTypeMap());
-        $requiredCap = ['mcq' => 20, 'multi_true_false' => 4, 'matching' => 2, 'short_answer' => 6, 'essay' => 2];
+        $requiredCap = $this->requiredCountsByType();
 
         $removedDuringRegen = 0;
         if ($request->boolean('regenerate')) {
@@ -251,7 +255,7 @@ class QuestionBankController extends Controller
                 ? ' No unused AI questions could be removed (they may all be on an exam). Delete or edit an assessment, or use per-section reset if available.'
                 : ' Try “Regenerate” to replace unused AI items first.';
 
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('error', "Section {$section} is already full.{$hint}");
         }
         $generatedItems = array_slice($generatedItems, 0, $remaining);
@@ -284,13 +288,13 @@ class QuestionBankController extends Controller
             $msg = 'Questions generated and added to bank.';
         }
 
-        return redirect()->route('question-bank.show', $questionBank)->with('success', $msg);
+        return redirect()->route('assessment-studio.show', $questionBank)->with('success', $msg);
     }
 
     /**
      * Generate all missing fixed sections (A-E) in one action.
      */
-    public function generateAllSections(Request $request, QuestionBank $questionBank, QuestionGenerationService $generationService)
+    public function generateAllSections(Request $request, QuestionBank $questionBank, QuestionGeneratorContract $generationService)
     {
         $validated = $request->validate([
             'question_material_id' => ['required', 'exists:question_materials,id'],
@@ -304,11 +308,11 @@ class QuestionBankController extends Controller
 
         $text = $this->extractGenerationText($material);
         if (trim($text) === '') {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('error', $this->materialExtractionFailedMessage());
         }
 
-        $requiredCap = ['mcq' => 20, 'multi_true_false' => 4, 'matching' => 2, 'short_answer' => 6, 'essay' => 2];
+        $requiredCap = $this->requiredCountsByType();
         $marks = (float) ($validated['marks'] ?? 1);
         $removedTotal = 0;
         $addedTotal = 0;
@@ -353,7 +357,7 @@ class QuestionBankController extends Controller
         }
 
         if ($addedTotal === 0) {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('info', 'All sections are already full. Delete or edit assessments, then regenerate if you need replacement questions.');
         }
 
@@ -364,7 +368,7 @@ class QuestionBankController extends Controller
         $summary = implode(', ', $parts);
         $prefix = $request->boolean('regenerate') ? "Regenerated (removed {$removedTotal}) and added {$addedTotal} question(s)." : "Added {$addedTotal} question(s).";
 
-        return redirect()->route('question-bank.show', $questionBank)
+        return redirect()->route('assessment-studio.show', $questionBank)
             ->with('success', "{$prefix} {$summary}");
     }
 
@@ -380,11 +384,11 @@ class QuestionBankController extends Controller
         $section = array_flip($this->sectionTypeMap())[$validated['type']] ?? '?';
 
         if ($deleted === 0) {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('error', "Section {$section}: nothing to reset (no unused AI questions, or they are used on an exam).");
         }
 
-        return redirect()->route('question-bank.show', $questionBank)
+        return redirect()->route('assessment-studio.show', $questionBank)
             ->with('success', "Section {$section}: removed {$deleted} unused AI question(s). Generate again to refill.");
     }
 
@@ -407,13 +411,7 @@ class QuestionBankController extends Controller
         ]);
 
         $sectionMap = $this->sectionTypeMap();
-        $requestedCounts = [
-            'A' => 20,
-            'B' => 4,
-            'C' => 2,
-            'D' => 6,
-            'E' => 2,
-        ];
+        $requestedCounts = $this->requiredCountsBySection();
         $sectionMarks = [
             'A' => (float) $validated['marks_a'],
             'B' => (float) $validated['marks_b'],
@@ -439,7 +437,7 @@ class QuestionBankController extends Controller
         ]);
 
         if (array_sum($sectionMarks) <= 0) {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('error', 'Allocate marks for at least one section.');
         }
 
@@ -469,7 +467,7 @@ class QuestionBankController extends Controller
             }
 
             if ($picked->count() < $need) {
-                return redirect()->route('question-bank.show', $questionBank)
+                return redirect()->route('assessment-studio.show', $questionBank)
                     ->with('error', "Section {$section} needs {$need} {$questionType} question(s), but only {$picked->count()} are available. Generate questions in Step 2 first.");
             }
 
@@ -477,7 +475,7 @@ class QuestionBankController extends Controller
         }
 
         if ($selectedBySection === []) {
-            return redirect()->route('question-bank.show', $questionBank)
+            return redirect()->route('assessment-studio.show', $questionBank)
                 ->with('error', 'Allocate marks for at least one section (A–E) with available questions.');
         }
 
@@ -517,7 +515,102 @@ class QuestionBankController extends Controller
             return $exam;
         });
 
-        return redirect()->route('question-bank.exams.show', [$questionBank, $exam])->with('success', 'Exam created.');
+        return redirect()->route('assessment-studio.exams.show', [$questionBank, $exam])->with('success', 'Exam created.');
+    }
+
+    /**
+     * Build a quiz or assignment: no fixed A-E section structure, just a chosen
+     * mix of question types/counts/marks. The rigid exam path above is untouched.
+     */
+    public function createFlexibleAssessment(Request $request, QuestionBank $questionBank)
+    {
+        $validated = $request->validate([
+            'assessment_type' => ['required', 'in:quiz,assignment'],
+            'exam_type' => ['nullable', 'string', 'max:100'],
+            'module_code' => ['nullable', 'string', 'max:100'],
+            'module_name' => ['nullable', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'duration_minutes' => ['nullable', 'integer', 'min:1', 'max:720'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.type' => ['required', 'in:mcq,multi_true_false,matching,short_answer,essay'],
+            'items.*.count' => ['required', 'integer', 'min:1', 'max:50'],
+            'items.*.marks_each' => ['required', 'numeric', 'min:0.5', 'max:100'],
+        ]);
+
+        $typeLabels = $this->questionTypeLabels();
+        $selectedByType = [];
+        foreach ($validated['items'] as $row) {
+            $type = $row['type'];
+            $need = (int) $row['count'];
+
+            $picked = QuestionItem::query()
+                ->where('question_bank_id', $questionBank->id)
+                ->where('type', $type)
+                ->whereDoesntHave('examItems')
+                ->latest()
+                ->limit($need)
+                ->get();
+
+            if ($picked->count() < $need) {
+                $picked = QuestionItem::query()
+                    ->where('question_bank_id', $questionBank->id)
+                    ->where('type', $type)
+                    ->latest()
+                    ->limit($need)
+                    ->get();
+            }
+
+            if ($picked->count() < $need) {
+                $label = $typeLabels[$type] ?? $type;
+
+                return redirect()->route('assessment-studio.show', $questionBank)
+                    ->with('error', "Need {$need} {$label} question(s), but only {$picked->count()} are available. Add or generate more first.");
+            }
+
+            $selectedByType[] = ['type' => $type, 'marks_each' => (float) $row['marks_each'], 'questions' => $picked];
+        }
+
+        $totalMarks = collect($selectedByType)->sum(fn ($row) => $row['marks_each'] * $row['questions']->count());
+
+        $exam = DB::transaction(function () use ($questionBank, $validated, $selectedByType, $typeLabels, $totalMarks) {
+            $exam = ExamPaper::create([
+                'question_bank_id' => $questionBank->id,
+                'course_id' => $questionBank->course_id,
+                'created_by' => auth()->id(),
+                'assessment_type' => $validated['assessment_type'],
+                'exam_type' => $validated['exam_type'] ?? null,
+                'module_code' => $validated['module_code'] ?? ($questionBank->course?->code ?? null),
+                'module_name' => $validated['module_name'] ?? ($questionBank->course?->name ?? null),
+                'title' => $validated['title'],
+                'instructions' => 'Answer all questions.',
+                'duration_minutes' => $validated['duration_minutes'] ?? null,
+                'total_marks' => $totalMarks,
+            ]);
+
+            $order = 1;
+            foreach ($selectedByType as $row) {
+                $count = $row['questions']->count();
+                $label = $typeLabels[$row['type']] ?? $row['type'];
+                $instruction = $count === 1
+                    ? "Answer this {$label} question."
+                    : "Answer all {$count} {$label} questions.";
+
+                foreach ($row['questions']->values() as $question) {
+                    ExamPaperItem::create([
+                        'exam_paper_id' => $exam->id,
+                        'question_item_id' => $question->id,
+                        'section_label' => null,
+                        'section_instruction' => $instruction,
+                        'question_order' => $order++,
+                        'marks' => $row['marks_each'],
+                    ]);
+                }
+            }
+
+            return $exam;
+        });
+
+        return redirect()->route('assessment-studio.exams.show', [$questionBank, $exam])->with('success', ucfirst($validated['assessment_type']).' created.');
     }
 
     public function showExam(QuestionBank $questionBank, ExamPaper $examPaper)
@@ -526,7 +619,7 @@ class QuestionBankController extends Controller
 
         $examPaper->load(['items.question']);
 
-        return view('question-bank.exam-show', compact('questionBank', 'examPaper'));
+        return view('assessment-studio.exam-show', compact('questionBank', 'examPaper'));
     }
 
     public function destroyExam(Request $request, QuestionBank $questionBank, ExamPaper $examPaper)
@@ -538,8 +631,8 @@ class QuestionBankController extends Controller
 
         $examPaper->delete();
 
-        return redirect()->route('question-bank.show', $questionBank)
-            ->with('success', 'Assessment removed. Question bank items are unchanged; create a new assessment when ready.');
+        return redirect()->route('assessment-studio.show', $questionBank)
+            ->with('success', 'Assessment removed. Bank items are unchanged; create a new assessment when ready.');
     }
 
     public function bulkDestroyExams(Request $request, QuestionBank $questionBank)
@@ -547,7 +640,7 @@ class QuestionBankController extends Controller
         return $this->bulkDestroyRecords(
             $request,
             ExamPaper::class,
-            'question-bank.show',
+            'assessment-studio.show',
             fn () => ['questionBank' => $questionBank],
             singularLabel: 'assessment',
             deleter: function (ExamPaper $exam) use ($questionBank) {
@@ -576,7 +669,7 @@ class QuestionBankController extends Controller
             ->whereDoesntHave('examItems')
             ->delete();
 
-        return redirect()->route('question-bank.show', $questionBank)
+        return redirect()->route('assessment-studio.show', $questionBank)
             ->with('success', "Removed {$deleted} unused AI-generated question(s). Sections can be filled again.");
     }
 
@@ -622,17 +715,6 @@ class QuestionBankController extends Controller
             ->delete();
     }
 
-    private function sectionTypeMap(): array
-    {
-        return [
-            'A' => 'mcq',
-            'B' => 'multi_true_false',
-            'C' => 'matching',
-            'D' => 'short_answer',
-            'E' => 'essay',
-        ];
-    }
-
     private function buildCoverPage($section, ExamPaper $examPaper): void
     {
         $section->addText('MINISTRY OF HEALTH', 'exam_heading', 'exam_center_single');
@@ -668,15 +750,33 @@ class QuestionBankController extends Controller
         $this->addOfficialUseHeaderCell($table->addCell(1100), "SCORED\nMARKS");
         $this->addOfficialUseHeaderCell($table->addCell(1400), "INITIAL SIGNATURE\nOF MARKER");
         $this->addOfficialUseHeaderCell($table->addCell(1400), "INITIAL SIGNATURE\nOF VERIFIER");
-        $sectionMarks = $this->sectionMarksFromItems($examPaper);
-        foreach (['A' => 'MULTIPLE CHOICE', 'B' => 'MULTIPLE TRUE/FALSE', 'C' => 'MATCHING ITEM', 'D' => 'SHORT ANSWER', 'E' => 'GUIDED ESSAY'] as $sec => $label) {
-            $table->addRow();
-            $table->addCell(900)->addText($sec, 'exam_body', ['alignment' => 'center']);
-            $table->addCell(2600)->addText($label, 'exam_body', ['alignment' => 'left']);
-            $table->addCell(1100)->addText((string) (int) round($sectionMarks[$sec] ?? 0), 'exam_body', ['alignment' => 'center']);
-            $table->addCell(1100)->addText('');
-            $table->addCell(1400)->addText('');
-            $table->addCell(1400)->addText('');
+        if ($examPaper->assessment_type === 'exam') {
+            $sectionMarks = $this->sectionMarksFromItems($examPaper);
+            foreach (['A' => 'MULTIPLE CHOICE', 'B' => 'MULTIPLE TRUE/FALSE', 'C' => 'MATCHING ITEM', 'D' => 'SHORT ANSWER', 'E' => 'GUIDED ESSAY'] as $sec => $label) {
+                $table->addRow();
+                $table->addCell(900)->addText($sec, 'exam_body', ['alignment' => 'center']);
+                $table->addCell(2600)->addText($label, 'exam_body', ['alignment' => 'left']);
+                $table->addCell(1100)->addText((string) (int) round($sectionMarks[$sec] ?? 0), 'exam_body', ['alignment' => 'center']);
+                $table->addCell(1100)->addText('');
+                $table->addCell(1400)->addText('');
+                $table->addCell(1400)->addText('');
+            }
+        } else {
+            $typeLabels = ['mcq' => 'MULTIPLE CHOICE', 'multi_true_false' => 'MULTIPLE TRUE/FALSE', 'matching' => 'MATCHING ITEM', 'short_answer' => 'SHORT ANSWER', 'essay' => 'GUIDED ESSAY'];
+            $marksByType = [];
+            foreach ($examPaper->items as $item) {
+                $type = $item->question->type ?? 'mcq';
+                $marksByType[$type] = ($marksByType[$type] ?? 0) + (float) $item->marks;
+            }
+            foreach ($marksByType as $type => $marks) {
+                $table->addRow();
+                $table->addCell(900)->addText('', 'exam_body', ['alignment' => 'center']);
+                $table->addCell(2600)->addText($typeLabels[$type] ?? strtoupper($type), 'exam_body', ['alignment' => 'left']);
+                $table->addCell(1100)->addText((string) (int) round($marks), 'exam_body', ['alignment' => 'center']);
+                $table->addCell(1100)->addText('');
+                $table->addCell(1400)->addText('');
+                $table->addCell(1400)->addText('');
+            }
         }
         $table->addRow();
         $table->addCell(900)->addText('');
@@ -821,6 +921,12 @@ class QuestionBankController extends Controller
 
     private function buildQuestionBody($section, ExamPaper $examPaper, bool $withAnswers): void
     {
+        if ($examPaper->assessment_type !== 'exam') {
+            $this->buildFlexibleQuestionBody($section, $examPaper, $withAnswers);
+
+            return;
+        }
+
         $itemsBySection = $examPaper->items->groupBy(fn ($item) => $item->section_label ?: 'Z');
         $sectionMarks = $this->sectionMarksFromItems($examPaper);
         $nextArabic = 1;
@@ -1020,6 +1126,132 @@ class QuestionBankController extends Controller
             }
         }
 
+    }
+
+    /**
+     * Simple renderer for quiz/assignment papers: grouped by question type,
+     * no fixed section letters and no NACTVET-specific instruction wording.
+     */
+    private function buildFlexibleQuestionBody($section, ExamPaper $examPaper, bool $withAnswers): void
+    {
+        $typeLabels = [
+            'mcq' => 'Multiple Choice Questions',
+            'multi_true_false' => 'True/False Questions',
+            'matching' => 'Matching Questions',
+            'short_answer' => 'Short Answer Questions',
+            'essay' => 'Essay Questions',
+        ];
+
+        $itemsByType = $examPaper->items->groupBy(fn ($item) => $item->question->type ?? 'mcq');
+        $questionNumber = 1;
+
+        foreach ($typeLabels as $type => $heading) {
+            $items = $itemsByType->get($type, collect())->values();
+            if ($items->isEmpty()) {
+                continue;
+            }
+
+            $groupMarks = (int) round($items->sum('marks'));
+            $section->addText(
+                strtoupper($heading).' ('.$groupMarks.' MARKS)',
+                'exam_body_bold',
+                ['spaceBefore' => 200, 'spaceAfter' => 120, 'alignment' => 'left']
+            );
+            if ($instruction = $items->first()->section_instruction) {
+                $section->addText($instruction, 'exam_body', 'exam_left_single');
+            }
+            $section->addTextBreak();
+
+            foreach ($items as $item) {
+                $q = $item->question;
+                $section->addText($questionNumber++.'. '.$this->displayStem($q->stem).' ('.(int) round((float) $item->marks).' marks)', 'exam_body', 'exam_left_single');
+
+                match ($type) {
+                    'mcq' => $this->renderFlexibleMcq($section, $q, $withAnswers),
+                    'multi_true_false' => $this->renderFlexibleMultiTrueFalse($section, $q, $withAnswers),
+                    'matching' => $this->renderFlexibleMatching($section, $q, $withAnswers),
+                    'short_answer' => $this->renderFlexibleShortAnswer($section, $q, $withAnswers),
+                    default => $this->renderFlexibleEssay($section, $q, $withAnswers),
+                };
+
+                $section->addTextBreak();
+            }
+        }
+    }
+
+    private function renderFlexibleMcq($section, QuestionItem $q, bool $withAnswers): void
+    {
+        if (! is_array($q->options)) {
+            return;
+        }
+        foreach (array_values($q->options) as $option) {
+            $section->addText(($option['label'] ?? '-').'. '.($option['text'] ?? ''), 'exam_body', ['indent' => 0.5]);
+        }
+        if ($withAnswers) {
+            $letter = strtoupper(substr(trim((string) ($q->answer_key['correct'] ?? '')), 0, 1));
+            if ($letter !== '') {
+                $section->addText('Answer: '.$letter, 'exam_body_bold', 'exam_left_single');
+            }
+        }
+    }
+
+    private function renderFlexibleMultiTrueFalse($section, QuestionItem $q, bool $withAnswers): void
+    {
+        if (! is_array($q->options)) {
+            return;
+        }
+        foreach (array_values($q->options) as $idx => $statement) {
+            $lab = $this->intToRomanLower($idx + 1).'.';
+            $section->addText($lab.' '.($statement['statement'] ?? '').' ………', 'exam_body', ['indent' => 0.5]);
+        }
+        if ($withAnswers && isset($q->answer_key['answers']) && is_array($q->answer_key['answers'])) {
+            $parts = [];
+            foreach (array_values($q->answer_key['answers']) as $ai => $a) {
+                $parts[] = $this->intToRomanLower($ai + 1).': '.($a ? 'TRUE' : 'FALSE');
+            }
+            $section->addText('Answer: '.implode('; ', $parts), 'exam_body', 'exam_left_single');
+        }
+    }
+
+    private function renderFlexibleMatching($section, QuestionItem $q, bool $withAnswers): void
+    {
+        if (! is_array($q->options) || ! isset($q->options['pairs'])) {
+            return;
+        }
+        $pairs = array_values($q->options['pairs']);
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000']);
+        $table->addRow();
+        $table->addCell(4500)->addText('COLUMN A');
+        $table->addCell(4500)->addText('COLUMN B');
+        foreach ($pairs as $pair) {
+            $table->addRow();
+            $table->addCell(4500)->addText(trim((string) ($pair['left'] ?? '')));
+            $table->addCell(4500)->addText($withAnswers ? trim((string) ($pair['right'] ?? '')) : '…………');
+        }
+    }
+
+    private function renderFlexibleShortAnswer($section, QuestionItem $q, bool $withAnswers): void
+    {
+        foreach (['i', 'ii', 'iii', 'iv', 'v'] as $sp) {
+            $section->addText($sp.'. ………………………………………………………………………………………………………', 'exam_body', ['indent' => 0.35]);
+        }
+        if ($withAnswers && ($sample = $q->answer_key['sample'] ?? null)) {
+            $section->addText('Answer Guide: '.$sample, 'exam_body', 'exam_left_single');
+        }
+    }
+
+    private function renderFlexibleEssay($section, QuestionItem $q, bool $withAnswers): void
+    {
+        if (! $withAnswers) {
+            return;
+        }
+        if (! empty($q->rubric['parts']) && is_array($q->rubric['parts'])) {
+            $parts = array_map(fn ($p) => ($p['label'] ?? '').' ('.($p['marks'] ?? 0).' marks)', $q->rubric['parts']);
+            $section->addText('Marking guide: '.implode(', ', $parts), 'exam_body', 'exam_left_single');
+        } elseif (! empty($q->answer_key['sample_outline'])) {
+            $sample = $q->answer_key['sample_outline'];
+            $section->addText('Answer Guide: '.(is_array($sample) ? implode(' | ', $sample) : $sample), 'exam_body', 'exam_left_single');
+        }
     }
 
     private function intToRomanLower(int $num): string

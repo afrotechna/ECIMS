@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\QuestionGeneration\QuestionGeneratorContract;
+use App\Services\QuestionGeneration\TemplateQuestionGenerator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(QuestionGeneratorContract::class, TemplateQuestionGenerator::class);
     }
 
     public function boot(): void

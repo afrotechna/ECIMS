@@ -1,22 +1,23 @@
 @extends('layouts.app')
-@section('title', 'Question Bank')
+@section('title', 'Assessment Studio')
 @section('content')
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Dashboard</a>
     <span class="mx-2">/</span>
-    <span>Question Bank</span>
+    <span>Assessment Studio</span>
 </nav>
 
 <div class="page-header-landing d-flex justify-content-between align-items-center">
     <div>
-        <h1 class="page-title-landing">Question Bank</h1>
+        <h1 class="page-title-landing">Assessment Studio</h1>
+        <p class="page-subtitle-landing mb-0">Build question banks from your notes and materials, then generate exams, quizzes, and assignments for a module.</p>
     </div>
 </div>
 
 <div class="card card-landing mb-4">
     <div class="card-header-landing">Create New Bank</div>
     <div class="card-body">
-        <form method="POST" action="{{ route('question-bank.store') }}" class="row g-3">
+        <form method="POST" action="{{ route('assessment-studio.store') }}" class="row g-3">
             @csrf
             <div class="col-md-4">
                 <label class="form-label">Bank name</label>
@@ -66,7 +67,7 @@
                         <td>{{ $bank->questions_count }}</td>
                         <td>{{ $bank->exams_count }}</td>
                         <td>
-                            <a href="{{ route('question-bank.show', $bank) }}" class="btn btn-sm btn-outline-primary">Open</a>
+                            <a href="{{ route('assessment-studio.show', $bank) }}" class="btn btn-sm btn-outline-primary">Open</a>
                         </td>
                     </tr>
                 @empty

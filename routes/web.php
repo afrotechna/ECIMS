@@ -27,6 +27,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileCompleteController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\QuestionBankController;
+use App\Http\Controllers\QuestionItemController;
 use App\Http\Controllers\RegistrationWizardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResultApprovalController;
@@ -321,19 +322,25 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::post('timetable-slots', [\App\Http\Controllers\TimetableSlotController::class, 'store'])->name('timetable-slots.store');
             Route::post('timetable-slots/auto-generate', [\App\Http\Controllers\TimetableSlotController::class, 'autoGenerate'])->name('timetable-slots.auto-generate');
 
-            Route::get('question-bank', [QuestionBankController::class, 'index'])->name('question-bank.index');
-            Route::post('question-bank', [QuestionBankController::class, 'storeBank'])->name('question-bank.store');
-            Route::get('question-bank/{questionBank}', [QuestionBankController::class, 'show'])->name('question-bank.show');
-            Route::post('question-bank/{questionBank}/materials', [QuestionBankController::class, 'uploadMaterial'])->name('question-bank.materials.store');
-            Route::post('question-bank/{questionBank}/generate', [QuestionBankController::class, 'generate'])->name('question-bank.generate');
-            Route::post('question-bank/{questionBank}/generate-all', [QuestionBankController::class, 'generateAllSections'])->name('question-bank.generate-all');
-            Route::post('question-bank/{questionBank}/reset-section', [QuestionBankController::class, 'resetSectionQuestions'])->name('question-bank.reset-section');
-            Route::post('question-bank/{questionBank}/exams', [QuestionBankController::class, 'createExam'])->name('question-bank.exams.store');
-            Route::get('question-bank/{questionBank}/exams/{examPaper}', [QuestionBankController::class, 'showExam'])->name('question-bank.exams.show');
-            Route::get('question-bank/{questionBank}/exams/{examPaper}/export-docx', [QuestionBankController::class, 'exportDocx'])->name('question-bank.exams.export-docx');
-            Route::delete('question-bank/{questionBank}/exams/{examPaper}', [QuestionBankController::class, 'destroyExam'])->name('question-bank.exams.destroy');
-            Route::post('question-bank/{questionBank}/exams/bulk-destroy', [QuestionBankController::class, 'bulkDestroyExams'])->name('question-bank.exams.bulk-destroy');
-            Route::post('question-bank/{questionBank}/purge-unused-ai-questions', [QuestionBankController::class, 'purgeUnusedAiQuestions'])->name('question-bank.purge-unused-ai');
+            Route::get('assessment-studio', [QuestionBankController::class, 'index'])->name('assessment-studio.index');
+            Route::post('assessment-studio', [QuestionBankController::class, 'storeBank'])->name('assessment-studio.store');
+            Route::get('assessment-studio/{questionBank}', [QuestionBankController::class, 'show'])->name('assessment-studio.show');
+            Route::post('assessment-studio/{questionBank}/materials', [QuestionBankController::class, 'uploadMaterial'])->name('assessment-studio.materials.store');
+            Route::post('assessment-studio/{questionBank}/generate', [QuestionBankController::class, 'generate'])->name('assessment-studio.generate');
+            Route::post('assessment-studio/{questionBank}/generate-all', [QuestionBankController::class, 'generateAllSections'])->name('assessment-studio.generate-all');
+            Route::post('assessment-studio/{questionBank}/reset-section', [QuestionBankController::class, 'resetSectionQuestions'])->name('assessment-studio.reset-section');
+            Route::get('assessment-studio/{questionBank}/questions/create', [QuestionItemController::class, 'create'])->name('assessment-studio.questions.create');
+            Route::post('assessment-studio/{questionBank}/questions', [QuestionItemController::class, 'store'])->name('assessment-studio.questions.store');
+            Route::get('assessment-studio/{questionBank}/questions/{questionItem}/edit', [QuestionItemController::class, 'edit'])->name('assessment-studio.questions.edit');
+            Route::put('assessment-studio/{questionBank}/questions/{questionItem}', [QuestionItemController::class, 'update'])->name('assessment-studio.questions.update');
+            Route::delete('assessment-studio/{questionBank}/questions/{questionItem}', [QuestionItemController::class, 'destroy'])->name('assessment-studio.questions.destroy');
+            Route::post('assessment-studio/{questionBank}/exams', [QuestionBankController::class, 'createExam'])->name('assessment-studio.exams.store');
+            Route::post('assessment-studio/{questionBank}/assessments/flexible', [QuestionBankController::class, 'createFlexibleAssessment'])->name('assessment-studio.assessments.store-flexible');
+            Route::get('assessment-studio/{questionBank}/exams/{examPaper}', [QuestionBankController::class, 'showExam'])->name('assessment-studio.exams.show');
+            Route::get('assessment-studio/{questionBank}/exams/{examPaper}/export-docx', [QuestionBankController::class, 'exportDocx'])->name('assessment-studio.exams.export-docx');
+            Route::delete('assessment-studio/{questionBank}/exams/{examPaper}', [QuestionBankController::class, 'destroyExam'])->name('assessment-studio.exams.destroy');
+            Route::post('assessment-studio/{questionBank}/exams/bulk-destroy', [QuestionBankController::class, 'bulkDestroyExams'])->name('assessment-studio.exams.bulk-destroy');
+            Route::post('assessment-studio/{questionBank}/purge-unused-ai-questions', [QuestionBankController::class, 'purgeUnusedAiQuestions'])->name('assessment-studio.purge-unused-ai');
         });
 
         // Finance: bursar/accountant or admin only
