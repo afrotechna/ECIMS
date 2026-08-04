@@ -8,8 +8,8 @@
 <form action="{{ route('timetable-slots.store') }}" method="POST">
 @csrf
 <div class="row g-3">
-<div class="col-md-6"><label class="form-label">Semester</label><select class="form-select" name="semester_id" required>@foreach($semesters as $s)<option value="{{ $s->id }}">{{ $s->label }}</option>@endforeach</select></div>
-<div class="col-md-6"><label class="form-label">Course</label><select class="form-select" name="course_id" required>@foreach($courses as $c)<option value="{{ $c->id }}">{{ $c->code }} — {{ $c->name }}</option>@endforeach</select></div>
+<div class="col-md-6"><label class="form-label">Semester</label><select class="form-select" name="semester_id" id="slotSemester" required><option value="">Select</option>@foreach($semesters as $s)<option value="{{ $s->id }}">{{ $s->label }}</option>@endforeach</select></div>
+<div class="col-md-6"><label class="form-label">Course</label><select class="form-select" name="course_id" id="slotCourse" required><option value="">Select a semester first</option>@foreach($courses as $c)<option value="{{ $c->id }}">{{ $c->code }} — {{ $c->name }}</option>@endforeach</select></div>
 <div class="col-md-4"><label class="form-label">Day</label><select class="form-select" name="day_of_week" required>@foreach(\App\Models\TimetableSlot::DAYS as $d => $label)<option value="{{ $d }}">{{ $label }}</option>@endforeach</select></div>
 <div class="col-md-2"><label class="form-label">Start</label><input type="time" class="form-control" name="start_time" required></div>
 <div class="col-md-2"><label class="form-label">End</label><input type="time" class="form-control" name="end_time" required></div>
@@ -19,4 +19,41 @@
 </form>
 </div>
 </div>
+
+<div class="card card-landing mt-3">
+    <div class="card-header-landing"><i class="bi bi-magic me-2"></i>Or generate a whole week automatically</div>
+    <div class="card-body">
+        <p class="small text-muted mb-0">Pick a semester and its modules, then randomly fill the standard 3-session week in one go, from the <a href="{{ route('timetable-slots.index') }}">Timetable</a> page.</p>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+(function () {
+    var semesterSelect = document.getElementById('slotSemester');
+    var courseSelect = document.getElementById('slotCourse');
+    if (!semesterSelect || !courseSelect) return;
+
+    semesterSelect.addEventListener('change', function () {
+        var semesterId = semesterSelect.value;
+        courseSelect.innerHTML = '<option value="">Loading…</option>';
+        if (!semesterId) {
+            courseSelect.innerHTML = '<option value="">Select a semester first</option>';
+            return;
+        }
+        fetch('{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId))
+            .then(function (r) { return r.json(); })
+            .then(function (courses) {
+                if (!courses.length) {
+                    courseSelect.innerHTML = '<option value="">No modules in this semester</option>';
+                    return;
+                }
+                courseSelect.innerHTML = courses.map(function (c) {
+                    return '<option value="' + c.id + '">' + c.code + ' — ' + c.name + '</option>';
+                }).join('');
+            });
+    });
+})();
+</script>
+@endpush
 @endsection

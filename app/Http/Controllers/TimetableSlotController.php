@@ -58,25 +58,25 @@ class TimetableSlotController extends Controller
     {
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
-            'programme_id' => ['required', 'exists:programmes,id'],
+            'course_ids' => ['required', 'array', 'min:1'],
+            'course_ids.*' => ['integer', 'exists:courses,id'],
         ]);
 
-        if (auth()->user()->hodProgrammeId() && (int) $validated['programme_id'] !== auth()->user()->hodProgrammeId()) {
-            abort(403);
-        }
-
         $semester = Semester::findOrFail($validated['semester_id']);
-        $courses = Course::where('programme_id', $validated['programme_id'])
-            ->where('is_active', true)
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+
+        $courses = Course::where('is_active', true)
+            ->whereIn('id', $validated['course_ids'])
             ->whereHas('semesters', fn ($q) => $q->where('semesters.id', $semester->id))
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
             ->orderBy('code')
             ->get();
 
-        $redirectParams = ['semester_id' => $semester->id, 'programme_id' => $validated['programme_id']];
+        $redirectParams = ['semester_id' => $semester->id];
 
         if ($courses->isEmpty()) {
             return redirect()->route('timetable-slots.index', $redirectParams)
-                ->with('error', 'No modules found for that programme in this semester — nothing to schedule.');
+                ->with('error', 'None of the selected modules belong to this semester — nothing to schedule.');
         }
 
         $cells = [];
@@ -89,17 +89,32 @@ class TimetableSlotController extends Controller
 
         if ($courses->count() > $maxModules) {
             return redirect()->route('timetable-slots.index', $redirectParams)
-                ->with('error', "Auto-generate fits up to {$maxModules} modules a week (2 sessions each across ".count($cells)." weekly slots). This selection has {$courses->count()} modules — trim the list or add extra slots manually.");
+                ->with('error', "Auto-generate fits up to {$maxModules} modules a week (2 sessions each across ".count($cells)." weekly slots). This selection has {$courses->count()} modules — uncheck some or add extra slots manually.");
         }
 
         TimetableSlot::where('semester_id', $semester->id)
             ->whereIn('course_id', $courses->pluck('id'))
             ->delete();
 
-        $secondOccurrenceOffset = intdiv(count($cells), 2);
-        foreach ($courses->values() as $i => $course) {
-            foreach ([$i, $i + $secondOccurrenceOffset] as $cellIndex) {
-                $cell = $cells[$cellIndex];
+        // True random placement: shuffle the weekly slot pool, then for each module
+        // draw two cells that aren't on the same day where possible.
+        $pool = $cells;
+        shuffle($pool);
+
+        foreach ($courses->shuffle()->values() as $course) {
+            $first = array_shift($pool);
+            $sameDayIndex = collect($pool)->search(fn ($cell) => $cell['day'] === $first['day']);
+            if ($sameDayIndex !== false && count($pool) > 1) {
+                // Prefer a cell on a different day for the second session when one is available.
+                $differentDayIndex = collect($pool)->search(fn ($cell) => $cell['day'] !== $first['day']);
+                $second = $differentDayIndex !== false
+                    ? array_splice($pool, $differentDayIndex, 1)[0]
+                    : array_shift($pool);
+            } else {
+                $second = array_shift($pool);
+            }
+
+            foreach ([$first, $second] as $cell) {
                 TimetableSlot::create([
                     'semester_id' => $semester->id,
                     'course_id' => $course->id,
@@ -111,7 +126,25 @@ class TimetableSlotController extends Controller
         }
 
         return redirect()->route('timetable-slots.index', $redirectParams)
-            ->with('success', 'Weekly timetable generated for '.$courses->count().' module(s) — two sessions each, Monday to Friday.');
+            ->with('success', 'Weekly timetable randomly generated for '.$courses->count().' module(s) — two sessions each, Monday to Friday.');
+    }
+
+    /** JSON list of active modules under a semester, for the semester-driven course pickers. */
+    public function coursesForSemester(Request $request)
+    {
+        $validated = $request->validate([
+            'semester_id' => ['required', 'exists:semesters,id'],
+        ]);
+
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+
+        $courses = Course::where('is_active', true)
+            ->whereHas('semesters', fn ($q) => $q->where('semesters.id', $validated['semester_id']))
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->orderBy('code')
+            ->get(['id', 'code', 'name']);
+
+        return response()->json($courses);
     }
 
     public function create(Request $request)

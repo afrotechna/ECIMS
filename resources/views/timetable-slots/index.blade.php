@@ -33,31 +33,31 @@
 <div class="card card-landing mb-3">
     <div class="card-header-landing"><i class="bi bi-magic me-2"></i>Auto-generate weekly timetable</div>
     <div class="card-body">
-        <p class="small text-muted mb-3">Fills the standard Monday–Friday week (07:30–09:30, 10:00–12:30, 13:30–16:30) with two sessions per module for the selected semester and programme. This replaces any existing slots for those modules in that semester.</p>
-        <form method="POST" action="{{ route('timetable-slots.auto-generate') }}" class="row g-2 align-items-end" data-swal-confirm data-swal-title="Generate the weekly timetable?" data-swal-text="Existing slots for this programme's modules in this semester will be replaced.">
+        <p class="small text-muted mb-3">Pick a semester, choose which of its modules to schedule, then randomly fill the standard Monday–Friday week (07:30–09:30, 10:00–12:30, 13:30–16:30 with a morning and lunch break) with two sessions per module. This replaces any existing slots for the selected modules in that semester.</p>
+        <form method="POST" action="{{ route('timetable-slots.auto-generate') }}" id="autoGenerateForm" data-swal-confirm data-swal-title="Generate the weekly timetable?" data-swal-text="Existing slots for the selected modules in this semester will be replaced.">
             @csrf
-            <div class="col-auto">
-                <label class="form-label small mb-0">Semester</label>
-                <select name="semester_id" class="form-select form-select-sm" required>
-                    <option value="">Select</option>
-                    @foreach($semesters as $s)
-                        <option value="{{ $s->id }}" {{ (string) $semesterId === (string) $s->id ? 'selected' : '' }}>{{ $s->label }}</option>
-                    @endforeach
-                </select>
+            <div class="row g-2 align-items-end mb-2">
+                <div class="col-auto">
+                    <label class="form-label small mb-0">Semester</label>
+                    <select name="semester_id" id="autoGenSemester" class="form-select form-select-sm" required>
+                        <option value="">Select</option>
+                        @foreach($semesters as $s)
+                            <option value="{{ $s->id }}" {{ (string) $semesterId === (string) $s->id ? 'selected' : '' }}>{{ $s->label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-primary" id="autoGenSubmit" disabled><i class="bi bi-magic me-1"></i> Generate randomly</button>
+                </div>
             </div>
-            <div class="col-auto">
-                <label class="form-label small mb-0">Programme</label>
-                <select name="programme_id" class="form-select form-select-sm" required @if(auth()->user()->hodProgrammeId()) disabled @endif>
-                    <option value="">Select</option>
-                    @foreach($programmes as $p)
-                        <option value="{{ $p->id }}" {{ (string) $programmeId === (string) $p->id ? 'selected' : '' }}>{{ $p->code }} — {{ $p->name }}</option>
-                    @endforeach
-                </select>
-                @if(auth()->user()->hodProgrammeId())
-                    <input type="hidden" name="programme_id" value="{{ $programmeId }}">
-                @endif
+            <div id="autoGenModulesWrap" class="d-none">
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" id="autoGenSelectAll" checked>
+                    <label class="form-check-label small fw-semibold" for="autoGenSelectAll">Select all modules</label>
+                </div>
+                <div id="autoGenModulesList" class="row g-1"></div>
             </div>
-            <div class="col-auto"><button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-magic me-1"></i> Generate</button></div>
+            <p id="autoGenEmpty" class="small text-muted mb-0 d-none">No active modules found for this semester.</p>
         </form>
     </div>
 </div>
@@ -178,4 +178,64 @@
 </div>
 @include('partials.bulk-delete.scripts')
 @endif
+
+@push('scripts')
+<script>
+(function () {
+    var semesterSelect = document.getElementById('autoGenSemester');
+    var modulesWrap = document.getElementById('autoGenModulesWrap');
+    var modulesList = document.getElementById('autoGenModulesList');
+    var emptyMsg = document.getElementById('autoGenEmpty');
+    var selectAll = document.getElementById('autoGenSelectAll');
+    var submitBtn = document.getElementById('autoGenSubmit');
+    if (!semesterSelect) return;
+
+    function setSubmitEnabled() {
+        var anyChecked = modulesList.querySelectorAll('input[name="course_ids[]"]:checked').length > 0;
+        submitBtn.disabled = !anyChecked;
+    }
+
+    function loadModules() {
+        var semesterId = semesterSelect.value;
+        modulesList.innerHTML = '';
+        modulesWrap.classList.add('d-none');
+        emptyMsg.classList.add('d-none');
+        submitBtn.disabled = true;
+        if (!semesterId) return;
+
+        fetch('{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId))
+            .then(function (r) { return r.json(); })
+            .then(function (courses) {
+                if (!courses.length) {
+                    emptyMsg.classList.remove('d-none');
+                    return;
+                }
+                courses.forEach(function (c) {
+                    var col = document.createElement('div');
+                    col.className = 'col-md-4 col-lg-3';
+                    col.innerHTML = '<div class="form-check">' +
+                        '<input class="form-check-input" type="checkbox" name="course_ids[]" value="' + c.id + '" id="autoGenCourse' + c.id + '" checked>' +
+                        '<label class="form-check-label small" for="autoGenCourse' + c.id + '">' + c.code + '</label>' +
+                        '</div>';
+                    modulesList.appendChild(col);
+                });
+                modulesWrap.classList.remove('d-none');
+                selectAll.checked = true;
+                setSubmitEnabled();
+            });
+    }
+
+    semesterSelect.addEventListener('change', loadModules);
+    selectAll.addEventListener('change', function () {
+        modulesList.querySelectorAll('input[name="course_ids[]"]').forEach(function (cb) { cb.checked = selectAll.checked; });
+        setSubmitEnabled();
+    });
+    modulesList.addEventListener('change', function (e) {
+        if (e.target.name === 'course_ids[]') setSubmitEnabled();
+    });
+
+    if (semesterSelect.value) loadModules();
+})();
+</script>
+@endpush
 @endsection
