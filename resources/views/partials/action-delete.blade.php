@@ -15,7 +15,7 @@
         @if($swalTitle) data-swal-confirm data-swal-title="{{ $swalTitle }}" data-swal-icon="warning" @endif
         @if($swalText) data-swal-text="{{ $swalText }}" @endif
         {{ $attributes }}>
-    <i class="bi bi-trash-fill" aria-hidden="true"></i>
+    <i class="bi bi-trash3-fill" aria-hidden="true"></i>
     @if($label)
         <span class="ms-1">{{ $label }}</span>
     @elseif(! $iconOnly)

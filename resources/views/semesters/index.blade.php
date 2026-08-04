@@ -53,8 +53,8 @@
                 <label for="filter_academic_year" class="form-label">Academic year</label>
                 <select name="academic_year" id="filter_academic_year" class="form-select" onchange="this.form.submit()" data-no-search>
                     <option value="">All years</option>
-                    @foreach($academicYearOptions as $start => $label)
-                        <option value="{{ $start }}" {{ (string) request('academic_year') === (string) $start ? 'selected' : '' }}>{{ $label }}</option>
+                    @foreach($academicYearOptions as $start => $yearLabel)
+                        <option value="{{ $start }}" {{ (string) request('academic_year') === (string) $start ? 'selected' : '' }}>{{ $yearLabel }}</option>
                     @endforeach
                 </select>
             </div>
