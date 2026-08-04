@@ -20,6 +20,7 @@ class FeeStructure extends Model
         'nactvet_qa',
         'accommodation',
         'other_charges',
+        'national_exam_fee',
         'is_active',
     ];
 
@@ -29,6 +30,7 @@ class FeeStructure extends Model
         'nactvet_qa' => 'decimal:0',
         'accommodation' => 'decimal:0',
         'other_charges' => 'decimal:0',
+        'national_exam_fee' => 'decimal:0',
         'is_active' => 'boolean',
     ];
 

@@ -45,13 +45,16 @@ class FeeStructureController extends Controller
             'sem2_tuition_repeat_transfer' => ['required', 'numeric', 'min:0'],
             'accommodation' => ['nullable', 'numeric', 'min:0'],
             'other_charges' => ['nullable', 'numeric', 'min:0'],
+            'national_exam_fee' => ['nullable', 'numeric', 'min:0'],
+            'sem1_internal_exam' => ['nullable', 'numeric', 'min:0'],
+            'sem2_internal_exam' => ['nullable', 'numeric', 'min:0'],
+            'registration' => ['nullable', 'numeric', 'min:0'],
+            'games' => ['nullable', 'numeric', 'min:0'],
+            'emergency_fund' => ['nullable', 'numeric', 'min:0'],
+            'practicum_guide' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['boolean'],
         ]);
-        $validated['programme_id'] = $validated['programme_id'] ?: null;
-        $validated['sem1_nhif'] = $validated['sem1_nhif'] ?? 0;
-        $validated['sem1_nactvet_qa'] = $validated['sem1_nactvet_qa'] ?? 0;
-        $validated['accommodation'] = $validated['accommodation'] ?? 0;
-        $validated['other_charges'] = $validated['other_charges'] ?? 0;
+        $validated = $this->normalizeBreakdown($validated);
 
         $aggregate = [
             'academic_year' => $validated['academic_year'],
@@ -61,6 +64,7 @@ class FeeStructureController extends Controller
             'nactvet_qa' => $validated['sem1_nactvet_qa'],
             'accommodation' => $validated['accommodation'],
             'other_charges' => $validated['other_charges'],
+            'national_exam_fee' => $validated['national_exam_fee'],
             'is_active' => $request->boolean('is_active', true),
         ];
 
@@ -92,13 +96,16 @@ class FeeStructureController extends Controller
             'sem2_tuition_repeat_transfer' => ['required', 'numeric', 'min:0'],
             'accommodation' => ['nullable', 'numeric', 'min:0'],
             'other_charges' => ['nullable', 'numeric', 'min:0'],
+            'national_exam_fee' => ['nullable', 'numeric', 'min:0'],
+            'sem1_internal_exam' => ['nullable', 'numeric', 'min:0'],
+            'sem2_internal_exam' => ['nullable', 'numeric', 'min:0'],
+            'registration' => ['nullable', 'numeric', 'min:0'],
+            'games' => ['nullable', 'numeric', 'min:0'],
+            'emergency_fund' => ['nullable', 'numeric', 'min:0'],
+            'practicum_guide' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['boolean'],
         ]);
-        $validated['programme_id'] = $validated['programme_id'] ?: null;
-        $validated['sem1_nhif'] = $validated['sem1_nhif'] ?? 0;
-        $validated['sem1_nactvet_qa'] = $validated['sem1_nactvet_qa'] ?? 0;
-        $validated['accommodation'] = $validated['accommodation'] ?? 0;
-        $validated['other_charges'] = $validated['other_charges'] ?? 0;
+        $validated = $this->normalizeBreakdown($validated);
 
         $aggregate = [
             'academic_year' => $validated['academic_year'],
@@ -108,6 +115,7 @@ class FeeStructureController extends Controller
             'nactvet_qa' => $validated['sem1_nactvet_qa'],
             'accommodation' => $validated['accommodation'],
             'other_charges' => $validated['other_charges'],
+            'national_exam_fee' => $validated['national_exam_fee'],
             'is_active' => $request->boolean('is_active'),
         ];
 
@@ -115,6 +123,23 @@ class FeeStructureController extends Controller
         $this->syncFeeStructureSemesters($fee_structure, $validated);
 
         return redirect()->route('fee-structures.index')->with('success', 'Schedule updated.');
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function normalizeBreakdown(array $validated): array
+    {
+        $validated['programme_id'] = $validated['programme_id'] ?: null;
+        foreach ([
+            'sem1_nhif', 'sem1_nactvet_qa', 'accommodation', 'other_charges', 'national_exam_fee',
+            'sem1_internal_exam', 'sem2_internal_exam', 'registration', 'games', 'emergency_fund', 'practicum_guide',
+        ] as $key) {
+            $validated[$key] = $validated[$key] ?? 0;
+        }
+
+        return $validated;
     }
 
     /**
@@ -131,6 +156,11 @@ class FeeStructureController extends Controller
             'nhif' => $validated['sem1_nhif'] ?? 0,
             'nactvet_qa' => $validated['sem1_nactvet_qa'] ?? 0,
             'tuition_repeat_transfer' => null,
+            'internal_exam' => $validated['sem1_internal_exam'] ?? 0,
+            'registration' => $validated['registration'] ?? 0,
+            'games' => $validated['games'] ?? 0,
+            'emergency_fund' => $validated['emergency_fund'] ?? 0,
+            'practicum_guide' => $validated['practicum_guide'] ?? 0,
         ]);
 
         FeeStructureSemester::create([
@@ -140,6 +170,11 @@ class FeeStructureController extends Controller
             'nhif' => 0,
             'nactvet_qa' => 0,
             'tuition_repeat_transfer' => $validated['sem2_tuition_repeat_transfer'],
+            'internal_exam' => $validated['sem2_internal_exam'] ?? 0,
+            'registration' => 0,
+            'games' => 0,
+            'emergency_fund' => 0,
+            'practicum_guide' => 0,
         ]);
     }
 

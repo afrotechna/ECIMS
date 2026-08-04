@@ -131,7 +131,70 @@
                         'value' => old('other_charges', 0),
                     ])
                 </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'national_exam_fee',
+                        'label' => 'National exam fee (TZS)',
+                        'required' => false,
+                        'value' => old('national_exam_fee', 0),
+                    ])
+                </div>
             </div>
+
+            <hr class="my-4">
+            <h6 class="text-muted mb-2">Itemized breakdown (optional)</h6>
+            <p class="small text-muted">Informational only &mdash; shown on the fee schedule to explain what the Tuition / Other totals above are made of. Does not change the amounts actually billed.</p>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem1_internal_exam',
+                        'label' => 'Internal exams — Sem I (TZS)',
+                        'required' => false,
+                        'value' => old('sem1_internal_exam', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem2_internal_exam',
+                        'label' => 'Internal exams — Sem II (TZS)',
+                        'required' => false,
+                        'value' => old('sem2_internal_exam', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'registration',
+                        'label' => 'Registration (TZS)',
+                        'required' => false,
+                        'value' => old('registration', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'games',
+                        'label' => 'Games / sports (TZS)',
+                        'required' => false,
+                        'value' => old('games', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'emergency_fund',
+                        'label' => 'Emergency fund (TZS)',
+                        'required' => false,
+                        'value' => old('emergency_fund', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'practicum_guide',
+                        'label' => 'Practicum guide (TZS)',
+                        'required' => false,
+                        'value' => old('practicum_guide', 0),
+                    ])
+                </div>
+            </div>
+
             <hr class="my-4">
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Save</button>

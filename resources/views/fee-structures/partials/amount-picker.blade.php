@@ -11,7 +11,10 @@
             break;
         }
     }
-    $singleFixed = count($options) === 1 && ! $allowOther;
+    // Only lock to the single preset's read-only display when the stored value actually
+    // matches it — otherwise a differing value (e.g. a custom schedule) would silently
+    // render and resubmit the preset's amount instead of what's really saved.
+    $singleFixed = count($options) === 1 && ! $allowOther && $matched;
 @endphp
 <div class="fee-amount-picker" data-field="{{ $name }}">
     <label class="form-label" for="{{ $name }}_pick">{{ $label }} @if($required)<span class="text-danger">*</span>@endif</label>

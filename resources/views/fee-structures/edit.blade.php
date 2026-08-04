@@ -129,6 +129,65 @@
                         'value' => old('other_charges', $structure->other_charges),
                     ])
                 </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'national_exam_fee',
+                        'label' => 'National exam fee (TZS)',
+                        'required' => false,
+                        'value' => old('national_exam_fee', $structure->national_exam_fee),
+                    ])
+                </div>
+                <div class="col-12"><hr><h6 class="text-muted">Itemized breakdown (optional)</h6>
+                    <p class="small text-muted">Informational only &mdash; shown on the fee schedule to explain what the Tuition / Other totals above are made of. Does not change the amounts actually billed.</p>
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem1_internal_exam',
+                        'label' => 'Internal exams — Sem I (TZS)',
+                        'required' => false,
+                        'value' => old('sem1_internal_exam', $s1?->internal_exam ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem2_internal_exam',
+                        'label' => 'Internal exams — Sem II (TZS)',
+                        'required' => false,
+                        'value' => old('sem2_internal_exam', $s2?->internal_exam ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'registration',
+                        'label' => 'Registration (TZS)',
+                        'required' => false,
+                        'value' => old('registration', $s1?->registration ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'games',
+                        'label' => 'Games / sports (TZS)',
+                        'required' => false,
+                        'value' => old('games', $s1?->games ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'emergency_fund',
+                        'label' => 'Emergency fund (TZS)',
+                        'required' => false,
+                        'value' => old('emergency_fund', $s1?->emergency_fund ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'practicum_guide',
+                        'label' => 'Practicum guide (TZS)',
+                        'required' => false,
+                        'value' => old('practicum_guide', $s1?->practicum_guide ?? 0),
+                    ])
+                </div>
             </div>
             <hr class="my-4">
             <div class="d-flex gap-2">

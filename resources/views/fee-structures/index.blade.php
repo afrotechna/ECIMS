@@ -112,7 +112,11 @@
     </div>
     <div class="card-body" id="feeStructuresList" data-bulk-delete-scope>
         @forelse($structures as $s)
-        @php $totals = $s->semesterTotals(); @endphp
+        @php
+            $totals = $s->semesterTotals();
+            $bs1 = $s->feeStructureSemesters->firstWhere('semester_number', 1);
+            $bs2 = $s->feeStructureSemesters->firstWhere('semester_number', 2);
+        @endphp
         <article class="fee-schedule-item {{ ! $loop->last ? 'mb-3' : '' }}">
             <header class="fee-schedule-item-head">
                 @include('partials.bulk-delete.checkbox-inline', array_merge($bulkDelete, ['bulkRowId' => $s->id]))
@@ -157,6 +161,14 @@
                         <dd>{{ number_format($totals['semester_one']['subtotal']) }} TZS</dd>
                     </div>
                 </dl>
+                @if($bs1 && $bs1->breakdownTotal() > 0)
+                <p class="small text-muted mb-0 mt-2">
+                    Tuition includes:
+                    @foreach(array_filter(['Internal exams' => $bs1->internal_exam, 'Registration' => $bs1->registration, 'Games' => $bs1->games, 'Emergency fund' => $bs1->emergency_fund, 'Practicum guide' => $bs1->practicum_guide]) as $label => $amt)
+                        {{ $label }} {{ number_format($amt) }}@if(! $loop->last), @endif
+                    @endforeach
+                </p>
+                @endif
             </section>
 
             <section class="fee-sem-block fee-sem-block--two">
@@ -175,6 +187,9 @@
                         <dd>{{ number_format($totals['semester_two']['subtotal']) }} TZS</dd>
                     </div>
                 </dl>
+                @if($bs2 && (float) $bs2->internal_exam > 0)
+                <p class="small text-muted mb-0 mt-2">Tuition includes: Internal exams {{ number_format($bs2->internal_exam) }}</p>
+                @endif
             </section>
 
             <section class="fee-sem-block fee-sem-block--annual">
@@ -188,6 +203,12 @@
                         <dt>Other charges</dt>
                         <dd>{{ number_format($totals['other_charges']) }} TZS</dd>
                     </div>
+                    @if((float) $s->national_exam_fee > 0)
+                    <div class="fee-sem-line">
+                        <dt>— incl. national exam fee</dt>
+                        <dd>{{ number_format($s->national_exam_fee) }} TZS</dd>
+                    </div>
+                    @endif
                     <div class="fee-sem-line fee-sem-line--subtotal">
                         <dt>Annual total</dt>
                         <dd>{{ number_format($totals['annual_total']) }} TZS</dd>
