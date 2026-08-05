@@ -482,6 +482,11 @@
                         <i class="bi bi-person-vcard me-2"></i>My ID card
                     </a>
                     @endif
+                    @unless($currentUser->isStudent())
+                    <a href="{{ route('profile.complete') }}" class="profile-menu-item w-100 border-0 d-block text-decoration-none" role="menuitem">
+                        <i class="bi bi-person-gear me-2"></i>Update my details
+                    </a>
+                    @endunless
                     <button type="button" class="profile-menu-item w-100 border-0" role="menuitem" data-bs-toggle="modal" data-bs-target="#profilePhotoModal">
                         <i class="bi bi-camera me-2"></i>Change photo
                     </button>
