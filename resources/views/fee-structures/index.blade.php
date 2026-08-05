@@ -215,10 +215,19 @@
                     </div>
                     @endif
                     <div class="fee-sem-line fee-sem-line--subtotal">
-                        <dt>Annual total</dt>
+                        <dt>Annual total (without personal NHIF)</dt>
                         <dd>{{ number_format($totals['annual_total']) }} TZS</dd>
                     </div>
+                    @if($totals['semester_one']['nhif'] > 0)
+                    <div class="fee-sem-line fee-sem-line--subtotal">
+                        <dt>Annual total (with personal/family NHIF)</dt>
+                        <dd>{{ number_format($s->annualTotalExcludingNhif()) }} TZS</dd>
+                    </div>
+                    @endif
                 </dl>
+                @if($totals['semester_one']['nhif'] > 0)
+                <p class="small text-muted mb-0 mt-2">Students who already have their own or a family NHIF card skip the college's Sem I NHIF charge ({{ number_format($totals['semester_one']['nhif']) }} TZS), so they pay the lower total.</p>
+                @endif
             </section>
         </article>
         @empty

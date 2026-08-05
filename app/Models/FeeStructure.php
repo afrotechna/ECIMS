@@ -165,6 +165,17 @@ class FeeStructure extends Model
         return $this->semesterTotals()['annual_total'];
     }
 
+    /**
+     * Annual total for a student who already has their own/family NHIF card and so
+     * doesn't pay the college's Semester I NHIF charge.
+     */
+    public function annualTotalExcludingNhif(): float
+    {
+        $totals = $this->semesterTotals();
+
+        return $totals['annual_total'] - $totals['semester_one']['nhif'];
+    }
+
     public function getLabelAttribute(): string
     {
         $p = $this->programme ? $this->programme->code : 'All';
