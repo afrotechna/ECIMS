@@ -99,6 +99,8 @@
             @php
                 $isTanzanian = old('nationality', $user->nationality) === 'Tanzanian';
                 $isPermanent = old('employment_type', $user->employment_type) === 'permanent';
+                $rawPhone = old('phone', $user->phone) ?? '';
+                $phoneLocal = old('phone_local', preg_replace('/^(\+255|0)/', '', $rawPhone));
             @endphp
             <form action="{{ route('profile.complete.store') }}" method="POST">
                 @csrf
@@ -124,9 +126,13 @@
                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" required>
-                        @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label for="phone_local" class="form-label">Phone <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">🇹🇿 +255</span>
+                            <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone_local" placeholder="7XXXXXXXX" maxlength="9" inputmode="numeric" value="{{ $phoneLocal }}">
+                        </div>
+                        <input type="hidden" name="phone" id="phone_hidden" value="{{ old('phone', $user->phone) }}">
+                        @error('phone')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
                         <label for="sex_choice" class="form-label">Sex <span class="text-danger">*</span></label>
@@ -184,6 +190,25 @@
                         </div>
                     </div>
                 </div>
+
+                @push('scripts')
+                <script>
+                (function () {
+                    var phoneLocal = document.getElementById('phone_local');
+                    var phoneHidden = document.getElementById('phone_hidden');
+                    if (!phoneLocal || !phoneHidden) return;
+
+                    function syncPhone() {
+                        var digits = phoneLocal.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 9);
+                        if (digits !== phoneLocal.value) phoneLocal.value = digits;
+                        phoneHidden.value = digits ? '+255' + digits : '';
+                    }
+
+                    phoneLocal.addEventListener('input', syncPhone);
+                    syncPhone();
+                })();
+                </script>
+                @endpush
 
                 @push('scripts')
                 <script>
@@ -259,11 +284,6 @@
                         ])
                     </div>
                     <div class="col-md-6">
-                        <label for="license_number" class="form-label">Registration / license number <span class="text-muted small">(if you have one)</span></label>
-                        <input type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" value="{{ old('license_number', $user->license_number) }}">
-                        @error('license_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                    <div class="col-md-6">
                         <label for="license_board_choice" class="form-label">Issuing board / council</label>
                         @include('partials.select-with-other', [
                             'idPrefix' => 'license_board',
@@ -272,6 +292,12 @@
                             'currentValue' => old('license_board', $user->license_board),
                             'otherPlaceholder' => 'Specify issuing board',
                         ])
+                    </div>
+                    @php $hasLicenseBoard = old('license_board', $user->license_board) !== null && old('license_board', $user->license_board) !== ''; @endphp
+                    <div class="col-md-6 {{ $hasLicenseBoard ? '' : 'd-none' }}" id="license_number_wrap">
+                        <label for="license_number" class="form-label">Registration / license number</label>
+                        <input type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" value="{{ old('license_number', $user->license_number) }}">
+                        @error('license_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
                         <label for="employment_type" class="form-label">Hali ya ajira / employment status</label>
@@ -309,6 +335,26 @@
 
                     employmentType.addEventListener('change', function () { sync(true); });
                     sync(false);
+                })();
+                </script>
+                @endpush
+
+                @push('scripts')
+                <script>
+                (function () {
+                    var licenseBoardHidden = document.getElementById('license_board_hidden');
+                    var licenseNumberWrap = document.getElementById('license_number_wrap');
+                    if (!licenseBoardHidden || !licenseNumberWrap) return;
+
+                    var licenseNumberInput = document.getElementById('license_number');
+
+                    licenseBoardHidden.addEventListener('change', function () {
+                        var hasBoard = licenseBoardHidden.value !== '';
+                        licenseNumberWrap.classList.toggle('d-none', !hasBoard);
+                        if (!hasBoard && licenseNumberInput) {
+                            licenseNumberInput.value = '';
+                        }
+                    });
                 })();
                 </script>
                 @endpush

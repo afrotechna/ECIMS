@@ -64,7 +64,7 @@ class User extends Authenticatable implements CanResetPasswordContract
 
     /** Highest level of education completed. */
     public const EDUCATION_LEVELS = [
-        'certificate' => 'Certificate (NTA 4–6)',
+        'certificate' => 'Certificate',
         'diploma' => 'Diploma',
         'bachelor' => "Bachelor's Degree",
         'master' => "Master's Degree",

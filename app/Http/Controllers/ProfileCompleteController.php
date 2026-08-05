@@ -59,7 +59,7 @@ class ProfileCompleteController extends Controller
             'middle_name' => ['nullable', 'string', 'max:100'],
             'surname' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'regex:/^\+255\d{9}$/'],
             'sex' => ['required', 'string', Rule::in(array_keys(User::SEX_OPTIONS))],
             'nationality' => ['required', 'string', 'max:100'],
             'region' => ['required_if:nationality,Tanzanian', 'nullable', 'string', 'max:100'],
@@ -91,6 +91,10 @@ class ProfileCompleteController extends Controller
 
         if ($validated['employment_type'] !== 'permanent') {
             $validated['check_number'] = null;
+        }
+
+        if (! $validated['license_board']) {
+            $validated['license_number'] = null;
         }
 
         $user->update(array_merge($validated, ['profile_completed_at' => now()]));
