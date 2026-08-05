@@ -373,21 +373,31 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 .badge.bg-primary { background-color: var(--cohas-blue-700) !important; }
 .badge.bg-success { background-color: var(--cohas-green) !important; }
 
-/* Edit / Delete action buttons — visible border & colour (not hover-only) */
+/* Edit / Delete action buttons — soft, borderless icon chips (fully rounded; a
+   pill when a label is present, a circle when icon-only) with a smooth fill +
+   lift on hover instead of a heavy static border. */
 .btn-cohas-edit,
 .btn-cohas-delete {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: .2rem;
-    min-width: 2.375rem;
-    min-height: 2.375rem;
+    gap: .3rem;
+    min-width: 2.125rem;
+    min-height: 2.125rem;
     padding: .35rem .55rem !important;
     font-size: .8125rem !important;
     font-weight: 600 !important;
     line-height: 1 !important;
     vertical-align: middle;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: none !important;
+    border-radius: 999px !important;
+    box-shadow: none;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .12s ease;
+}
+
+.btn-cohas-edit:active,
+.btn-cohas-delete:active {
+    transform: scale(.94);
 }
 
 .btn-cohas-edit,
@@ -395,19 +405,20 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 .actions-cell .btn-outline-primary:not(.btn-outline-info),
 td.text-end .btn-outline-primary.btn-sm,
 table .btn-sm.btn-cohas-edit {
-    color: var(--cohas-blue-900) !important;
+    color: var(--cohas-blue-700) !important;
     background: var(--cohas-cyan-soft) !important;
-    border: 1.5px solid var(--cohas-blue-700) !important;
+    border: none !important;
 }
 
 .btn-cohas-edit:hover,
-.btn-cohas-edit:focus,
+.btn-cohas-edit:focus-visible,
 .actions-cell .btn-outline-secondary:hover,
 .actions-cell .btn-outline-primary:not(.btn-outline-info):hover,
 td.text-end .btn-outline-primary.btn-sm:hover {
     color: #fff !important;
     background: var(--cohas-blue-700) !important;
-    border-color: var(--cohas-blue-900) !important;
+    box-shadow: 0 3px 10px rgba(26, 79, 181, 0.3);
+    transform: translateY(-1px);
 }
 
 .btn-cohas-delete,
@@ -415,25 +426,25 @@ td.text-end .btn-outline-primary.btn-sm:hover {
 button.btn-sm.btn-outline-danger,
 form .btn-sm.btn-outline-danger,
 table .btn-sm.btn-outline-danger {
-    color: #7f1d1d !important;
-    background: #fecaca !important;
-    border: 2px solid #b91c1c !important;
+    color: #b91c1c !important;
+    background: #fee2e2 !important;
+    border: none !important;
 }
 
 .btn-cohas-delete:hover,
-.btn-cohas-delete:focus,
+.btn-cohas-delete:focus-visible,
 .btn.btn-sm.btn-outline-danger:hover,
-.btn.btn-sm.btn-outline-danger:focus,
+.btn.btn-sm.btn-outline-danger:focus-visible,
 button.btn-sm.btn-outline-danger:hover,
 form .btn-sm.btn-outline-danger:hover,
 table .btn-sm.btn-outline-danger:hover {
     color: #fff !important;
-    background: #b91c1c !important;
-    border-color: #7f1d1d !important;
-    box-shadow: 0 2px 8px rgba(127, 29, 29, 0.4);
+    background: #dc2626 !important;
+    box-shadow: 0 3px 10px rgba(220, 38, 38, 0.35);
+    transform: translateY(-1px);
 }
 
-/* Never red-on-blue: action buttons on navy headers use white chip */
+/* Never red/blue-on-navy: action buttons on navy headers use a soft white chip */
 .page-header-landing .btn-cohas-delete,
 .page-header-landing .btn-cohas-edit,
 .page-header-landing .btn-outline-danger,
@@ -449,8 +460,9 @@ table .btn-sm.btn-outline-danger:hover {
 .navbar.bg-primary .btn-outline-danger,
 .cohas-segment-nav__item.is-active .btn-cohas-delete,
 .cohas-segment-nav__item.is-active .btn-outline-danger {
-    background: #fff !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: none !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
 }
 
 .page-header-landing .btn-cohas-delete,
@@ -460,8 +472,7 @@ table .btn-sm.btn-outline-danger:hover {
 .card-header-landing .bulk-delete-submit,
 .navbar.bg-primary .btn-cohas-delete,
 .navbar.bg-primary .btn-outline-danger {
-    color: #991b1b !important;
-    border: 2px solid #dc2626 !important;
+    color: #b91c1c !important;
 }
 
 .page-header-landing .btn-cohas-delete:hover,
@@ -470,7 +481,8 @@ table .btn-sm.btn-outline-danger:hover {
 .card-header-landing .btn-outline-danger:hover {
     color: #fff !important;
     background: #dc2626 !important;
-    border-color: #7f1d1d !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
+    transform: translateY(-1px);
 }
 
 .page-header-landing .btn-cohas-edit,
@@ -479,8 +491,7 @@ table .btn-sm.btn-outline-danger:hover {
 .card-header-landing .btn-cohas-edit,
 .card-header-landing .btn-outline-primary,
 .card-header-landing .btn-outline-secondary {
-    color: var(--cohas-blue-900) !important;
-    border: 2px solid var(--cohas-blue-700) !important;
+    color: var(--cohas-blue-700) !important;
 }
 
 .page-header-landing .btn-cohas-edit:hover,
@@ -489,7 +500,8 @@ table .btn-sm.btn-outline-danger:hover {
 .card-header-landing .btn-outline-primary:hover {
     color: #fff !important;
     background: var(--cohas-blue-700) !important;
-    border-color: var(--cohas-blue-900) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
+    transform: translateY(-1px);
 }
 
 /* Red text on blue backgrounds — unreadable; use light or white chip */
@@ -526,29 +538,41 @@ table .btn-sm.btn-outline-danger:hover {
 }
 
 [data-theme="dark"] .btn-cohas-edit,
-[data-theme="dark"] .actions-cell .btn-outline-secondary {
+[data-theme="dark"] .actions-cell .btn-outline-secondary,
+[data-theme="dark"] table .btn-cohas-edit {
     color: #bfdbfe !important;
-    background: rgba(30, 79, 181, 0.3) !important;
-    border-color: #60a5fa !important;
+    background: rgba(30, 79, 181, 0.35) !important;
+    border: none !important;
+}
+
+[data-theme="dark"] .btn-cohas-edit:hover,
+[data-theme="dark"] .actions-cell .btn-outline-secondary:hover,
+[data-theme="dark"] table .btn-cohas-edit:hover {
+    color: #fff !important;
+    background: var(--cohas-blue-700) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transform: translateY(-1px);
 }
 
 [data-theme="dark"] .btn-cohas-delete,
 [data-theme="dark"] .btn.btn-sm.btn-outline-danger {
     color: #fecaca !important;
-    background: #450a0a !important;
-    border: 2px solid #f87171 !important;
+    background: rgba(153, 27, 27, 0.35) !important;
+    border: none !important;
 }
 
 [data-theme="dark"] .page-header-landing .btn-cohas-delete,
 [data-theme="dark"] .card-header-landing .btn-cohas-delete,
 [data-theme="dark"] .card-header-landing .bulk-delete-submit {
     color: #991b1b !important;
-    background: #fff !important;
-    border-color: #dc2626 !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: none !important;
 }
 
 [data-theme="dark"] .btn-cohas-delete:hover,
 [data-theme="dark"] .btn.btn-sm.btn-outline-danger:hover {
     color: #fff !important;
     background: #dc2626 !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transform: translateY(-1px);
 }
