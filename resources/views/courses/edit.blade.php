@@ -130,10 +130,10 @@
         <hr class="my-4">
         <div class="d-flex gap-2 flex-wrap">
             <button type="submit" form="courseEditForm" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Update</button>
-            <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Cancel</a>
             @canModule('courses', 'delete')
-            <button type="button" form="courseDeleteForm" class="btn btn-outline-danger" data-swal-confirm data-swal-title="Delete this course?" data-swal-text="This cannot be undone." data-swal-icon="warning">Delete</button>
+            <button type="button" form="courseDeleteForm" class="btn btn-outline-danger" data-swal-confirm data-swal-title="Delete this course?" data-swal-text="This cannot be undone." data-swal-icon="warning"><i class="bi bi-trash3 me-1"></i> Delete</button>
             @endcanModule
+            <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i> Cancel</a>
         </div>
     </div>
 </div>
