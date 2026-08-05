@@ -164,7 +164,7 @@
                 @if($bs1 && $bs1->breakdownTotal() > 0)
                 <p class="small text-muted mb-0 mt-2">
                     Tuition includes:
-                    @foreach(array_filter(['Internal exams' => $bs1->internal_exam, 'Registration' => $bs1->registration, 'Games' => $bs1->games, 'Emergency fund' => $bs1->emergency_fund, 'Practicum guide' => $bs1->practicum_guide]) as $label => $amt)
+                    @foreach(array_filter(['Base tuition' => $bs1->baseTuition(), 'Internal exams' => $bs1->internal_exam, 'National exam' => $bs1->national_exam, 'Registration' => $bs1->registration, 'Games' => $bs1->games, 'Emergency fund' => $bs1->emergency_fund, 'Practicum guide' => $bs1->practicum_guide, 'Accommodation' => $bs1->accommodation]) as $label => $amt)
                         {{ $label }} {{ number_format($amt) }}@if(! $loop->last), @endif
                     @endforeach
                 </p>
@@ -187,8 +187,13 @@
                         <dd>{{ number_format($totals['semester_two']['subtotal']) }} TZS</dd>
                     </div>
                 </dl>
-                @if($bs2 && (float) $bs2->internal_exam > 0)
-                <p class="small text-muted mb-0 mt-2">Tuition includes: Internal exams {{ number_format($bs2->internal_exam) }}</p>
+                @if($bs2 && $bs2->breakdownTotal() > 0)
+                <p class="small text-muted mb-0 mt-2">
+                    Tuition includes:
+                    @foreach(array_filter(['Base tuition' => $bs2->baseTuition(), 'Internal exams' => $bs2->internal_exam, 'Accommodation' => $bs2->accommodation]) as $label => $amt)
+                        {{ $label }} {{ number_format($amt) }}@if(! $loop->last), @endif
+                    @endforeach
+                </p>
                 @endif
             </section>
 

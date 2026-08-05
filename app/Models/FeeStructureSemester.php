@@ -19,6 +19,8 @@ class FeeStructureSemester extends Model
         'games',
         'emergency_fund',
         'practicum_guide',
+        'national_exam',
+        'accommodation',
     ];
 
     protected $casts = [
@@ -31,13 +33,22 @@ class FeeStructureSemester extends Model
         'games' => 'decimal:0',
         'emergency_fund' => 'decimal:0',
         'practicum_guide' => 'decimal:0',
+        'national_exam' => 'decimal:0',
+        'accommodation' => 'decimal:0',
     ];
 
     /** Sum of the informational breakdown items for this semester row (excludes tuition/nhif/nactvet_qa, which are billed separately). */
     public function breakdownTotal(): float
     {
         return (float) $this->internal_exam + (float) $this->registration + (float) $this->games
-            + (float) $this->emergency_fund + (float) $this->practicum_guide;
+            + (float) $this->emergency_fund + (float) $this->practicum_guide
+            + (float) $this->national_exam + (float) $this->accommodation;
+    }
+
+    /** The remaining "base" tuition after subtracting the itemized breakdown from the billed tuition figure. */
+    public function baseTuition(): float
+    {
+        return max(0.0, (float) $this->tuition - $this->breakdownTotal());
     }
 
     public function feeStructure(): BelongsTo

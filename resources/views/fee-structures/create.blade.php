@@ -193,6 +193,30 @@
                         'value' => old('practicum_guide', 0),
                     ])
                 </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem1_national_exam',
+                        'label' => 'National exam fee — Sem I (TZS)',
+                        'required' => false,
+                        'value' => old('sem1_national_exam', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem1_accommodation',
+                        'label' => 'Accommodation — Sem I (TZS)',
+                        'required' => false,
+                        'value' => old('sem1_accommodation', 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem2_accommodation',
+                        'label' => 'Accommodation — Sem II (TZS)',
+                        'required' => false,
+                        'value' => old('sem2_accommodation', 0),
+                    ])
+                </div>
             </div>
 
             <hr class="my-4">

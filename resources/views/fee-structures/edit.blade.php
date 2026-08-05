@@ -188,6 +188,30 @@
                         'value' => old('practicum_guide', $s1?->practicum_guide ?? 0),
                     ])
                 </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem1_national_exam',
+                        'label' => 'National exam fee — Sem I (TZS)',
+                        'required' => false,
+                        'value' => old('sem1_national_exam', $s1?->national_exam ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem1_accommodation',
+                        'label' => 'Accommodation — Sem I (TZS)',
+                        'required' => false,
+                        'value' => old('sem1_accommodation', $s1?->accommodation ?? 0),
+                    ])
+                </div>
+                <div class="col-md-4">
+                    @include('fee-structures.partials.amount-picker', [
+                        'name' => 'sem2_accommodation',
+                        'label' => 'Accommodation — Sem II (TZS)',
+                        'required' => false,
+                        'value' => old('sem2_accommodation', $s2?->accommodation ?? 0),
+                    ])
+                </div>
             </div>
             <hr class="my-4">
             <div class="d-flex gap-2">

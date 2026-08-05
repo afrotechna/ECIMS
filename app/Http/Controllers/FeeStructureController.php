@@ -52,6 +52,9 @@ class FeeStructureController extends Controller
             'games' => ['nullable', 'numeric', 'min:0'],
             'emergency_fund' => ['nullable', 'numeric', 'min:0'],
             'practicum_guide' => ['nullable', 'numeric', 'min:0'],
+            'sem1_national_exam' => ['nullable', 'numeric', 'min:0'],
+            'sem1_accommodation' => ['nullable', 'numeric', 'min:0'],
+            'sem2_accommodation' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['boolean'],
         ]);
         $validated = $this->normalizeBreakdown($validated);
@@ -103,6 +106,9 @@ class FeeStructureController extends Controller
             'games' => ['nullable', 'numeric', 'min:0'],
             'emergency_fund' => ['nullable', 'numeric', 'min:0'],
             'practicum_guide' => ['nullable', 'numeric', 'min:0'],
+            'sem1_national_exam' => ['nullable', 'numeric', 'min:0'],
+            'sem1_accommodation' => ['nullable', 'numeric', 'min:0'],
+            'sem2_accommodation' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['boolean'],
         ]);
         $validated = $this->normalizeBreakdown($validated);
@@ -135,6 +141,7 @@ class FeeStructureController extends Controller
         foreach ([
             'sem1_nhif', 'sem1_nactvet_qa', 'accommodation', 'other_charges', 'national_exam_fee',
             'sem1_internal_exam', 'sem2_internal_exam', 'registration', 'games', 'emergency_fund', 'practicum_guide',
+            'sem1_national_exam', 'sem1_accommodation', 'sem2_accommodation',
         ] as $key) {
             $validated[$key] = $validated[$key] ?? 0;
         }
@@ -161,6 +168,8 @@ class FeeStructureController extends Controller
             'games' => $validated['games'] ?? 0,
             'emergency_fund' => $validated['emergency_fund'] ?? 0,
             'practicum_guide' => $validated['practicum_guide'] ?? 0,
+            'national_exam' => $validated['sem1_national_exam'] ?? 0,
+            'accommodation' => $validated['sem1_accommodation'] ?? 0,
         ]);
 
         FeeStructureSemester::create([
@@ -175,6 +184,8 @@ class FeeStructureController extends Controller
             'games' => 0,
             'emergency_fund' => 0,
             'practicum_guide' => 0,
+            'national_exam' => 0,
+            'accommodation' => $validated['sem2_accommodation'] ?? 0,
         ]);
     }
 
