@@ -361,6 +361,17 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
 }
 
+/* Native <option> popup contrast: browsers paint the open dropdown list using
+   each <option>'s own background/color, not the closed <select>'s — without
+   this, dark-theme option text (light) sits on an unstyled (often white)
+   popup and becomes unreadable. Pin both to the same Bootstrap body vars the
+   select itself uses, so the popup always matches the current theme. */
+.form-select option,
+.form-control option {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
 /* Progress */
 .progress-bar.bg-primary { background-color: var(--cohas-blue-700) !important; }
 .progress-bar.bg-success { background-color: var(--cohas-green) !important; }
