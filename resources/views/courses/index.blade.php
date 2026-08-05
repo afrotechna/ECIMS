@@ -216,15 +216,15 @@
 @php
     $programme = $block['programme'];
     $pid = $programme->id;
-    $openFirstLevel = ($pIndex === 0);
+    $openFirstLevel = true;
     $levelOpened = false;
 @endphp
 <div class="card card-landing mb-3 courses-tree-card">
     <div
-        class="card-header-landing d-flex justify-content-between align-items-center gap-2 py-3 courses-fold-trigger {{ $pIndex === 0 ? '' : 'collapsed' }}"
+        class="card-header-landing d-flex justify-content-between align-items-center gap-2 py-3 courses-fold-trigger"
         data-bs-toggle="collapse"
         data-bs-target="#prog-body-{{ $pid }}"
-        aria-expanded="{{ $pIndex === 0 ? 'true' : 'false' }}"
+        aria-expanded="true"
         role="button"
         tabindex="0"
     >
@@ -236,7 +236,7 @@
             <i class="bi bi-chevron-down courses-fold-icon flex-shrink-0"></i>
         </div>
     </div>
-    <div id="prog-body-{{ $pid }}" class="collapse {{ $pIndex === 0 ? 'show' : '' }} border-top border-light-subtle">
+    <div id="prog-body-{{ $pid }}" class="collapse show border-top border-light-subtle">
         <div class="card-body pb-3 pt-3">
             @foreach($levelOrder as $level)
                 @continue(! isset($block['levels'][$level]))
