@@ -96,18 +96,27 @@
                 @endif
             </div>
         @else
+            @php
+                $isTanzanian = old('nationality', $user->nationality) === 'Tanzanian';
+                $isPermanent = old('employment_type', $user->employment_type) === 'permanent';
+            @endphp
             <form action="{{ route('profile.complete.store') }}" method="POST">
                 @csrf
                 <h6 class="text-uppercase text-muted small mb-3"><i class="bi bi-person me-1"></i> Personal details</h6>
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="name" class="form-label">Full name <span class="text-danger">*</span></label>
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">First name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}" required>
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <div class="col-md-6">
-                        <label for="surname" class="form-label">Surname</label>
-                        <input type="text" class="form-control" id="surname" name="surname" value="{{ old('surname', $user->surname) }}">
+                    <div class="col-md-4">
+                        <label for="middle_name" class="form-label">Middle name</label>
+                        <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ old('middle_name', $user->middle_name) }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="surname" class="form-label">Surname <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('surname') is-invalid @enderror" id="surname" name="surname" value="{{ old('surname', $user->surname) }}" required>
+                        @error('surname')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
                         <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
@@ -119,31 +128,135 @@
                         <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" required>
                         @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    <div class="col-md-6">
+                        <label for="sex_choice" class="form-label">Sex <span class="text-danger">*</span></label>
+                        <select class="form-select @error('sex') is-invalid @enderror" id="sex_choice" name="sex" required>
+                            <option value="">— Select —</option>
+                            @foreach(\App\Models\User::SEX_OPTIONS as $value => $label)
+                                <option value="{{ $value }}" {{ old('sex', $user->sex) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('sex')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nationality_choice" class="form-label">Nationality <span class="text-danger">*</span></label>
+                        @include('partials.select-with-other', [
+                            'idPrefix' => 'nationality',
+                            'name' => 'nationality',
+                            'options' => \App\Models\User::NATIONALITIES,
+                            'currentValue' => old('nationality', $user->nationality),
+                            'required' => true,
+                            'otherPlaceholder' => 'Specify nationality',
+                        ])
+                    </div>
                 </div>
+
+                <div id="tanzania_address_section" class="{{ $isTanzanian ? '' : 'd-none' }}">
+                    <hr class="my-4">
+                    <h6 class="text-uppercase text-muted small mb-3"><i class="bi bi-geo-alt me-1"></i> Address</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="region" class="form-label">Region</label>
+                            <select class="form-select @error('region') is-invalid @enderror" id="region" name="region">
+                                <option value="">— Select region —</option>
+                                @foreach(array_keys($tanzaniaLocations) as $regionName)
+                                    <option value="{{ $regionName }}" {{ old('region', $user->region) === $regionName ? 'selected' : '' }}>{{ $regionName }}</option>
+                                @endforeach
+                            </select>
+                            @error('region')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="district" class="form-label">District</label>
+                            <select class="form-select @error('district') is-invalid @enderror" id="district" name="district">
+                                <option value="">— Select region first —</option>
+                            </select>
+                            @error('district')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ward" class="form-label">Ward</label>
+                            <input type="text" class="form-control @error('ward') is-invalid @enderror" id="ward" name="ward" value="{{ old('ward', $user->ward) }}">
+                            @error('ward')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="street" class="form-label">Street</label>
+                            <input type="text" class="form-control @error('street') is-invalid @enderror" id="street" name="street" value="{{ old('street', $user->street) }}">
+                            @error('street')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+                </div>
+
+                @push('scripts')
+                <script>
+                (function () {
+                    var tanzaniaLocations = @json($tanzaniaLocations);
+                    var currentDistrict = @json(old('district', $user->district));
+                    var nationalityHidden = document.getElementById('nationality_hidden');
+                    var addressSection = document.getElementById('tanzania_address_section');
+                    var regionSelect = document.getElementById('region');
+                    var districtSelect = document.getElementById('district');
+
+                    function populateDistricts(regionName, selectedDistrict) {
+                        if (!districtSelect) return;
+                        var districts = tanzaniaLocations[regionName] || [];
+                        districtSelect.innerHTML = '';
+                        var placeholder = document.createElement('option');
+                        placeholder.value = '';
+                        placeholder.textContent = districts.length ? '— Select district —' : '— Select region first —';
+                        districtSelect.appendChild(placeholder);
+                        districts.forEach(function (districtName) {
+                            var option = document.createElement('option');
+                            option.value = districtName;
+                            option.textContent = districtName;
+                            if (districtName === selectedDistrict) option.selected = true;
+                            districtSelect.appendChild(option);
+                        });
+                    }
+
+                    if (regionSelect) {
+                        populateDistricts(regionSelect.value, currentDistrict);
+                        regionSelect.addEventListener('change', function () {
+                            populateDistricts(regionSelect.value, null);
+                        });
+                    }
+
+                    if (nationalityHidden && addressSection) {
+                        nationalityHidden.addEventListener('change', function () {
+                            var isTanzanian = nationalityHidden.value === 'Tanzanian';
+                            addressSection.classList.toggle('d-none', !isTanzanian);
+                            if (!isTanzanian) {
+                                addressSection.querySelectorAll('input, select').forEach(function (field) {
+                                    field.value = '';
+                                });
+                            }
+                        });
+                    }
+                })();
+                </script>
+                @endpush
 
                 <hr class="my-4">
 
                 <h6 class="text-uppercase text-muted small mb-3"><i class="bi bi-mortarboard me-1"></i> Qualification &amp; registration</h6>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="qualification" class="form-label">Qualification / profession</label>
-                        <select class="form-select @error('qualification') is-invalid @enderror" id="qualification" name="qualification">
-                            <option value="">— Select —</option>
-                            @foreach(\App\Models\User::QUALIFICATIONS as $value => $label)
-                                <option value="{{ $value }}" {{ old('qualification', $user->qualification) === $value ? 'selected' : '' }}>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                        @error('qualification')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label for="qualification_choice" class="form-label">Qualification / profession</label>
+                        @include('partials.select-with-other', [
+                            'idPrefix' => 'qualification',
+                            'name' => 'qualification',
+                            'options' => \App\Models\User::QUALIFICATIONS,
+                            'currentValue' => old('qualification', $user->qualification),
+                            'otherPlaceholder' => 'Specify qualification',
+                        ])
                     </div>
                     <div class="col-md-6">
-                        <label for="education_level" class="form-label">Level of education</label>
-                        <select class="form-select @error('education_level') is-invalid @enderror" id="education_level" name="education_level">
-                            <option value="">— Select —</option>
-                            @foreach(\App\Models\User::EDUCATION_LEVELS as $value => $label)
-                                <option value="{{ $value }}" {{ old('education_level', $user->education_level) === $value ? 'selected' : '' }}>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                        @error('education_level')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label for="education_level_choice" class="form-label">Level of education</label>
+                        @include('partials.select-with-other', [
+                            'idPrefix' => 'education_level',
+                            'name' => 'education_level',
+                            'options' => \App\Models\User::EDUCATION_LEVELS,
+                            'currentValue' => old('education_level', $user->education_level),
+                            'otherPlaceholder' => 'Specify education level',
+                        ])
                     </div>
                     <div class="col-md-6">
                         <label for="license_number" class="form-label">Registration / license number <span class="text-muted small">(if you have one)</span></label>
@@ -151,14 +264,14 @@
                         @error('license_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label for="license_board" class="form-label">Issuing board / council</label>
-                        <select class="form-select @error('license_board') is-invalid @enderror" id="license_board" name="license_board">
-                            <option value="">— Select —</option>
-                            @foreach(\App\Models\User::LICENSE_BOARDS as $value => $label)
-                                <option value="{{ $value }}" {{ old('license_board', $user->license_board) === $value ? 'selected' : '' }}>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                        @error('license_board')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label for="license_board_choice" class="form-label">Issuing board / council</label>
+                        @include('partials.select-with-other', [
+                            'idPrefix' => 'license_board',
+                            'name' => 'license_board',
+                            'options' => \App\Models\User::LICENSE_BOARDS,
+                            'currentValue' => old('license_board', $user->license_board),
+                            'otherPlaceholder' => 'Specify issuing board',
+                        ])
                     </div>
                     <div class="col-md-6">
                         <label for="employment_type" class="form-label">Hali ya ajira / employment status</label>
@@ -170,7 +283,35 @@
                         </select>
                         @error('employment_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    <div class="col-md-6 {{ $isPermanent ? '' : 'd-none' }}" id="check_number_wrap">
+                        <label for="check_number" class="form-label">Check number <span class="text-muted small">(permanent staff)</span></label>
+                        <input type="text" class="form-control @error('check_number') is-invalid @enderror" id="check_number" name="check_number" value="{{ old('check_number', $user->check_number) }}">
+                        @error('check_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                 </div>
+
+                @push('scripts')
+                <script>
+                (function () {
+                    var employmentType = document.getElementById('employment_type');
+                    var checkNumberWrap = document.getElementById('check_number_wrap');
+                    if (!employmentType || !checkNumberWrap) return;
+
+                    var checkNumberInput = document.getElementById('check_number');
+
+                    function sync(isUserAction) {
+                        var isPermanent = employmentType.value === 'permanent';
+                        checkNumberWrap.classList.toggle('d-none', !isPermanent);
+                        if (isUserAction && !isPermanent && checkNumberInput) {
+                            checkNumberInput.value = '';
+                        }
+                    }
+
+                    employmentType.addEventListener('change', function () { sync(true); });
+                    sync(false);
+                })();
+                </script>
+                @endpush
 
                 @if($user->isTutorStaff())
                     @php $selectedProgrammeIds = old('programme_ids', $user->programmes->pluck('id')->all()); @endphp

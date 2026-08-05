@@ -20,6 +20,7 @@ class User extends Authenticatable implements CanResetPasswordContract
 
     protected $fillable = [
         'name',
+        'middle_name',
         'surname',
         'email',
         'password',
@@ -37,6 +38,12 @@ class User extends Authenticatable implements CanResetPasswordContract
         'license_number',
         'license_board',
         'employment_type',
+        'sex',
+        'nationality',
+        'region',
+        'district',
+        'ward',
+        'street',
     ];
 
     /** Qualification / profession options shown on the staff profile form. */
@@ -79,6 +86,17 @@ class User extends Authenticatable implements CanResetPasswordContract
     public const EMPLOYMENT_TYPES = [
         'permanent' => 'Permanent',
         'part_time' => 'Part-time',
+    ];
+
+    /** Sex options shown on the staff profile form. */
+    public const SEX_OPTIONS = [
+        'M' => 'Male',
+        'F' => 'Female',
+    ];
+
+    /** Nationality options; anything else is captured via the "Other" specify field. */
+    public const NATIONALITIES = [
+        'Tanzanian' => 'Tanzanian',
     ];
 
     /**
