@@ -289,7 +289,20 @@
                                 </div>
                                 <div id="sem-{{ $pid }}-{{ $level }}-{{ $semNum }}" class="collapse {{ $semUncollapsed ? 'show' : '' }}">
                                     <div class="rounded border">
-                                        <table class="table table-hover align-middle mb-0 table-sm">
+                                        <table class="table table-hover align-middle mb-0 table-sm courses-modules-table">
+                                            <colgroup>
+                                                @if($canDeleteCourses && $courseCountOnPage > 0)
+                                                <col style="width: 5%">
+                                                @endif
+                                                <col style="width: 15%">
+                                                <col style="width: 38%">
+                                                <col style="width: 9%">
+                                                <col style="width: 9%">
+                                                <col style="width: 10%">
+                                                @canModule('courses', 'update')
+                                                <col style="width: 10%">
+                                                @endcanModule
+                                            </colgroup>
                                             <thead class="table-light">
                                                 <tr>
                                                     @include('partials.bulk-delete.th', $bulkDelete)
@@ -369,6 +382,17 @@
 .courses-fold-icon { transition: transform 0.2s ease; display: inline-block; }
 /* Panel hidden: chevron points sideways; panel open: points down */
 .courses-fold-trigger.collapsed .courses-fold-icon { transform: rotate(-90deg); }
+
+/* Fixed column widths (via <colgroup>) so the table always fits its card —
+   long module names wrap onto a second line instead of stretching the
+   table past the viewport and forcing a horizontal scrollbar. */
+.courses-modules-table { table-layout: fixed; width: 100%; }
+.courses-modules-table th,
+.courses-modules-table td {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
 </style>
 @endpush
 
