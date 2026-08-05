@@ -768,7 +768,7 @@
                 });
             });
             document.querySelectorAll('[data-swal-confirm]').forEach(function(el) {
-                var form = el.closest('form');
+                var form = el.closest('form') || el.form;
                 if (!form) return;
                 el.addEventListener('click', function(e) {
                     e.preventDefault();

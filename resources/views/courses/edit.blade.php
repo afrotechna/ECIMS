@@ -19,7 +19,7 @@
 <div class="card card-landing">
     <div class="card-header-landing"><i class="bi bi-pencil me-2"></i>Course details</div>
     <div class="card-body">
-        <form action="{{ route('courses.update', $course) }}" method="POST">
+        <form id="courseEditForm" action="{{ route('courses.update', $course) }}" method="POST">
             @csrf
             @method('PUT')
             @if(! empty($returnSemesterId))
@@ -120,19 +120,21 @@
                     </div>
                 </div>
             </div>
-            <hr class="my-4">
-            <div class="d-flex gap-2 flex-wrap">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Update</button>
-                <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Cancel</a>
-            </div>
         </form>
         @canModule('courses', 'delete')
-        <form action="{{ route('courses.destroy', $course) }}" method="POST" class="d-inline-block mt-2">
+        <form id="courseDeleteForm" action="{{ route('courses.destroy', $course) }}" method="POST" class="d-none">
             @csrf
             @method('DELETE')
-            <button type="button" class="btn btn-outline-danger" data-swal-confirm data-swal-title="Delete this course?" data-swal-text="This cannot be undone." data-swal-icon="warning">Delete</button>
         </form>
         @endcanModule
+        <hr class="my-4">
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" form="courseEditForm" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Update</button>
+            <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            @canModule('courses', 'delete')
+            <button type="button" form="courseDeleteForm" class="btn btn-outline-danger" data-swal-confirm data-swal-title="Delete this course?" data-swal-text="This cannot be undone." data-swal-icon="warning">Delete</button>
+            @endcanModule
+        </div>
     </div>
 </div>
 @push('scripts')
