@@ -128,7 +128,22 @@
                     <div class="col-md-6">
                         <label for="phone_local" class="form-label">Phone <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <span class="input-group-text">🇹🇿 +255</span>
+                            <span class="input-group-text d-flex align-items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="20" height="15" aria-hidden="true" style="flex: none;">
+                                    <defs>
+                                        <clipPath id="tz-flag-clip">
+                                            <path fill-opacity=".7" d="M10 0h160v120H10z"/>
+                                        </clipPath>
+                                    </defs>
+                                    <g fill-rule="evenodd" stroke-width="1pt" clip-path="url(#tz-flag-clip)" transform="matrix(4 0 0 4 -40 0)">
+                                        <path fill="#09f" d="M0 0h180v120H0z"/>
+                                        <path fill="#090" d="M0 0h180L0 120z"/>
+                                        <path fill="#000001" d="M0 120h40l140-95V0h-40L0 95z"/>
+                                        <path fill="#ff0" d="M0 91.5 137.2 0h13.5L0 100.5zM29.3 120 180 19.5v9L42.8 120z"/>
+                                    </g>
+                                </svg>
+                                +255
+                            </span>
                             <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone_local" placeholder="7XXXXXXXX" maxlength="9" inputmode="numeric" value="{{ $phoneLocal }}">
                         </div>
                         <input type="hidden" name="phone" id="phone_hidden" value="{{ old('phone', $user->phone) }}">
