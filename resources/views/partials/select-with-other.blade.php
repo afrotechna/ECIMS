@@ -1,5 +1,6 @@
 @php
     $isRequired = $required ?? false;
+    $isDisabled = $disabled ?? false;
     $currentValue = $currentValue ?? null;
     $placeholder = $placeholder ?? '— Select —';
     $otherPlaceholder = $otherPlaceholder ?? 'Please specify';
@@ -9,6 +10,7 @@
     id="{{ $idPrefix }}_choice"
     class="form-select @error($name) is-invalid @enderror"
     @if($isRequired) required @endif
+    @if($isDisabled) disabled @endif
 >
     <option value="">{{ $placeholder }}</option>
     @foreach($options as $value => $label)
@@ -22,6 +24,7 @@
     class="form-control mt-2 {{ $isOtherValue ? '' : 'd-none' }}"
     placeholder="{{ $otherPlaceholder }}"
     value="{{ $isOtherValue ? $currentValue : '' }}"
+    @if($isDisabled) disabled @endif
 >
 <input type="hidden" name="{{ $name }}" id="{{ $idPrefix }}_hidden" value="{{ $currentValue }}">
 @error($name)<div class="invalid-feedback d-block">{{ $message }}</div>@enderror

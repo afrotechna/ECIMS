@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Programme;
+use App\Models\ProfileEditSetting;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,13 +21,26 @@ class ProfileCompleteController extends Controller
         }
         $tanzaniaLocations = config('tanzania_locations');
         $tanzaniaWards = config('tanzania_wards');
+        $readOnly = $this->isLockedForUser($user);
 
-        return view('profile.complete', compact('user', 'student', 'programmes', 'tanzaniaLocations', 'tanzaniaWards'));
+        return view('profile.complete', compact('user', 'student', 'programmes', 'tanzaniaLocations', 'tanzaniaWards', 'readOnly'));
+    }
+
+    /** Staff who already completed their profile lose edit access once the admin locks it; a first-time completion is never blocked. */
+    private function isLockedForUser(User $user): bool
+    {
+        return ! $user->isStudent()
+            && $user->profile_completed_at !== null
+            && ProfileEditSetting::current()->is_locked;
     }
 
     public function store(Request $request)
     {
         $user = auth()->user();
+
+        if (! $user->isStudent() && $this->isLockedForUser($user)) {
+            return redirect()->route('profile.complete')->with('error', 'Profile editing is currently locked by the administrator.');
+        }
 
         if ($user->isStudent()) {
             if (! $user->student) {

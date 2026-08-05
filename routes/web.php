@@ -25,6 +25,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileCompleteController;
+use App\Http\Controllers\ProfileEditLockController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\QuestionBankController;
 use App\Http\Controllers\QuestionItemController;
@@ -460,6 +461,8 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::delete('trash/{type}/{id}', [\App\Http\Controllers\TrashController::class, 'forceDelete'])->whereNumber('id')->name('trash.force-delete');
             Route::get('maintenance-mode', [MaintenanceController::class, 'edit'])->name('maintenance.edit');
             Route::put('maintenance-mode', [MaintenanceController::class, 'update'])->name('maintenance.update');
+            Route::get('profile-edit-lock', [ProfileEditLockController::class, 'edit'])->name('profile-lock.edit');
+            Route::put('profile-edit-lock', [ProfileEditLockController::class, 'update'])->name('profile-lock.update');
         });
         Route::post('calendar/holidays/activate', [CalendarController::class, 'activateCatalog'])->name('calendar.holidays.activate');
         Route::post('calendar/events', [CalendarController::class, 'storeEvent'])->name('calendar.events.store');
