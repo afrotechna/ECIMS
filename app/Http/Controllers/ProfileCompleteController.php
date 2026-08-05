@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Programme;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -14,6 +15,9 @@ class ProfileCompleteController extends Controller
         $user = auth()->user();
         $student = $user->isStudent() ? $user->ensureLinkedToStudentRecord() : $user->student;
         $programmes = Programme::where('is_active', true)->orderBy('code')->get();
+        if ($user->isTutorStaff()) {
+            $user->load('programmes');
+        }
 
         return view('profile.complete', compact('user', 'student', 'programmes'));
     }
@@ -53,9 +57,24 @@ class ProfileCompleteController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['nullable', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'max:20'],
+            'qualification' => ['nullable', 'string', Rule::in(array_keys(User::QUALIFICATIONS))],
+            'education_level' => ['nullable', 'string', Rule::in(array_keys(User::EDUCATION_LEVELS))],
+            'license_number' => ['nullable', 'string', 'max:100'],
+            'license_board' => ['nullable', 'string', Rule::in(array_keys(User::LICENSE_BOARDS))],
+            'employment_type' => ['nullable', 'string', Rule::in(array_keys(User::EMPLOYMENT_TYPES))],
+            'programme_ids' => [$user->isTutorStaff() ? 'required' : 'nullable', 'array', 'min:1', 'max:3'],
+            'programme_ids.*' => ['integer', 'exists:programmes,id'],
         ]);
+
+        $programmeIds = $validated['programme_ids'] ?? [];
+        unset($validated['programme_ids']);
+
         $user->update(array_merge($validated, ['profile_completed_at' => now()]));
+
+        if ($user->isTutorStaff()) {
+            $user->programmes()->sync($programmeIds);
+        }
 
         return redirect()->route('dashboard')->with('success', 'Profile completed.');
     }

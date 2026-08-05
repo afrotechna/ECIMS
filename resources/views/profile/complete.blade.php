@@ -98,6 +98,7 @@
         @else
             <form action="{{ route('profile.complete.store') }}" method="POST">
                 @csrf
+                <h6 class="text-uppercase text-muted small mb-3"><i class="bi bi-person me-1"></i> Personal details</h6>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="name" class="form-label">Full name <span class="text-danger">*</span></label>
@@ -114,11 +115,83 @@
                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
+                        <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" required>
+                        @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
-                <div class="mt-3">
+
+                <hr class="my-4">
+
+                <h6 class="text-uppercase text-muted small mb-3"><i class="bi bi-mortarboard me-1"></i> Qualification &amp; registration</h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="qualification" class="form-label">Qualification / profession</label>
+                        <select class="form-select @error('qualification') is-invalid @enderror" id="qualification" name="qualification">
+                            <option value="">— Select —</option>
+                            @foreach(\App\Models\User::QUALIFICATIONS as $value => $label)
+                                <option value="{{ $value }}" {{ old('qualification', $user->qualification) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('qualification')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="education_level" class="form-label">Level of education</label>
+                        <select class="form-select @error('education_level') is-invalid @enderror" id="education_level" name="education_level">
+                            <option value="">— Select —</option>
+                            @foreach(\App\Models\User::EDUCATION_LEVELS as $value => $label)
+                                <option value="{{ $value }}" {{ old('education_level', $user->education_level) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('education_level')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="license_number" class="form-label">Registration / license number <span class="text-muted small">(if you have one)</span></label>
+                        <input type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" value="{{ old('license_number', $user->license_number) }}">
+                        @error('license_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="license_board" class="form-label">Issuing board / council</label>
+                        <select class="form-select @error('license_board') is-invalid @enderror" id="license_board" name="license_board">
+                            <option value="">— Select —</option>
+                            @foreach(\App\Models\User::LICENSE_BOARDS as $value => $label)
+                                <option value="{{ $value }}" {{ old('license_board', $user->license_board) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('license_board')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="employment_type" class="form-label">Hali ya ajira / employment status</label>
+                        <select class="form-select @error('employment_type') is-invalid @enderror" id="employment_type" name="employment_type">
+                            <option value="">— Select —</option>
+                            @foreach(\App\Models\User::EMPLOYMENT_TYPES as $value => $label)
+                                <option value="{{ $value }}" {{ old('employment_type', $user->employment_type) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('employment_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                @if($user->isTutorStaff())
+                    @php $selectedProgrammeIds = old('programme_ids', $user->programmes->pluck('id')->all()); @endphp
+                    <hr class="my-4">
+                    <h6 class="text-uppercase text-muted small mb-3"><i class="bi bi-diagram-3 me-1"></i> Department(s)</h6>
+                    <p class="small text-muted mb-2">Choose the department(s) you teach in (up to 3).</p>
+                    <div class="row g-2 @error('programme_ids') is-invalid @enderror">
+                        @foreach($programmes as $programme)
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="programme_ids[]" value="{{ $programme->id }}" id="programme_{{ $programme->id }}" {{ in_array($programme->id, $selectedProgrammeIds) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="programme_{{ $programme->id }}">{{ $programme->code }} — {{ $programme->name }}</label>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @error('programme_ids')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    @error('programme_ids.*')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                @endif
+
+                <div class="mt-4">
                     <button type="submit" class="btn btn-primary btn-modern">Save and continue</button>
                 </div>
             </form>

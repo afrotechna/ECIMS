@@ -32,6 +32,53 @@ class User extends Authenticatable implements CanResetPasswordContract
         'profile_completed_at',
         'phone',
         'profile_photo_path',
+        'qualification',
+        'education_level',
+        'license_number',
+        'license_board',
+        'employment_type',
+    ];
+
+    /** Qualification / profession options shown on the staff profile form. */
+    public const QUALIFICATIONS = [
+        'clinical_officer' => 'Clinical Officer',
+        'assistant_clinical_officer' => 'Assistant Clinical Officer',
+        'medical_doctor' => 'Medical Doctor',
+        'registered_nurse' => 'Registered Nurse',
+        'enrolled_nurse' => 'Enrolled Nurse',
+        'medical_lab_scientist' => 'Medical Laboratory Scientist / Technologist',
+        'radiographer' => 'Radiographer',
+        'pharmacist' => 'Pharmacist',
+        'public_health_officer' => 'Public Health Officer',
+        'environmental_health_officer' => 'Environmental Health Officer',
+        'administrator_non_clinical' => 'Administrator / Non-clinical',
+        'other' => 'Other',
+    ];
+
+    /** Highest level of education completed. */
+    public const EDUCATION_LEVELS = [
+        'certificate' => 'Certificate (NTA 4–6)',
+        'diploma' => 'Diploma',
+        'bachelor' => "Bachelor's Degree",
+        'master' => "Master's Degree",
+        'doctorate' => 'Doctorate (PhD)',
+        'other' => 'Other',
+    ];
+
+    /** Professional regulatory bodies staff may be registered with. */
+    public const LICENSE_BOARDS = [
+        'mct' => 'Medical Council of Tanganyika (MCT)',
+        'tnmc' => 'Tanganyika Nursing and Midwifery Council (TNMC)',
+        'pct' => 'Pharmacy Council of Tanzania (PCT)',
+        'hltc' => 'Health Laboratory Technologist Council (HLTC)',
+        'ahpc' => 'Allied Health Professionals Council (AHPC)',
+        'other' => 'Other',
+    ];
+
+    /** Hali ya ajira / employment status. */
+    public const EMPLOYMENT_TYPES = [
+        'permanent' => 'Permanent',
+        'part_time' => 'Part-time',
     ];
 
     /**
@@ -192,6 +239,17 @@ class User extends Authenticatable implements CanResetPasswordContract
     public function isGuardian(): bool
     {
         return $this->role === 'guardian';
+    }
+
+    public function isTutorStaff(): bool
+    {
+        return $this->role === 'tutor_staff';
+    }
+
+    /** Programmes (departments) a tutor is assigned to teach in. */
+    public function programmes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Programme::class);
     }
 
     public function linkedStudent()
