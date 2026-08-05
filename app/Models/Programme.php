@@ -56,7 +56,7 @@ class Programme extends Model
             ['code' => 'CMT', 'name' => 'Clinical Medicine'],
             ['code' => 'MLT', 'name' => 'Medical Laboratory Science'],
             ['code' => 'CLN', 'name' => 'Clinical Nutrition'],
-            ['code' => 'RAD', 'name' => 'Radiology'],
+            ['code' => 'DDR', 'name' => 'Diagnostic Radiography'],
         ];
     }
 
