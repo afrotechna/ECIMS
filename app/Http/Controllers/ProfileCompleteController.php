@@ -19,8 +19,9 @@ class ProfileCompleteController extends Controller
             $user->load('programmes');
         }
         $tanzaniaLocations = config('tanzania_locations');
+        $tanzaniaWards = config('tanzania_wards');
 
-        return view('profile.complete', compact('user', 'student', 'programmes', 'tanzaniaLocations'));
+        return view('profile.complete', compact('user', 'student', 'programmes', 'tanzaniaLocations', 'tanzaniaWards'));
     }
 
     public function store(Request $request)

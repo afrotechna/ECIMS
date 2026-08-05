@@ -180,7 +180,9 @@
                         </div>
                         <div class="col-md-6">
                             <label for="ward" class="form-label">Ward</label>
-                            <input type="text" class="form-control @error('ward') is-invalid @enderror" id="ward" name="ward" value="{{ old('ward', $user->ward) }}">
+                            <select class="form-select @error('ward') is-invalid @enderror" id="ward" name="ward">
+                                <option value="">— Select district first —</option>
+                            </select>
                             @error('ward')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">
@@ -214,33 +216,51 @@
                 <script>
                 (function () {
                     var tanzaniaLocations = @json($tanzaniaLocations);
+                    var tanzaniaWards = @json($tanzaniaWards);
                     var currentDistrict = @json(old('district', $user->district));
+                    var currentWard = @json(old('ward', $user->ward));
                     var nationalityHidden = document.getElementById('nationality_hidden');
                     var addressSection = document.getElementById('tanzania_address_section');
                     var regionSelect = document.getElementById('region');
                     var districtSelect = document.getElementById('district');
+                    var wardSelect = document.getElementById('ward');
 
-                    function populateDistricts(regionName, selectedDistrict) {
-                        if (!districtSelect) return;
-                        var districts = tanzaniaLocations[regionName] || [];
-                        districtSelect.innerHTML = '';
+                    function populateSelect(select, options, selectedValue, emptyLabel, filledLabel) {
+                        if (!select) return;
+                        select.innerHTML = '';
                         var placeholder = document.createElement('option');
                         placeholder.value = '';
-                        placeholder.textContent = districts.length ? '— Select district —' : '— Select region first —';
-                        districtSelect.appendChild(placeholder);
-                        districts.forEach(function (districtName) {
+                        placeholder.textContent = options.length ? filledLabel : emptyLabel;
+                        select.appendChild(placeholder);
+                        options.forEach(function (value) {
                             var option = document.createElement('option');
-                            option.value = districtName;
-                            option.textContent = districtName;
-                            if (districtName === selectedDistrict) option.selected = true;
-                            districtSelect.appendChild(option);
+                            option.value = value;
+                            option.textContent = value;
+                            if (value === selectedValue) option.selected = true;
+                            select.appendChild(option);
                         });
+                    }
+
+                    function populateDistricts(regionName, selectedDistrict) {
+                        populateSelect(districtSelect, tanzaniaLocations[regionName] || [], selectedDistrict, '— Select region first —', '— Select district —');
+                    }
+
+                    function populateWards(districtName, selectedWard) {
+                        populateSelect(wardSelect, tanzaniaWards[districtName] || [], selectedWard, '— Select district first —', '— Select ward —');
                     }
 
                     if (regionSelect) {
                         populateDistricts(regionSelect.value, currentDistrict);
                         regionSelect.addEventListener('change', function () {
                             populateDistricts(regionSelect.value, null);
+                            populateWards(districtSelect ? districtSelect.value : '', null);
+                        });
+                    }
+
+                    if (districtSelect) {
+                        populateWards(districtSelect.value, currentWard);
+                        districtSelect.addEventListener('change', function () {
+                            populateWards(districtSelect.value, null);
                         });
                     }
 
