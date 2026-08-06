@@ -169,7 +169,7 @@
         </div>
 
         <div class="maintenance-footer">
-            Copyright © {{ now()->year }} Musoma COHAS. Powered by AfroTechna Group
+            Copyright © {{ now()->year }} Musoma COHAS. Powered by AfroTechna Group <span class="app-footer-version">· v{{ config('app.version') }}</span>
         </div>
     </div>
 

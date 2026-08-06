@@ -565,7 +565,7 @@
             @yield('content')
         </main>
         <footer class="app-footer" role="contentinfo">
-            <p>© {{ now()->year }} Musoma COHAS. {{ __('ui.footer.rights') }} {{ __('ui.footer.powered') }}</p>
+            <p>© {{ now()->year }} Musoma COHAS. {{ __('ui.footer.rights') }} {{ __('ui.footer.powered') }} <span class="app-footer-version">· v{{ config('app.version') }}</span></p>
         </footer>
     </div>
     <div class="sidebar-overlay d-lg-none" id="sidebarOverlay" style="display:none!important; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1029;"></div>
@@ -586,7 +586,7 @@
     </main>
     <footer class="border-top bg-light py-3 mt-auto" role="contentinfo">
         <div class="container small text-center text-muted">
-            <p class="mb-0">© {{ now()->year }} Musoma COHAS. {{ __('ui.footer.rights') }} {{ __('ui.footer.powered') }}</p>
+            <p class="mb-0">© {{ now()->year }} Musoma COHAS. {{ __('ui.footer.rights') }} {{ __('ui.footer.powered') }} <span class="app-footer-version">· v{{ config('app.version') }}</span></p>
         </div>
     </footer>
     @endauth
