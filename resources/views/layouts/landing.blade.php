@@ -28,7 +28,7 @@
                 @yield('content')
             </div>
             <footer class="landing-footer" role="contentinfo">
-                Copyright © {{ now()->year }} Musoma COHAS. Powered by AfroTechna Group <span class="app-footer-version">· v{{ config('app.version') }}</span>
+                Copyright © {{ now()->year }} {{ config('app.name') }}. Powered by AfroTechna Group <span class="app-footer-version">· v{{ config('app.version') }}</span>
             </footer>
         </main>
     </div>

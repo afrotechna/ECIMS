@@ -16,7 +16,7 @@
 </head>
 <body>
     <p class="no-print"><button onclick="window.print()">Print / Save as PDF</button></p>
-    <h1>{{ config('college.institution_name', 'Musoma COHAS') }}</h1>
+    <h1>{{ config('college.institution_name', 'Musoma College of Health and Allied Sciences') }}</h1>
     <p class="meta">Clinical logbook · {{ $student->full_name }} · {{ $student->programme?->code }} · NTA {{ $student->nta_level }}</p>
 
     <p><strong>Competency checklist:</strong>

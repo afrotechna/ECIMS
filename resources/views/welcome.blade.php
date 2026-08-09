@@ -8,9 +8,9 @@
     <div class="logo-hero">
         <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}">
     </div>
-    <h1>MUSOMA COHAS</h1>
-    <p class="lead">Integrated Academic, Clinical &amp; Accounting Management System</p>
-    <p class="tagline">Digitize student registration, fees, results, clinical training, and college finance in one secure platform.</p>
+    <h1>{{ config('app.name') }}</h1>
+    <p class="lead">Electronic College Information Management System</p>
+    <p class="tagline">Musoma College of Health and Allied Sciences &mdash; digitize student registration, fees, results, clinical training, and college finance in one secure platform.</p>
 
     <div class="landing-actions">
         <a href="{{ route('login.create') }}" class="auth-cta-slat"><span><i class="bi bi-box-arrow-in-right me-1"></i> Sign in</span></a>

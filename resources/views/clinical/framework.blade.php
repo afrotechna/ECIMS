@@ -20,7 +20,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing mb-0"><i class="bi bi-diagram-3 me-2 opacity-90"></i>Clinical training process framework</h1>
-    <p class="page-subtitle-landing mb-0">Musoma COHAS · Clinical Medicine (CMT) · NTA Level {{ $practicum_level ?? 4 }} practicum: <strong>{{ $practicum_source ?? 'CMT Practicum Guide' }}</strong></p>
+    <p class="page-subtitle-landing mb-0">{{ config('app.name') }} · Clinical Medicine (CMT) · NTA Level {{ $practicum_level ?? 4 }} practicum: <strong>{{ $practicum_source ?? 'CMT Practicum Guide' }}</strong></p>
 </div>
 
 <div class="btn-group mb-3" role="group" aria-label="NTA level">
