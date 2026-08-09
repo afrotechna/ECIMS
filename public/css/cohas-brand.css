@@ -501,7 +501,16 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     background-color: var(--cohas-cyan-soft) !important;
 }
 
-/* Alerts */
+/* Alerts — modern rounded notice cards, on the app's standard body font
+   (declared explicitly so no page can fall back to a system serif). */
+.alert {
+    font-family: var(--cohas-font-body, 'Inter', system-ui, sans-serif) !important;
+    border-width: 1px !important;
+    border-radius: var(--cohas-radius-md) !important;
+    box-shadow: 0 2px 10px var(--cohas-shadow) !important;
+    padding: 1rem 1.25rem;
+    line-height: 1.55;
+}
 .alert-primary {
     background: var(--cohas-cyan-soft) !important;
     border-color: var(--cohas-cyan) !important;
@@ -516,6 +525,26 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     background: var(--cohas-yellow-soft) !important;
     border-color: var(--cohas-yellow) !important;
     color: #5c4a00 !important;
+}
+.alert-danger {
+    background: #fee2e2 !important;
+    border-color: #fca5a5 !important;
+    color: #991b1b !important;
+}
+[data-theme="dark"] .alert-primary {
+    background: rgba(56, 182, 232, 0.15) !important;
+    border-color: rgba(56, 182, 232, 0.35) !important;
+    color: #bae6fd !important;
+}
+[data-theme="dark"] .alert-success {
+    background: rgba(29, 157, 87, 0.18) !important;
+    border-color: rgba(29, 157, 87, 0.4) !important;
+    color: #bbf7d0 !important;
+}
+[data-theme="dark"] .alert-danger {
+    background: rgba(220, 38, 38, 0.18) !important;
+    border-color: rgba(220, 38, 38, 0.4) !important;
+    color: #fecaca !important;
 }
 
 /* Form sizing */
