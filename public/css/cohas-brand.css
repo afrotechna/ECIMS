@@ -158,6 +158,13 @@ body {
     transform: translateY(0) scale(.97);
 }
 
+/* Pill-shaped everywhere, matching the dashboard quick-action / header-button
+   treatment above. Buttons joined in a .btn-group are excluded — they need
+   square-jointed edges to read as one segmented control, not stacked pills. */
+.btn:not(.btn-group > .btn) {
+    border-radius: 999px !important;
+}
+
 /* Generic secondary — was plain Bootstrap grey, now on-brand slate. */
 .btn-secondary,
 a.btn-secondary {
