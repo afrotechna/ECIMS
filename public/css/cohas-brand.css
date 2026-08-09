@@ -262,15 +262,30 @@ a.btn-outline-warning:hover {
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.35) !important;
     color: #fff !important;
+    border-radius: 999px !important;
+    font-weight: 600;
     box-shadow: none !important;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 .page-header-landing .btn-light:hover,
 .page-header-landing .btn-outline-light:hover,
 .card-header-landing .btn-light:hover,
-.card-header-landing .btn-outline-light:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
+.card-header-landing .btn-outline-light:hover,
+.page-header-landing .btn-light:focus-visible,
+.page-header-landing .btn-outline-light:focus-visible,
+.card-header-landing .btn-light:focus-visible,
+.card-header-landing .btn-outline-light:focus-visible {
+    background: rgba(255, 255, 255, 0.36) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
     color: #fff !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+    transform: translateY(-1px);
+}
+.page-header-landing .btn-light:active,
+.page-header-landing .btn-outline-light:active,
+.card-header-landing .btn-light:active,
+.card-header-landing .btn-outline-light:active {
+    transform: translateY(0) scale(0.97);
 }
 [data-theme="dark"] .page-header-landing .btn-light,
 [data-theme="dark"] .page-header-landing .btn-outline-light,
@@ -282,8 +297,13 @@ a.btn-outline-warning:hover {
 [data-theme="dark"] .page-header-landing .btn-light:hover,
 [data-theme="dark"] .page-header-landing .btn-outline-light:hover,
 [data-theme="dark"] .card-header-landing .btn-light:hover,
-[data-theme="dark"] .card-header-landing .btn-outline-light:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
+[data-theme="dark"] .card-header-landing .btn-outline-light:hover,
+[data-theme="dark"] .page-header-landing .btn-light:focus-visible,
+[data-theme="dark"] .page-header-landing .btn-outline-light:focus-visible,
+[data-theme="dark"] .card-header-landing .btn-light:focus-visible,
+[data-theme="dark"] .card-header-landing .btn-outline-light:focus-visible {
+    background: rgba(255, 255, 255, 0.26) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .btn-primary,
@@ -529,8 +549,9 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 }
 .quick-action-pill:hover,
 .quick-action-pill:focus-visible {
-    background: rgba(255, 255, 255, 0.28) !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.36) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
     color: #fff !important;
 }
@@ -546,7 +567,8 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 }
 [data-theme="dark"] .quick-action-pill:hover,
 [data-theme="dark"] .quick-action-pill:focus-visible {
-    background: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.26) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Progress */
