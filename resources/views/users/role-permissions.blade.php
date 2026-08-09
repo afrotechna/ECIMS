@@ -56,7 +56,7 @@
                         <td><span class="staff-role-pill">{{ \App\Models\User::roleLabel($u->role) }}</span></td>
                         <td class="small text-secondary text-truncate" style="max-width: 12rem;">{{ $u->email ?: '—' }}</td>
                         <td class="text-end text-nowrap pe-4">
-                            <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-light border shadow-sm" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock text-primary"></i></a>
+                            <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-cohas-edit" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock"></i></a>
                         </td>
                     </tr>
                     @empty

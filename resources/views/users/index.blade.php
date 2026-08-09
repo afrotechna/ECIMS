@@ -222,8 +222,8 @@
                         <td class="small text-secondary text-truncate" style="max-width: 12rem;">{{ $u->email ?: '—' }}</td>
                         @if($isAdmin)
                         <td class="text-end text-nowrap pe-4">
-                            <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-light border shadow-sm me-1" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock text-primary"></i></a>
-                            <a href="{{ route('users.edit', $u) }}" class="btn btn-sm btn-light border shadow-sm" title="Edit staff account" aria-label="Edit"><i class="bi bi-pencil-square text-primary"></i></a>
+                            <a href="{{ route('users.permissions', $u) }}" class="btn btn-sm btn-cohas-edit me-1" title="View permissions" aria-label="View permissions"><i class="bi bi-shield-lock"></i></a>
+                            <a href="{{ route('users.edit', $u) }}" class="btn btn-sm btn-cohas-edit" title="Edit staff account" aria-label="Edit"><i class="bi bi-pencil-square"></i></a>
                         </td>
                         @endif
                     </tr>
