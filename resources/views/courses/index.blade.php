@@ -19,14 +19,8 @@
         @endif
     </div>
     <div class="d-flex flex-wrap gap-2">
-        @if(auth()->user()->canAccessFinance())
-        <a href="{{ route('fee-structures.index') }}" class="btn btn-outline-secondary btn-sm" title="Fee schedules"><i class="bi bi-currency-exchange me-1"></i>Fees</a>
-        @endif
         @if($catalogueFilterActive)
             <a href="{{ route('courses.index') }}" class="btn btn-outline-light btn-sm"><i class="bi bi-diagram-3 me-1"></i>Full catalogue</a>
-        @else
-            <button type="button" class="btn btn-outline-secondary btn-sm" id="coursesExpandAll" title="Expand all sections"><i class="bi bi-arrows-expand me-1"></i>Expand all</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" id="coursesCollapseAll" title="Collapse all sections"><i class="bi bi-arrows-collapse me-1"></i>Collapse all</button>
         @endif
         @canModule('programmes', 'create')
         <a href="{{ route('programmes.create') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-collection me-1"></i> Programme</a>
@@ -61,6 +55,40 @@
         @endphp
         @if($canDeleteCourses && $courseCountOnPage > 0)
             @include('partials.bulk-delete.toolbar', $bulkDelete)
+        @endif
+        @php
+            // Checkboxes to select modules only render when the user has courses:delete
+            // (see partials.bulk-delete.td), so tie this to the same gate as well as
+            // courses:update — that's the combination Administrator (the only role
+            // currently granted courses:update) actually has.
+            $canAssignSemester = $canDeleteCourses && (auth()->user()?->canModule('courses', 'update') ?? false);
+        @endphp
+        @if($canAssignSemester && $courseCountOnPage > 0 && isset($semestersForFilter) && $semestersForFilter->isNotEmpty())
+        <form
+            id="bulkAssignSemesterForm"
+            method="POST"
+            action="{{ route('courses.bulk-assign-semester') }}"
+            class="d-flex align-items-center gap-1 bulk-delete-form no-print"
+            data-bulk-scope="coursesBulkScope"
+            data-bulk-confirm="Assign :count selected module(s) to the chosen semester?"
+            data-bulk-confirm-button="Assign"
+            data-bulk-confirm-color="#1a4fb5"
+            data-bulk-confirm-icon="question"
+        >
+            @csrf
+            <div class="bulk-delete-ids"></div>
+            <input type="hidden" name="return_semester_id" value="{{ $semesterId ?? '' }}">
+            <input type="hidden" name="return_programme_id" value="{{ $programmeId ?? '' }}">
+            <select name="assign_semester_id" class="form-select form-select-sm" style="width:auto" required>
+                <option value="">Assign selected to…</option>
+                @foreach($semestersForFilter as $s)
+                    <option value="{{ $s->id }}">{{ $s->label }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline-primary bulk-delete-submit d-none" title="Assign selected modules to the chosen semester">
+                <i class="bi bi-calendar2-check me-1"></i>Assign <span class="badge bg-primary ms-1 bulk-delete-count">0</span>
+            </button>
+        </form>
         @endif
         @canModule('courses', 'create')
         <a href="{{ route('courses.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add module</a>
@@ -216,15 +244,15 @@
 @php
     $programme = $block['programme'];
     $pid = $programme->id;
-    $openFirstLevel = true;
+    $openFirstLevel = false;
     $levelOpened = false;
 @endphp
 <div class="card card-landing mb-3 courses-tree-card">
     <div
-        class="card-header-landing d-flex justify-content-between align-items-center gap-2 py-3 courses-fold-trigger"
+        class="card-header-landing d-flex justify-content-between align-items-center gap-2 py-3 courses-fold-trigger collapsed"
         data-bs-toggle="collapse"
         data-bs-target="#prog-body-{{ $pid }}"
-        aria-expanded="true"
+        aria-expanded="false"
         role="button"
         tabindex="0"
     >
@@ -236,7 +264,7 @@
             <i class="bi bi-chevron-down courses-fold-icon flex-shrink-0"></i>
         </div>
     </div>
-    <div id="prog-body-{{ $pid }}" class="collapse show border-top border-light-subtle">
+    <div id="prog-body-{{ $pid }}" class="collapse border-top border-light-subtle">
         <div class="card-body pb-3 pt-3">
             @foreach($levelOrder as $level)
                 @continue(! isset($block['levels'][$level]))
@@ -396,37 +424,3 @@
 </style>
 @endpush
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var Collapse = window.bootstrap && window.bootstrap.Collapse;
-    if (!Collapse) return;
-
-    function allCollapses() {
-        return document.querySelectorAll('#courses-collapse-scope .collapse');
-    }
-    document.getElementById('coursesExpandAll')?.addEventListener('click', function() {
-        allCollapses().forEach(function(el) {
-            if (!el.classList.contains('show')) {
-                Collapse.getOrCreateInstance(el, { toggle: false }).show();
-            }
-        });
-        document.querySelectorAll('#courses-collapse-scope .courses-fold-trigger').forEach(function(t) {
-            t.classList.remove('collapsed');
-            t.setAttribute('aria-expanded', 'true');
-        });
-    });
-    document.getElementById('coursesCollapseAll')?.addEventListener('click', function() {
-        allCollapses().forEach(function(el) {
-            if (el.classList.contains('show')) {
-                Collapse.getOrCreateInstance(el, { toggle: false }).hide();
-            }
-        });
-        document.querySelectorAll('#courses-collapse-scope .courses-fold-trigger').forEach(function(t) {
-            t.classList.add('collapsed');
-            t.setAttribute('aria-expanded', 'false');
-        });
-    });
-});
-</script>
-@endpush

@@ -230,6 +230,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::post('semesters/{semester}/complete-registration', [SemesterController::class, 'completeRegistration'])->name('semesters.complete-registration');
             Route::resource('semesters', SemesterController::class)->except(['show']);
             Route::post('courses/bulk-destroy', [CourseController::class, 'bulkDestroy'])->name('courses.bulk-destroy');
+            Route::post('courses/bulk-assign-semester', [CourseController::class, 'bulkAssignSemester'])->name('courses.bulk-assign-semester');
             Route::resource('courses', CourseController::class)->except(['show']);
             Route::post('programmes/{programme}/nta-level-documents', [ProgrammeController::class, 'storeNtaLevelDocument'])->name('programmes.nta-level-documents.store');
             Route::delete('programmes/{programme}/nta-level-documents/{document}', [ProgrammeController::class, 'destroyNtaLevelDocument'])->name('programmes.nta-level-documents.destroy')->whereNumber('document');

@@ -109,6 +109,9 @@ return [
         'students.ledger' => ['finance_payments', 'view'],
         'students.ledger.charge' => ['finance_payments', 'create'],
         'academics.index' => ['programmes', 'view'],
+        // Bulk-assigning existing modules to a semester edits course-semester links, not new
+        // courses — map to 'update' so it lines up with the single-module edit form's permission.
+        'courses.bulk-assign-semester' => ['courses', 'update'],
         // Approving results is a distinct hard-coded role check (ResultApprovalController::ensureApproverRole,
         // Principal/VP ARC only) — mapped to 'view' here since Principal deliberately has no 'create' grant
         // on results (read-only oversight); the real access restriction is the controller-level role check,

@@ -128,7 +128,7 @@
                 </div>
                 <div class="col-12">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="requires_clinical_rotation" value="1" id="field_requires_clinical_rotation" {{ old('requires_clinical_rotation', true) ? 'checked' : '' }}>
+                        <input class="form-check-input" type="checkbox" name="requires_clinical_rotation" value="1" id="field_requires_clinical_rotation" {{ old('requires_clinical_rotation') ? 'checked' : '' }}>
                         <label class="form-check-label" for="field_requires_clinical_rotation">Requires clinical rotation (hospital posting)</label>
                     </div>
                 </div>

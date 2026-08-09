@@ -111,10 +111,10 @@
         Swal.fire({
             title: 'Are you sure?',
             text: msg,
-            icon: 'warning',
+            icon: form.getAttribute('data-bulk-confirm-icon') || 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Delete',
-            confirmButtonColor: '#dc3545',
+            confirmButtonText: form.getAttribute('data-bulk-confirm-button') || 'Delete',
+            confirmButtonColor: form.getAttribute('data-bulk-confirm-color') || '#dc3545',
             cancelButtonColor: '#6c757d',
         }).then(function (result) {
             if (result.isConfirmed) finish();

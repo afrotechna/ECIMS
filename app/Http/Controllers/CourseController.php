@@ -186,7 +186,7 @@ class CourseController extends Controller
         $validated['nta_level'] = (int) $validated['nta_level'];
         $validated['credits'] = (float) ($validated['credits'] ?? 0);
         $validated['has_practical'] = $request->boolean('has_practical');
-        $validated['requires_clinical_rotation'] = $request->boolean('requires_clinical_rotation', true);
+        $validated['requires_clinical_rotation'] = $request->boolean('requires_clinical_rotation');
         if (! $validated['has_practical']) {
             $validated['practical_assessment_type'] = null;
         }
@@ -341,7 +341,7 @@ class CourseController extends Controller
         $validated['nta_level'] = (int) $validated['nta_level'];
         $validated['credits'] = (float) ($validated['credits'] ?? 0);
         $validated['has_practical'] = $request->boolean('has_practical');
-        $validated['requires_clinical_rotation'] = $request->boolean('requires_clinical_rotation', true);
+        $validated['requires_clinical_rotation'] = $request->boolean('requires_clinical_rotation');
         if (! $validated['has_practical']) {
             $validated['practical_assessment_type'] = null;
         }
@@ -436,5 +436,31 @@ class CourseController extends Controller
             ]),
             singularLabel: 'module',
         );
+    }
+
+    /** Attach a batch of existing modules to one chosen semester in a single action. */
+    public function bulkAssignSemester(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:courses,id'],
+            'assign_semester_id' => ['required', 'integer', 'exists:semesters,id'],
+        ]);
+
+        $semester = Semester::findOrFail($validated['assign_semester_id']);
+        $courses = Course::whereIn('id', $validated['ids'])->get();
+        foreach ($courses as $course) {
+            $course->semesters()->syncWithoutDetaching([$semester->id]);
+        }
+
+        $to = route('courses.index', array_filter([
+            'semester_id' => $request->input('return_semester_id'),
+            'programme_id' => $request->input('return_programme_id'),
+        ]));
+
+        $count = $courses->count();
+        $label = $count === 1 ? '1 module' : "{$count} modules";
+
+        return redirect()->to($to)->with('success', "{$label} assigned to {$semester->label}.");
     }
 }
