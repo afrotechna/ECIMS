@@ -510,6 +510,9 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     box-shadow: 0 2px 10px var(--cohas-shadow) !important;
     padding: 1rem 1.25rem;
     line-height: 1.55;
+    max-width: 26em;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 .alert-primary {
     background: var(--cohas-cyan-soft) !important;
