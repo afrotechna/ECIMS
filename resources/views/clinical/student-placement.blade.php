@@ -19,7 +19,6 @@
     <a href="{{ route('my.clinical.logbook.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-journal-medical me-1"></i>Clinical logbook</a>
 </div>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 @if($placements->isEmpty())
     <div class="alert alert-info">

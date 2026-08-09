@@ -1,12 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Exam timetable')
 @section('content')
-@if(session('error'))
-<div class="alert alert-warning no-print">{{ session('error') }}</div>
-@endif
-@if(session('success'))
-<div class="alert alert-success no-print">{{ session('success') }}</div>
-@endif
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Dashboard</a>
     <span class="mx-2">/</span>

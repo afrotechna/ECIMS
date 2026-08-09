@@ -21,9 +21,6 @@
     </div>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 <div class="card card-landing mb-3">
     <div class="card-body py-3">

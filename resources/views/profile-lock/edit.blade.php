@@ -14,7 +14,6 @@
     <p class="page-subtitle-landing mb-0">Once every staff member has completed their profile, lock further edits. Staff who already completed their profile will still be able to view it — anyone who hasn't completed it yet can still do so for the first time.</p>
 </div>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 <div class="card card-landing">
     <div class="card-header-landing d-flex justify-content-between align-items-center">

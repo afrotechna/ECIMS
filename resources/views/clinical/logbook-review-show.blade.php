@@ -8,7 +8,6 @@
     <span>Review</span>
 </nav>
 
-@if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
 
 <div class="page-header-landing d-flex flex-wrap justify-content-between gap-2">
     <div>

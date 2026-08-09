@@ -14,7 +14,6 @@
     <p class="page-subtitle-landing mb-0">While active, only administrators can sign in. Everyone else sees a maintenance page with the details below, and is notified in-app as soon as you save.</p>
 </div>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 <div class="card card-landing">
     <div class="card-header-landing d-flex justify-content-between align-items-center">

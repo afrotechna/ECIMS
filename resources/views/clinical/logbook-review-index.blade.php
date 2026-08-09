@@ -26,7 +26,6 @@
     </div>
 </div>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 <ul class="nav nav-pills mb-3 flex-wrap gap-1">
     <li class="nav-item"><a class="nav-link {{ ($status ?? '') === 'submitted' ? 'active' : '' }}" href="{{ route('clinical-logbook.index', ['status' => 'submitted']) }}">Awaiting review ({{ $counts['submitted'] }})</a></li>

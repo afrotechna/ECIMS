@@ -18,9 +18,6 @@
 <div class="card card-landing">
     <div class="card-header-landing"><i class="bi bi-pencil-square me-2"></i>Programme</div>
     <div class="card-body">
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
         <form action="{{ route('programmes.store') }}" method="POST">
             @csrf
             <div class="row g-3">

@@ -21,7 +21,6 @@
     </div>
 </div>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 @include('clinical.partials.nta4-practicum-reference')
 

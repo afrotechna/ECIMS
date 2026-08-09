@@ -16,15 +16,6 @@
     <p class="page-subtitle-landing mb-0">{{ $hostel->name }} — {{ $hostel->code ?? 'No code' }} · {{ $hostel->rooms_count }} room(s) on file</p>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-@endif
-@if(session('warning'))
-    <div class="alert alert-warning">{{ session('warning') }}</div>
-@endif
 
 <div class="card card-landing mb-3">
     <div class="card-header-landing"><i class="bi bi-pencil me-2"></i>Hostel details</div>

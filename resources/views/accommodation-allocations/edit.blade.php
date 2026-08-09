@@ -19,7 +19,6 @@
 <div class="card card-landing">
     <div class="card-header-landing"><i class="bi bi-person-badge me-2"></i>Allocation details</div>
     <div class="card-body">
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
         <form action="{{ route('accommodation-allocations.update', $allocation) }}" method="POST">
             @csrf
             @method('PUT')

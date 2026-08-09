@@ -21,7 +21,6 @@
     </div>
 </div>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 <form method="GET" class="row g-2 mb-3 align-items-end">
     <div class="col-auto">

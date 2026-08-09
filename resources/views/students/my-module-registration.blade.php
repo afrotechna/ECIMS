@@ -18,9 +18,6 @@
     </p>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 @if($block_reason ?? null)
     <div class="alert alert-warning">{{ $block_reason }}</div>

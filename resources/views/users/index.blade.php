@@ -10,15 +10,6 @@
     <span>Users</span>
 </nav>
 
-@if(session('success'))
-    <div class="alert alert-success border-0 shadow-sm mb-3" role="alert">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger border-0 shadow-sm mb-3" role="alert">{{ session('error') }}</div>
-@endif
-@if(session('info'))
-    <div class="alert alert-info border-0 shadow-sm mb-3" role="alert">{{ session('info') }}</div>
-@endif
 
 @if(session('issued_temp_password'))
 <div class="alert alert-warning border shadow-sm mb-3">

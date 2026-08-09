@@ -7,9 +7,6 @@
     <span>Calendar · {{ $academicYearLabel }}</span>
 </nav>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show py-2 small mb-3">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-@endif
 
 <div class="gcal-wrap">
     {{-- Google-style toolbar --}}

@@ -22,9 +22,6 @@
 <div class="card card-landing">
     <div class="card-header-landing"><i class="bi bi-file-earmark-arrow-up me-2"></i>Upload CSV</div>
     <div class="card-body">
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
         <form action="{{ route('users.import.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">

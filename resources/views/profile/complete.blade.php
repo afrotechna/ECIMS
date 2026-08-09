@@ -7,8 +7,6 @@
     <h1 class="page-title mb-1"><i class="bi bi-person-lines-fill me-2 text-primary"></i>{{ ($readOnly ?? false) ? 'My profile' : 'Complete your profile' }}</h1>
 </div>
 <div class="mx-auto" style="max-width: 960px;">
-    @if(session('info'))<div class="alert alert-info">{{ session('info') }}</div>@endif
-    @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
     @if($user->isStudent() && $student)
         <div class="card card-modern">
         <div class="card-body">

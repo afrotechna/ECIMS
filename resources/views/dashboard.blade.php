@@ -77,7 +77,7 @@
 @endif
 
 @if($roleSlug === 'examination_officer' && auth()->user()->canModule('results', 'update') && ($resultsPendingEntry ?? 0) > 0)
-<div class="alert alert-warning d-flex align-items-center justify-content-between mb-4">
+<div class="alert alert-warning d-flex align-items-center justify-content-between mb-4" data-swal-notice>
     <span><i class="bi bi-exclamation-triangle me-2"></i><strong>{{ $resultsPendingEntry }}</strong> module(s) this academic year have no results entered yet.</span>
     <a href="{{ route('results.index') }}" class="btn btn-sm btn-warning">Enter results</a>
 </div>
@@ -97,7 +97,7 @@
 
 @if(auth()->user()->isStudent())
     @if(auth()->user()->student && !auth()->user()->student->hasCompletedSemesterRegistration())
-    <div class="alert alert-warning mb-4 border-0 shadow-sm">
+    <div class="alert alert-warning mb-4 border-0 shadow-sm" data-swal-notice>
             <i class="bi bi-info-circle me-1"></i>
             <strong>Not registered for the semester.</strong>
             <a href="{{ route('my.registrations') }}" class="alert-link">Check status</a>.

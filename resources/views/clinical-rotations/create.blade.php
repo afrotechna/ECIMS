@@ -13,9 +13,6 @@
 </div>
 <div class="card card-landing">
     <div class="card-body">
-        @if($errors->any())
-            <div class="alert alert-danger small">{{ $errors->first() }}</div>
-        @endif
         <form method="POST" action="{{ route('clinical-rotations.store') }}" class="row g-3">
             @csrf
             <div class="col-md-6">

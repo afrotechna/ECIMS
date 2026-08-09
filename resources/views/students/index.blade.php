@@ -21,12 +21,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success border-0 shadow-sm mb-3" role="alert">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger border-0 shadow-sm mb-3" role="alert">{{ session('error') }}</div>
-@endif
 
 @php
     $studentFilterParams = fn (?int $level = null, ?int $programmeId = null) => array_filter([

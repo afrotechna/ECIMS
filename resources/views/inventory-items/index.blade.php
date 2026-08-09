@@ -15,9 +15,6 @@
     <a href="{{ route('inventory-items.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add record</a>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 <div class="card card-landing mb-3">
     <div class="card-header-landing py-2"><i class="bi bi-funnel me-2"></i>Filter</div>

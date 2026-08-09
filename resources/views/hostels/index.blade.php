@@ -9,15 +9,6 @@
     <span>Hostels</span>
 </nav>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-@endif
-@if(session('warning'))
-    <div class="alert alert-warning">{{ session('warning') }}</div>
-@endif
 
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>

@@ -7,8 +7,6 @@
     <span>Entry</span>
 </nav>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
-@if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
 
 <div class="page-header-landing d-flex flex-wrap justify-content-between gap-2">
     <div>

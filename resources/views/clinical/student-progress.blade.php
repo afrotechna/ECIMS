@@ -20,7 +20,6 @@
     <span>Clinical progress</span>
 </nav>
 
-@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 
 <div class="page-header-landing d-flex flex-wrap justify-content-between gap-2">
     <div>

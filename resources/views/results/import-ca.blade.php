@@ -13,9 +13,6 @@
     <h1 class="page-title-landing"><i class="bi bi-upload me-2 opacity-90"></i>Import CA results</h1>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 <div class="row g-4">
     <div class="col-lg-6">

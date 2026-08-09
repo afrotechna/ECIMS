@@ -9,9 +9,6 @@
 </div>
 <div class="card card-modern" style="max-width: 420px;">
     <div class="card-body">
-        @if(session('info'))
-            <div class="alert alert-info">{{ session('info') }}</div>
-        @endif
         <form action="{{ route('password.change.store') }}" method="POST">
             @csrf
             <div class="mb-3">

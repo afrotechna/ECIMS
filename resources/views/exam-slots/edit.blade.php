@@ -13,9 +13,6 @@
 </div>
 <div class="card card-landing">
     <div class="card-body">
-        @if($errors->any())
-            <div class="alert alert-danger small">{{ $errors->first() }}</div>
-        @endif
         <form action="{{ route('exam-slots.update', $exam_slot) }}" method="POST" id="examSlotForm">
             @csrf
             @method('PUT')

@@ -18,12 +18,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if(session('warning'))
-    <div class="alert alert-warning">{{ session('warning') }}</div>
-@endif
 
 <div class="card card-landing mb-4">
     <div class="card-header-landing"><i class="bi bi-file-earmark-arrow-down me-2"></i>Export rotation schedule (Word / PDF)</div>

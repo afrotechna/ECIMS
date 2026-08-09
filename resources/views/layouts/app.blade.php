@@ -599,6 +599,7 @@
     <script src="{{ asset('js/cohas-select-search.js') }}"></script>
     @endauth
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('js/alert-to-swal.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var isAuthenticated = @json(auth()->check());

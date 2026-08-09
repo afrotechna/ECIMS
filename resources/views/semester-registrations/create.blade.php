@@ -41,7 +41,7 @@
         <form action="{{ route('semester-registrations.store') }}" method="POST">
             @csrf
             @if($semesters->isEmpty())
-            <div class="alert alert-warning mb-3">No active semester for this filter. <a href="{{ route('semesters.index') }}">Semesters</a></div>
+            <div class="alert alert-warning mb-3" data-swal-notice>No active semester for this filter. <a href="{{ route('semesters.index') }}">Semesters</a></div>
             @endif
             <div class="row g-3">
                 <div class="col-md-6">

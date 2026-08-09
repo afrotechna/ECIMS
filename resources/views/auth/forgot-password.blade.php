@@ -11,9 +11,6 @@
     <p class="auth-login-subtitle">Enter your login ID; we will email a reset link to the address on file</p>
 </header>
 
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
 
 <form method="POST" action="{{ route('password.email') }}" class="auth-login-form">
     @csrf

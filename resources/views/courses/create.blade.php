@@ -31,9 +31,6 @@
 
 <form action="{{ route('courses.store') }}" method="POST" id="courseCreateForm">
     @csrf
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
     @error('curriculum_modules')
         <div class="alert alert-danger">{{ $message }}</div>
     @enderror

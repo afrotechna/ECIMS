@@ -50,7 +50,7 @@
     <div class="card-header-landing"><i class="bi bi-person-plus me-2"></i>Who are you registering?</div>
     <div class="card-body">
         @if($semesters->isEmpty())
-            <div class="alert alert-warning mb-3">
+            <div class="alert alert-warning mb-3" data-swal-notice>
                 <strong>No selectable semester for {{ $selectedAcademicYear }}/{{ $selectedAcademicYear + 1 }}.</strong>
                 This screen only lists semesters that are <strong>both</strong> (1) saved for that academic year start year and (2) marked <strong>Active</strong>.
                 @if($totalSameYear > 0 && $inactiveSameYear > 0)
