@@ -372,6 +372,40 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     color: var(--bs-body-color);
 }
 
+/* Modern glass-style quick-action pills on gradient page headers (e.g. dashboard). */
+.quick-action-pill {
+    background: rgba(255, 255, 255, 0.16) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+    padding: 0.45rem 1rem !important;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.quick-action-pill:hover,
+.quick-action-pill:focus-visible {
+    background: rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    transform: translateY(-1px);
+    color: #fff !important;
+}
+.quick-action-pill:active {
+    transform: translateY(0) scale(0.97);
+}
+.quick-action-pill i {
+    opacity: 0.9;
+}
+[data-theme="dark"] .quick-action-pill {
+    background: rgba(255, 255, 255, 0.10) !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
+}
+[data-theme="dark"] .quick-action-pill:hover,
+[data-theme="dark"] .quick-action-pill:focus-visible {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
 /* Progress */
 .progress-bar.bg-primary { background-color: var(--cohas-blue-700) !important; }
 .progress-bar.bg-success { background-color: var(--cohas-green) !important; }

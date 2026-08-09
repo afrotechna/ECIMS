@@ -29,13 +29,13 @@
     @if(!auth()->user()->isStudent())
     <div class="d-flex gap-2 flex-wrap">
         @if($canViewPayments)
-        <a href="{{ route('payments.index') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-clock-history me-1"></i>{{ __('ui.dashboard.payment_history') }}</a>
+        <a href="{{ route('payments.index') }}" class="btn btn-sm quick-action-pill"><i class="bi bi-clock-history me-1"></i>{{ __('ui.dashboard.payment_history') }}</a>
         @endif
         @if($canViewResults)
-        <a href="{{ route('results.index') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-journal-check me-1"></i>{{ __('ui.dashboard.results_import') }}</a>
+        <a href="{{ route('results.index') }}" class="btn btn-sm quick-action-pill"><i class="bi bi-journal-check me-1"></i>{{ __('ui.dashboard.results_import') }}</a>
         @endif
         @if($canViewRegistrations)
-        <a href="{{ route('semester-registrations.index') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-ui-checks-grid me-1"></i>{{ __('ui.dashboard.student_registration') }}</a>
+        <a href="{{ route('semester-registrations.index') }}" class="btn btn-sm quick-action-pill"><i class="bi bi-ui-checks-grid me-1"></i>{{ __('ui.dashboard.student_registration') }}</a>
         @endif
     </div>
     @endif
