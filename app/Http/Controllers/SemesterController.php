@@ -100,6 +100,21 @@ class SemesterController extends Controller
         return redirect()->route('semesters.index')->with('success', $semester->label.' is now open for registration.');
     }
 
+    public function closeRegistration(Semester $semester)
+    {
+        if (! auth()->user()->isAdmin()) {
+            abort(403, 'Only an administrator can close a semester\'s registration window.');
+        }
+
+        if ($semester->registration_status === Semester::REGISTRATION_COMPLETE) {
+            return redirect()->route('semesters.index')->with('error', $semester->label.' is already marked complete.');
+        }
+
+        $semester->update(['registration_status' => Semester::REGISTRATION_NOT_STARTED]);
+
+        return redirect()->route('semesters.index')->with('success', $semester->label.' registration closed.');
+    }
+
     public function completeRegistration(Semester $semester)
     {
         if (! auth()->user()->isAdmin()) {

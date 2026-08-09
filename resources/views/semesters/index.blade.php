@@ -113,32 +113,37 @@
                         <td>@if($s->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
                         <td>
                             @php
-                                $regBadge = match ($s->registration_status) {
-                                    \App\Models\Semester::REGISTRATION_OPEN => 'bg-success',
-                                    \App\Models\Semester::REGISTRATION_COMPLETE => 'bg-primary',
-                                    default => 'bg-secondary',
-                                };
+                                $isOpen = $s->registration_status === \App\Models\Semester::REGISTRATION_OPEN;
+                                $isComplete = $s->registration_status === \App\Models\Semester::REGISTRATION_COMPLETE;
                             @endphp
-                            <span class="badge {{ $regBadge }}">{{ $s->registrationStatusLabel() }}</span>
-                            @if(auth()->user()->isAdmin())
-                                @if($s->registration_status !== \App\Models\Semester::REGISTRATION_COMPLETE)
+                            @if($isComplete)
+                                <span class="badge bg-primary d-inline-flex align-items-center gap-1" title="Registration complete">
+                                    <i class="bi bi-check2-all"></i> Complete
+                                </span>
+                            @elseif(auth()->user()->isAdmin())
+                                @if($isOpen)
+                                    <form action="{{ route('semesters.close-registration', $s) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill" title="Registration is open — click to close">Open</button>
+                                    </form>
+                                    <form action="{{ route('semesters.complete-registration', $s) }}" method="POST" class="d-inline ms-1">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Mark complete</button>
+                                    </form>
+                                @else
                                     @php $blockedReason = $s->canOpenRegistration(); @endphp
-                                    @if($s->registration_status === \App\Models\Semester::REGISTRATION_NOT_STARTED)
-                                        @if($blockedReason)
-                                            <span class="d-block small text-muted mt-1">{{ $blockedReason }}</span>
-                                        @else
-                                            <form action="{{ route('semesters.open-registration', $s) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-outline-success mt-1">Open</button>
-                                            </form>
-                                        @endif
-                                    @elseif($s->registration_status === \App\Models\Semester::REGISTRATION_OPEN)
-                                        <form action="{{ route('semesters.complete-registration', $s) }}" method="POST" class="d-inline">
+                                    @if($blockedReason)
+                                        <span class="badge bg-secondary rounded-pill">Closed</span>
+                                        <span class="d-block small text-muted mt-1">{{ $blockedReason }}</span>
+                                    @else
+                                        <form action="{{ route('semesters.open-registration', $s) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Mark complete</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill" title="Registration is closed — click to open">Closed</button>
                                         </form>
                                     @endif
                                 @endif
+                            @else
+                                <span class="badge {{ $isOpen ? 'bg-success' : 'bg-secondary' }}">{{ $s->registrationStatusLabel() }}</span>
                             @endif
                         </td>
                         @if($showSemesterActions)

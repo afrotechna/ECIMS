@@ -76,7 +76,7 @@ class Semester extends Model
         return match ($this->registration_status) {
             self::REGISTRATION_OPEN => 'Open',
             self::REGISTRATION_COMPLETE => 'Complete',
-            default => 'Not started',
+            default => 'Closed',
         };
     }
 
