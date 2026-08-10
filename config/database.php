@@ -23,6 +23,14 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            /*
+             * Only needed when `mysqldump` isn't on the system PATH the PHP process sees
+             * (e.g. a local Windows/Laragon install). Point it at the directory containing
+             * mysqldump(.exe) — not the exe itself. Leave unset on servers where it's on PATH.
+             */
+            'dump' => array_filter([
+                'dump_binary_path' => env('MYSQLDUMP_BINARY_PATH'),
+            ]),
         ],
         'sqlite' => [
             'driver' => 'sqlite',

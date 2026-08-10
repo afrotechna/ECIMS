@@ -4,6 +4,7 @@
 /public/storage
 /storage/*.key
 /storage/app/backups
+/storage/app/ECIMS
 /storage/app/institution-documents
 /storage/app/office-documents
 /storage/app/student-documents
