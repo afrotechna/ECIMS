@@ -29,6 +29,7 @@
         .card-footer { font-size: 5.5pt; color: #94a3b8; text-align: center; padding: 1mm 2mm; border-top: 1px solid #f1f5f9; }
         .back-body { padding: 3mm 3mm 1mm; text-align: center; }
         .back-code { font-family: DejaVu Sans Mono, monospace; letter-spacing: 2px; font-size: 8pt; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px; padding: 1.5mm 2mm; display: inline-block; }
+        .back-qr img { width: 16mm; height: 16mm; margin-top: 1.5mm; }
         .back-terms { font-size: 6pt; color: #475569; margin-top: 2mm; line-height: 1.4; }
         table.sig-table { width: 100%; border-collapse: collapse; margin-top: 3mm; }
         table.sig-table td { width: 50%; border-top: 1px solid #94a3b8; padding-top: 1mm; font-size: 5.5pt; text-transform: uppercase; color: #94a3b8; text-align: center; }
@@ -99,6 +100,7 @@
                     </div>
                     <div class="back-body">
                         <span class="back-code">{{ $s->nactvet_reg_no ?: '—' }}</span>
+                        <div class="back-qr"><img src="{{ $card['qrUri'] }}"></div>
                         <div class="back-terms">
                             This card is the property of <strong>{{ config('college.institution_name', config('app.name')) }}</strong> and must be surrendered on request.
                             Non-transferable; carry at all times on campus. Report loss to the registrar's office immediately.<br>

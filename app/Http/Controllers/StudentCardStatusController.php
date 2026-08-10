@@ -98,6 +98,7 @@ class StudentCardStatusController extends Controller
             $cards[] = [
                 'student' => $student,
                 'photoUri' => $this->fileUri(Storage::disk('public')->path($photoPath)),
+                'qrUri' => $student->verificationQrDataUri(140),
             ];
         }
 

@@ -130,6 +130,9 @@
             flex: 1; border-top: 1px solid #94a3b8; padding-top: .3rem;
             font-size: .58rem; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; font-weight: 700;
         }
+        .id-back-qr { margin-top: 1rem; }
+        .id-back-qr img { width: 84px; height: 84px; border-radius: 6px; box-shadow: 0 0 0 1px #e2e8f0; }
+        .id-back-qr .hint { font-size: .58rem; color: #94a3b8; text-transform: uppercase; letter-spacing: .06em; margin-top: .35rem; }
         .id-watermark {
             position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
             background-image: url('{{ asset('images/logo.png') }}');
@@ -265,6 +268,10 @@
                     <div class="id-back-barcode">
                         <div class="bars"></div>
                         <div class="code">{{ $student->nactvet_reg_no ?: '—' }}</div>
+                    </div>
+                    <div class="id-back-qr">
+                        <img src="{{ $student->verificationQrDataUri(170) }}" alt="Scan to verify">
+                        <div class="hint">Scan to verify</div>
                     </div>
                     <div class="id-back-terms">
                         This card is the property of <strong>{{ config('college.institution_name', config('app.name')) }}</strong> and must be

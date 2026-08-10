@@ -53,6 +53,10 @@ Route::get('/', function () {
 
 Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
+Route::get('/verify/card/{token}', [\App\Http\Controllers\CardVerificationController::class, 'show'])
+    ->middleware('throttle:30,1')
+    ->name('card-verify.show');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login.create');
     Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:5,1')->name('login.store');

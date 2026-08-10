@@ -238,6 +238,34 @@ class Student extends Model
             ->isNotEmpty();
     }
 
+    /** Stable, non-guessable identifier for the public card-verification URL — generated lazily so existing rows get one on first use. */
+    public function verificationToken(): string
+    {
+        if (! $this->card_verification_token) {
+            $this->card_verification_token = \Illuminate\Support\Str::random(32);
+            $this->saveQuietly();
+        }
+
+        return $this->card_verification_token;
+    }
+
+    public function cardVerificationUrl(): string
+    {
+        return route('card-verify.show', $this->verificationToken());
+    }
+
+    /** QR code (PNG data URI) encoding the public verification URL, ready to drop straight into an <img src>. */
+    public function verificationQrDataUri(int $size = 220): string
+    {
+        $result = (new \Endroid\QrCode\Builder\Builder)->build(
+            data: $this->cardVerificationUrl(),
+            size: $size,
+            margin: 6,
+        );
+
+        return $result->getDataUri();
+    }
+
     /** The student's own portal login account, matched via NACTVET reg. no. (mirrors User::student()). */
     public function userAccount(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
