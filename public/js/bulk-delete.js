@@ -18,6 +18,27 @@
         return Array.from(scope.querySelectorAll('.bulk-delete-cb'));
     }
 
+    // For forms opted into data-bulk-group-by="nta-level": "23 CMT L4, 12 CMT L6"
+    // instead of a flat total, built from each checked box's data-bulk-group-label
+    // (falling back to data-nta-level alone if no programme label was rendered).
+    function groupBreakdown(checkedCbs) {
+        var counts = {};
+        var order = [];
+        checkedCbs.forEach(function (cb) {
+            var label = cb.getAttribute('data-bulk-group-label');
+            if (!label) {
+                var lvl = cb.getAttribute('data-nta-level');
+                if (!lvl) return;
+                label = 'Level ' + lvl;
+            }
+            if (!(label in counts)) order.push(label);
+            counts[label] = (counts[label] || 0) + 1;
+        });
+        if (!order.length) return '';
+        order.sort();
+        return order.map(function (label) { return counts[label] + ' ' + label; }).join(', ');
+    }
+
     function updateBulkButton(form) {
         var btn = form.querySelector('.bulk-delete-submit');
         if (!btn) return;
@@ -28,6 +49,14 @@
         btn.classList.toggle('d-none', n === 0);
         var countEl = btn.querySelector('.bulk-delete-count');
         if (countEl) countEl.textContent = String(n);
+        if (form.getAttribute('data-bulk-group-by') === 'nta-level') {
+            if (!btn.getAttribute('data-label-base')) {
+                btn.setAttribute('data-label-base', btn.getAttribute('title') || '');
+            }
+            var baseTitle = btn.getAttribute('data-label-base');
+            var breakdown = groupBreakdown(checked);
+            btn.title = breakdown ? baseTitle + ' — ' + breakdown : baseTitle;
+        }
     }
 
     function syncSelectAll(scope) {
@@ -79,7 +108,8 @@
         if (!form.classList || !form.classList.contains('bulk-delete-form')) return;
         e.preventDefault();
         var scope = scopeForForm(form);
-        var ids = checkboxesInScope(scope).filter(function (cb) { return cb.checked; }).map(function (cb) { return cb.value; });
+        var checkedCbs = checkboxesInScope(scope).filter(function (cb) { return cb.checked; });
+        var ids = checkedCbs.map(function (cb) { return cb.value; });
         if (ids.length === 0) {
             if (window.Swal) {
                 Swal.fire({ icon: 'warning', title: 'Nothing selected', text: 'Select at least one item to delete.' });
@@ -90,6 +120,10 @@
         }
         var template = form.getAttribute('data-bulk-confirm') || 'Delete :count selected item(s)? This cannot be undone.';
         var msg = template.replace(':count', String(ids.length));
+        if (form.getAttribute('data-bulk-group-by') === 'nta-level') {
+            var breakdown = groupBreakdown(checkedCbs);
+            if (breakdown) msg += '\n\n' + breakdown + '.';
+        }
         var finish = function () {
             var holder = form.querySelector('.bulk-delete-ids');
             if (holder) {
@@ -110,7 +144,7 @@
         }
         Swal.fire({
             title: 'Are you sure?',
-            text: msg,
+            html: msg.replace(/\n/g, '<br>'),
             icon: form.getAttribute('data-bulk-confirm-icon') || 'warning',
             showCancelButton: true,
             confirmButtonText: form.getAttribute('data-bulk-confirm-button') || 'Delete',

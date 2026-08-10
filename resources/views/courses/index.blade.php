@@ -74,6 +74,7 @@
             data-bulk-confirm-button="Assign"
             data-bulk-confirm-color="#1a4fb5"
             data-bulk-confirm-icon="question"
+            data-bulk-group-by="nta-level"
         >
             @csrf
             <div class="bulk-delete-ids"></div>
@@ -177,7 +178,11 @@
                         <tbody>
                             @foreach($filteredCourses as $i => $c)
                             <tr>
-                                @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $c->id]))
+                                @include('partials.bulk-delete.td', array_merge($bulkDelete, [
+                                    'bulkRowId' => $c->id,
+                                    'bulkNtaLevel' => $c->resolvedNtaLevel(),
+                                    'bulkGroupLabel' => ($c->programme->code ?? '?').' L'.$c->resolvedNtaLevel(),
+                                ]))
                                 <td>{{ $filteredCourses->firstItem() + $i }}</td>
                                 <td><strong>{{ $c->code }}</strong></td>
                                 <td>{{ $c->name }}</td>
@@ -356,7 +361,11 @@
                                                     }
                                                 @endphp
                                                 <tr>
-                                                    @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $c->id]))
+                                                    @include('partials.bulk-delete.td', array_merge($bulkDelete, [
+                                                        'bulkRowId' => $c->id,
+                                                        'bulkNtaLevel' => $level,
+                                                        'bulkGroupLabel' => $programme->code.' L'.$level,
+                                                    ]))
                                                     <td><strong>{{ $c->code }}</strong></td>
                                                     <td>{{ $c->name }}</td>
                                                     <td>{{ $c->ca_weight }}</td>
