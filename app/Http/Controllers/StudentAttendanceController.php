@@ -110,6 +110,29 @@ class StudentAttendanceController extends Controller
         return view('student-attendance.mapping', compact('students'));
     }
 
+    /** Downloadable CSV pre-filled with real active students' reg numbers (biometric_id left blank to fill in). */
+    public function downloadMappingTemplate()
+    {
+        $students = Student::where('status', 'active')
+            ->when(auth()->user()->hodProgrammeId(), fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->orderBy('reg_no')
+            ->get(['reg_no']);
+
+        return response()->streamDownload(function () use ($students) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['reg_no', 'biometric_id']);
+            if ($students->isEmpty()) {
+                fputcsv($out, ['CMT/2026/0001', '1023']);
+            } else {
+                foreach ($students as $s) {
+                    fputcsv($out, [$s->reg_no, '']);
+                }
+            }
+            fclose($out);
+        }, 'biometric-id-mapping-template.csv');
+    }
+
     public function mappingStore(Request $request)
     {
         $validated = $request->validate([

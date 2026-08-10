@@ -298,6 +298,22 @@ class StudentController extends Controller
         return view('students.import', compact('programmes'));
     }
 
+    /** Downloadable CSV matching exactly what importStore() reads, pre-filled with a real active programme code. */
+    public function downloadImportTemplate()
+    {
+        $code = Programme::where('is_active', true)->orderBy('code')->value('code') ?? 'CODE';
+        $year = now()->year;
+
+        return response()->streamDownload(function () use ($code, $year) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['nactvet_reg_no', 'first_name', 'last_name', 'programme_code', 'intake_year', 'nta_level', 'email', 'phone']);
+            fputcsv($out, ['S0001/0001/'.$year, 'John', 'Doe', $code, $year, '4', 'john@example.com', '0712345678']);
+            fputcsv($out, ['P0002/0001/'.$year, 'Jane', 'Mary', $code, $year, '5', '', '']);
+            fclose($out);
+        }, 'students-import-template.csv');
+    }
+
     public function importStore(Request $request)
     {
         $request->validate([
@@ -434,6 +450,22 @@ class StudentController extends Controller
         $programmes = Programme::where('is_active', true)->orderBy('code')->get();
 
         return view('students.import-admitted', compact('programmes'));
+    }
+
+    /** Downloadable CSV matching exactly what importAdmittedStore() reads, pre-filled with a real active programme code. */
+    public function downloadImportAdmittedTemplate()
+    {
+        $code = Programme::where('is_active', true)->orderBy('code')->value('code') ?? 'CODE';
+        $year = now()->year;
+
+        return response()->streamDownload(function () use ($code, $year) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['nactvet_reg_no', 'first_name', 'last_name', 'middle_name', 'programme_code', 'intake_year', 'nta_level', 'gender', 'admission_source']);
+            fputcsv($out, ['S0001/0001/'.$year, 'John', 'Doe', '', $code, $year, '4', 'M', 'nactvet']);
+            fputcsv($out, ['P0002/0001/'.$year, 'Jane', 'Mary', '', $code, $year, '5', 'F', 'tamisemi']);
+            fclose($out);
+        }, 'students-import-admitted-template.csv');
     }
 
     /**

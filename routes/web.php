@@ -322,6 +322,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::get('student-attendance/import/template', [\App\Http\Controllers\StudentAttendanceController::class, 'downloadTemplate'])->name('student-attendance.import.template');
             Route::get('student-attendance/mapping', [\App\Http\Controllers\StudentAttendanceController::class, 'mappingForm'])->name('student-attendance.mapping');
             Route::post('student-attendance/mapping', [\App\Http\Controllers\StudentAttendanceController::class, 'mappingStore'])->name('student-attendance.mapping.store');
+            Route::get('student-attendance/mapping/template', [\App\Http\Controllers\StudentAttendanceController::class, 'downloadMappingTemplate'])->name('student-attendance.mapping.template');
             Route::get('student-attendance/{student}', [\App\Http\Controllers\StudentAttendanceController::class, 'show'])->name('student-attendance.show');
 
             Route::get('timetable-slots', [\App\Http\Controllers\TimetableSlotController::class, 'index'])->name('timetable-slots.index');
@@ -388,8 +389,10 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
         // Shared: both tutor and bursar (students, documents, etc.)
         Route::get('students/import/form', [StudentController::class, 'importForm'])->name('students.import');
         Route::post('students/import', [StudentController::class, 'importStore'])->name('students.import.store');
+        Route::get('students/import/template', [StudentController::class, 'downloadImportTemplate'])->name('students.import.template');
         Route::get('students/import-admitted/form', [StudentController::class, 'importAdmittedForm'])->name('students.import-admitted');
         Route::post('students/import-admitted', [StudentController::class, 'importAdmittedStore'])->name('students.import-admitted.store');
+        Route::get('students/import-admitted/template', [StudentController::class, 'downloadImportAdmittedTemplate'])->name('students.import-admitted.template');
         Route::get('reports/admission-control-sheet/student/{student}', [ReportController::class, 'admissionControlSheetStudent'])->name('reports.admission-control-sheet.student');
         Route::post('students/{student}/guardian-access', [GuardianAccessController::class, 'store'])->name('students.guardian-access.store');
         Route::delete('students/{student}/guardian-access', [GuardianAccessController::class, 'destroy'])->name('students.guardian-access.destroy');
@@ -453,6 +456,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::delete('users/{user}/permissions/{user_module_permission}', [UserController::class, 'permissionsDestroy'])->name('users.permissions.destroy');
             Route::get('users/import', [UserController::class, 'importForm'])->name('users.import');
             Route::post('users/import', [UserController::class, 'importStore'])->name('users.import.store');
+            Route::get('users/import/template', [UserController::class, 'downloadImportTemplate'])->name('users.import.template');
             Route::post('users/students/{student}/create-login', [UserController::class, 'createStudentLogin'])->name('users.create-student-login');
             Route::post('users/create-all-student-logins', [UserController::class, 'createAllStudentLogins'])->name('users.create-all-student-logins');
             Route::post('users/issue-all-student-passwords', [UserController::class, 'issueAllStudentPasswords'])->name('users.issue-all-student-passwords');

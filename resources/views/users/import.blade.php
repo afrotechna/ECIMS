@@ -34,13 +34,15 @@
             <div class="d-flex gap-2 mt-3">
             <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i> Upload and Create Users</button>
             <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            <a href="{{ route('users.import.template') }}" class="btn btn-outline-secondary"><i class="bi bi-download me-1"></i> Download CSV template</a>
         </div>
         </form>
         <hr class="my-4">
         <h6 class="fw-semibold form-section-title">CSV example</h6>
-        <pre class="bg-light p-3 rounded small mb-0">name,email,password,role
-John Doe,john@example.com,Secret123,user
-Jane Admin,jane@example.com,,admin</pre>
+        <p class="text-muted small">There is no <code>password</code> column — every new user's initial password is their <strong>surname</strong> (lowercase), and they must change it on first login.</p>
+        <pre class="bg-light p-3 rounded small mb-0">name,surname,email,role,check_number,nactvet_reg_no
+Jane,Mkapa,jane.mkapa@example.com,admission_officer,CN-0001,
+John,Doe,,student,,S0001/0001/2026</pre>
     </div>
 </div>
 @endsection

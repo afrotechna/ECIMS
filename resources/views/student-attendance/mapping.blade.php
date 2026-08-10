@@ -28,6 +28,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary w-100"><i class="bi bi-upload me-1"></i> Upload mapping</button>
                 </form>
+                <a href="{{ route('student-attendance.mapping.template') }}" class="btn btn-outline-secondary btn-sm w-100 mt-2"><i class="bi bi-download me-1"></i> Download template (pre-filled with your students)</a>
                 <p class="small text-muted mt-3 mb-0">Individual students can also be mapped one at a time from their profile's Edit page.</p>
             </div>
         </div>

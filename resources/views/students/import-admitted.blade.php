@@ -56,6 +56,7 @@
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i> Upload</button>
             <a href="{{ route('students.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            <a href="{{ route('students.import-admitted.template') }}" class="btn btn-outline-secondary"><i class="bi bi-download me-1"></i> Download CSV template</a>
         </form>
     </div>
 </div>

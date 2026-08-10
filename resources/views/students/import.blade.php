@@ -53,12 +53,14 @@
             <p class="text-muted small">System will generate an internal Reg No for each row. Duplicate registration numbers and invalid programme codes are skipped.</p>
             <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i> Upload and Import Students</button>
             <a href="{{ route('students.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            <a href="{{ route('students.import.template') }}" class="btn btn-outline-secondary"><i class="bi bi-download me-1"></i> Download CSV template</a>
         </form>
         <hr class="my-4">
         <h6 class="fw-semibold">CSV example</h6>
+        @php $sampleCode = $programmes->first()->code ?? 'CODE'; @endphp
         <pre class="bg-light p-3 rounded small mb-0">nactvet_reg_no,first_name,last_name,programme_code,intake_year,nta_level,email,phone
-S0001/0001/2026,John,Doe,NURS,2024,4,john@example.com,0712345678
-P0001/0002/2026,Jane,Mary,MLS,2024,5,,</pre>
+S0001/0001/2026,John,Doe,{{ $sampleCode }},2026,4,john@example.com,0712345678
+P0002/0001/2026,Jane,Mary,{{ $sampleCode }},2026,5,,</pre>
         @if($programmes->isNotEmpty())
             <p class="text-muted small mt-2 mb-0">Active programme codes: {{ $programmes->pluck('code')->implode(', ') }}</p>
         @endif

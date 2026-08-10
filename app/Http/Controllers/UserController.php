@@ -368,6 +368,19 @@ class UserController extends Controller
         return view('users.import');
     }
 
+    /** Downloadable CSV matching exactly what importStore() reads (no password column — it's always the surname). */
+    public function downloadImportTemplate()
+    {
+        return response()->streamDownload(function () {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['name', 'surname', 'email', 'role', 'check_number', 'nactvet_reg_no']);
+            fputcsv($out, ['Jane', 'Mkapa', 'jane.mkapa@example.com', 'admission_officer', 'CN-0001', '']);
+            fputcsv($out, ['John', 'Doe', '', 'student', '', 'S0001/0001/2026']);
+            fclose($out);
+        }, 'users-import-template.csv');
+    }
+
     public function importStore(Request $request)
     {
         $request->validate([
