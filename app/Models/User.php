@@ -115,8 +115,9 @@ class User extends Authenticatable implements CanResetPasswordContract
         'admission_officer' => 'Admission Officer',
         'examination_officer' => 'Examination Officer',
         'qa_officer' => 'Quality Assurance Officer',
-        'tutor_staff' => 'Other Academic (Tutor)',
+        'tutor_staff' => 'Academic Staff (Tutor)',
         'clinical_instructor' => 'Clinical Instructor (Preceptor)',
+        'non_academic_staff' => 'Non-Academic Staff',
         'student' => 'Student',
         'administrator' => 'Administrator',
     ];
@@ -137,6 +138,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         'qa_officer',
         'tutor_staff',
         'clinical_instructor',
+        'non_academic_staff',
         'administrator',
     ];
 
@@ -157,6 +159,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         'qa_officer',
         'tutor_staff',
         'clinical_instructor',
+        'non_academic_staff',
     ];
 
     /** Roles that may use curriculum / exams / results / academics menus (middleware tutor_or_admin). */

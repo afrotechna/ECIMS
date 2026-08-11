@@ -354,6 +354,13 @@ return [
             'institution_docs' => ['view'],
             'calendar' => ['view'],
         ],
+
+        /** General support staff outside any academic/finance portfolio — minimal baseline; grant more per-user via Role permissions. */
+        'non_academic_staff' => [
+            'college_comms' => ['view'],
+            'institution_docs' => ['view'],
+            'calendar' => ['view'],
+        ],
     ],
 
     /** Modules counted as “academic portfolio” for legacy helpers. */
