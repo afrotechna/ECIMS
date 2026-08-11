@@ -281,12 +281,16 @@ class UserController extends Controller
 
         $redirectToIndex = $request->input('redirect') === 'index';
 
+        // Deliberately no generic 'success' flash here: the detailed issued_* keys below
+        // render as their own SweetAlert popup (with the actual credentials + a copy
+        // button), and a second, independent 'success' toast racing against that popup
+        // on the same page load intermittently clobbers it.
         return redirect()
             ->to($redirectToIndex ? route('users.index', ['type' => 'student']) : route('users.edit', $user))
-            ->with('success', ($user->isStudent() ? 'Password generated.' : 'New temporary password issued.').$passwordNote.$emailNote)
             ->with('issued_login', $login)
             ->with('issued_temp_password', $temporaryPassword)
             ->with('issued_password_emailed', $emailed)
+            ->with('issued_note', trim($passwordNote.$emailNote))
             ->with('issued_user_name', $user->name);
     }
 
@@ -312,9 +316,9 @@ class UserController extends Controller
                 'class_group' => $request->input('class_group'),
                 'intake_year' => $request->input('intake_year'),
             ], fn ($v) => $v !== null && $v !== ''))
-            ->with('success', 'Login created for '.$student->full_name.'.')
             ->with('issued_login', $login)
             ->with('issued_temp_password', $temporaryPassword)
+            ->with('issued_note', 'Login created for '.$student->full_name.'.')
             ->with('issued_user_name', $student->full_name);
     }
 

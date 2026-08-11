@@ -16,8 +16,8 @@
     <strong>Temporary password</strong> for {{ session('issued_user_name') }} — copy now (shown once):<br>
     Login: <code>{{ session('issued_login') }}</code><br>
     Password: <code class="user-select-all">{{ session('issued_temp_password') }}</code>
-    @if(session('issued_password_emailed'))
-    <br><span class="text-success">Also sent by email.</span>
+    @if(session('issued_note'))
+    <br><span class="{{ session('issued_password_emailed') ? 'text-success' : 'text-warning' }}">{{ session('issued_note') }}</span>
     @endif
     <div class="mt-2">
         <button type="button" class="btn btn-sm btn-primary" onclick="cohasCopyText('{{ addslashes(session('issued_login').' / '.session('issued_temp_password')) }}', this)">
