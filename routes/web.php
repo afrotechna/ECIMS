@@ -57,6 +57,14 @@ Route::get('/verify/card/{token}', [\App\Http\Controllers\CardVerificationContro
     ->middleware('throttle:30,1')
     ->name('card-verify.show');
 
+// Memorable, always-reachable path back in while maintenance mode locks out the normal
+// landing/login pages. Doesn't grant access by itself — it just unlocks the login form
+// for this session; real admin credentials are still required (LoginController already
+// rejects non-admin sign-ins during maintenance).
+Route::get('/admin', [MaintenanceController::class, 'adminEntry'])
+    ->middleware('throttle:20,1')
+    ->name('maintenance.admin-entry');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login.create');
     Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:5,1')->name('login.store');

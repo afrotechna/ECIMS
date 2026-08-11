@@ -37,7 +37,7 @@ class MaintenanceScheduledNotification extends Notification
         $mail = (new MailMessage)
             ->subject('Maintenance mode is now active — '.config('app.name'))
             ->greeting('Hello '.$notifiable->name.',')
-            ->line('You turned on maintenance mode for '.config('app.name').'. Everyone except administrators is now locked out.')
+            ->line('You turned on maintenance mode for '.config('app.name').'. The landing and login pages are now locked out for everyone, including you — use the link below to get back in.')
             ->line($this->setting->title ?: 'Scheduled system maintenance')
             ->line($this->setting->message ?: 'The system is temporarily unavailable while maintenance is performed.');
 
@@ -49,8 +49,8 @@ class MaintenanceScheduledNotification extends Notification
         }
 
         return $mail
-            ->action('Sign in to manage maintenance', route('login.create'))
-            ->line('Administrator access is never blocked, so you can sign back in any time to check progress or turn maintenance mode off.');
+            ->action('Sign in to manage maintenance', route('maintenance.admin-entry'))
+            ->line('You can also reach this at any time by visiting '.route('maintenance.admin-entry').' directly — worth bookmarking or writing down.');
     }
 
     public function toArray(object $notifiable): array

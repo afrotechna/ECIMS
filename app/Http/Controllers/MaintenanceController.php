@@ -2,14 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Models\MaintenanceSetting;
 use App\Models\User;
 use App\Notifications\MaintenanceScheduledNotification;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Notification;
 
 class MaintenanceController extends Controller
 {
+    /**
+     * Memorable, publicly-reachable path back in during a full maintenance lockout.
+     * Grants only a time-limited login-page bypass for this session — actually signing
+     * in still requires real admin credentials (see CheckMaintenanceMode).
+     */
+    public function adminEntry(Request $request): RedirectResponse
+    {
+        $request->session()->put(CheckMaintenanceMode::BYPASS_SESSION_KEY, now()->addMinutes(30));
+
+        return redirect()->route('login.create');
+    }
+
     public function edit()
     {
         return view('maintenance.edit', [
