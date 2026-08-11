@@ -19,6 +19,11 @@
     @if(session('issued_password_emailed'))
     <br><span class="text-success">Also sent by email.</span>
     @endif
+    <div class="mt-2">
+        <button type="button" class="btn btn-sm btn-primary" onclick="cohasCopyText('{{ addslashes(session('issued_login').' / '.session('issued_temp_password')) }}', this)">
+            <i class="bi bi-clipboard me-1"></i>Copy login &amp; password
+        </button>
+    </div>
 </div>
 @endif
 
