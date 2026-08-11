@@ -15,26 +15,29 @@
             margin: 0;
         }
         body.maintenance-page {
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--cohas-gradient) !important;
             color: #fff;
-            padding: 1.5rem;
+            padding: 1rem 1.5rem;
+            overflow: hidden;
         }
         .maintenance-card {
             width: 100%;
             max-width: 480px;
+            max-height: 100%;
             text-align: center;
+            overflow-y: auto;
         }
         .maintenance-logo {
-            width: 80px;
-            height: 80px;
+            width: clamp(48px, 8vh, 80px);
+            height: clamp(48px, 8vh, 80px);
             border-radius: 50%;
             background: #fff;
             padding: 6px;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto .75rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -47,43 +50,43 @@
             border-radius: 50%;
         }
         .maintenance-card h1 {
-            font-size: clamp(1.5rem, 4vw, 2.1rem);
+            font-size: clamp(1.25rem, 3vh, 2.1rem);
             font-weight: 800;
-            margin-bottom: .5rem;
+            margin-bottom: .35rem;
         }
         .maintenance-card .lead {
             font-size: 1.05rem;
             font-weight: 600;
-            margin-bottom: .35rem;
+            margin-bottom: .25rem;
         }
         .maintenance-card .tagline {
             font-size: .9375rem;
             color: rgba(255, 255, 255, .8);
-            margin-bottom: 1.75rem;
+            margin-bottom: .85rem;
         }
         .maintenance-schedule {
             display: flex;
             flex-wrap: wrap;
-            gap: .65rem;
+            gap: .5rem;
             justify-content: center;
-            margin-bottom: 1.75rem;
+            margin-bottom: .85rem;
         }
         .maintenance-schedule-item {
             background: rgba(255, 255, 255, .12);
             border: 1px solid rgba(255, 255, 255, .3);
             border-radius: .5rem;
-            padding: .6rem 1rem;
-            font-size: .85rem;
+            padding: .45rem .85rem;
+            font-size: .8rem;
         }
         .maintenance-countdown {
-            margin-bottom: 1.75rem;
+            margin-bottom: .85rem;
         }
         .maintenance-countdown-label {
-            font-size: .8125rem;
+            font-size: .75rem;
             text-transform: uppercase;
             letter-spacing: .06em;
             color: rgba(255, 255, 255, .7);
-            margin-bottom: .5rem;
+            margin-bottom: .35rem;
         }
         .maintenance-countdown-clock {
             display: inline-flex;
@@ -93,18 +96,18 @@
             background: rgba(255, 255, 255, .12);
             border: 1px solid rgba(255, 255, 255, .3);
             border-radius: .5rem;
-            padding: .5rem .85rem;
-            min-width: 64px;
+            padding: .4rem .7rem;
+            min-width: 58px;
         }
         .maintenance-countdown-unit .value {
             display: block;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 800;
             font-variant-numeric: tabular-nums;
         }
         .maintenance-countdown-unit .unit {
             display: block;
-            font-size: .7rem;
+            font-size: .65rem;
             text-transform: uppercase;
             letter-spacing: .04em;
             color: rgba(255, 255, 255, .7);
@@ -116,7 +119,7 @@
             border: 2px solid #fff;
             color: #fff;
             background: transparent;
-            padding: .6rem 1.4rem;
+            padding: .5rem 1.3rem;
             border-radius: .35rem;
             font-weight: 700;
             font-size: .8rem;
@@ -130,8 +133,8 @@
             color: var(--cohas-blue-900);
         }
         .maintenance-footer {
-            margin-top: 2.5rem;
-            font-size: .8rem;
+            margin-top: 1.25rem;
+            font-size: .75rem;
             color: rgba(255, 255, 255, .6);
         }
     </style>
