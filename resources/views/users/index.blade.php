@@ -12,7 +12,7 @@
 
 
 @if(session('issued_temp_password'))
-<div class="alert alert-warning border shadow-sm mb-3">
+<div class="alert alert-warning border shadow-sm mb-3" data-swal-notice>
     <strong>Temporary password</strong> for {{ session('issued_user_name') }} — copy now (shown once):<br>
     Login: <code>{{ session('issued_login') }}</code><br>
     Password: <code class="user-select-all">{{ session('issued_temp_password') }}</code>

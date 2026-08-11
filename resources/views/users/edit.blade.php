@@ -15,7 +15,7 @@
 </div>
 
 @if(session('issued_temp_password'))
-<div class="alert alert-warning border">
+<div class="alert alert-warning border" data-swal-notice>
     <strong>New temporary password</strong> (copy now — it will not be shown again):<br>
     Login: <code>{{ session('issued_login') }}</code><br>
     Password: <code class="user-select-all">{{ session('issued_temp_password') }}</code>

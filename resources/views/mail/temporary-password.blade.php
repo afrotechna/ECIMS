@@ -3,7 +3,7 @@
 
 Hello {{ $user->name }},
 
-An administrator has issued you a temporary password for the student records system.
+An administrator has issued you a temporary password for {{ config('app.name') }}, {{ config('college.institution_name', 'the college') }}'s information management system.
 
 **Login ID:** `{{ $loginId }}`  
 **Temporary password:** `{{ $temporaryPassword }}`
