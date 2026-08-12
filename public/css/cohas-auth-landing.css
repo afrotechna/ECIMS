@@ -375,7 +375,7 @@
     align-items: center;
     justify-content: center;
     background: var(--cohas-bg-page, #eef4fc);
-    padding: 1.5rem;
+    padding: clamp(0.75rem, 3vh, 1.5rem) 1.5rem;
 }
 
 .auth-main-shell {
@@ -451,7 +451,7 @@
     border: 1px solid #d4e2f4;
     border-radius: 0.75rem;
     box-shadow: 0 8px 32px var(--cohas-shadow, rgba(7, 29, 82, 0.1));
-    padding: 2rem 1.75rem 1.5rem;
+    padding: clamp(1rem, 4vh, 2rem) 1.75rem clamp(0.85rem, 3vh, 1.5rem);
     width: 100%;
     animation: cohas-fade-in-up 0.5s ease 0.1s both;
 }
@@ -469,13 +469,13 @@
 
 .auth-login-header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: clamp(0.6rem, 3vh, 1.5rem);
 }
 
 .auth-login-logo {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 1rem;
+    width: clamp(44px, 9vh, 80px);
+    height: clamp(44px, 9vh, 80px);
+    margin: 0 auto clamp(0.5rem, 2vh, 1rem);
     border-radius: 50%;
     overflow: hidden;
     background: #fff;
@@ -514,7 +514,7 @@
 }
 
 .auth-field {
-    margin-bottom: 1rem;
+    margin-bottom: clamp(0.5rem, 2.5vh, 1rem);
 }
 
 .auth-field .form-label {
@@ -612,7 +612,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: clamp(0.85rem, 2.5vh, 1.25rem);
 }
 
 .auth-login-options .form-check {
@@ -679,7 +679,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1.5rem;
+    padding: clamp(1rem, 3vh, 2rem) 1.5rem;
     width: 100%;
     min-height: 0;
 }
@@ -690,9 +690,9 @@
     text-align: center;
     font-size: 0.75rem;
     color: #94a3b8;
-    padding: 1.25rem 0 0;
+    padding: clamp(0.75rem, 2.5vh, 1.25rem) 0 0;
     width: 100%;
-    margin-top: 1rem;
+    margin-top: clamp(0.5rem, 1.5vh, 1rem);
 }
 
 .auth-main-footer::before,
@@ -715,14 +715,14 @@
 }
 
 .landing-welcome .logo-hero {
-    width: 72px;
-    height: 72px;
+    width: clamp(48px, 8vh, 72px);
+    height: clamp(48px, 8vh, 72px);
     border-radius: 50%;
     overflow: hidden;
     background: #fff;
     padding: 6px;
     box-shadow: 0 8px 28px var(--cohas-shadow);
-    margin-bottom: 1.25rem;
+    margin-bottom: clamp(0.6rem, 2vh, 1.25rem);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -742,28 +742,28 @@
     font-weight: 800;
     color: var(--cohas-blue-950);
     line-height: 1.2;
-    margin: 0 0 0.75rem;
+    margin: 0 0 clamp(0.4rem, 1.2vh, 0.75rem);
 }
 
 .landing-welcome .lead {
     font-size: 1.05rem;
     color: var(--cohas-blue-700);
     font-weight: 600;
-    margin: 0 0 0.5rem;
+    margin: 0 0 clamp(0.3rem, 1vh, 0.5rem);
 }
 
 .landing-welcome .tagline {
     font-size: 0.9375rem;
     color: #64748b;
     line-height: 1.55;
-    margin: 0 0 1.75rem;
+    margin: 0 0 clamp(0.85rem, 3vh, 1.75rem);
 }
 
 .landing-welcome .landing-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: clamp(0.85rem, 3vh, 2rem);
 }
 
 .landing-welcome .btn-outline-navy {
@@ -792,14 +792,14 @@
 .landing-pills {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem;
+    gap: clamp(0.4rem, 1.2vh, 0.65rem);
 }
 
 .landing-pill {
     background: #fff;
     border: 1px solid #d4e2f4;
     border-radius: 0.5rem;
-    padding: 0.75rem;
+    padding: clamp(0.5rem, 1.8vh, 0.75rem);
     font-size: 0.78rem;
     color: #475569;
     display: flex;
@@ -820,7 +820,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.65rem;
-    margin-top: 0.65rem;
+    margin-top: clamp(0.4rem, 1.2vh, 0.65rem);
 }
 
 .landing-stat {
@@ -991,6 +991,29 @@
 .auth-input-toggle:focus-visible {
     outline: 2px solid var(--cohas-blue-700);
     outline-offset: 2px;
+}
+
+/* Desktop split layout: lock to the viewport (fluid clamp() spacing above
+   keeps real content fitting in the common case); internal scroll is only a
+   last-resort safety net for unusually short windows, never the whole page. */
+@media (min-width: 992px) {
+    .cohas-split-page {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .auth-split {
+        height: 100vh;
+        min-height: 0;
+    }
+
+    .auth-promo,
+    .auth-main,
+    .landing-main {
+        height: 100vh;
+        min-height: 0;
+        overflow-y: auto;
+    }
 }
 
 /* Tablet and below: stack panels vertically */
