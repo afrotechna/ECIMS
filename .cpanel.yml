@@ -1,0 +1,27 @@
+---
+# cPanel "Git Version Control" deployment tasks.
+# Runs automatically when you click "Deploy HEAD Commit" in cPanel's Git
+# Version Control UI. Requires the repository to be cloned to ~/ecims-app
+# (adjust the path below if you used a different Repository Path).
+#
+# Before the FIRST deploy: create ~/ecims-app/.env by hand via File Manager
+# (see the deployment guide) — this file is intentionally not in git.
+#
+# If a task fails, cPanel shows the exact error in the deploy log. The two
+# most common fixes needed on shared hosting:
+#   - Composer path: try "composer" alone, or search "Composer" in the
+#     cPanel search bar to find the exact path for this account, then
+#     replace /opt/cpanel/composer/bin/composer below.
+#   - PHP CLI path: if "php" resolves to too old a version, use the
+#     versioned binary shown in cPanel's MultiPHP Manager, e.g.
+#     /opt/cpanel/ea-php82/root/usr/bin/php.
+deployment:
+  tasks:
+    - cd $HOME/ecims-app && /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction
+    - cd $HOME/ecims-app && php artisan migrate --force
+    - cd $HOME/ecims-app && php artisan db:seed --force
+    - cd $HOME/ecims-app && (php artisan storage:link || true)
+    - cd $HOME/ecims-app && php artisan config:clear
+    - cd $HOME/ecims-app && php artisan config:cache
+    - cd $HOME/ecims-app && php artisan route:cache
+    - cd $HOME/ecims-app && php artisan view:cache
