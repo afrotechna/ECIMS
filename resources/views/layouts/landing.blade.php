@@ -12,7 +12,7 @@
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
     @include('layouts.partials.cohas-auth-styles')
-    <link href="{{ asset('css/cohas-fonts.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/cohas-fonts.css') }}?v={{ filemtime(public_path('css/cohas-fonts.css')) }}" rel="stylesheet">
     @stack('styles')
 </head>
 <body class="cohas-split-page">
