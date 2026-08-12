@@ -45,10 +45,18 @@ use App\Services\AdminDashboardService;
 use App\Models\Semester;
 use App\Models\SemesterRegistration;
 use App\Models\Student;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $stats = Cache::remember('landing_stats', now()->addHour(), fn () => [
+        'students' => Student::count(),
+        'programmes' => Programme::where('is_active', true)->count(),
+        'staff' => User::where('role', '!=', 'student')->count(),
+    ]);
+
+    return view('welcome', ['stats' => $stats]);
 })->name('home');
 
 Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');

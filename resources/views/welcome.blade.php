@@ -25,5 +25,20 @@
         <div class="landing-pill"><i class="bi bi-wallet2"></i><span>Financial statements &amp; fees</span></div>
         <div class="landing-pill"><i class="bi bi-hospital"></i><span>Clinical rotations &amp; records</span></div>
     </div>
+
+    <div class="landing-stats">
+        <div class="landing-stat">
+            <span class="figure">{{ number_format($stats['students']) }}</span>
+            <span class="label">Students enrolled</span>
+        </div>
+        <div class="landing-stat">
+            <span class="figure">{{ number_format($stats['programmes']) }}</span>
+            <span class="label">Active programmes</span>
+        </div>
+        <div class="landing-stat">
+            <span class="figure">{{ number_format($stats['staff']) }}</span>
+            <span class="label">Staff members</span>
+        </div>
+    </div>
 </div>
 @endsection
