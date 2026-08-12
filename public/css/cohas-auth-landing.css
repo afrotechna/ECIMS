@@ -392,7 +392,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: clamp(0.5rem, 2vh, 1rem);
     flex-shrink: 0;
 }
 
@@ -451,7 +451,7 @@
     border: 1px solid #d4e2f4;
     border-radius: 0.75rem;
     box-shadow: 0 8px 32px var(--cohas-shadow, rgba(7, 29, 82, 0.1));
-    padding: clamp(1rem, 4vh, 2rem) 1.75rem clamp(0.85rem, 3vh, 1.5rem);
+    padding: clamp(0.85rem, 4vh, 2rem) 1.75rem clamp(0.65rem, 3vh, 1.5rem);
     width: 100%;
     animation: cohas-fade-in-up 0.5s ease 0.1s both;
 }
@@ -469,13 +469,13 @@
 
 .auth-login-header {
     text-align: center;
-    margin-bottom: clamp(0.6rem, 3vh, 1.5rem);
+    margin-bottom: clamp(0.5rem, 3vh, 1.5rem);
 }
 
 .auth-login-logo {
-    width: clamp(44px, 9vh, 80px);
-    height: clamp(44px, 9vh, 80px);
-    margin: 0 auto clamp(0.5rem, 2vh, 1rem);
+    width: clamp(38px, 9vh, 80px);
+    height: clamp(38px, 9vh, 80px);
+    margin: 0 auto clamp(0.4rem, 2vh, 1rem);
     border-radius: 50%;
     overflow: hidden;
     background: #fff;
@@ -514,7 +514,7 @@
 }
 
 .auth-field {
-    margin-bottom: clamp(0.5rem, 2.5vh, 1rem);
+    margin-bottom: clamp(0.4rem, 2.5vh, 1rem);
 }
 
 .auth-field .form-label {
@@ -612,7 +612,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1rem;
-    margin-bottom: clamp(0.85rem, 2.5vh, 1.25rem);
+    margin-bottom: clamp(0.6rem, 2.5vh, 1.25rem);
 }
 
 .auth-login-options .form-check {
@@ -690,9 +690,9 @@
     text-align: center;
     font-size: 0.75rem;
     color: #94a3b8;
-    padding: clamp(0.75rem, 2.5vh, 1.25rem) 0 0;
+    padding: clamp(0.5rem, 2.5vh, 1.25rem) 0 0;
     width: 100%;
-    margin-top: clamp(0.5rem, 1.5vh, 1rem);
+    margin-top: clamp(0.35rem, 1.5vh, 1rem);
 }
 
 .auth-main-footer::before,
@@ -1356,5 +1356,111 @@
     background: #3a2e08;
     border-color: #8a6a1a;
     color: #f5d98a;
+}
+
+/* Desktop split layout, short viewport (laptop screens with browser chrome
+   eating vertical space): the clamp()-based spacing above only reaches its
+   floor at unrealistically small viewport heights, so it doesn't actually
+   compress much in the common ~600-760px range. Override with fixed compact
+   values here instead of relying on clamp() math. */
+@media (min-width: 992px) and (max-height: 760px) {
+    .auth-main,
+    .landing-main {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .auth-main-top {
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-login-card {
+        padding: 1rem 1.75rem 0.75rem;
+    }
+
+    .auth-login-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-login-logo {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 0.4rem;
+    }
+
+    .auth-field {
+        margin-bottom: 0.45rem;
+    }
+
+    .auth-login-options {
+        margin-bottom: 0.6rem;
+    }
+
+    .auth-main-footer,
+    .landing-footer {
+        padding-top: 0.5rem;
+        margin-top: 0.35rem;
+    }
+
+    .landing-panel {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .landing-welcome .logo-hero {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 0.5rem;
+    }
+
+    .landing-welcome h1 {
+        margin-bottom: 0.35rem;
+    }
+
+    .landing-welcome .lead {
+        margin-bottom: 0.25rem;
+    }
+
+    .landing-welcome .tagline {
+        margin-bottom: 0.75rem;
+    }
+
+    .landing-welcome .landing-actions {
+        margin-bottom: 0.75rem;
+    }
+
+    .landing-pills {
+        gap: 0.4rem;
+    }
+
+    .landing-pill {
+        padding: 0.5rem;
+    }
+
+    .landing-stats {
+        margin-top: 0.4rem;
+    }
+}
+
+@media (min-width: 992px) and (max-height: 620px) {
+    .auth-login-header {
+        margin-bottom: 0.35rem;
+    }
+
+    .auth-login-logo {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 0.3rem;
+    }
+
+    .auth-field {
+        margin-bottom: 0.35rem;
+    }
+
+    .auth-field-hint {
+        display: none;
+    }
+
+    .auth-login-options {
+        margin-bottom: 0.45rem;
+    }
 }
 
