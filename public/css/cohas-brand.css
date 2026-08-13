@@ -554,6 +554,35 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 .form-control:not(.form-control-sm):not(.form-control-lg),
 .form-select:not(.form-select-sm):not(.form-select-lg) {
     min-height: 40px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--cohas-radius-sm, 0.5rem);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+textarea.form-control {
+    min-height: 90px;
+}
+
+.form-control::placeholder {
+    color: var(--cohas-text-muted, #64748b);
+    opacity: 1;
+}
+
+.form-control:hover:not(:disabled):not(:focus):not([readonly]),
+.form-select:hover:not(:disabled):not(:focus) {
+    border-color: var(--cohas-blue-500, #2f6fd6);
+}
+
+.form-control:disabled,
+.form-control[readonly],
+.form-select:disabled {
+    background-color: var(--cohas-surface-muted, #f8fafc);
+    opacity: 0.85;
 }
 
 /* Form focus */
@@ -561,6 +590,46 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 .form-select:focus {
     border-color: var(--cohas-blue-700);
     box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
+}
+
+/* Labels: match the weight/color the login form already uses, instead of
+   Bootstrap's plain unstyled default. */
+.form-label {
+    font-weight: 600;
+    color: var(--cohas-text, #334155);
+    font-size: 0.875rem;
+}
+
+.form-text {
+    color: var(--cohas-text-muted, #64748b);
+    font-size: 0.8125rem;
+}
+
+.invalid-feedback {
+    font-size: 0.8125rem;
+}
+
+/* Checkboxes/radios: bigger touch target, brand-colored focus ring
+   (checked state already picks up --bs-primary, which is already ours).
+   Excludes .form-switch — those need their native elongated pill shape,
+   not a square box. */
+.form-check:not(.form-switch) .form-check-input {
+    width: 1.15em;
+    height: 1.15em;
+    margin-top: 0.2em;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+.form-check-input:focus {
+    border-color: var(--cohas-blue-700);
+    box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
+}
+
+.form-check-label {
+    cursor: pointer;
 }
 
 /* Native <option> popup contrast: browsers paint the open dropdown list using
