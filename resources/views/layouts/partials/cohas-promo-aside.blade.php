@@ -11,8 +11,10 @@
             <div class="auth-promo-copy">
                 <h2>Semester registration</h2>
                 <p class="lead-line">Register for the current semester, view fees, and track your approval status online.</p>
-                <div class="auth-deadline-label">Academic year</div>
-                <div class="auth-deadline-box">{{ now()->month >= 7 ? now()->year.'/'.(now()->year + 1) : (now()->year - 1).'/'.now()->year }}</div>
+                <div class="auth-info-card">
+                    <span class="auth-info-card-label">Academic year</span>
+                    <span class="auth-info-card-value">{{ now()->month >= 7 ? now()->year.'/'.(now()->year + 1) : (now()->year - 1).'/'.now()->year }}</span>
+                </div>
                 <a href="{{ $promoCtaHref ?? '#login-form' }}" class="auth-cta-slat"><span>{{ $promoCtaLabel ?? 'Sign in to register' }}</span></a>
             </div>
             <div class="auth-promo-visual">

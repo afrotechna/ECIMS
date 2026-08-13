@@ -147,25 +147,30 @@
     line-height: 1.45;
 }
 
-.auth-deadline-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.85;
-    margin-bottom: 0.35rem;
+.auth-info-card {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    background: #fff;
+    border-left: 4px solid var(--cohas-yellow);
+    border-radius: 0.4rem;
+    padding: 0.55rem 1rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 14px rgba(7, 29, 82, 0.18);
 }
 
-.auth-deadline-box {
-    display: inline-block;
-    background: rgba(56, 182, 232, 0.2);
-    border: 1px solid rgba(56, 182, 232, 0.45);
-    color: var(--cohas-cyan-soft, #e0f4fc);
-    padding: 0.45rem 1rem;
-    border-radius: 0.35rem;
+.auth-info-card-label {
+    font-size: 0.68rem;
     font-weight: 700;
-    font-size: 0.95rem;
-    margin-bottom: 1.25rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.auth-info-card-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--cohas-blue-950);
 }
 
 .auth-promo-visual {
@@ -180,7 +185,8 @@
 .auth-promo-visual .photo-frame {
     position: absolute;
     inset: 0;
-    clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+    border-radius: 1rem;
+    border: 3px solid rgba(255, 255, 255, 0.22);
     background-color: var(--cohas-blue-900);
     background-size: contain;
     background-repeat: no-repeat;
