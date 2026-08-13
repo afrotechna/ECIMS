@@ -16,7 +16,7 @@
                 <a href="{{ $promoCtaHref ?? '#login-form' }}" class="auth-cta-slat"><span>{{ $promoCtaLabel ?? 'Sign in to register' }}</span></a>
             </div>
             <div class="auth-promo-visual">
-                <div class="photo-frame">
+                <div class="photo-frame" style="background-image: url('{{ asset('images/promo/registration.jpg') }}')">
                     <div class="photo-inner">
                         <i class="bi bi-person-check"></i>
                         <span class="stat-figure">100%</span>
@@ -38,7 +38,7 @@
                 <a href="{{ $promoCtaHref ?? '#login-form' }}" class="auth-cta-slat"><span>{{ $promoCtaLabel ?? 'Sign in to continue' }}</span></a>
             </div>
             <div class="auth-promo-visual">
-                <div class="photo-frame">
+                <div class="photo-frame" style="background-image: url('{{ asset('images/promo/records.jpg') }}')">
                     <div class="photo-inner">
                         <i class="bi bi-hospital"></i>
                         <span class="stat-figure">All-in-one</span>
@@ -60,7 +60,7 @@
                 <a href="{{ $promoCtaHref ?? '#login-form' }}" class="auth-cta-slat"><span>{{ $promoCtaLabel ?? 'Sign in now' }}</span></a>
             </div>
             <div class="auth-promo-visual">
-                <div class="photo-frame">
+                <div class="photo-frame" style="background-image: url('{{ asset('images/promo/finance.jpg') }}')">
                     <div class="photo-inner">
                         <i class="bi bi-wallet2"></i>
                         <span class="stat-figure">24/7</span>

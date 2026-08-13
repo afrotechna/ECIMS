@@ -180,7 +180,9 @@
     position: absolute;
     inset: 0;
     clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
-    background: linear-gradient(135deg, var(--cohas-blue-700), var(--cohas-cyan));
+    background-color: var(--cohas-blue-900);
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
 }
 
@@ -190,7 +192,7 @@
     inset: 0;
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.22) 1.5px, transparent 1.5px);
     background-size: 18px 18px;
-    opacity: 0.5;
+    opacity: 0.22;
     pointer-events: none;
 }
 
@@ -198,7 +200,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, transparent 55%, rgba(7, 29, 82, 0.35) 100%);
+    background: linear-gradient(180deg, rgba(7, 29, 82, 0.15) 0%, rgba(7, 29, 82, 0.35) 40%, rgba(7, 29, 82, 0.75) 100%);
 }
 
 .auth-promo-visual .photo-inner {
@@ -210,16 +212,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     text-align: center;
     gap: 0.3rem;
     padding: 1.25rem 1rem;
-    background-image:
-        radial-gradient(circle at 30% 30%, rgba(56, 182, 232, 0.35), transparent 55%),
-        linear-gradient(160deg, var(--cohas-blue-700) 0%, var(--cohas-blue-900) 100%);
-    background-size: cover, cover;
-    background-position: center, center;
-    background-repeat: no-repeat;
 }
 
 .auth-promo-visual .photo-inner i {
