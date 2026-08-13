@@ -565,7 +565,42 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 .form-select {
     border-radius: 0.65rem;
     background-color: var(--cohas-surface-muted, #f8fafc);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+/* Autofill: browsers ignore background-color on autofilled fields and paint
+   their own yellow tint instead — this is the standard override, using the
+   same tokens as the rest of the field so it still matches the theme. */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--cohas-surface-muted, #f8fafc) inset;
+    -webkit-text-fill-color: var(--cohas-text, #0f172a);
+    caret-color: var(--cohas-text, #0f172a);
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* File inputs: the native "Browse" button is plain grey by default. */
+.form-control[type="file"] {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.form-control::file-selector-button {
+    margin: -0.5rem 0.75rem -0.5rem -0.75rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.65rem 0 0 0.65rem;
+    background-color: var(--cohas-blue-soft, #e5edfb);
+    color: var(--cohas-blue-700, #1a4fb5);
+    font-weight: 600;
+    border: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.form-control:hover::file-selector-button {
+    background-color: var(--cohas-blue-500, #2f6fd6);
+    color: #fff;
 }
 
 .form-select {
@@ -603,6 +638,14 @@ textarea.form-control {
     background-color: var(--cohas-surface, #fff);
     border-color: var(--cohas-blue-700);
     box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
+    transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form-control:focus,
+    .form-select:focus {
+        transform: none;
+    }
 }
 
 /* Labels: match the weight/color the login form already uses, instead of
