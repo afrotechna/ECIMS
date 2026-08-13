@@ -558,10 +558,22 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     padding-bottom: 0.5rem;
 }
 
+/* Modern "filled" input: quiet tinted surface at rest, crisp white + glow
+   on focus — reserves the strong blue/white contrast for the field the
+   user is actually in, instead of every field looking identical at once. */
 .form-control,
 .form-select {
-    border-radius: var(--cohas-radius-sm, 0.5rem);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    border-radius: 0.65rem;
+    background-color: var(--cohas-surface-muted, #f8fafc);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.form-select {
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231a4fb5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+[data-theme="dark"] .form-select {
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234d8fe8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 textarea.form-control {
@@ -581,13 +593,14 @@ textarea.form-control {
 .form-control:disabled,
 .form-control[readonly],
 .form-select:disabled {
-    background-color: var(--cohas-surface-muted, #f8fafc);
-    opacity: 0.85;
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 /* Form focus */
 .form-control:focus,
 .form-select:focus {
+    background-color: var(--cohas-surface, #fff);
     border-color: var(--cohas-blue-700);
     box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
 }
