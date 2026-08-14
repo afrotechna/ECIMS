@@ -107,6 +107,7 @@ class StudentController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'programme_id' => ['required', 'exists:programmes,id'],
             'intake_year' => ['required', 'integer', 'min:2020', 'max:2030'],
+            'intake_session' => ['nullable', 'in:september,march'],
             'nta_level' => ['nullable', 'integer', 'in:4,5,6'],
             'student_type' => ['nullable', 'string', 'in:regular,transferred'],
             'transfer_date' => ['nullable', 'date'],
@@ -121,6 +122,7 @@ class StudentController extends Controller
             'semester_two_fee_band' => ['nullable', 'string', 'in:continuous,repeat_transfer'],
         ]);
         $validated['student_type'] = $validated['student_type'] ?? 'regular';
+        $validated['intake_session'] = $validated['intake_session'] ?? 'september';
         $validated['has_personal_nhif'] = $request->boolean('has_personal_nhif');
         if (empty($validated['semester_two_fee_band'])) {
             $validated['semester_two_fee_band'] = null;
@@ -222,6 +224,7 @@ class StudentController extends Controller
             'biometric_id' => ['nullable', 'string', 'max:30', 'unique:students,biometric_id,'.$student->id],
             'programme_id' => ['required', 'exists:programmes,id'],
             'intake_year' => ['required', 'integer', 'min:2020', 'max:2030'],
+            'intake_session' => ['nullable', 'in:september,march'],
             'nta_level' => ['nullable', 'integer', 'in:4,5,6'],
             'student_type' => ['nullable', 'string', 'in:regular,transferred'],
             'transfer_date' => ['nullable', 'date'],
@@ -259,6 +262,7 @@ class StudentController extends Controller
             $validated['tuition_status_override'] = null;
         }
         $validated['has_personal_nhif'] = $request->boolean('has_personal_nhif');
+        $validated['intake_session'] = $validated['intake_session'] ?? 'september';
         if (isset($validated['semester_two_fee_band']) && $validated['semester_two_fee_band'] === '') {
             $validated['semester_two_fee_band'] = null;
         }
@@ -448,8 +452,9 @@ class StudentController extends Controller
     public function importAdmittedForm()
     {
         $programmes = Programme::where('is_active', true)->orderBy('code')->get();
+        $importSetting = \App\Models\StudentImportSetting::current();
 
-        return view('students.import-admitted', compact('programmes'));
+        return view('students.import-admitted', compact('programmes', 'importSetting'));
     }
 
     /** Downloadable CSV matching exactly what importAdmittedStore() reads, pre-filled with a real active programme code. */
@@ -461,9 +466,9 @@ class StudentController extends Controller
         return response()->streamDownload(function () use ($code, $year) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF");
-            fputcsv($out, ['nactvet_reg_no', 'first_name', 'last_name', 'middle_name', 'programme_code', 'intake_year', 'nta_level', 'gender', 'admission_source']);
-            fputcsv($out, ['S0001/0001/'.$year, 'John', 'Doe', '', $code, $year, '4', 'M', 'nactvet']);
-            fputcsv($out, ['P0002/0001/'.$year, 'Jane', 'Mary', '', $code, $year, '5', 'F', 'tamisemi']);
+            fputcsv($out, ['nactvet_reg_no', 'first_name', 'last_name', 'middle_name', 'programme_code', 'intake_year', 'intake_session', 'nta_level', 'gender', 'admission_source']);
+            fputcsv($out, ['S0001/0001/'.$year, 'John', 'Doe', '', $code, $year, 'september', '4', 'M', 'nactvet']);
+            fputcsv($out, ['P0002/0001/'.$year, 'Jane', 'Mary', '', $code, $year, 'march', '5', 'F', 'tamisemi']);
             fclose($out);
         }, 'students-import-admitted-template.csv');
     }
@@ -478,6 +483,7 @@ class StudentController extends Controller
             'default_programme_id' => ['nullable', 'integer', 'exists:programmes,id'],
             'default_intake_year' => ['nullable', 'integer', 'min:1990', 'max:2100'],
             'default_nta_level' => ['nullable', 'in:4,5,6'],
+            'default_intake_session' => ['nullable', 'in:september,march'],
         ]);
         $file = $request->file('file');
         $handle = fopen($file->getRealPath(), 'r');
@@ -511,11 +517,40 @@ class StudentController extends Controller
             }
             $defaultIntakeYear = $request->filled('default_intake_year') ? $request->integer('default_intake_year') : null;
             $defaultNtaLevel = $request->filled('default_nta_level') ? $request->integer('default_nta_level') : null;
+            $defaultIntakeSession = $request->filled('default_intake_session') ? $request->string('default_intake_session')->toString() : null;
+
+            $rows = [];
+            while (($rawRow = fgetcsv($handle)) !== false) {
+                $rows[] = $rawRow;
+            }
+            fclose($handle);
+
+            if (\App\Models\StudentImportSetting::current()->restrict_single_programme) {
+                $combos = [];
+                foreach ($rows as $rawRow) {
+                    $trimmed = array_map('trim', is_array($rawRow) ? $rawRow : []);
+                    $padded = array_pad(array_slice($trimmed, 0, count($header)), count($header), '');
+                    $progCode = strtoupper($this->studentImportCell($padded, $idx['programme_code']));
+                    if ($progCode === '' && $defaultProgramme) {
+                        $progCode = strtoupper($defaultProgramme->code);
+                    }
+                    if ($progCode === '') {
+                        continue;
+                    }
+                    $ntaCell = $this->studentImportCell($padded, $idx['nta_level']);
+                    $ntaRaw = trim($ntaCell) !== '' ? trim($ntaCell) : ($defaultNtaLevel !== null ? (string) $defaultNtaLevel : '?');
+                    $combos[$progCode.' / NTA '.$ntaRaw] = true;
+                }
+                if (count($combos) > 1) {
+                    return redirect()->route('students.import-admitted')->with('error',
+                        'This file mixes more than one programme/NTA level combination ('.implode(', ', array_keys($combos)).'), and uploads are currently restricted to a single programme and level. Split it into separate files, or turn off the restriction in Import settings.');
+                }
+            }
 
             $created = 0;
             $errors = [];
             $programmesByCode = Programme::where('is_active', true)->get()->keyBy('code');
-            while (($rawRow = fgetcsv($handle)) !== false) {
+            foreach ($rows as $rawRow) {
                 $trimmed = array_map('trim', is_array($rawRow) ? $rawRow : []);
                 $padded = array_pad(array_slice($trimmed, 0, count($header)), count($header), '');
                 $nactvet = $this->studentImportCell($padded, $idx['nactvet_reg_no']);
@@ -541,6 +576,8 @@ class StudentController extends Controller
                 if ($intakeYear <= 0) {
                     $intakeYear = $this->guessIntakeYearFromRegistration($nactvet);
                 }
+                $intakeSessionCell = $this->studentImportCell($padded, $idx['intake_session']);
+                $intakeSession = $this->normalizeImportIntakeSession($intakeSessionCell) ?? $defaultIntakeSession ?? 'september';
                 $genderRaw = strtoupper(substr($this->studentImportCell($padded, $idx['gender']), 0, 1));
                 $gender = in_array($genderRaw, ['M', 'F'], true) ? $genderRaw : '';
                 $admissionSource = strtolower(trim($this->studentImportCell($padded, $idx['admission_source'])));
@@ -595,13 +632,13 @@ class StudentController extends Controller
                     'gender' => $gender !== '' ? $gender : null,
                     'programme_id' => $programme->id,
                     'intake_year' => $intakeYear,
+                    'intake_session' => $intakeSession,
                     'nta_level' => $ntaLevel,
                     'admission_source' => $admissionSource,
                     'status' => 'active',
                 ]);
                 $created++;
             }
-            fclose($handle);
             $msg = $created.' admitted student(s) imported.';
             if (count($errors) > 0) {
                 $msg .= ' '.count($errors).' issue(s).';
@@ -624,6 +661,23 @@ class StudentController extends Controller
         $seq = $last ? (int) substr($last->reg_no, strlen($prefix)) + 1 : 1;
 
         return $prefix.str_pad((string) $seq, 3, '0', STR_PAD_LEFT);
+    }
+
+    /** Accepts SEPT/SEPTEMBER/MARCH/MAR (any case) — returns null when unrecognised so the caller can fall back. */
+    private function normalizeImportIntakeSession(string $raw): ?string
+    {
+        $t = strtoupper(trim($raw));
+        if ($t === '') {
+            return null;
+        }
+        if (str_starts_with($t, 'SEPT')) {
+            return 'september';
+        }
+        if (str_starts_with($t, 'MAR')) {
+            return 'march';
+        }
+
+        return null;
     }
 
     /**
@@ -680,14 +734,15 @@ class StudentController extends Controller
                 'candidat', 'candidate', 'candidate name', 'student name',
                 'full name', 'names', 'name',
             ],
-            'first_name' => ['first name', 'firstname', 'given name', 'fname'],
-            'last_name' => ['last name', 'lastname', 'surname', 'family name', 'lname'],
-            'middle_name' => ['middle name', 'middlename', 'other name'],
+            'first_name' => ['first_name', 'first name', 'firstname', 'given name', 'fname'],
+            'last_name' => ['last_name', 'last name', 'lastname', 'surname', 'family name', 'lname'],
+            'middle_name' => ['middle_name', 'middle name', 'middlename', 'other name'],
             'programme_code' => [
                 'programme_code', 'programme code', 'programme', 'program code',
                 'prog code', 'course code',
             ],
             'intake_year' => ['intake_year', 'intake year', 'academic year'],
+            'intake_session' => ['intake_session', 'intake session', 'session', 'intake'],
             'nta_level' => ['nta_level', 'nta level'],
             'email' => ['email', 'e mail'],
             'phone' => ['phone', 'mobile', 'tel', 'telephone', 'msisdn'],

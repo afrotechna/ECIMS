@@ -39,13 +39,22 @@
                     @error('programme_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-3">
-                    <label for="intake_year" class="form-label">Intake (September) <span class="text-danger">*</span></label>
+                    <label for="intake_year" class="form-label">Intake year <span class="text-danger">*</span></label>
                     <select class="form-select @error('intake_year') is-invalid @enderror" id="intake_year" name="intake_year" required>
                         @for($y = date('Y'); $y >= 2020; $y--)
                             <option value="{{ $y }}" {{ old('intake_year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
                         @endfor
                     </select>
                     @error('intake_year')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-3">
+                    <label for="intake_session" class="form-label">Intake session</label>
+                    <select class="form-select @error('intake_session') is-invalid @enderror" id="intake_session" name="intake_session">
+                        @foreach(\App\Models\Student::INTAKE_SESSIONS as $value => $label)
+                            <option value="{{ $value }}" {{ old('intake_session', 'september') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('intake_session')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
             <div class="form-section-title">Personal details</div>

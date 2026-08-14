@@ -28,6 +28,7 @@ class Student extends Model
         'biometric_id',
         'programme_id',
         'intake_year',
+        'intake_session',
         'nta_level',
         'student_type',
         'transfer_date',
@@ -156,6 +157,11 @@ class Student extends Model
     public const GUARDIAN_RELATIONSHIPS = [
         'Father', 'Mother', 'Brother', 'Sister', 'Uncle', 'Aunt',
         'Grandfather', 'Grandmother', 'Spouse', 'Guardian', 'Other',
+    ];
+
+    public const INTAKE_SESSIONS = [
+        'september' => 'September',
+        'march' => 'March',
     ];
 
     public const REPORTING_STATUSES = [

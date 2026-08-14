@@ -362,7 +362,7 @@
                 $hasSystemView = $isSystemAdmin || auth()->user()->canModule('system', 'view');
             @endphp
             @if($hasSystemView)
-            <div class="nav-group {{ request()->routeIs('users.*', 'activity-log*', 'export*', 'users.role-permissions', 'trash.*', 'maintenance.*', 'profile-lock.*') ? 'expanded' : '' }}" id="navGroupSystem">
+            <div class="nav-group {{ request()->routeIs('users.*', 'activity-log*', 'export*', 'users.role-permissions', 'trash.*', 'maintenance.*', 'profile-lock.*', 'student-import-settings.*') ? 'expanded' : '' }}" id="navGroupSystem">
                 <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('users.*', 'activity-log*', 'export*', 'trash.*', 'maintenance.*') ? 'true' : 'false' }}" aria-controls="navGroupSystemSub">
                     <i class="bi bi-gear"></i><span>System</span><i class="bi bi-chevron-down"></i>
                 </button>
@@ -380,6 +380,7 @@
                     <li><a href="{{ route('trash.index') }}" class="{{ request()->routeIs('trash.*') ? 'active' : '' }}"><i class="bi bi-trash3"></i>Trash</a></li>
                     <li><a href="{{ route('maintenance.edit') }}" class="{{ request()->routeIs('maintenance.*') ? 'active' : '' }}"><i class="bi bi-cone-striped"></i>Maintenance mode</a></li>
                     <li><a href="{{ route('profile-lock.edit') }}" class="{{ request()->routeIs('profile-lock.*') ? 'active' : '' }}"><i class="bi bi-person-lock"></i>Profile edit lock</a></li>
+                    <li><a href="{{ route('student-import-settings.edit') }}" class="{{ request()->routeIs('student-import-settings.*') ? 'active' : '' }}"><i class="bi bi-sliders"></i>Student import settings</a></li>
                     @endif
                 </ul>
             </div>

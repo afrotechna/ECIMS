@@ -42,6 +42,14 @@
                     <label for="intake_year" class="form-label">Intake year <span class="text-danger">*</span></label>
                     <input type="number" class="form-control" id="intake_year" name="intake_year" value="{{ old('intake_year', $student->intake_year) }}" min="2020" max="2030" required>
                 </div>
+                <div class="col-md-3">
+                    <label for="intake_session" class="form-label">Intake session</label>
+                    <select class="form-select" id="intake_session" name="intake_session">
+                        @foreach(\App\Models\Student::INTAKE_SESSIONS as $value => $label)
+                            <option value="{{ $value }}" {{ old('intake_session', $student->intake_session ?? 'september') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="col-md-4">
                     <label for="first_name" class="form-label">First name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="first_name" name="first_name" value="{{ old('first_name', $student->first_name) }}" required>

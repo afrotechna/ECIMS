@@ -26,6 +26,7 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileCompleteController;
 use App\Http\Controllers\ProfileEditLockController;
+use App\Http\Controllers\StudentImportSettingController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\QuestionBankController;
 use App\Http\Controllers\QuestionItemController;
@@ -489,6 +490,8 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::put('maintenance-mode', [MaintenanceController::class, 'update'])->name('maintenance.update');
             Route::get('profile-edit-lock', [ProfileEditLockController::class, 'edit'])->name('profile-lock.edit');
             Route::put('profile-edit-lock', [ProfileEditLockController::class, 'update'])->name('profile-lock.update');
+            Route::get('student-import-settings', [StudentImportSettingController::class, 'edit'])->name('student-import-settings.edit');
+            Route::put('student-import-settings', [StudentImportSettingController::class, 'update'])->name('student-import-settings.update');
         });
         Route::post('calendar/holidays/activate', [CalendarController::class, 'activateCatalog'])->name('calendar.holidays.activate');
         Route::post('calendar/events', [CalendarController::class, 'storeEvent'])->name('calendar.events.store');
