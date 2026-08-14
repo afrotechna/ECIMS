@@ -43,56 +43,56 @@
         <div class="card card-landing mb-4">
             <div class="card-header-landing py-2"><i class="bi bi-info-circle me-2"></i>Student details</div>
             <div class="card-body">
-                <dl class="row student-detail-dl mb-0 small">
-                    <dt class="col-sm-4 col-md-3 text-muted">Form IV Index number</dt>
-                    <dd class="col-sm-8 col-md-9"><code class="small bg-light px-2 py-1 rounded">{{ $student->registrationNumberDisplay() ?: '—' }}</code></dd>
+                <dl class="row student-detail-dl mb-0 small gx-2">
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Form IV Index number</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd"><code class="small bg-light px-2 py-1 rounded">{{ $student->registrationNumberDisplay() ?: '—' }}</code></dd>
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Full name</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->full_name }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Full name</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->full_name }}</dd>
 
                     @if($student->gender)
-                    <dt class="col-sm-4 col-md-3 text-muted">Gender</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->gender === 'M' ? 'Male' : 'Female' }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Gender</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->gender === 'M' ? 'Male' : 'Female' }}</dd>
                     @endif
 
                     @if($student->class_group)
-                    <dt class="col-sm-4 col-md-3 text-muted">Class / group</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->class_group }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Class / group</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->class_group }}</dd>
                     @endif
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Programme</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->programme->name ?? '—' }} <span class="text-muted">({{ $student->programme->code ?? '—' }})</span></dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Programme</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->programme->name ?? '—' }} <span class="text-muted">({{ $student->programme->code ?? '—' }})</span></dd>
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Intake year</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->intake_year }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Intake year</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->intake_year }}</dd>
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Status</dt>
-                    <dd class="col-sm-8 col-md-9"><span class="badge bg-{{ $student->status === 'active' ? 'success' : 'secondary' }}">{{ $student->status }}</span></dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Status</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd"><span class="badge bg-{{ $student->status === 'active' ? 'success' : 'secondary' }}">{{ $student->status }}</span></dd>
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Email</dt>
-                    <dd class="col-sm-8 col-md-9 text-break">{{ $student->email ?? '—' }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Email</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->email ?? '—' }}</dd>
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Phone</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->phone ?? '—' }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Phone</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->phone ?? '—' }}</dd>
 
                     @if($student->date_of_birth)
-                    <dt class="col-sm-4 col-md-3 text-muted">Date of birth</dt>
-                    <dd class="col-sm-8 col-md-9">{{ $student->date_of_birth->format('d/m/Y') }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Date of birth</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ $student->date_of_birth->format('d/m/Y') }}</dd>
                     @endif
 
                     @if($student->nta_level)
-                    <dt class="col-sm-4 col-md-3 text-muted">NTA level</dt>
-                    <dd class="col-sm-8 col-md-9">{{ \App\Models\Student::NTA_LEVELS[$student->nta_level] ?? 'Level '.$student->nta_level }}</dd>
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">NTA level</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">{{ \App\Models\Student::NTA_LEVELS[$student->nta_level] ?? 'Level '.$student->nta_level }}</dd>
                     @endif
 
-                    <dt class="col-sm-4 col-md-3 text-muted">Student type</dt>
-                    <dd class="col-sm-8 col-md-9">
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Student type</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">
                         <span class="badge bg-{{ $student->student_type === 'transferred' ? 'info' : 'secondary' }}">{{ \App\Models\Student::STUDENT_TYPES[$student->student_type ?? 'regular'] ?? $student->student_type }}</span>
                     </dd>
 
                     @if($student->student_type === 'transferred' && ($student->transfer_date || $student->previous_institution))
-                    <dt class="col-sm-4 col-md-3 text-muted">Transfer</dt>
-                    <dd class="col-sm-8 col-md-9">
+                    <dt class="col-4 col-md-3 text-muted text-nowrap">Transfer</dt>
+                    <dd class="col-8 col-md-9 student-detail-dd">
                         @if($student->transfer_date){{ $student->transfer_date->format('d/m/Y') }}@endif
                         @if($student->previous_institution) · {{ $student->previous_institution }}@endif
                         @if($student->previousProgramme) · {{ $student->previousProgramme->code }}@endif

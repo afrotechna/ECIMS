@@ -253,6 +253,7 @@ body {
 .student-detail-dl dt { font-weight: 500; padding-top: .35rem; padding-bottom: .35rem; color: var(--cohas-text-muted); }
 .student-detail-dl dd { padding-top: .35rem; padding-bottom: .35rem; border-bottom: 1px solid var(--cohas-border); margin-bottom: 0; color: var(--cohas-text); }
 .student-detail-dl dd:last-of-type { border-bottom: none; }
+.student-detail-dl .student-detail-dd { white-space: nowrap; overflow-x: auto; overflow-y: hidden; }
 .student-glance-card { background: var(--cohas-surface); }
 .student-glance-card .glance-item { padding: .65rem 0; border-bottom: 1px solid var(--cohas-border); }
 .student-glance-card .glance-item:last-child { border-bottom: none; }
