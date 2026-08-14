@@ -78,7 +78,7 @@
                 <ul class="nav-group-sub" id="navGroupStudentAcademicsSub">
                     <li>
                         <a href="{{ route('my.module-registration') }}" class="{{ request()->routeIs('my.module-registration*') ? 'active' : '' }}">
-                            <i class="bi bi-circle"></i>Register modules
+                            <i class="bi bi-circle"></i>Registered modules
                         </a>
                     </li>
                     <li>

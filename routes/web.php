@@ -559,7 +559,6 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
     Route::get('my-clinical-remediation', [\App\Http\Controllers\StudentClinicalController::class, 'remediationIndex'])->name('my.clinical.remediation');
 
     Route::get('my-module-registration', [\App\Http\Controllers\StudentModuleEnrollmentController::class, 'edit'])->name('my.module-registration');
-    Route::put('my-module-registration', [\App\Http\Controllers\StudentModuleEnrollmentController::class, 'update'])->name('my.module-registration.update');
     Route::get('my-modules', function (\Illuminate\Http\Request $request) {
         $student = auth()->user()->student;
         if (! $student) {

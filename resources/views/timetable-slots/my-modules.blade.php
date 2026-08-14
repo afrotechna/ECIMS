@@ -18,7 +18,7 @@
         </p>
     </div>
     <div class="d-flex flex-wrap gap-2 align-items-center">
-        <a href="{{ route('my.module-registration') }}" class="btn btn-primary btn-sm"><i class="bi bi-check2-square me-1"></i> Register modules for semester</a>
+        <a href="{{ route('my.module-registration') }}" class="btn btn-primary btn-sm"><i class="bi bi-check2-square me-1"></i> View registered modules</a>
         <span class="badge bg-light text-dark fs-6">Academic year {{ $catalog['academic_year_label'] ?? '' }}</span>
     </div>
 </div>

@@ -7,10 +7,8 @@ use App\Models\Course;
 use App\Models\Result;
 use App\Models\Semester;
 use App\Models\Student;
-use App\Models\StudentModuleEnrollment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\ValidationException;
 
 class StudentModuleEnrollmentService
 {
@@ -111,48 +109,6 @@ class StudentModuleEnrollmentService
             ->orderBy('code')
             ->get()
             ->filter(fn (Course $c) => $catalog->isEmpty() || $catalog->contains('id', $c->id));
-    }
-
-    /**
-     * @param  list<int>  $courseIds
-     * @param  list<int>  $carryRepeatCourseIds
-     */
-    public function saveForSemester(Student $student, Semester $semester, array $courseIds, array $carryRepeatCourseIds = []): void
-    {
-        $context = $this->registrationContext($student, $semester->id);
-        if (! $context['can_register']) {
-            throw ValidationException::withMessages([
-                'course_ids' => [$context['block_reason'] ?? 'You cannot register modules for this semester.'],
-            ]);
-        }
-
-        $courseIds = array_values(array_unique(array_map('intval', $courseIds)));
-        $carrySet = array_flip(array_map('intval', $carryRepeatCourseIds));
-
-        if ($courseIds === []) {
-            throw ValidationException::withMessages([
-                'course_ids' => ['Select at least one module for this semester.'],
-            ]);
-        }
-
-        $allowedIds = $context['available']->pluck('id')->map(fn ($id) => (int) $id)->all();
-        $invalid = array_diff($courseIds, $allowedIds);
-        if ($invalid !== []) {
-            throw ValidationException::withMessages([
-                'course_ids' => ['One or more selected modules are not offered for your programme, NTA level, and semester.'],
-            ]);
-        }
-
-        $student->moduleEnrollments()->where('semester_id', $semester->id)->delete();
-
-        foreach ($courseIds as $courseId) {
-            StudentModuleEnrollment::create([
-                'student_id' => $student->id,
-                'course_id' => $courseId,
-                'semester_id' => $semester->id,
-                'is_carry_repeat' => isset($carrySet[$courseId]),
-            ]);
-        }
     }
 
     /** Active students who should be placed in clinical rotation groups for this round. */
