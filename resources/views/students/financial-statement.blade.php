@@ -50,10 +50,29 @@
     </a>
 </div>
 
-<div class="fin-stmt-categories">
-    <span class="badge bg-primary-subtle text-primary-emphasis"><i class="bi bi-mortarboard me-1"></i>Tuition Fee</span>
-    <span class="badge bg-success-subtle text-success-emphasis"><i class="bi bi-patch-check me-1"></i>NACTVET QA</span>
-    <span class="badge bg-info-subtle text-info-emphasis"><i class="bi bi-heart-pulse me-1"></i>NHIF</span>
+<div class="card card-landing mb-3">
+    <div class="card-body p-0">
+        <table class="table table-bordered mb-0 fin-stmt-table">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width:3rem">No</th>
+                    <th>Fee Category</th>
+                    <th class="text-money">Billed</th>
+                    <th class="text-money">Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($statement['category_totals'] as $cat)
+                <tr>
+                    <td>{{ $cat['no'] }}</td>
+                    <td>{{ $cat['label'] }}</td>
+                    <td class="text-money">{{ number_format($cat['fee'], 2) }}</td>
+                    <td class="text-money">{{ number_format($cat['payment'], 2) }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="card card-landing mb-3">
