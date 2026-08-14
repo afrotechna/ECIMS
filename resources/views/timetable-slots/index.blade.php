@@ -77,30 +77,42 @@
     $canManageSlots = auth()->user()->canModule('timetable', 'delete');
 @endphp
 
-@foreach(\App\Models\Student::NTA_LEVELS as $level => $levelLabel)
+@forelse($panels as $panel)
 @php
-    $grid = $gridsByLevel[$level] ?? [];
-    $otherSlots = $otherSlotsByLevel[$level] ?? collect();
+    $grid = $panel['grid'];
+    $otherSlots = $panel['other_slots'];
     $hasAnySlot = collect($grid)->flatten()->filter()->isNotEmpty() || $otherSlots->isNotEmpty();
+    $panelKey = ($panel['programme']->id ?? 0).'-'.$panel['level'];
 @endphp
 <div class="card card-landing mb-3">
-    <div class="card-header-landing"><i class="bi bi-calendar-week me-2"></i>{{ $levelLabel }} — Weekly grid</div>
+    <div class="card-header-landing">
+        <div><i class="bi bi-calendar-week me-2"></i>{{ $panel['programme']->name ?? 'Department' }} ({{ $panel['programme']->code ?? '—' }}) — {{ $panel['level_label'] }}</div>
+        <div class="small opacity-75">
+            {{ config('college.school_name', config('college.institution_name')) }}
+            @if($selectedSemester ?? null)
+                · {{ $selectedSemester->label }}
+                @if($selectedSemester->start_date && $selectedSemester->end_date)
+                    · {{ $selectedSemester->start_date->format('d M Y') }} – {{ $selectedSemester->end_date->format('d M Y') }}
+                @endif
+            @endif
+        </div>
+    </div>
     <div class="card-body p-0">
         @if(!$hasAnySlot)
-        <p class="text-muted mb-0 p-3">No timetable slots yet for {{ $levelLabel }}.</p>
+        <p class="text-muted mb-0 p-3">No timetable slots yet for {{ $panel['programme']->code ?? '' }} {{ $panel['level_label'] }}.</p>
         @else
         <div class="table-responsive">
             <table class="table table-bordered table-sm mb-0 align-middle" style="min-width:760px;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width:130px;">Session</th>
+                        <th style="width:130px;">Time</th>
                         @foreach($dayLabels as $day => $label)
                         <th class="text-center">{{ $label }}</th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(\App\Models\TimetableSlot::DAILY_SESSIONS as $session)
+                    @foreach(\App\Models\TimetableSlot::DAILY_SESSIONS as $sessionIndex => $session)
                     <tr>
                         <td class="small fw-semibold text-muted">{{ $session['label'] }}</td>
                         @foreach($dayLabels as $day => $label)
@@ -109,6 +121,9 @@
                             @if($cellSlot)
                                 <div class="small fw-semibold">{{ $cellSlot->course->code ?? '—' }}</div>
                                 <div class="small text-muted">{{ \Illuminate\Support\Str::limit($cellSlot->course->name ?? '', 20) }}</div>
+                                @if($cellSlot->lecturer)
+                                <div class="small text-muted">{{ $cellSlot->lecturer }}</div>
+                                @endif
                                 @if($cellSlot->room)
                                 <div class="small text-muted">{{ $cellSlot->room }}</div>
                                 @endif
@@ -126,15 +141,13 @@
                         </td>
                         @endforeach
                     </tr>
+                    @if($break = \App\Models\TimetableSlot::BREAKS[$sessionIndex] ?? null)
+                    <tr>
+                        <td class="small fw-semibold text-muted">{{ $break['start'] }} – {{ $break['end'] }}</td>
+                        <td colspan="{{ count($dayLabels) }}" class="text-center small text-muted fw-semibold">{{ $break['label'] }}</td>
+                    </tr>
+                    @endif
                     @endforeach
-                    <tr>
-                        <td class="small fw-semibold text-muted">07:30 – 10:00</td>
-                        <td colspan="{{ count($dayLabels) }}" class="text-center small text-muted">30 min break</td>
-                    </tr>
-                    <tr>
-                        <td class="small fw-semibold text-muted">12:30 – 13:30</td>
-                        <td colspan="{{ count($dayLabels) }}" class="text-center small text-muted">Lunch break</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -147,25 +160,26 @@
     $bulkDelete = [
         'bulkModule' => 'timetable',
         'bulkAction' => route('timetable-slots.bulk-destroy'),
-        'bulkFormId' => 'bulkDeleteTimetableSlots'.$level,
-        'bulkTableId' => 'timetableSlotsTable'.$level,
+        'bulkFormId' => 'bulkDeleteTimetableSlots'.$panelKey,
+        'bulkTableId' => 'timetableSlotsTable'.$panelKey,
         'bulkItemCount' => $otherSlots->count(),
         'bulkHidden' => array_filter(['semester_id' => $semesterId ?? null]),
     ];
 @endphp
 <div class="card card-landing mb-3">
     <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <span>{{ $levelLabel }} — other scheduled slots <span class="text-muted small">(outside the standard sessions)</span></span>
+        <span>{{ $panel['programme']->code ?? '' }} {{ $panel['level_label'] }} — other scheduled slots <span class="text-muted small">(outside the standard sessions)</span></span>
         @include('partials.bulk-delete.toolbar', $bulkDelete)
     </div>
     <div class="card-body p-0">
-        <table class="table table-hover mb-0" id="timetableSlotsTable{{ $level }}">
+        <table class="table table-hover mb-0" id="timetableSlotsTable{{ $panelKey }}">
             <thead class="table-light">
                 <tr>
                     @include('partials.bulk-delete.th', $bulkDelete)
                     <th>Day</th>
                     <th>Time</th>
                     <th>Course</th>
+                    <th>Lecturer</th>
                     <th>Room</th>
                     @if($canManageSlots)
                     <th class="text-end">Actions</th>
@@ -179,6 +193,7 @@
                     <td>{{ \App\Models\TimetableSlot::DAYS[$slot->day_of_week] ?? $slot->day_of_week }}</td>
                     <td>{{ $slot->start_time }} – {{ $slot->end_time }}</td>
                     <td>{{ $slot->course ? $slot->course->code : '' }} {{ $slot->course ? $slot->course->name : '' }}</td>
+                    <td>{{ $slot->lecturer ?? '—' }}</td>
                     <td>{{ $slot->room ?? '—' }}</td>
                     @if($canManageSlots)
                     <td class="text-end text-nowrap">
@@ -198,7 +213,13 @@
 </div>
 @include('partials.bulk-delete.scripts')
 @endif
-@endforeach
+@empty
+<div class="card card-landing mb-3">
+    <div class="card-body">
+        <p class="text-muted mb-0">No modules configured for any programme/level yet. Add modules under Module catalogue first.</p>
+    </div>
+</div>
+@endforelse
 
 @push('scripts')
 <script>

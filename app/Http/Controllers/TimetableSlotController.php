@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\BulkDestroysRecords;
 use App\Models\Course;
 use App\Models\Programme;
 use App\Models\Semester;
+use App\Models\Student;
 use App\Models\TimetableSlot;
 use Illuminate\Http\Request;
 
@@ -34,19 +35,35 @@ class TimetableSlotController extends Controller
         }
         $slots = $query->with('course')->orderBy('day_of_week')->orderBy('start_time')->get();
 
-        // Each NTA level is its own cohort with its own independent weekly schedule, so build
-        // a separate Mon–Fri / 3-session grid per level instead of one shared grid — otherwise
-        // levels scheduled at the same day/session would silently overwrite each other's cell.
-        $gridsByLevel = [];
-        $otherSlotsByLevel = [];
-        foreach (array_keys(\App\Models\Student::NTA_LEVELS) as $level) {
-            $levelSlots = $slots->filter(fn ($s) => (int) ($s->course->nta_level ?? 0) === $level)->values();
+        // A department's weekly timetable is scoped to one programme AND one NTA level (its
+        // own cohort) — mixing either dimension together would let unrelated classes silently
+        // overwrite each other's grid cell. Build one panel per (programme, level) combination
+        // that actually has modules defined, instead of one shared grid.
+        $combos = Course::where('is_active', true)
+            ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->when($programmeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->whereNotNull('nta_level')
+            ->select('programme_id', 'nta_level')
+            ->distinct()
+            ->get()
+            ->sortBy([['programme_id', 'asc'], ['nta_level', 'asc']])
+            ->values();
+
+        $programmesById = Programme::whereIn('id', $combos->pluck('programme_id')->unique())->get()->keyBy('id');
+        $selectedSemester = $semesterId ? $semesters->firstWhere('id', (int) $semesterId) : null;
+
+        $panels = [];
+        foreach ($combos as $combo) {
+            $level = (int) $combo->nta_level;
+            $comboSlots = $slots->filter(fn ($s) => $s->course
+                && (int) $s->course->programme_id === (int) $combo->programme_id
+                && (int) $s->course->nta_level === $level)->values();
 
             $grid = [];
             $gridSlotIds = [];
             foreach (TimetableSlot::WEEK_DAYS as $day) {
                 foreach (TimetableSlot::DAILY_SESSIONS as $session) {
-                    $match = $levelSlots->first(fn ($s) => (int) $s->day_of_week === $day
+                    $match = $comboSlots->first(fn ($s) => (int) $s->day_of_week === $day
                         && substr((string) $s->start_time, 0, 5) === $session['start']
                         && substr((string) $s->end_time, 0, 5) === $session['end']);
                     $grid[$day][$session['start']] = $match;
@@ -56,11 +73,16 @@ class TimetableSlotController extends Controller
                 }
             }
 
-            $gridsByLevel[$level] = $grid;
-            $otherSlotsByLevel[$level] = $levelSlots->reject(fn ($s) => in_array($s->id, $gridSlotIds, true))->values();
+            $panels[] = [
+                'programme' => $programmesById->get($combo->programme_id),
+                'level' => $level,
+                'level_label' => Student::NTA_LEVELS[$level] ?? "NTA Level {$level}",
+                'grid' => $grid,
+                'other_slots' => $comboSlots->reject(fn ($s) => in_array($s->id, $gridSlotIds, true))->values(),
+            ];
         }
 
-        return view('timetable-slots.index', compact('slots', 'semesters', 'semesterId', 'programmes', 'programmeId', 'gridsByLevel', 'otherSlotsByLevel'));
+        return view('timetable-slots.index', compact('slots', 'semesters', 'semesterId', 'programmes', 'programmeId', 'panels', 'selectedSemester'));
     }
 
     public function autoGenerate(Request $request)
@@ -185,6 +207,7 @@ class TimetableSlotController extends Controller
             'days.*' => ['integer', 'min:1', 'max:7'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i'],
+            'lecturer' => ['nullable', 'string', 'max:150'],
             'room' => ['nullable', 'string', 'max:100'],
             'venue' => ['nullable', 'string', 'max:150'],
         ]);
@@ -195,6 +218,7 @@ class TimetableSlotController extends Controller
                 TimetableSlot::create([
                     'semester_id' => $validated['semester_id'],
                     'course_id' => $courseId,
+                    'lecturer' => $validated['lecturer'] ?? null,
                     'day_of_week' => $day,
                     'start_time' => $validated['start_time'],
                     'end_time' => $validated['end_time'],

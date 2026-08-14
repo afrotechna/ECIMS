@@ -51,6 +51,7 @@
     </div>
 </div>
 
+<div class="col-md-4"><label class="form-label">Lecturer</label><input type="text" class="form-control" name="lecturer" placeholder="e.g. Dr. Asimwe"></div>
 <div class="col-md-4"><label class="form-label">Room</label><input type="text" class="form-control" name="room"></div>
 <div class="col-12"><button type="submit" class="btn btn-primary">Save</button> <a href="{{ route('timetable-slots.index') }}" class="btn btn-outline-secondary">Cancel</a></div>
 </div>
