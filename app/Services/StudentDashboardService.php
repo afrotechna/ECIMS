@@ -511,7 +511,7 @@ class StudentDashboardService
             'fee_label' => $label,
             'detail' => $detail,
             'status_done' => $done,
-            'status_label' => $done ? 'Completed' : 'Required',
+            'status_label' => $done ? 'Submitted' : 'Required',
             'status_class' => $done ? 'success' : 'warning',
         ];
     }
@@ -565,7 +565,7 @@ class StudentDashboardService
     }
 
     /**
-     * @return array{index: int, fee_label: string, control_number: string, billed: float, paid: float, balance: float, expiry_at: string}
+     * @return array{index: int, fee_label: string, component_key: string, control_number: string, billed: float, paid: float, balance: float, expiry_at: string}
      */
     private function paymentLine(
         int $index,
@@ -582,6 +582,7 @@ class StudentDashboardService
         return [
             'index' => $index,
             'fee_label' => $feeLabel,
+            'component_key' => $componentKey,
             'control_number' => $this->controlNumberFor($student, $componentKey),
             'billed' => $billed,
             'paid' => $paid,

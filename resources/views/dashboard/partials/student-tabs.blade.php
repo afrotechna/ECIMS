@@ -38,22 +38,16 @@
 
                 <div class="tab-pane fade show active" id="pane-payments" role="tabpanel" aria-labelledby="tab-payments" tabindex="0">
                     @forelse($paymentGroups as $group)
+                    @php
+                        $feeItems = collect($group['items'])->filter(fn ($item) => ($item['kind'] ?? 'fee') !== 'requirement')->values();
+                        $reqItems = collect($group['items'])->filter(fn ($item) => ($item['kind'] ?? 'fee') === 'requirement')->values();
+                    @endphp
                     <div class="sd-payment-semester">
                         <div class="sd-payment-semester-head">
                             <h3 class="sd-payment-semester-title">{{ $group['title'] }}</h3>
                             <p class="sd-payment-semester-sub mb-0">{{ $group['subtitle'] }}</p>
                         </div>
-                        @foreach($group['items'] as $item)
-                            @if(($item['kind'] ?? 'fee') === 'requirement')
-                            <article class="sd-payment-entry sd-payment-requirement">
-                                <header class="sd-payment-head">
-                                    <span class="sd-fee-badge sd-fee-badge-req">Requirement</span>
-                                    <span class="badge bg-{{ $item['status_class'] }}">{{ $item['status_label'] }}</span>
-                                </header>
-                                <p class="fw-semibold mb-1">{{ $item['fee_label'] }}</p>
-                                <p class="small text-muted mb-0">{{ $item['detail'] }}</p>
-                            </article>
-                            @else
+                        @foreach($feeItems as $item)
                             <article class="sd-payment-entry">
                                 <header class="sd-payment-head">
                                     <div class="sd-payment-head-left">
@@ -63,10 +57,12 @@
                                     <span class="sd-fee-badge">{{ $item['fee_label'] }}</span>
                                 </header>
                                 <dl class="sd-payment-dl">
+                                    @if(($item['component_key'] ?? null) !== 'nhif')
                                     <div class="sd-payment-dl-row">
                                         <dt>Control Number</dt>
                                         <dd><code>{{ $item['control_number'] }}</code></dd>
                                     </div>
+                                    @endif
                                     <div class="sd-payment-dl-row">
                                         <dt>Billed Amount</dt>
                                         <dd>{{ number_format($item['billed'], 2) }}</dd>
@@ -81,11 +77,26 @@
                                     </div>
                                 </dl>
                             </article>
-                            @endif
-                            @if(!$loop->last)
+                            @if(!$loop->last || $reqItems->isNotEmpty())
                             <div class="sd-payment-sep" aria-hidden="true">&bull; &bull; &bull;</div>
                             @endif
                         @endforeach
+                        @if($reqItems->isNotEmpty())
+                        <div class="sd-requirements-block">
+                            <h4 class="sd-requirements-heading"><span class="sd-fee-badge sd-fee-badge-req">Requirement</span></h4>
+                            <ul class="sd-requirements-list list-unstyled mb-0">
+                                @foreach($reqItems as $item)
+                                <li class="sd-requirement-item">
+                                    <div class="sd-requirement-text">
+                                        <p class="fw-semibold mb-1">{{ $item['fee_label'] }}</p>
+                                        <p class="small text-muted mb-0">{{ $item['detail'] }}</p>
+                                    </div>
+                                    <span class="badge bg-{{ $item['status_class'] }}">{{ $item['status_label'] }}</span>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
                     </div>
                     @if(!$loop->last)
                     <div class="sd-payment-semester-divider" aria-hidden="true"></div>

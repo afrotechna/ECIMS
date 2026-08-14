@@ -334,6 +334,19 @@
     .sd-payment-semester-divider { height: .5rem; background: #f1f5f9; }
     .sd-payment-requirement { background: #fafafa; }
     .sd-fee-badge-req { background: #64748b !important; }
+    .sd-requirements-block { background: #fafafa; padding: 1rem 1.25rem; }
+    .sd-requirements-heading { margin: 0 0 .75rem; }
+    .sd-requirements-list { display: flex; flex-direction: column; gap: .85rem; }
+    .sd-requirement-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+        padding-bottom: .85rem;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+    .sd-requirement-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .sd-requirement-text { min-width: 0; }
 
     .sd-loan-list { padding: 1rem 1.25rem; }
     .sd-loan-item {
