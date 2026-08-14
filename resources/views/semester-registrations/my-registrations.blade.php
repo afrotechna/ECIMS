@@ -11,7 +11,7 @@
 @endphp
 <div class="page-header-landing">
     <h1 class="page-title-landing">My Registrations</h1>
-    <p class="page-subtitle-landing mb-0">{{ $student->full_name }} — status of your semester registration (completed by college staff after payment).</p>
+    <p class="page-subtitle-landing mb-0">{{ $student->full_name }}</p>
     @if($latestApproved)
     <p class="page-subtitle-landing mb-0 mt-1"><strong>You are registered for {{ $latestApproved->semester->periodName() }} of academic year {{ $latestApproved->semester->academicYearRange() }}.</strong></p>
     @endif
@@ -23,11 +23,13 @@
     <div class="card-body p-0">
         <div class="table-responsive">
         <table class="table table-hover mb-0">
-            <thead><tr><th>Semester</th><th>Status</th><th>Registered</th></tr></thead>
+            <thead><tr><th>Registration number</th><th>Academic year</th><th>Registration date</th><th>Status</th></tr></thead>
             <tbody>
                 @forelse($registrations as $r)
                 <tr>
-                    <td>{{ $r->semester->label }}</td>
+                    <td>{{ $student->nactvet_reg_no }}</td>
+                    <td>{{ $r->semester->academicYearRange() }}</td>
+                    <td>{{ $r->registered_at ? $r->registered_at->format('d/m/Y') : '—' }}</td>
                     <td>
                         @if($r->status === 'approved')
                         <span class="badge bg-success">Registered</span>
@@ -37,10 +39,9 @@
                         <span class="badge bg-warning text-dark">Pending</span>
                         @endif
                     </td>
-                    <td>{{ $r->registered_at ? $r->registered_at->format('d/m/Y') : '—' }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="3" class="text-center text-muted py-5">No semester registration yet. Visit the accounts office after payment.</td></tr>
+                <tr><td colspan="4" class="text-center text-muted py-5">No semester registration yet. Visit the accounts office after payment.</td></tr>
                 @endforelse
             </tbody>
         </table>
