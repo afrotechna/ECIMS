@@ -6,9 +6,15 @@
     <span class="mx-2">/</span>
     <span>My Registrations</span>
 </nav>
+@php
+    $latestApproved = $registrations->firstWhere('status', 'approved');
+@endphp
 <div class="page-header-landing">
     <h1 class="page-title-landing">My Registrations</h1>
     <p class="page-subtitle-landing mb-0">{{ $student->full_name }} — status of your semester registration (completed by college staff after payment).</p>
+    @if($latestApproved)
+    <p class="page-subtitle-landing mb-0 mt-1"><strong>You are registered for {{ $latestApproved->semester->periodName() }} of academic year {{ $latestApproved->semester->academicYearRange() }}.</strong></p>
+    @endif
 </div>
 
 
@@ -24,7 +30,7 @@
                     <td>{{ $r->semester->label }}</td>
                     <td>
                         @if($r->status === 'approved')
-                        <span class="badge bg-success">Approved</span>
+                        <span class="badge bg-success">Registered</span>
                         @elseif($r->status === 'rejected')
                         <span class="badge bg-danger">Rejected</span>
                         @else
