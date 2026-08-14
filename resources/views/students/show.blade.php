@@ -44,7 +44,7 @@
             <div class="card-header-landing py-2"><i class="bi bi-info-circle me-2"></i>Student details</div>
             <div class="card-body">
                 <dl class="row student-detail-dl mb-0 small">
-                    <dt class="col-sm-4 col-md-3 text-muted">NACTVET / NACTE / index</dt>
+                    <dt class="col-sm-4 col-md-3 text-muted">Form IV Index number</dt>
                     <dd class="col-sm-8 col-md-9"><code class="small bg-light px-2 py-1 rounded">{{ $student->registrationNumberDisplay() ?: '—' }}</code></dd>
 
                     <dt class="col-sm-4 col-md-3 text-muted">Full name</dt>
@@ -112,21 +112,25 @@
                         <table class="table table-hover align-middle mb-0 table-students-landing">
                             <thead>
                                 <tr>
+                                    <th scope="col">Academic year</th>
                                     <th scope="col">Semester</th>
+                                    <th scope="col">Starting date</th>
+                                    <th scope="col">Ending date</th>
                                     <th scope="col" class="text-center">Status</th>
-                                    <th scope="col">Registered</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($student->semesterRegistrations->sortByDesc(fn ($r) => $r->semester?->academic_year ?? 0) as $reg)
                                 <tr>
-                                    <td>{{ $reg->semester->label ?? '—' }}</td>
+                                    <td>{{ $reg->semester?->academicYearRange() ?? '—' }}</td>
+                                    <td><strong>{{ $reg->semester?->periodName() ?? '—' }}</strong></td>
+                                    <td>{{ $reg->semester?->start_date ? $reg->semester->start_date->format('d/m/Y') : '—' }}</td>
+                                    <td>{{ $reg->semester?->end_date ? $reg->semester->end_date->format('d/m/Y') : '—' }}</td>
                                     <td class="text-center">
-                                        @if($reg->status === 'approved')<span class="badge bg-success">Approved</span>
+                                        @if($reg->status === 'approved')<span class="badge bg-success">Registered</span>
                                         @elseif($reg->status === 'rejected')<span class="badge bg-danger">Rejected</span>
                                         @else<span class="badge bg-warning text-dark">Pending</span>@endif
                                     </td>
-                                    <td>{{ $reg->registered_at ? $reg->registered_at->format('d/m/Y') : '—' }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
