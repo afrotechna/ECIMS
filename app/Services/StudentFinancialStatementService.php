@@ -139,7 +139,7 @@ class StudentFinancialStatementService
         $sn = 0;
 
         foreach ([Semester::PERIOD_FIRST, Semester::PERIOD_SECOND] as $period) {
-            $feeRows = $grouped[$period]['fee'];
+            $feeRows = $this->sortFeeRowsByCategory($grouped[$period]['fee']);
             $otherRows = $grouped[$period]['other'];
 
             $sections = [];
@@ -165,6 +165,27 @@ class StudentFinancialStatementService
         }
 
         return $blocks;
+    }
+
+    /**
+     * Order a semester's fee rows Tuition Fee, then NHIF, then NACTVET QA (numbers 1, 2, 3),
+     * so those categories always land in that fixed order regardless of billing date.
+     * Bill/receipt pairs within the same category keep their original chronological order.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    private function sortFeeRowsByCategory(array $rows): array
+    {
+        $rank = [
+            'Tuition Fees' => 1,
+            'NHIF — Health Insurance' => 2,
+            'NACTVET Quality Assurance' => 3,
+        ];
+
+        usort($rows, fn ($a, $b) => ($rank[$a['payment_type']] ?? 99) <=> ($rank[$b['payment_type']] ?? 99));
+
+        return $rows;
     }
 
     /**
