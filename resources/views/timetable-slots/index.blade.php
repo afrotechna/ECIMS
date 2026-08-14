@@ -76,9 +76,19 @@
     $dayLabels = collect(\App\Models\TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => \App\Models\TimetableSlot::DAYS[$d]]);
     $canManageSlots = auth()->user()->canModule('timetable', 'delete');
 @endphp
+
+@foreach(\App\Models\Student::NTA_LEVELS as $level => $levelLabel)
+@php
+    $grid = $gridsByLevel[$level] ?? [];
+    $otherSlots = $otherSlotsByLevel[$level] ?? collect();
+    $hasAnySlot = collect($grid)->flatten()->filter()->isNotEmpty() || $otherSlots->isNotEmpty();
+@endphp
 <div class="card card-landing mb-3">
-    <div class="card-header-landing"><i class="bi bi-calendar-week me-2"></i>Weekly grid</div>
+    <div class="card-header-landing"><i class="bi bi-calendar-week me-2"></i>{{ $levelLabel }} — Weekly grid</div>
     <div class="card-body p-0">
+        @if(!$hasAnySlot)
+        <p class="text-muted mb-0 p-3">No timetable slots yet for {{ $levelLabel }}.</p>
+        @else
         <div class="table-responsive">
             <table class="table table-bordered table-sm mb-0 align-middle" style="min-width:760px;">
                 <thead class="table-light">
@@ -128,6 +138,7 @@
                 </tbody>
             </table>
         </div>
+        @endif
     </div>
 </div>
 
@@ -136,19 +147,19 @@
     $bulkDelete = [
         'bulkModule' => 'timetable',
         'bulkAction' => route('timetable-slots.bulk-destroy'),
-        'bulkFormId' => 'bulkDeleteTimetableSlots',
-        'bulkTableId' => 'timetableSlotsTable',
+        'bulkFormId' => 'bulkDeleteTimetableSlots'.$level,
+        'bulkTableId' => 'timetableSlotsTable'.$level,
         'bulkItemCount' => $otherSlots->count(),
         'bulkHidden' => array_filter(['semester_id' => $semesterId ?? null]),
     ];
 @endphp
-<div class="card card-landing">
+<div class="card card-landing mb-3">
     <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <span>Other scheduled slots <span class="text-muted small">(outside the standard sessions)</span></span>
+        <span>{{ $levelLabel }} — other scheduled slots <span class="text-muted small">(outside the standard sessions)</span></span>
         @include('partials.bulk-delete.toolbar', $bulkDelete)
     </div>
     <div class="card-body p-0">
-        <table class="table table-hover mb-0" id="timetableSlotsTable">
+        <table class="table table-hover mb-0" id="timetableSlotsTable{{ $level }}">
             <thead class="table-light">
                 <tr>
                     @include('partials.bulk-delete.th', $bulkDelete)
@@ -187,6 +198,7 @@
 </div>
 @include('partials.bulk-delete.scripts')
 @endif
+@endforeach
 
 @push('scripts')
 <script>

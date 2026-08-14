@@ -32,26 +32,35 @@ class TimetableSlotController extends Controller
         if ($programmeId) {
             $query->whereHas('course', fn ($cq) => $cq->where('programme_id', $programmeId));
         }
-        $slots = $query->orderBy('day_of_week')->orderBy('start_time')->get();
+        $slots = $query->with('course')->orderBy('day_of_week')->orderBy('start_time')->get();
 
-        // Build the standard Mon–Fri / 3-session grid; anything with non-standard times falls
-        // into $otherSlots below the grid instead of being silently dropped.
-        $grid = [];
-        $gridSlotIds = [];
-        foreach (TimetableSlot::WEEK_DAYS as $day) {
-            foreach (TimetableSlot::DAILY_SESSIONS as $session) {
-                $match = $slots->first(fn ($s) => (int) $s->day_of_week === $day
-                    && substr((string) $s->start_time, 0, 5) === $session['start']
-                    && substr((string) $s->end_time, 0, 5) === $session['end']);
-                $grid[$day][$session['start']] = $match;
-                if ($match) {
-                    $gridSlotIds[] = $match->id;
+        // Each NTA level is its own cohort with its own independent weekly schedule, so build
+        // a separate Mon–Fri / 3-session grid per level instead of one shared grid — otherwise
+        // levels scheduled at the same day/session would silently overwrite each other's cell.
+        $gridsByLevel = [];
+        $otherSlotsByLevel = [];
+        foreach (array_keys(\App\Models\Student::NTA_LEVELS) as $level) {
+            $levelSlots = $slots->filter(fn ($s) => (int) ($s->course->nta_level ?? 0) === $level)->values();
+
+            $grid = [];
+            $gridSlotIds = [];
+            foreach (TimetableSlot::WEEK_DAYS as $day) {
+                foreach (TimetableSlot::DAILY_SESSIONS as $session) {
+                    $match = $levelSlots->first(fn ($s) => (int) $s->day_of_week === $day
+                        && substr((string) $s->start_time, 0, 5) === $session['start']
+                        && substr((string) $s->end_time, 0, 5) === $session['end']);
+                    $grid[$day][$session['start']] = $match;
+                    if ($match) {
+                        $gridSlotIds[] = $match->id;
+                    }
                 }
             }
-        }
-        $otherSlots = $slots->reject(fn ($s) => in_array($s->id, $gridSlotIds, true))->values();
 
-        return view('timetable-slots.index', compact('slots', 'semesters', 'semesterId', 'programmes', 'programmeId', 'grid', 'otherSlots'));
+            $gridsByLevel[$level] = $grid;
+            $otherSlotsByLevel[$level] = $levelSlots->reject(fn ($s) => in_array($s->id, $gridSlotIds, true))->values();
+        }
+
+        return view('timetable-slots.index', compact('slots', 'semesters', 'semesterId', 'programmes', 'programmeId', 'gridsByLevel', 'otherSlotsByLevel'));
     }
 
     public function autoGenerate(Request $request)
