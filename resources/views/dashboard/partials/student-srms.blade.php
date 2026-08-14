@@ -33,8 +33,9 @@
         min-width: 120px;
         padding: 1.1rem 1rem;
         display: flex;
+        flex-direction: column;
         align-items: flex-start;
-        gap: .65rem;
+        gap: .55rem;
         border-bottom: 1px solid #f1f5f9;
     }
     .sd-stat:nth-child(3n) { border-right: none; }
@@ -364,17 +365,17 @@
     <div class="sd-summary-inner">
         <div class="sd-stats-row">
             <div class="sd-stat">
-                <div class="sd-stat-icon blue"><i class="bi bi-pc-display"></i></div>
-                <div>
-                    <div class="sd-stat-label">Total modules registered</div>
-                    <div class="sd-stat-value">{{ $sd['total_modules_registered'] ?? 0 }}</div>
-                </div>
-            </div>
-            <div class="sd-stat">
                 <div class="sd-stat-icon amber"><i class="bi bi-lightbulb"></i></div>
                 <div>
                     <div class="sd-stat-label">Registered semesters</div>
                     <div class="sd-stat-value">{{ $sd['registered_semester_count'] ?? 0 }}</div>
+                </div>
+            </div>
+            <div class="sd-stat">
+                <div class="sd-stat-icon blue"><i class="bi bi-pc-display"></i></div>
+                <div>
+                    <div class="sd-stat-label">Total modules registered per semester</div>
+                    <div class="sd-stat-value">{{ $sd['total_modules_registered'] ?? 0 }} <span class="sd-stat-sub">/ {{ $sd['total_modules_available'] ?? 0 }}</span></div>
                 </div>
             </div>
             <div class="sd-stat">

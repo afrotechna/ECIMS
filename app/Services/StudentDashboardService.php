@@ -17,6 +17,10 @@ use Illuminate\Support\Collection;
 
 class StudentDashboardService
 {
+    public function __construct(
+        private readonly StudentModuleEnrollmentService $moduleEnrollmentService,
+    ) {}
+
     public function build(Student $student): array
     {
         $student->loadMissing('programme');
@@ -40,15 +44,7 @@ class StudentDashboardService
             ))
             ->all();
 
-        $semesterIds = $semesters->pluck('id')->filter()->all();
-
-        $coursesThisYear = $semesterIds === []
-            ? 0
-            : (int) Result::query()
-                ->where('student_id', $student->id)
-                ->whereIn('semester_id', $semesterIds)
-                ->distinct()
-                ->count('course_id');
+        $moduleStats = $this->moduleRegistrationSummary($student, $semesters);
 
         $allResults = Result::query()->where('student_id', $student->id)->get();
         $passedModules = $allResults->filter(fn (Result $r) => $this->isPassed($r))->unique('course_id')->count();
@@ -66,7 +62,8 @@ class StudentDashboardService
             'year_of_study' => $this->yearOfStudyLabel($student),
             'standing_badge' => $this->standingBadge($student),
             'overall_gpa' => $this->overallGpa($student),
-            'total_modules_registered' => $coursesThisYear,
+            'total_modules_registered' => $moduleStats['enrolled'],
+            'total_modules_available' => $moduleStats['available'],
             'registered_semester_count' => $registeredSemesters,
             'modules_completed' => $passedModules,
             'modules_with_marks' => max($modulesWithMarks, 1),
@@ -178,6 +175,27 @@ class StudentDashboardService
         }
 
         return true;
+    }
+
+    /**
+     * Modules the student is enrolled in for the current active semester, out of the
+     * total offered for their programme/NTA level — this reflects modules assigned by
+     * staff (bulk assignment or self-service selection), not anything a student "does".
+     *
+     * @return array{enrolled: int, available: int}
+     */
+    private function moduleRegistrationSummary(Student $student, Collection $semesters): array
+    {
+        $currentSemester = $semesters->firstWhere('is_active', true) ?? $semesters->first();
+
+        if (! $currentSemester || ! $student->programme_id) {
+            return ['enrolled' => 0, 'available' => 0];
+        }
+
+        $enrolled = $student->moduleEnrollments()->where('semester_id', $currentSemester->id)->count();
+        $available = $this->moduleEnrollmentService->availableCoursesForSemester($student, $currentSemester)->count();
+
+        return ['enrolled' => $enrolled, 'available' => max($available, $enrolled)];
     }
 
     private function yearOfStudyLabel(Student $student): string
