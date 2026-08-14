@@ -86,7 +86,7 @@ class StudentFinancialStatementService
 
         $semesterBlocks = $this->buildSemesterBlocks($yearEntries, $payments, $semesterModels, $academicYearStart);
 
-        $yearTotals = $this->totalsFromRows($this->flattenRows($semesterBlocks));
+        $yearTotals = $this->totalsFromEntries($yearEntries);
         $cumulativeTotals = $this->totalsFromEntries($cumulativeEntries);
 
         return [
@@ -138,7 +138,7 @@ class StudentFinancialStatementService
         $sn = 0;
 
         foreach ([Semester::PERIOD_FIRST, Semester::PERIOD_SECOND] as $period) {
-            $feeRows = $this->sortFeeRowsByCategory($grouped[$period]['fee']);
+            $feeRows = $this->mergeRowsByCategory($this->sortFeeRowsByCategory($grouped[$period]['fee']));
             $otherRows = $grouped[$period]['other'];
 
             $sections = [];
@@ -188,6 +188,67 @@ class StudentFinancialStatementService
     }
 
     /**
+     * Collapse the Bill and Receipt rows for the same category into a single row showing
+     * both the billed and paid amount, so each category appears once per semester instead
+     * of once per transaction. Assumes rows are already grouped by category (i.e. called
+     * after sortFeeRowsByCategory), so rows for the same category are adjacent.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    private function mergeRowsByCategory(array $rows): array
+    {
+        $merged = [];
+        $order = [];
+
+        foreach ($rows as $row) {
+            $key = $row['payment_type'];
+            if (! isset($merged[$key])) {
+                $order[] = $key;
+                $merged[$key] = [
+                    'date' => $row['date'],
+                    'payment_type' => $key,
+                    'remark' => $row['remark'],
+                    'reference_no' => $row['reference_no'],
+                    'fee' => 0.0,
+                    'payment' => 0.0,
+                ];
+            }
+
+            $merged[$key]['date'] = $row['date'];
+            if ($row['fee'] !== null) {
+                $merged[$key]['fee'] += (float) $row['fee'];
+            }
+            if ($row['payment'] !== null) {
+                $merged[$key]['payment'] += (float) $row['payment'];
+                $merged[$key]['remark'] = $row['remark'];
+                if ($row['reference_no'] !== '—') {
+                    $merged[$key]['reference_no'] = $row['reference_no'];
+                }
+            }
+        }
+
+        $result = [];
+        foreach ($order as $key) {
+            $m = $merged[$key];
+            $balance = round($m['fee'] - $m['payment'], 2);
+            $result[] = [
+                'sn' => 0,
+                'date' => $m['date'],
+                'transaction_type' => $balance <= 0 ? 'Paid' : ($m['payment'] > 0 ? 'Partially Paid' : 'Billed'),
+                'payment_type' => $m['payment_type'],
+                'remark' => $m['remark'],
+                'reference_no' => $m['reference_no'],
+                'fee' => $m['fee'],
+                'payment' => $m['payment'],
+                'balance' => $balance,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
      * @param  Collection<int, Semester>  $semesterModels
      */
     private function resolveSemesterPeriod(LedgerEntry $entry, Collection $semesterModels, int $academicYearStart): int
@@ -212,49 +273,6 @@ class StudentFinancialStatementService
         }
 
         return Semester::PERIOD_FIRST;
-    }
-
-    /**
-     * @param  list<array{sections: list<array{rows: list<array<string, mixed>>}>}>  $semesterBlocks
-     * @return list<array<string, mixed>>
-     */
-    private function flattenRows(array $semesterBlocks): array
-    {
-        $rows = [];
-        foreach ($semesterBlocks as $block) {
-            foreach ($block['sections'] as $section) {
-                foreach ($section['rows'] as $row) {
-                    $rows[] = $row;
-                }
-            }
-        }
-
-        return $rows;
-    }
-
-    /**
-     * @param  list<array<string, mixed>>  $rows
-     * @return array{fee: float, payment: float, balance: ?float}
-     */
-    private function totalsFromRows(array $rows): array
-    {
-        $fee = 0.0;
-        $payment = 0.0;
-        $balance = null;
-
-        foreach ($rows as $row) {
-            if ($row['fee'] !== null) {
-                $fee += (float) $row['fee'];
-            }
-            if ($row['payment'] !== null) {
-                $payment += (float) $row['payment'];
-            }
-            if ($row['balance'] !== null) {
-                $balance = (float) $row['balance'];
-            }
-        }
-
-        return ['fee' => $fee, 'payment' => $payment, 'balance' => $balance];
     }
 
     /**
