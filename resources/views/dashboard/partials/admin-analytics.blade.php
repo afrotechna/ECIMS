@@ -18,7 +18,17 @@
     $levelColors = ['rgba(29, 157, 87, 0.9)', 'rgba(26, 79, 181, 0.9)', 'rgba(56, 182, 232, 0.9)'];
     $cmtColor = 'rgba(29, 157, 87, 0.88)';
     $mltColor = 'rgba(56, 182, 232, 0.88)';
-    $progColors = ['rgba(29, 157, 87, 0.88)', 'rgba(56, 182, 232, 0.88)'];
+    // Cycles rather than truncates, so a chart never runs out of distinct
+    // colors no matter how many programmes are active.
+    $progPalette = [
+        'rgba(29, 157, 87, 0.88)',   // green
+        'rgba(26, 79, 181, 0.88)',   // navy blue
+        'rgba(56, 182, 232, 0.88)',  // cyan
+        'rgba(242, 183, 5, 0.88)',   // yellow
+        'rgba(147, 51, 234, 0.85)',  // purple
+        'rgba(236, 72, 153, 0.85)',  // pink
+    ];
+    $progColors = array_map(fn ($i) => $progPalette[$i % count($progPalette)], array_keys($progData));
     $chartStudentsLabel = __('ui.charts.students');
 @endphp
 
@@ -53,11 +63,11 @@
         <div class="col-md-6 col-xl-4">
             <div class="dashboard-chart-card">
                 <div class="dashboard-chart-card__head">
-                    <i class="bi bi-pie-chart-fill text-success"></i>
+                    <i class="bi bi-bar-chart-fill text-success"></i>
                     <span>{{ __('ui.charts.by_programme') }}</span>
                 </div>
                 <div class="dashboard-chart-card__body" style="height:220px">
-                    <canvas id="chartPieProgramme" aria-label="{{ __('ui.charts.by_programme') }}"></canvas>
+                    <canvas id="chartBarProgramme" aria-label="{{ __('ui.charts.by_programme') }}"></canvas>
                 </div>
                 <div class="dashboard-chart-card__foot">
                     @foreach ($progLabels as $i => $code)
@@ -259,7 +269,6 @@
     var navy = '#1a4fb5';
     var studentsLabel = {!! json_encode($chartStudentsLabel) !!};
     var balanceLabels = {!! json_encode([__('ui.charts.cleared'), __('ui.charts.arrears')]) !!};
-    var compactLegend = { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10 } } };
     var compactScale = { ticks: { font: { size: 10 }, precision: 0 }, grid: { color: 'rgba(226,232,240,0.6)' } };
 
     var barCountPlugin = {
@@ -314,14 +323,8 @@
 
     var progLabels = {!! json_encode($progLabels) !!};
     var progData = {!! json_encode($progData) !!};
-    var progColors = {!! json_encode(array_slice($progColors, 0, count($progData))) !!};
-    if (document.getElementById('chartPieProgramme') && progData.length) {
-        new Chart(document.getElementById('chartPieProgramme'), {
-            type: 'doughnut',
-            data: { labels: progLabels, datasets: [{ data: progData, backgroundColor: progColors, borderWidth: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '52%', plugins: { legend: compactLegend } }
-        });
-    }
+    var progColors = {!! json_encode($progColors) !!};
+    barChart('chartBarProgramme', progLabels, progData, progColors);
 
     barChart('chartBarCmtLevel', levelLabels, {!! json_encode($cmtData) !!}, {!! json_encode([$cmtColor, $cmtColor, $cmtColor]) !!});
     barChart('chartBarMltLevel', levelLabels, {!! json_encode($mltData) !!}, {!! json_encode([$mltColor, $mltColor, $mltColor]) !!});
