@@ -144,16 +144,25 @@ class TimetableSlotController extends Controller
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
             'nta_level' => ['nullable', 'integer', 'min:4', 'max:6'],
+            'programme_id' => ['nullable', 'integer', 'exists:programmes,id'],
         ]);
 
         $hodProgrammeId = auth()->user()->hodProgrammeId();
 
-        $courses = Course::where('is_active', true)
+        $courses = Course::with('programme:id,code')
+            ->where('is_active', true)
             ->whereHas('semesters', fn ($q) => $q->where('semesters.id', $validated['semester_id']))
             ->when($hodProgrammeId, fn ($q, $pid) => $q->where('programme_id', $pid))
+            ->when($validated['programme_id'] ?? null, fn ($q, $pid) => $q->where('programme_id', $pid))
             ->when($validated['nta_level'] ?? null, fn ($q, $level) => $q->where('nta_level', $level))
             ->orderBy('code')
-            ->get(['id', 'code', 'name']);
+            ->get(['id', 'code', 'name', 'programme_id'])
+            ->map(fn (Course $c) => [
+                'id' => $c->id,
+                'code' => $c->code,
+                'name' => $c->name,
+                'programme_code' => $c->programme->code ?? null,
+            ]);
 
         return response()->json($courses);
     }
@@ -161,8 +170,9 @@ class TimetableSlotController extends Controller
     public function create(Request $request)
     {
         $semesters = Semester::where('is_active', true)->orderByDesc('academic_year')->get();
+        $programmes = Programme::where('is_active', true)->orderBy('code')->get(['id', 'code']);
 
-        return view('timetable-slots.create', compact('semesters'));
+        return view('timetable-slots.create', compact('semesters', 'programmes'));
     }
 
     public function store(Request $request)

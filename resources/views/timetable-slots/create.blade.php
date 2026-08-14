@@ -8,9 +8,10 @@
 <form action="{{ route('timetable-slots.store') }}" method="POST">
 @csrf
 <div class="row g-3">
-<div class="col-md-4"><label class="form-label">Semester</label><select class="form-select" name="semester_id" id="slotSemester" required><option value="">Select</option>@foreach($semesters as $s)<option value="{{ $s->id }}">{{ $s->label }}</option>@endforeach</select></div>
+<div class="col-md-3"><label class="form-label">Semester</label><select class="form-select" name="semester_id" id="slotSemester" required><option value="">Select</option>@foreach($semesters as $s)<option value="{{ $s->id }}">{{ $s->label }}</option>@endforeach</select></div>
 <div class="col-md-2"><label class="form-label">Level</label><select class="form-select" id="slotLevel"><option value="">All</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
-<div class="col-md-6">
+<div class="col-md-2"><label class="form-label">Programme</label><select class="form-select" id="slotProgramme"><option value="">All</option>@foreach($programmes as $p)<option value="{{ $p->id }}">{{ $p->code }}</option>@endforeach</select></div>
+<div class="col-md-5">
     <label class="form-label">Start time</label>
     <div class="row g-2">
         <div class="col-6"><input type="time" class="form-control" name="start_time" required></div>
@@ -36,13 +37,13 @@
     <label class="form-label d-flex justify-content-between align-items-center">
         <span>Day(s)</span>
         <span class="form-check form-check-inline mb-0 small">
-            <input class="form-check-input" type="checkbox" id="slotDaySelectAll">
+            <input class="form-check-input" type="checkbox" id="slotDaySelectAll" checked>
             <label class="form-check-label" for="slotDaySelectAll">Monday – Friday</label>
         </span>
     </label>
     <div class="border rounded p-2">
         @foreach(\App\Models\TimetableSlot::DAYS as $d => $label)
-        <div class="form-check form-check-inline">
+        <div class="form-check form-check-inline slot-day-item{{ in_array($d, \App\Models\TimetableSlot::WEEK_DAYS, true) ? ' slot-day-item--weekday' : '' }}">
             <input class="form-check-input slot-day" type="checkbox" name="days[]" value="{{ $d }}" id="slotDay{{ $d }}" {{ in_array($d, \App\Models\TimetableSlot::WEEK_DAYS, true) ? 'checked' : '' }}>
             <label class="form-check-label" for="slotDay{{ $d }}">{{ $label }}</label>
         </div>
@@ -64,16 +65,29 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+.slot-day-item--weekday.slot-day-faint { opacity: .45; }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 (function () {
     var semesterSelect = document.getElementById('slotSemester');
     var levelSelect = document.getElementById('slotLevel');
+    var programmeSelect = document.getElementById('slotProgramme');
     var courseList = document.getElementById('slotCourseList');
     var courseEmpty = document.getElementById('slotCourseEmpty');
     var courseSelectAll = document.getElementById('slotCourseSelectAll');
     var daySelectAll = document.getElementById('slotDaySelectAll');
     if (!semesterSelect || !courseList) return;
+
+    var badgeClass = {
+        CMT: 'bg-primary-subtle text-primary-emphasis',
+        MLT: 'bg-success-subtle text-success-emphasis',
+        DDR: 'bg-warning-subtle text-warning-emphasis'
+    };
 
     function loadCourses() {
         var semesterId = semesterSelect.value;
@@ -88,6 +102,7 @@
         courseEmpty.classList.remove('d-none');
         var url = '{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId);
         if (levelSelect.value) url += '&nta_level=' + encodeURIComponent(levelSelect.value);
+        if (programmeSelect.value) url += '&programme_id=' + encodeURIComponent(programmeSelect.value);
         fetch(url)
             .then(function (r) { return r.json(); })
             .then(function (courses) {
@@ -97,16 +112,26 @@
                 }
                 courseEmpty.classList.add('d-none');
                 courseList.innerHTML = courses.map(function (c) {
+                    var badge = c.programme_code
+                        ? '<span class="badge ' + (badgeClass[c.programme_code] || 'bg-secondary-subtle text-secondary-emphasis') + ' me-1">' + c.programme_code + '</span>'
+                        : '';
                     return '<div class="col-md-6"><div class="form-check">' +
                         '<input class="form-check-input slot-course" type="checkbox" name="course_ids[]" value="' + c.id + '" id="slotCourse' + c.id + '">' +
-                        '<label class="form-check-label small" for="slotCourse' + c.id + '">' + c.code + ' — ' + c.name + '</label>' +
+                        '<label class="form-check-label small" for="slotCourse' + c.id + '">' + badge + c.code + ' — ' + c.name + '</label>' +
                         '</div></div>';
                 }).join('');
             });
     }
 
+    function applyDayFaint() {
+        document.querySelectorAll('.slot-day-item--weekday').forEach(function (item) {
+            item.classList.toggle('slot-day-faint', daySelectAll.checked);
+        });
+    }
+
     semesterSelect.addEventListener('change', loadCourses);
     levelSelect.addEventListener('change', loadCourses);
+    programmeSelect.addEventListener('change', loadCourses);
     courseSelectAll.addEventListener('change', function () {
         courseList.querySelectorAll('.slot-course').forEach(function (cb) { cb.checked = courseSelectAll.checked; });
     });
@@ -114,7 +139,10 @@
         document.querySelectorAll('.slot-day').forEach(function (cb) {
             if ([1, 2, 3, 4, 5].indexOf(parseInt(cb.value, 10)) !== -1) cb.checked = daySelectAll.checked;
         });
+        applyDayFaint();
     });
+
+    applyDayFaint();
 })();
 </script>
 @endpush
