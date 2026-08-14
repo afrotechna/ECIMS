@@ -161,23 +161,41 @@ class TimetableSlotController extends Controller
     public function create(Request $request)
     {
         $semesters = Semester::where('is_active', true)->orderByDesc('academic_year')->get();
-        $courses = Course::where('is_active', true)->orderBy('code')->get();
-        return view('timetable-slots.create', compact('semesters', 'courses'));
+
+        return view('timetable-slots.create', compact('semesters'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
-            'course_id' => ['required', 'exists:courses,id'],
-            'day_of_week' => ['required', 'integer', 'min:1', 'max:7'],
+            'course_ids' => ['required', 'array', 'min:1'],
+            'course_ids.*' => ['integer', 'exists:courses,id'],
+            'days' => ['required', 'array', 'min:1'],
+            'days.*' => ['integer', 'min:1', 'max:7'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i'],
             'room' => ['nullable', 'string', 'max:100'],
             'venue' => ['nullable', 'string', 'max:150'],
         ]);
-        TimetableSlot::create($validated);
-        return redirect()->route('timetable-slots.index')->with('success', 'Timetable slot added.');
+
+        $created = 0;
+        foreach ($validated['course_ids'] as $courseId) {
+            foreach ($validated['days'] as $day) {
+                TimetableSlot::create([
+                    'semester_id' => $validated['semester_id'],
+                    'course_id' => $courseId,
+                    'day_of_week' => $day,
+                    'start_time' => $validated['start_time'],
+                    'end_time' => $validated['end_time'],
+                    'room' => $validated['room'] ?? null,
+                    'venue' => $validated['venue'] ?? null,
+                ]);
+                $created++;
+            }
+        }
+
+        return redirect()->route('timetable-slots.index')->with('success', $created.' timetable slot(s) added.');
     }
 
     public function destroy(Request $request, TimetableSlot $timetable_slot)
