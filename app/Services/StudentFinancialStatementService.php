@@ -52,7 +52,6 @@ class StudentFinancialStatementService
      *         academic_year_label: string,
      *         sections: list<array{title: string, rows: list<array<string, mixed>>}>
      *     }>,
-     *     category_totals: list<array{no: int, label: string, fee: float, payment: float}>,
      *     annual_balance: array{fee: ?float, payment: ?float, balance: ?float},
      *     cumulative_balance: array{fee: float, payment: float, balance: ?float},
      *     has_entries: bool
@@ -87,15 +86,13 @@ class StudentFinancialStatementService
 
         $semesterBlocks = $this->buildSemesterBlocks($yearEntries, $payments, $semesterModels, $academicYearStart);
 
-        $flatRows = $this->flattenRows($semesterBlocks);
-        $yearTotals = $this->totalsFromRows($flatRows);
+        $yearTotals = $this->totalsFromRows($this->flattenRows($semesterBlocks));
         $cumulativeTotals = $this->totalsFromEntries($cumulativeEntries);
 
         return [
             'academic_year' => $academicYearStart,
             'academic_year_label' => $academicYearStart.'/'.($academicYearStart + 1),
             'semesters' => $semesterBlocks,
-            'category_totals' => $this->categoryTotals($flatRows),
             'annual_balance' => [
                 'fee' => null,
                 'payment' => null,
@@ -213,50 +210,6 @@ class StudentFinancialStatementService
         }
 
         return $rows;
-    }
-
-    /**
-     * Tuition Fee / NHIF / NACTVET QA billed & paid totals for this academic year, always
-     * returned in this fixed order and numbered 1-3 (zero when the student has no
-     * transactions in that category yet).
-     *
-     * @param  list<array<string, mixed>>  $rows
-     * @return list<array{no: int, label: string, fee: float, payment: float}>
-     */
-    private function categoryTotals(array $rows): array
-    {
-        $categories = [
-            'Tuition Fee' => 'Tuition Fees',
-            'NHIF' => 'NHIF — Health Insurance',
-            'NACTVET QA' => 'NACTVET Quality Assurance',
-        ];
-
-        $totals = [];
-        foreach ($categories as $label => $paymentType) {
-            $totals[$label] = ['fee' => 0.0, 'payment' => 0.0];
-        }
-
-        foreach ($rows as $row) {
-            $label = array_search($row['payment_type'], $categories, true);
-            if ($label === false) {
-                continue;
-            }
-            $totals[$label]['fee'] += (float) ($row['fee'] ?? 0);
-            $totals[$label]['payment'] += (float) ($row['payment'] ?? 0);
-        }
-
-        $result = [];
-        $no = 0;
-        foreach ($totals as $label => $amounts) {
-            $result[] = [
-                'no' => ++$no,
-                'label' => $label,
-                'fee' => $amounts['fee'],
-                'payment' => $amounts['payment'],
-            ];
-        }
-
-        return $result;
     }
 
     /**
