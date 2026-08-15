@@ -93,10 +93,13 @@
     $canManageSlots = auth()->user()->canModule('timetable', 'delete');
 @endphp
 
-@forelse($panels as $panel)
+@php
+    $panelsWithSlots = collect($panels)->filter(fn ($p) => collect($p['grid'])->flatten()->filter()->isNotEmpty())->values();
+@endphp
+
+@forelse($panelsWithSlots as $panel)
 @php
     $grid = $panel['grid'];
-    $hasAnySlot = collect($grid)->flatten()->filter()->isNotEmpty();
     $panelKey = ($panel['programme']->id ?? 0).'-'.$panel['level'];
 @endphp
 <div class="card card-landing mb-3 timetable-panel" data-panel-key="{{ $panelKey }}">
@@ -113,7 +116,6 @@
                 @endif
             </div>
         </div>
-        @if($hasAnySlot)
         <div class="timetable-no-print d-flex gap-1">
             <button type="button" class="btn btn-outline-light btn-sm" onclick="printTimetablePanel('{{ $panelKey }}')">
                 <i class="bi bi-printer me-1"></i>Print / PDF
@@ -124,12 +126,8 @@
             </a>
             @endif
         </div>
-        @endif
     </div>
     <div class="card-body p-0">
-        @if(!$hasAnySlot)
-        <p class="text-muted mb-0 p-3">No timetable slots yet for {{ $panel['programme']->code ?? '' }} {{ $panel['level_label'] }}.</p>
-        @else
         <div class="table-responsive">
             <table class="table table-bordered table-sm mb-0 align-middle" style="min-width:760px;">
                 <thead class="table-light">
@@ -180,13 +178,12 @@
                 </tbody>
             </table>
         </div>
-        @endif
     </div>
 </div>
 @empty
 <div class="card card-landing mb-3">
     <div class="card-body">
-        <p class="text-muted mb-0">No modules configured for any programme/level yet. Add modules under Module catalogue first.</p>
+        <p class="text-muted mb-0">No timetable slots created yet. Use "Auto-generate weekly timetable" above, or add slots manually.</p>
     </div>
 </div>
 @endforelse
