@@ -146,8 +146,8 @@
                         @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
                         <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}" style="min-width:120px;">
                             @if($cellSlot)
-                                <div class="small fw-semibold">{{ $cellSlot->course->name ?? '—' }}</div>
-                                <div class="small text-muted">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
+                                <div class="small">{{ $cellSlot->course->name ?? '—' }}</div>
+                                <div class="small fw-semibold">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
                                 @if($cellSlot->room)
                                 <div class="small text-muted">{{ $cellSlot->room }}</div>
                                 @endif

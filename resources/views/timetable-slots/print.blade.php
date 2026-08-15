@@ -12,8 +12,8 @@
     .tt-table thead th { text-transform: uppercase; font-weight: bold; }
     .tt-table th.time-col, .tt-table td.time-col { white-space: nowrap; width: 90px; font-weight: bold; }
     .tt-table td.break-row { font-weight: bold; text-transform: uppercase; }
-    .tt-table .course-name { font-weight: bold; }
-    .tt-table .lecturer { font-size: 8.5pt; font-style: italic; }
+    .tt-table .course-name { font-weight: normal; }
+    .tt-table .lecturer { font-size: 8.5pt; font-weight: bold; }
 </style>
 @endpush
 @section('content')
