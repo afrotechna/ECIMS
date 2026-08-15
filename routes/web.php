@@ -346,6 +346,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::get('timetable-slots/create', [\App\Http\Controllers\TimetableSlotController::class, 'create'])->name('timetable-slots.create');
             Route::get('timetable-slots/courses-by-semester', [\App\Http\Controllers\TimetableSlotController::class, 'coursesForSemester'])->name('timetable-slots.courses-by-semester');
             Route::get('timetable-slots/download-word', [\App\Http\Controllers\TimetableSlotController::class, 'downloadWord'])->name('timetable-slots.download-word');
+            Route::get('timetable-slots/print', [\App\Http\Controllers\TimetableSlotController::class, 'print'])->name('timetable-slots.print');
             Route::post('timetable-slots', [\App\Http\Controllers\TimetableSlotController::class, 'store'])->name('timetable-slots.store');
             Route::post('timetable-slots/auto-generate', [\App\Http\Controllers\TimetableSlotController::class, 'autoGenerate'])->name('timetable-slots.auto-generate');
 

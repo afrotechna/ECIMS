@@ -117,11 +117,11 @@
             </div>
         </div>
         <div class="timetable-no-print d-flex gap-1">
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="printTimetablePanel('{{ $panelKey }}')">
+            @if($panel['semester_id'])
+            <a class="btn btn-outline-light btn-sm" target="_blank" href="{{ route('timetable-slots.print', ['semester_id' => $panel['semester_id'], 'programme_id' => $panel['programme']->id ?? '', 'nta_level' => $panel['level']]) }}">
                 <i class="bi bi-printer me-1"></i>Print / PDF
-            </button>
-            @if($semesterId)
-            <a class="btn btn-outline-light btn-sm" href="{{ route('timetable-slots.download-word', ['semester_id' => $semesterId, 'programme_id' => $panel['programme']->id ?? '', 'nta_level' => $panel['level']]) }}">
+            </a>
+            <a class="btn btn-outline-light btn-sm" href="{{ route('timetable-slots.download-word', ['semester_id' => $panel['semester_id'], 'programme_id' => $panel['programme']->id ?? '', 'nta_level' => $panel['level']]) }}">
                 <i class="bi bi-file-earmark-word me-1"></i>Word
             </a>
             @endif
@@ -132,7 +132,7 @@
             <table class="table table-bordered table-sm mb-0 align-middle" style="min-width:760px;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width:130px;">Time</th>
+                        <th style="width:130px;white-space:nowrap;">Time</th>
                         @foreach($dayLabels as $day => $label)
                         <th class="text-center">{{ $label }}</th>
                         @endforeach
@@ -141,7 +141,7 @@
                 <tbody>
                     @foreach(\App\Models\TimetableSlot::DAILY_SESSIONS as $sessionIndex => $session)
                     <tr>
-                        <td class="small fw-semibold text-muted">{{ $session['label'] }}</td>
+                        <td class="small fw-semibold text-muted" style="white-space:nowrap;">{{ $session['label'] }}</td>
                         @foreach($dayLabels as $day => $label)
                         @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
                         <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}" style="min-width:120px;">
@@ -188,30 +188,8 @@
 </div>
 @endforelse
 
-@push('styles')
-<style>
-@media print {
-    .sidebar-wrap, .topbar, .timetable-no-print, .alert, footer { display: none !important; }
-    .main-wrap { margin-left: 0 !important; }
-    .main-content { padding: 0 !important; }
-    body { background: #fff; }
-    .card-landing { box-shadow: none !important; border: 1px solid #ddd !important; }
-}
-</style>
-@endpush
-
 @push('scripts')
 <script>
-function printTimetablePanel(key) {
-    document.querySelectorAll('.timetable-panel').forEach(function (el) {
-        el.style.display = el.dataset.panelKey === key ? '' : 'none';
-    });
-    window.print();
-    document.querySelectorAll('.timetable-panel').forEach(function (el) {
-        el.style.display = '';
-    });
-}
-
 (function () {
     var semesterSelect = document.getElementById('autoGenSemester');
     var levelSelect = document.getElementById('autoGenLevel');

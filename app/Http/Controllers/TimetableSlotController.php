@@ -77,14 +77,24 @@ class TimetableSlotController extends Controller
                 'level' => $level,
                 'level_label' => Student::NTA_LEVELS[$level] ?? "NTA Level {$level}",
                 'grid' => $grid,
+                // Word/Print links need a concrete semester even when the page-level filter is
+                // left on "All" — take it from the panel's own slots so the buttons never
+                // silently disappear just because the admin didn't pick a semester up top.
+                'semester_id' => optional($comboSlots->first())->semester_id ?: $semesterId,
             ];
         }
 
         return view('timetable-slots.index', compact('slots', 'semesters', 'semesterId', 'programmes', 'programmeId', 'panels', 'selectedSemester'));
     }
 
-    /** Download one department/level's weekly grid as a Word document, matching the college's printed letterhead. */
-    public function downloadWord(Request $request)
+    /**
+     * Resolve and authorize the (semester, programme, level) triple named by the request's
+     * semester_id/programme_id/nta_level params, and build that combo's weekly grid. Shared by
+     * the Word export and the print view so both always show the exact same data.
+     *
+     * @return array{semester: Semester, programme: Programme, level: int, grid: array}
+     */
+    private function resolvePanelContext(Request $request): array
     {
         $validated = $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
@@ -112,6 +122,24 @@ class TimetableSlotController extends Controller
                     && substr((string) $s->end_time, 0, 5) === $session['end']);
             }
         }
+
+        return compact('semester', 'programme', 'level', 'grid');
+    }
+
+    /** Printable, letterhead-styled single-page view of one department/level's weekly grid (Print / Save-as-PDF). */
+    public function print(Request $request)
+    {
+        ['semester' => $semester, 'programme' => $programme, 'level' => $level, 'grid' => $grid] = $this->resolvePanelContext($request);
+
+        $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
+
+        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels'));
+    }
+
+    /** Download one department/level's weekly grid as a Word document, matching the college's printed letterhead. */
+    public function downloadWord(Request $request)
+    {
+        ['semester' => $semester, 'programme' => $programme, 'level' => $level, 'grid' => $grid] = $this->resolvePanelContext($request);
 
         if (! extension_loaded('zip') || ! class_exists(PhpZipArchive::class)) {
             Settings::setZipClass(Settings::PCLZIP);
