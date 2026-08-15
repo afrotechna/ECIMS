@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('title', 'Timetable')
 @section('content')
-<nav class="student-breadcrumb"><a href="{{ route('dashboard') }}">Dashboard</a> / <span>Timetable</span></nav>
-<div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2">
+<nav class="student-breadcrumb timetable-no-print"><a href="{{ route('dashboard') }}">Dashboard</a> / <span>Timetable</span></nav>
+<div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-2 timetable-no-print">
     <h1 class="page-title-landing mb-0">Timetable</h1>
     <a href="{{ route('timetable-slots.create') }}" class="btn btn-primary btn-sm">Add slot</a>
 </div>
 
-<form method="GET" class="mb-3 row g-2 align-items-end">
+<form method="GET" class="mb-3 row g-2 align-items-end timetable-no-print">
     <div class="col-auto">
         <label class="form-label small mb-0">Semester</label>
         <select name="semester_id" class="form-select form-select-sm">
@@ -30,7 +30,7 @@
 </form>
 
 @canModule('timetable', 'create')
-<div class="card card-landing mb-3">
+<div class="card card-landing mb-3 timetable-no-print">
     <div class="card-header-landing"><i class="bi bi-magic me-2"></i>Auto-generate weekly timetable</div>
     <div class="card-body">
         <ol class="small text-muted mb-3 ps-3">
@@ -97,19 +97,27 @@
 @php
     $grid = $panel['grid'];
     $hasAnySlot = collect($grid)->flatten()->filter()->isNotEmpty();
+    $panelKey = ($panel['programme']->id ?? 0).'-'.$panel['level'];
 @endphp
-<div class="card card-landing mb-3">
-    <div class="card-header-landing">
-        <div><i class="bi bi-calendar-week me-2"></i>{{ $panel['programme']->name ?? 'Department' }} ({{ $panel['programme']->code ?? '—' }}) — {{ $panel['level_label'] }}</div>
-        <div class="small opacity-75">
-            {{ config('college.school_name', config('college.institution_name')) }}
-            @if($selectedSemester ?? null)
-                · {{ $selectedSemester->label }}
-                @if($selectedSemester->start_date && $selectedSemester->end_date)
-                    · {{ $selectedSemester->start_date->format('d M Y') }} – {{ $selectedSemester->end_date->format('d M Y') }}
+<div class="card card-landing mb-3 timetable-panel" data-panel-key="{{ $panelKey }}">
+    <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-start gap-2">
+        <div>
+            <div><i class="bi bi-calendar-week me-2"></i>{{ $panel['programme']->name ?? 'Department' }} ({{ $panel['programme']->code ?? '—' }}) — {{ $panel['level_label'] }}</div>
+            <div class="small opacity-75">
+                {{ config('college.school_name', config('college.institution_name')) }}
+                @if($selectedSemester ?? null)
+                    · {{ $selectedSemester->label }}
+                    @if($selectedSemester->start_date && $selectedSemester->end_date)
+                        · {{ $selectedSemester->start_date->format('d M Y') }} – {{ $selectedSemester->end_date->format('d M Y') }}
+                    @endif
                 @endif
-            @endif
+            </div>
         </div>
+        @if($hasAnySlot)
+        <button type="button" class="btn btn-outline-light btn-sm timetable-no-print" onclick="printTimetablePanel('{{ $panelKey }}')">
+            <i class="bi bi-download me-1"></i>Download
+        </button>
+        @endif
     </div>
     <div class="card-body p-0">
         @if(!$hasAnySlot)
@@ -146,7 +154,7 @@
                                     @csrf
                                     @method('DELETE')
                                     @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
-                                    @include('partials.action-delete', ['swalTitle' => 'Remove this timetable slot?', 'class' => 'btn-sm mt-1'])
+                                    @include('partials.action-delete', ['swalTitle' => 'Remove this timetable slot?', 'class' => 'btn-sm mt-1 timetable-no-print'])
                                 </form>
                                 @endif
                             @else
@@ -176,8 +184,30 @@
 </div>
 @endforelse
 
+@push('styles')
+<style>
+@media print {
+    .sidebar-wrap, .topbar, .timetable-no-print, .alert, footer { display: none !important; }
+    .main-wrap { margin-left: 0 !important; }
+    .main-content { padding: 0 !important; }
+    body { background: #fff; }
+    .card-landing { box-shadow: none !important; border: 1px solid #ddd !important; }
+}
+</style>
+@endpush
+
 @push('scripts')
 <script>
+function printTimetablePanel(key) {
+    document.querySelectorAll('.timetable-panel').forEach(function (el) {
+        el.style.display = el.dataset.panelKey === key ? '' : 'none';
+    });
+    window.print();
+    document.querySelectorAll('.timetable-panel').forEach(function (el) {
+        el.style.display = '';
+    });
+}
+
 (function () {
     var semesterSelect = document.getElementById('autoGenSemester');
     var levelSelect = document.getElementById('autoGenLevel');

@@ -110,48 +110,100 @@ class TimetableSlotController extends Controller
                 $cells[] = ['day' => $day, 'start' => $session['start'], 'end' => $session['end']];
             }
         }
-        $maxModules = (int) floor(count($cells) / 2);
+        $totalCells = count($cells);
 
-        if ($courses->count() > $maxModules) {
+        if ($courses->count() > $totalCells) {
             return redirect()->route('timetable-slots.index', $redirectParams)
-                ->with('error', "Auto-generate fits up to {$maxModules} modules a week (2 sessions each across ".count($cells)." weekly slots). This selection has {$courses->count()} modules — uncheck some or add extra slots manually.");
+                ->with('error', "Auto-generate fits up to {$totalCells} modules a week (one session minimum each). This selection has {$courses->count()} modules — uncheck some or add extra slots manually.");
         }
 
         TimetableSlot::where('semester_id', $semester->id)
             ->whereIn('course_id', $courses->pluck('id'))
             ->delete();
 
-        // True random placement: shuffle the weekly slot pool, then for each module
-        // draw two cells that aren't on the same day where possible.
-        $pool = $cells;
-        shuffle($pool);
+        $this->generateFullWeek($semester, $courses, $cells);
 
-        foreach ($courses->shuffle()->values() as $course) {
-            $first = array_shift($pool);
-            $sameDayIndex = collect($pool)->search(fn ($cell) => $cell['day'] === $first['day']);
-            if ($sameDayIndex !== false && count($pool) > 1) {
-                // Prefer a cell on a different day for the second session when one is available.
-                $differentDayIndex = collect($pool)->search(fn ($cell) => $cell['day'] !== $first['day']);
-                $second = $differentDayIndex !== false
-                    ? array_splice($pool, $differentDayIndex, 1)[0]
-                    : array_shift($pool);
-            } else {
-                $second = array_shift($pool);
-            }
+        return redirect()->route('timetable-slots.index', $redirectParams)
+            ->with('success', 'Weekly timetable randomly generated for '.$courses->count().' module(s), filling all '.$totalCells.' weekly sessions (heavier-credit modules get more sessions) — no empty slots left.');
+    }
 
-            foreach ([$first, $second] as $cell) {
-                TimetableSlot::create([
-                    'semester_id' => $semester->id,
-                    'course_id' => $course->id,
-                    'day_of_week' => $cell['day'],
-                    'start_time' => $cell['start'],
-                    'end_time' => $cell['end'],
-                ]);
+    /**
+     * Fill every weekly cell — no empty "—" left — by giving each module a share of the
+     * week proportional to its credit load (heavier modules meet more often), then placing
+     * one session per day per module where possible so the same module doesn't repeat on
+     * the same day.
+     *
+     * @param  \Illuminate\Support\Collection<int, Course>  $courses
+     * @param  list<array{day: int, start: string, end: string}>  $cells
+     */
+    private function generateFullWeek(Semester $semester, $courses, array $cells): void
+    {
+        $totalCells = count($cells);
+
+        $weights = [];
+        foreach ($courses as $course) {
+            $weights[$course->id] = max((float) ($course->credits ?? 0), 1.0);
+        }
+        $totalWeight = array_sum($weights);
+
+        $sessionsPerCourse = [];
+        $allocated = 0;
+        foreach ($weights as $courseId => $weight) {
+            $n = max(1, (int) round($weight / $totalWeight * $totalCells));
+            $sessionsPerCourse[$courseId] = $n;
+            $allocated += $n;
+        }
+
+        // Rounding can over/under-shoot the total — nudge counts back to exactly $totalCells.
+        $courseIds = array_keys($sessionsPerCourse);
+        $diff = $totalCells - $allocated;
+        for ($i = 0; $diff !== 0 && $i < $totalCells * 4; $i++) {
+            $id = $courseIds[$i % count($courseIds)];
+            if ($diff > 0) {
+                $sessionsPerCourse[$id]++;
+                $diff--;
+            } elseif ($sessionsPerCourse[$id] > 1) {
+                $sessionsPerCourse[$id]--;
+                $diff++;
             }
         }
 
-        return redirect()->route('timetable-slots.index', $redirectParams)
-            ->with('success', 'Weekly timetable randomly generated for '.$courses->count().' module(s) — two sessions each, Monday to Friday.');
+        $bag = [];
+        foreach ($sessionsPerCourse as $courseId => $n) {
+            for ($i = 0; $i < $n; $i++) {
+                $bag[] = $courseId;
+            }
+        }
+        shuffle($bag);
+
+        $days = TimetableSlot::WEEK_DAYS;
+        shuffle($days);
+
+        foreach ($days as $day) {
+            $usedToday = [];
+            foreach (TimetableSlot::DAILY_SESSIONS as $session) {
+                if ($bag === []) {
+                    break;
+                }
+                $pickIndex = 0;
+                foreach ($bag as $i => $candidateId) {
+                    if (! in_array($candidateId, $usedToday, true)) {
+                        $pickIndex = $i;
+                        break;
+                    }
+                }
+                $courseId = array_splice($bag, $pickIndex, 1)[0];
+                $usedToday[] = $courseId;
+
+                TimetableSlot::create([
+                    'semester_id' => $semester->id,
+                    'course_id' => $courseId,
+                    'day_of_week' => $day,
+                    'start_time' => $session['start'],
+                    'end_time' => $session['end'],
+                ]);
+            }
+        }
     }
 
     /** JSON list of active modules under a semester (optionally narrowed by NTA level), for the semester-driven course pickers. */
