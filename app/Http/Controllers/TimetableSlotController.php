@@ -137,11 +137,9 @@ class TimetableSlotController extends Controller
         $section->addText('MINISTRY OF HEALTH', 'tt_heading', 'tt_center');
         $section->addText('MUSOMA CLINICAL OFFICER TRAINING CENTRE', 'tt_heading', 'tt_center');
         $section->addText('DEPARTMENT OF '.strtoupper($programme->name), 'tt_heading', 'tt_center');
-        $section->addText(
-            'NTA LEVEL '.$level.' '.$semester->academicYearRange().' – '.strtoupper($semester->periodName()),
-            'tt_heading',
-            'tt_center'
-        );
+        $section->addText('ACADEMIC YEAR: '.$semester->academicYearRange(), 'tt_heading', 'tt_center');
+        $section->addText(strtoupper($semester->periodName()), 'tt_heading', 'tt_center');
+        $section->addText('NTA LEVEL '.$level, 'tt_heading', 'tt_center');
         if ($semester->start_date && $semester->end_date) {
             $section->addText(
                 'FROM '.strtoupper($semester->start_date->format('jS F Y')).' – '.strtoupper($semester->end_date->format('jS F Y')),
