@@ -33,7 +33,11 @@
 <div class="card card-landing mb-3">
     <div class="card-header-landing"><i class="bi bi-magic me-2"></i>Auto-generate weekly timetable</div>
     <div class="card-body">
-        <p class="small text-muted mb-3">Pick a semester, choose which of its modules to schedule, then randomly fill the standard Monday–Friday week (07:30–09:30, 10:00–12:30, 13:30–16:30 with a morning and lunch break) with two sessions per module. This replaces any existing slots for the selected modules in that semester.</p>
+        <ol class="small text-muted mb-3 ps-3">
+            <li>Pick the semester, then narrow to one department/level (recommended) — <strong>Programme</strong> first, then <strong>Level</strong>.</li>
+            <li>Untick any modules you don't want scheduled; each module gets two sessions.</li>
+            <li>Click <strong>Generate randomly</strong> to fill Monday–Friday (07:30–09:30, 10:00–12:00, 13:00–15:00, 15:00–16:30, with a tea and lunch break). This replaces any existing slots for the selected modules in that semester.</li>
+        </ol>
         <form method="POST" action="{{ route('timetable-slots.auto-generate') }}" id="autoGenerateForm" data-swal-confirm data-swal-title="Generate the weekly timetable?" data-swal-text="Existing slots for the selected modules in this semester will be replaced.">
             @csrf
             <div class="row g-2 align-items-end mb-2">
@@ -42,21 +46,12 @@
                     <select name="semester_id" id="autoGenSemester" class="form-select form-select-sm" required>
                         <option value="">Select</option>
                         @foreach($semesters as $s)
-                            <option value="{{ $s->id }}" {{ (string) $semesterId === (string) $s->id ? 'selected' : '' }}>{{ $s->label }}</option>
+                            <option value="{{ $s->id }}" {{ (string) $semesterId === (string) $s->id || (! $semesterId && $semesters->count() === 1) ? 'selected' : '' }}>{{ $s->label }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-auto">
-                    <label class="form-label small mb-0">Level</label>
-                    <select id="autoGenLevel" class="form-select form-select-sm">
-                        <option value="">All levels</option>
-                        <option value="4">NTA Level 4</option>
-                        <option value="5">NTA Level 5</option>
-                        <option value="6">NTA Level 6</option>
-                    </select>
-                </div>
-                <div class="col-auto">
-                    <label class="form-label small mb-0">Programme</label>
+                    <label class="form-label small mb-0">Programme <span class="text-muted fw-normal">(recommended)</span></label>
                     <select id="autoGenProgramme" class="form-select form-select-sm">
                         <option value="">All programmes</option>
                         @foreach($programmes as $p)
@@ -65,13 +60,25 @@
                     </select>
                 </div>
                 <div class="col-auto">
+                    <label class="form-label small mb-0">Level <span class="text-muted fw-normal">(recommended)</span></label>
+                    <select id="autoGenLevel" class="form-select form-select-sm">
+                        <option value="">All levels</option>
+                        <option value="4">NTA Level 4</option>
+                        <option value="5">NTA Level 5</option>
+                        <option value="6">NTA Level 6</option>
+                    </select>
+                </div>
+                <div class="col-auto">
                     <button type="submit" class="btn btn-sm btn-primary" id="autoGenSubmit" disabled><i class="bi bi-magic me-1"></i> Generate randomly</button>
                 </div>
             </div>
             <div id="autoGenModulesWrap" class="d-none">
-                <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="autoGenSelectAll" checked>
-                    <label class="form-check-label small fw-semibold" for="autoGenSelectAll">Select all modules</label>
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" id="autoGenSelectAll" checked>
+                        <label class="form-check-label small fw-semibold" for="autoGenSelectAll">Select all modules</label>
+                    </div>
+                    <span id="autoGenCapacity" class="small text-muted"></span>
                 </div>
                 <div id="autoGenModulesList" class="row g-1"></div>
             </div>
@@ -180,7 +187,10 @@
     var emptyMsg = document.getElementById('autoGenEmpty');
     var selectAll = document.getElementById('autoGenSelectAll');
     var submitBtn = document.getElementById('autoGenSubmit');
+    var capacityLabel = document.getElementById('autoGenCapacity');
     if (!semesterSelect) return;
+
+    var maxModules = {{ (int) floor(count(\App\Models\TimetableSlot::WEEK_DAYS) * count(\App\Models\TimetableSlot::DAILY_SESSIONS) / 2) }};
 
     var badgeClass = {
         CMT: 'bg-primary-subtle text-primary-emphasis',
@@ -189,8 +199,14 @@
     };
 
     function setSubmitEnabled() {
-        var anyChecked = modulesList.querySelectorAll('input[name="course_ids[]"]:checked').length > 0;
-        submitBtn.disabled = !anyChecked;
+        var checkedCount = modulesList.querySelectorAll('input[name="course_ids[]"]:checked').length;
+        var overCapacity = checkedCount > maxModules;
+        submitBtn.disabled = checkedCount === 0 || overCapacity;
+        capacityLabel.classList.toggle('text-danger', overCapacity);
+        capacityLabel.classList.toggle('fw-semibold', overCapacity);
+        capacityLabel.textContent = overCapacity
+            ? checkedCount + ' selected — only ' + maxModules + ' modules fit this week. Uncheck some.'
+            : checkedCount + ' of ' + maxModules + ' weekly slots used';
     }
 
     function loadModules() {
