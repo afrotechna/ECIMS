@@ -52,7 +52,7 @@
             <td>
                 @if($cellSlot)
                     <div class="course-name">{{ $cellSlot->course->name ?? '—' }}</div>
-                    <div class="lecturer">Tutor: {{ $cellSlot->lecturer ?: '________________' }}</div>
+                    <div class="lecturer">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
                 @else
                     —
                 @endif

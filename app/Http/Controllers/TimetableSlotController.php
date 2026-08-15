@@ -196,7 +196,7 @@ class TimetableSlotController extends Controller
                 $cell = $table->addCell($dayColWidth);
                 if ($cellSlot) {
                     $cell->addText(strtoupper($cellSlot->course->name ?? ''), 'tt_cell_bold', ['alignment' => 'center']);
-                    $cell->addText('Tutor: '.($cellSlot->lecturer ?: '________________'), 'tt_cell', ['alignment' => 'center']);
+                    $cell->addText($cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ', 'tt_cell', ['alignment' => 'center']);
                 } else {
                     $cell->addText('—', 'tt_cell', ['alignment' => 'center']);
                 }
