@@ -9,6 +9,10 @@ use App\Models\Semester;
 use App\Models\Student;
 use App\Models\TimetableSlot;
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Settings;
+use ZipArchive as PhpZipArchive;
 
 class TimetableSlotController extends Controller
 {
@@ -77,6 +81,123 @@ class TimetableSlotController extends Controller
         }
 
         return view('timetable-slots.index', compact('slots', 'semesters', 'semesterId', 'programmes', 'programmeId', 'panels', 'selectedSemester'));
+    }
+
+    /** Download one department/level's weekly grid as a Word document, matching the college's printed letterhead. */
+    public function downloadWord(Request $request)
+    {
+        $validated = $request->validate([
+            'semester_id' => ['required', 'exists:semesters,id'],
+            'programme_id' => ['required', 'exists:programmes,id'],
+            'nta_level' => ['required', 'integer', 'min:4', 'max:6'],
+        ]);
+
+        $semester = Semester::findOrFail($validated['semester_id']);
+        $programme = Programme::findOrFail($validated['programme_id']);
+        $level = (int) $validated['nta_level'];
+
+        $hodProgrammeId = auth()->user()->hodProgrammeId();
+        abort_if($hodProgrammeId && (int) $hodProgrammeId !== $programme->id, 403);
+
+        $slots = TimetableSlot::with('course')
+            ->where('semester_id', $semester->id)
+            ->whereHas('course', fn ($q) => $q->where('programme_id', $programme->id)->where('nta_level', $level))
+            ->get();
+
+        $grid = [];
+        foreach (TimetableSlot::WEEK_DAYS as $day) {
+            foreach (TimetableSlot::DAILY_SESSIONS as $session) {
+                $grid[$day][$session['start']] = $slots->first(fn ($s) => (int) $s->day_of_week === $day
+                    && substr((string) $s->start_time, 0, 5) === $session['start']
+                    && substr((string) $s->end_time, 0, 5) === $session['end']);
+            }
+        }
+
+        if (! extension_loaded('zip') || ! class_exists(PhpZipArchive::class)) {
+            Settings::setZipClass(Settings::PCLZIP);
+        }
+
+        $phpWord = new PhpWord;
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(12);
+        $phpWord->addFontStyle('tt_heading', ['name' => 'Times New Roman', 'size' => 12, 'bold' => true]);
+        $phpWord->addFontStyle('tt_sub', ['name' => 'Times New Roman', 'size' => 11]);
+        $phpWord->addFontStyle('tt_cell_bold', ['name' => 'Times New Roman', 'size' => 10, 'bold' => true]);
+        $phpWord->addFontStyle('tt_cell', ['name' => 'Times New Roman', 'size' => 10]);
+        $phpWord->addParagraphStyle('tt_center', ['alignment' => 'center', 'spaceAfter' => 40, 'lineHeight' => 1.0]);
+
+        $section = $phpWord->addSection([
+            'marginTop' => 850,
+            'marginBottom' => 850,
+            'marginLeft' => 850,
+            'marginRight' => 850,
+            'orientation' => 'landscape',
+        ]);
+
+        $section->addText('MINISTRY OF HEALTH', 'tt_heading', 'tt_center');
+        $section->addText('MUSOMA CLINICAL OFFICER TRAINING CENTRE', 'tt_heading', 'tt_center');
+        $section->addText('DEPARTMENT OF '.strtoupper($programme->name), 'tt_heading', 'tt_center');
+        $section->addText(
+            'NTA LEVEL '.$level.' '.$semester->academicYearRange().' – '.strtoupper($semester->periodName()),
+            'tt_heading',
+            'tt_center'
+        );
+        if ($semester->start_date && $semester->end_date) {
+            $section->addText(
+                'FROM '.strtoupper($semester->start_date->format('jS F Y')).' – '.strtoupper($semester->end_date->format('jS F Y')),
+                'tt_sub',
+                'tt_center'
+            );
+        }
+        $section->addTextBreak();
+
+        $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
+        $timeColWidth = 1300;
+        $dayColWidth = 1750;
+
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 60]);
+        $table->addRow();
+        $table->addCell($timeColWidth)->addText('TIME', 'tt_cell_bold', ['alignment' => 'center']);
+        foreach ($dayLabels as $label) {
+            $table->addCell($dayColWidth)->addText(strtoupper($label), 'tt_cell_bold', ['alignment' => 'center']);
+        }
+
+        foreach (TimetableSlot::DAILY_SESSIONS as $sessionIndex => $session) {
+            $table->addRow();
+            $table->addCell($timeColWidth)->addText($session['label'], 'tt_cell_bold', ['alignment' => 'center']);
+            foreach ($dayLabels as $day => $label) {
+                $cellSlot = $grid[$day][$session['start']] ?? null;
+                $cell = $table->addCell($dayColWidth);
+                if ($cellSlot) {
+                    $cell->addText(strtoupper($cellSlot->course->code ?? ''), 'tt_cell_bold', ['alignment' => 'center']);
+                    $cell->addText(strtoupper($cellSlot->course->name ?? ''), 'tt_cell', ['alignment' => 'center']);
+                    if ($cellSlot->lecturer) {
+                        $cell->addText($cellSlot->lecturer, 'tt_cell', ['alignment' => 'center']);
+                    }
+                } else {
+                    $cell->addText('—', 'tt_cell', ['alignment' => 'center']);
+                }
+            }
+
+            if ($break = TimetableSlot::BREAKS[$sessionIndex] ?? null) {
+                $table->addRow();
+                $table->addCell($timeColWidth)->addText($break['start'].' – '.$break['end'], 'tt_cell_bold', ['alignment' => 'center']);
+                $table->addCell($dayColWidth * count($dayLabels), ['gridSpan' => count($dayLabels)])
+                    ->addText($break['label'], 'tt_cell_bold', ['alignment' => 'center']);
+            }
+        }
+
+        $tempDir = storage_path('app/temp');
+        if (! is_dir($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+        $tempFile = $tempDir.DIRECTORY_SEPARATOR.uniqid('timetable_docx_', true).'.docx';
+        $writer = IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save($tempFile);
+
+        $fileName = strtoupper($programme->code).'-level-'.$level.'-timetable.docx';
+
+        return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
     }
 
     public function autoGenerate(Request $request)

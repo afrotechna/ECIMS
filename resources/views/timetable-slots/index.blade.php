@@ -114,9 +114,16 @@
             </div>
         </div>
         @if($hasAnySlot)
-        <button type="button" class="btn btn-outline-light btn-sm timetable-no-print" onclick="printTimetablePanel('{{ $panelKey }}')">
-            <i class="bi bi-download me-1"></i>Download
-        </button>
+        <div class="timetable-no-print d-flex gap-1">
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="printTimetablePanel('{{ $panelKey }}')">
+                <i class="bi bi-printer me-1"></i>Print / PDF
+            </button>
+            @if($semesterId)
+            <a class="btn btn-outline-light btn-sm" href="{{ route('timetable-slots.download-word', ['semester_id' => $semesterId, 'programme_id' => $panel['programme']->id ?? '', 'nta_level' => $panel['level']]) }}">
+                <i class="bi bi-file-earmark-word me-1"></i>Word
+            </a>
+            @endif
+        </div>
         @endif
     </div>
     <div class="card-body p-0">
