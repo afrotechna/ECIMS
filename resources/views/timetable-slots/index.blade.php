@@ -56,6 +56,15 @@
                     </select>
                 </div>
                 <div class="col-auto">
+                    <label class="form-label small mb-0">Programme</label>
+                    <select id="autoGenProgramme" class="form-select form-select-sm">
+                        <option value="">All programmes</option>
+                        @foreach($programmes as $p)
+                            <option value="{{ $p->id }}">{{ $p->code }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-auto">
                     <button type="submit" class="btn btn-sm btn-primary" id="autoGenSubmit" disabled><i class="bi bi-magic me-1"></i> Generate randomly</button>
                 </div>
             </div>
@@ -165,12 +174,19 @@
 (function () {
     var semesterSelect = document.getElementById('autoGenSemester');
     var levelSelect = document.getElementById('autoGenLevel');
+    var programmeSelect = document.getElementById('autoGenProgramme');
     var modulesWrap = document.getElementById('autoGenModulesWrap');
     var modulesList = document.getElementById('autoGenModulesList');
     var emptyMsg = document.getElementById('autoGenEmpty');
     var selectAll = document.getElementById('autoGenSelectAll');
     var submitBtn = document.getElementById('autoGenSubmit');
     if (!semesterSelect) return;
+
+    var badgeClass = {
+        CMT: 'bg-primary-subtle text-primary-emphasis',
+        MLT: 'bg-success-subtle text-success-emphasis',
+        DDR: 'bg-warning-subtle text-warning-emphasis'
+    };
 
     function setSubmitEnabled() {
         var anyChecked = modulesList.querySelectorAll('input[name="course_ids[]"]:checked').length > 0;
@@ -180,6 +196,7 @@
     function loadModules() {
         var semesterId = semesterSelect.value;
         var level = levelSelect.value;
+        var programmeId = programmeSelect.value;
         modulesList.innerHTML = '';
         modulesWrap.classList.add('d-none');
         emptyMsg.classList.add('d-none');
@@ -188,6 +205,7 @@
 
         var url = '{{ route('timetable-slots.courses-by-semester') }}?semester_id=' + encodeURIComponent(semesterId);
         if (level) url += '&nta_level=' + encodeURIComponent(level);
+        if (programmeId) url += '&programme_id=' + encodeURIComponent(programmeId);
 
         fetch(url)
             .then(function (r) { return r.json(); })
@@ -197,11 +215,14 @@
                     return;
                 }
                 courses.forEach(function (c) {
+                    var badge = c.programme_code
+                        ? '<span class="badge ' + (badgeClass[c.programme_code] || 'bg-secondary-subtle text-secondary-emphasis') + ' me-1">' + c.programme_code + '</span>'
+                        : '';
                     var col = document.createElement('div');
                     col.className = 'col-md-4 col-lg-3';
                     col.innerHTML = '<div class="form-check">' +
                         '<input class="form-check-input" type="checkbox" name="course_ids[]" value="' + c.id + '" id="autoGenCourse' + c.id + '" checked>' +
-                        '<label class="form-check-label small" for="autoGenCourse' + c.id + '">' + c.code + '</label>' +
+                        '<label class="form-check-label small" for="autoGenCourse' + c.id + '">' + badge + c.code + '</label>' +
                         '</div>';
                     modulesList.appendChild(col);
                 });
@@ -213,6 +234,7 @@
 
     semesterSelect.addEventListener('change', loadModules);
     levelSelect.addEventListener('change', loadModules);
+    programmeSelect.addEventListener('change', loadModules);
     selectAll.addEventListener('change', function () {
         modulesList.querySelectorAll('input[name="course_ids[]"]').forEach(function (cb) { cb.checked = selectAll.checked; });
         setSubmitEnabled();
