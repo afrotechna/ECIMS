@@ -38,7 +38,7 @@
             <li>Untick any modules you don't want scheduled; each module gets two sessions.</li>
             <li>Click <strong>Generate randomly</strong> to fill Monday–Friday (07:30–09:30, 10:00–12:00, 13:00–15:00, 15:00–16:30, with a tea and lunch break). This replaces any existing slots for the selected modules in that semester.</li>
         </ol>
-        <form method="POST" action="{{ route('timetable-slots.auto-generate') }}" id="autoGenerateForm" data-swal-confirm data-swal-title="Generate the weekly timetable?" data-swal-text="Existing slots for the selected modules in this semester will be replaced.">
+        <form method="POST" action="{{ route('timetable-slots.auto-generate') }}" id="autoGenerateForm">
             @csrf
             <div class="row g-2 align-items-end mb-2">
                 <div class="col-auto">
@@ -69,7 +69,7 @@
                     </select>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-sm btn-primary" id="autoGenSubmit" disabled><i class="bi bi-magic me-1"></i> Generate randomly</button>
+                    <button type="submit" class="btn btn-sm btn-primary" id="autoGenSubmit" disabled data-swal-confirm data-swal-title="Generate the weekly timetable?" data-swal-text="Existing slots for the selected modules in this semester will be replaced."><i class="bi bi-magic me-1"></i> Generate randomly</button>
                 </div>
             </div>
             <div id="autoGenModulesWrap" class="d-none">
