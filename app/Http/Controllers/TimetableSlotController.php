@@ -60,16 +60,11 @@ class TimetableSlotController extends Controller
                 && (int) $s->course->nta_level === $level)->values();
 
             $grid = [];
-            $gridSlotIds = [];
             foreach (TimetableSlot::WEEK_DAYS as $day) {
                 foreach (TimetableSlot::DAILY_SESSIONS as $session) {
-                    $match = $comboSlots->first(fn ($s) => (int) $s->day_of_week === $day
+                    $grid[$day][$session['start']] = $comboSlots->first(fn ($s) => (int) $s->day_of_week === $day
                         && substr((string) $s->start_time, 0, 5) === $session['start']
                         && substr((string) $s->end_time, 0, 5) === $session['end']);
-                    $grid[$day][$session['start']] = $match;
-                    if ($match) {
-                        $gridSlotIds[] = $match->id;
-                    }
                 }
             }
 
@@ -78,7 +73,6 @@ class TimetableSlotController extends Controller
                 'level' => $level,
                 'level_label' => Student::NTA_LEVELS[$level] ?? "NTA Level {$level}",
                 'grid' => $grid,
-                'other_slots' => $comboSlots->reject(fn ($s) => in_array($s->id, $gridSlotIds, true))->values(),
             ];
         }
 
@@ -206,7 +200,7 @@ class TimetableSlotController extends Controller
             'days' => ['required', 'array', 'min:1'],
             'days.*' => ['integer', 'min:1', 'max:7'],
             'start_time' => ['required', 'date_format:H:i'],
-            'end_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
             'lecturer' => ['nullable', 'string', 'max:150'],
             'room' => ['nullable', 'string', 'max:100'],
             'venue' => ['nullable', 'string', 'max:150'],

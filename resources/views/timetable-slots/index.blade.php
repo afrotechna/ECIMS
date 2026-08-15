@@ -80,9 +80,7 @@
 @forelse($panels as $panel)
 @php
     $grid = $panel['grid'];
-    $otherSlots = $panel['other_slots'];
-    $hasAnySlot = collect($grid)->flatten()->filter()->isNotEmpty() || $otherSlots->isNotEmpty();
-    $panelKey = ($panel['programme']->id ?? 0).'-'.$panel['level'];
+    $hasAnySlot = collect($grid)->flatten()->filter()->isNotEmpty();
 @endphp
 <div class="card card-landing mb-3">
     <div class="card-header-landing">
@@ -154,65 +152,6 @@
         @endif
     </div>
 </div>
-
-@if($otherSlots->isNotEmpty())
-@php
-    $bulkDelete = [
-        'bulkModule' => 'timetable',
-        'bulkAction' => route('timetable-slots.bulk-destroy'),
-        'bulkFormId' => 'bulkDeleteTimetableSlots'.$panelKey,
-        'bulkTableId' => 'timetableSlotsTable'.$panelKey,
-        'bulkItemCount' => $otherSlots->count(),
-        'bulkHidden' => array_filter(['semester_id' => $semesterId ?? null]),
-    ];
-@endphp
-<div class="card card-landing mb-3">
-    <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <span>{{ $panel['programme']->code ?? '' }} {{ $panel['level_label'] }} — other scheduled slots <span class="text-muted small">(outside the standard sessions)</span></span>
-        @include('partials.bulk-delete.toolbar', $bulkDelete)
-    </div>
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0" id="timetableSlotsTable{{ $panelKey }}">
-            <thead class="table-light">
-                <tr>
-                    @include('partials.bulk-delete.th', $bulkDelete)
-                    <th>Day</th>
-                    <th>Time</th>
-                    <th>Course</th>
-                    <th>Lecturer</th>
-                    <th>Room</th>
-                    @if($canManageSlots)
-                    <th class="text-end">Actions</th>
-                    @endif
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($otherSlots as $slot)
-                <tr>
-                    @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $slot->id]))
-                    <td>{{ \App\Models\TimetableSlot::DAYS[$slot->day_of_week] ?? $slot->day_of_week }}</td>
-                    <td>{{ $slot->start_time }} – {{ $slot->end_time }}</td>
-                    <td>{{ $slot->course ? $slot->course->code : '' }} {{ $slot->course ? $slot->course->name : '' }}</td>
-                    <td>{{ $slot->lecturer ?? '—' }}</td>
-                    <td>{{ $slot->room ?? '—' }}</td>
-                    @if($canManageSlots)
-                    <td class="text-end text-nowrap">
-                        <form method="POST" action="{{ route('timetable-slots.destroy', $slot) }}" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            @if($semesterId)<input type="hidden" name="semester_id" value="{{ $semesterId }}">@endif
-                            @include('partials.action-delete', ['swalTitle' => 'Remove this timetable slot?'])
-                        </form>
-                    </td>
-                    @endif
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-@include('partials.bulk-delete.scripts')
-@endif
 @empty
 <div class="card card-landing mb-3">
     <div class="card-body">
