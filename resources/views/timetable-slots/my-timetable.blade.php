@@ -66,10 +66,10 @@
     <div class="card-body p-0">
         @if($hasSlots)
         <div class="table-responsive">
-            <table class="table table-bordered table-sm mb-0 align-middle">
+            <table class="table table-bordered table-sm mb-0 align-middle" style="table-layout:fixed;width:100%;">
                 <thead class="table-light">
                     <tr>
-                        <th style="width:130px;">Time</th>
+                        <th style="width:110px;white-space:nowrap;">Time</th>
                         @foreach($dayLabels as $day => $label)
                         <th class="text-center">{{ $label }}</th>
                         @endforeach
@@ -81,7 +81,7 @@
                         <td class="small fw-semibold text-muted" style="white-space:nowrap;">{{ $session['label'] }}</td>
                         @foreach($dayLabels as $day => $label)
                         @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
-                        <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}" style="min-width:120px;">
+                        <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}">
                             @if($cellSlot)
                                 @if($cellSlot->course?->code)
                                 <div class="small fw-semibold">{{ $cellSlot->course->code }}</div>
