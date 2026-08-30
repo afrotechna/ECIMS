@@ -144,7 +144,7 @@
                         <td class="small fw-semibold text-muted" style="white-space:nowrap;">{{ $session['label'] }}</td>
                         @foreach($dayLabels as $day => $label)
                         @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
-                        <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}">
+                        <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}" style="white-space:normal;">
                             @if($cellSlot)
                                 @if($cellSlot->course?->code)
                                 <div class="small fw-semibold">{{ $cellSlot->course->code }}</div>
