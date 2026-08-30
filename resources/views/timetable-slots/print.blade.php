@@ -6,8 +6,8 @@
     body { font-family: 'Times New Roman', Times, Georgia, serif; margin: 0; padding: 10mm; color: #000; }
     .tt-header-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
     .tt-header-table td { border: none; padding: 0; vertical-align: middle; }
-    .tt-header-logo { width: 70px; text-align: center; }
-    .tt-header-logo img { max-width: 62px; max-height: 62px; }
+    .tt-header-logo { width: 130px; text-align: center; padding: 0 18px !important; }
+    .tt-header-logo img { max-width: 95px; max-height: 95px; }
     .tt-header-text { text-align: center; }
     .tt-header-text .line { font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 1.35; }
     .tt-header-text .sub { font-weight: normal; font-size: 10.5pt; margin-top: 2px; text-transform: uppercase; }
@@ -26,6 +26,7 @@
     .tt-signoff-table td.right .tt-signoff-line { margin-left: auto; }
     .tt-signoff-name { font-weight: bold; margin-top: 3px; }
     .tt-signoff-role { font-size: 9pt; }
+    .tt-signoff-role.bold { font-weight: bold; }
     .tt-footer { margin-top: 18px; padding-top: 6px; border-top: 1px solid #000; text-align: center; font-size: 8pt; }
 </style>
 @endpush
@@ -109,7 +110,7 @@
         <td class="right">
             <div class="tt-signoff-line"></div>
             <div class="tt-signoff-name">{{ $hodName ?? '' }}</div>
-            <div class="tt-signoff-role">Head of Department, {{ $programme->name }}</div>
+            <div class="tt-signoff-role bold">Head of Department, {{ $programme->name }}</div>
         </td>
     </tr>
 </table>

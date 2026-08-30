@@ -126,7 +126,18 @@ class TimetableSlotController extends Controller
         $hodRole = array_search($programme->code, \App\Models\User::HOD_PROGRAMME_CODES, true);
         $hodName = $hodRole ? \App\Models\User::where('role', $hodRole)->value('name') : null;
 
-        return ['vp' => $vpName, 'hod' => $hodName];
+        return ['vp' => $this->firstAndSurname($vpName), 'hod' => $this->firstAndSurname($hodName)];
+    }
+
+    /** Trim a full name down to "First Surname" (drops any middle names) for the sign-off block. */
+    private function firstAndSurname(?string $fullName): ?string
+    {
+        if (! $fullName) {
+            return null;
+        }
+        $parts = preg_split('/\s+/', trim($fullName));
+
+        return count($parts) > 1 ? $parts[0].' '.end($parts) : $parts[0];
     }
 
     /** Printable, letterhead-styled single-page view of one department/level's weekly grid (Print / Save-as-PDF). */
@@ -203,6 +214,7 @@ class TimetableSlotController extends Controller
         $phpWord->addFontStyle('tt_footer', ['name' => 'Times New Roman', 'size' => 8]);
         $phpWord->addFontStyle('tt_sign_name', ['name' => 'Times New Roman', 'size' => 10, 'bold' => true]);
         $phpWord->addFontStyle('tt_sign_role', ['name' => 'Times New Roman', 'size' => 9]);
+        $phpWord->addFontStyle('tt_sign_role_bold', ['name' => 'Times New Roman', 'size' => 9, 'bold' => true]);
 
         $section = $phpWord->addSection([
             'marginTop' => 850,
@@ -222,14 +234,20 @@ class TimetableSlotController extends Controller
         // elsewhere in the app.
         $emblemPath = public_path('images/national-emblem.png');
         $logoPath = public_path('images/logo.png');
-        $sideColWidth = 1200;
-        $headerTable = $section->addTable(['borderSize' => 0, 'cellMargin' => 0]);
+        $headerWidth = 13000;
+        $sideColWidth = 1900;
+        $headerTable = $section->addTable([
+            'borderSize' => 0,
+            'cellMargin' => 0,
+            'cellMarginLeft' => 250,
+            'cellMarginRight' => 250,
+        ]);
         $headerTable->addRow();
         $emblemCell = $headerTable->addCell($sideColWidth, ['valign' => 'center']);
         if (file_exists($emblemPath)) {
-            $emblemCell->addImage($emblemPath, ['width' => 55, 'height' => 55, 'alignment' => 'center']);
+            $emblemCell->addImage($emblemPath, ['width' => 75, 'height' => 75, 'alignment' => 'center']);
         }
-        $textCell = $headerTable->addCell($fullWidth - $sideColWidth * 2, ['valign' => 'center']);
+        $textCell = $headerTable->addCell($headerWidth - $sideColWidth * 2, ['valign' => 'center']);
         $textCell->addText('MINISTRY OF HEALTH', 'tt_heading', 'tt_center');
         $textCell->addText('MUSOMA CLINICAL OFFICER TRAINING CENTRE', 'tt_heading', 'tt_center');
         $textCell->addText('DEPARTMENT OF '.strtoupper($programme->name), 'tt_heading', 'tt_center');
@@ -245,7 +263,7 @@ class TimetableSlotController extends Controller
         }
         $logoCell = $headerTable->addCell($sideColWidth, ['valign' => 'center']);
         if (file_exists($logoPath)) {
-            $logoCell->addImage($logoPath, ['width' => 55, 'height' => 55, 'alignment' => 'center']);
+            $logoCell->addImage($logoPath, ['width' => 75, 'height' => 75, 'alignment' => 'center']);
         }
         $section->addTextBreak();
 
@@ -295,7 +313,7 @@ class TimetableSlotController extends Controller
         $hodCell = $signTable->addCell($fullWidth - $signCellWidth);
         $hodCell->addText('.................................................', 'tt_cell', ['alignment' => 'right']);
         $hodCell->addText($hodName ?? '', 'tt_sign_name', ['alignment' => 'right']);
-        $hodCell->addText('Head of Department, '.$programme->name, 'tt_sign_role', ['alignment' => 'right']);
+        $hodCell->addText('Head of Department, '.$programme->name, 'tt_sign_role_bold', ['alignment' => 'right']);
 
         // Footer: institution contact line, repeats on every page.
         $footer = $section->addFooter();
