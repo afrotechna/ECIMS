@@ -400,17 +400,39 @@ class TimetableSlotController extends Controller
         $days = TimetableSlot::WEEK_DAYS;
         shuffle($days);
 
+        // Which of the 4 daily time-of-day slots (0=morning, 1=after tea, 2=after lunch,
+        // 3=late afternoon) each module has already landed in this week — so a heavy module
+        // doesn't get stuck as "always the morning subject" three days running.
+        $usedSessionIndexByCourse = [];
+
         foreach ($days as $day) {
             $usedToday = [];
-            foreach (TimetableSlot::DAILY_SESSIONS as $session) {
+            foreach (TimetableSlot::DAILY_SESSIONS as $sessionIndex => $session) {
                 if ($bag === []) {
                     break;
                 }
+
+                // Prefer a module that hasn't met today AND hasn't already occupied this same
+                // time-of-day slot on another day — spreads each module across the day instead
+                // of clustering it into one recurring time.
                 $pickIndex = null;
                 foreach ($bag as $i => $candidateId) {
-                    if (! in_array($candidateId, $usedToday, true)) {
-                        $pickIndex = $i;
-                        break;
+                    if (in_array($candidateId, $usedToday, true)) {
+                        continue;
+                    }
+                    if (! empty($usedSessionIndexByCourse[$candidateId][$sessionIndex])) {
+                        continue;
+                    }
+                    $pickIndex = $i;
+                    break;
+                }
+                // Fall back to just avoiding a same-day repeat if no better fit exists.
+                if ($pickIndex === null) {
+                    foreach ($bag as $i => $candidateId) {
+                        if (! in_array($candidateId, $usedToday, true)) {
+                            $pickIndex = $i;
+                            break;
+                        }
                     }
                 }
                 if ($pickIndex === null) {
@@ -420,6 +442,7 @@ class TimetableSlotController extends Controller
                 }
                 $courseId = array_splice($bag, $pickIndex, 1)[0];
                 $usedToday[] = $courseId;
+                $usedSessionIndexByCourse[$courseId][$sessionIndex] = true;
 
                 TimetableSlot::create([
                     'semester_id' => $semester->id,
