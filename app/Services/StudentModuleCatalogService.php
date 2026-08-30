@@ -81,6 +81,22 @@ class StudentModuleCatalogService
      */
     public function timetableByTerm(Student $student, int $academicYearStart): array
     {
+        $student->loadMissing('programme');
+
+        if (! $student->programme_id) {
+            return ['slots_semester_one' => collect(), 'slots_semester_two' => collect()];
+        }
+
+        $ntaLevel = (int) ($student->nta_level ?? 0);
+        if ($ntaLevel < 4 || $ntaLevel > 6) {
+            $sample = Course::query()
+                ->where('programme_id', $student->programme_id)
+                ->where('is_active', true)
+                ->whereNotNull('nta_level')
+                ->value('nta_level');
+            $ntaLevel = (int) ($sample ?? 4);
+        }
+
         $semesters = Semester::query()
             ->where('academic_year', $academicYearStart)
             ->orderBy('number')
@@ -95,15 +111,18 @@ class StudentModuleCatalogService
 
         $allowedIds = $semesters->pluck('id')->merge($approvedIds)->unique()->filter();
 
-        $fetch = function (?int $semesterId) use ($allowedIds) {
+        $fetch = function (?int $semesterId) use ($allowedIds, $student, $ntaLevel) {
             if (! $semesterId) {
                 return collect();
             }
 
+            // Only this student's own department + level cohort — the timetable page's grid
+            // is scoped the same way, so students shouldn't see other departments' sessions.
             return TimetableSlot::query()
                 ->with(['semester', 'course'])
                 ->where('semester_id', $semesterId)
                 ->whereIn('semester_id', $allowedIds)
+                ->whereHas('course', fn ($q) => $q->where('programme_id', $student->programme_id)->where('nta_level', $ntaLevel))
                 ->orderBy('day_of_week')
                 ->orderBy('start_time')
                 ->get();
