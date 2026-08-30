@@ -31,19 +31,6 @@
             </div>
         </div>
         <div class="customizer-section">
-            <div class="customizer-section-title">Layout width</div>
-            <div class="customizer-options">
-                <button type="button" class="customizer-option" data-customizer-layout-width="full">
-                    <span class="customizer-option-swatch"><span style="background:#cbd5e1"></span><span style="background:#eef4fc"></span></span>
-                    Full width
-                </button>
-                <button type="button" class="customizer-option" data-customizer-layout-width="boxed">
-                    <span class="customizer-option-swatch" style="padding:0 .35rem"><span style="background:#cbd5e1;width:20%"></span><span style="background:#eef4fc;width:60%"></span><span style="background:#cbd5e1;width:20%"></span></span>
-                    Boxed
-                </button>
-            </div>
-        </div>
-        <div class="customizer-section">
             <div class="customizer-section-title">Sidebar</div>
             <div class="customizer-switch-row">
                 <label for="customizerSidebarCollapsed" class="mb-0">Start collapsed</label>

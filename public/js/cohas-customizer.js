@@ -1,6 +1,5 @@
 (function (global) {
     var MENU_SKIN_KEY = 'cohas-menu-skin';
-    var LAYOUT_WIDTH_KEY = 'cohas-layout-width';
     var SIDEBAR_COLLAPSED_KEY = 'sidebarCollapsed';
 
     function getStorage(key, fallback) {
@@ -24,13 +23,6 @@
         syncControls();
     }
 
-    function applyLayoutWidth(width) {
-        width = width === 'boxed' ? 'boxed' : 'full';
-        document.documentElement.setAttribute('data-layout-width', width);
-        setStorage(LAYOUT_WIDTH_KEY, width);
-        syncControls();
-    }
-
     function applySidebarCollapsed(collapsed) {
         var sidebar = document.getElementById('sidebar');
         var mainWrap = document.getElementById('mainWrap');
@@ -47,21 +39,16 @@
 
     function resetDefaults() {
         applyMenuSkin('light');
-        applyLayoutWidth('full');
         applySidebarCollapsed(false);
         if (global.CohasTheme) global.CohasTheme.apply('light');
     }
 
     function syncControls() {
         var menuSkin = getStorage(MENU_SKIN_KEY, 'light');
-        var layoutWidth = getStorage(LAYOUT_WIDTH_KEY, 'full');
         var sidebarCollapsed = getStorage(SIDEBAR_COLLAPSED_KEY, '0') === '1';
 
         document.querySelectorAll('[data-customizer-menu-skin]').forEach(function (el) {
             el.classList.toggle('is-active', el.getAttribute('data-customizer-menu-skin') === menuSkin);
-        });
-        document.querySelectorAll('[data-customizer-layout-width]').forEach(function (el) {
-            el.classList.toggle('is-active', el.getAttribute('data-customizer-layout-width') === layoutWidth);
         });
         var collapseSwitch = document.getElementById('customizerSidebarCollapsed');
         if (collapseSwitch) collapseSwitch.checked = sidebarCollapsed;
@@ -75,18 +62,19 @@
 
     global.CohasCustomizer = {
         applyMenuSkin: applyMenuSkin,
-        applyLayoutWidth: applyLayoutWidth,
         applySidebarCollapsed: applySidebarCollapsed,
         resetDefaults: resetDefaults,
         syncControls: syncControls,
     };
 
     document.addEventListener('DOMContentLoaded', function () {
+        // One-time cleanup: the "boxed" layout-width option was removed (it was leaving big
+        // unwanted side gutters on every page) — clear any stale value from earlier so a device
+        // that had it selected doesn't carry dead state around.
+        try { global.localStorage.removeItem('cohas-layout-width'); } catch (e) {}
+
         document.querySelectorAll('[data-customizer-menu-skin]').forEach(function (el) {
             el.addEventListener('click', function () { applyMenuSkin(el.getAttribute('data-customizer-menu-skin')); });
-        });
-        document.querySelectorAll('[data-customizer-layout-width]').forEach(function (el) {
-            el.addEventListener('click', function () { applyLayoutWidth(el.getAttribute('data-customizer-layout-width')); });
         });
         document.querySelectorAll('[data-customizer-theme]').forEach(function (el) {
             el.addEventListener('click', function () {

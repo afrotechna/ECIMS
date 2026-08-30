@@ -11,8 +11,6 @@
     (function(){try{
         var skin=localStorage.getItem('cohas-menu-skin');
         document.documentElement.setAttribute('data-menu-skin',(skin==='dark')?'dark':'light');
-        var width=localStorage.getItem('cohas-layout-width');
-        document.documentElement.setAttribute('data-layout-width',(width==='boxed')?'boxed':'full');
     }catch(e){}})();
     </script>
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">

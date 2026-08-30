@@ -1,5 +1,5 @@
 /**
- * COHAS live layout customizer — Menu color and Layout width options.
+ * COHAS live layout customizer — Menu color option.
  * Independent of the light/dark theme (data-theme); these are separate axes
  * so a user can pair a dark sidebar with a light theme or vice versa.
  * Built on the same --cohas-* tokens as the rest of the app shell so both
@@ -29,13 +29,6 @@
 [data-menu-skin="dark"] .sidebar-wrap .nav-group-sub a.active { color: #fff; }
 [data-menu-skin="dark"] .sidebar-wrap li.nav-group-sub-label,
 [data-menu-skin="dark"] .sidebar-wrap .sidebar-section-heading { color: rgba(255, 255, 255, .5); }
-
-/* ---------- Layout width: boxed ---------- */
-[data-layout-width="boxed"] .main-content {
-    max-width: 1320px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 /* ---------- Customizer trigger + panel ---------- */
 .customizer-toggle {
