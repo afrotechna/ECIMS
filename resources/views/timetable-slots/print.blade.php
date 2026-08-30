@@ -12,6 +12,7 @@
     .tt-table thead th { text-transform: uppercase; font-weight: bold; }
     .tt-table th.time-col, .tt-table td.time-col { white-space: nowrap; width: 90px; font-weight: bold; }
     .tt-table td.break-row { font-weight: bold; text-transform: uppercase; }
+    .tt-table .course-code { font-weight: bold; }
     .tt-table .course-name { font-weight: normal; }
     .tt-table .lecturer { font-size: 8.5pt; font-weight: bold; }
 </style>
@@ -51,7 +52,10 @@
             @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
             <td>
                 @if($cellSlot)
-                    <div class="course-name">{{ $cellSlot->course->code ?? '' }} — {{ $cellSlot->course->name ?? '—' }}</div>
+                    @if($cellSlot->course?->code)
+                    <div class="course-code">{{ $cellSlot->course->code }}</div>
+                    @endif
+                    <div class="course-name">{{ $cellSlot->course->name ?? '—' }}</div>
                     <div class="lecturer">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
                 @else
                     —
