@@ -18,6 +18,12 @@ class TimetableSlotController extends Controller
 {
     use BulkDestroysRecords;
 
+    /** Every auto-generated module meets at least this many times a week... */
+    private const MIN_SESSIONS_PER_MODULE = 2;
+
+    /** ...and never more than this many times a week. */
+    private const MAX_SESSIONS_PER_MODULE = 3;
+
     public function index(Request $request)
     {
         $semesterId = $request->get('semester_id');
@@ -333,9 +339,10 @@ class TimetableSlotController extends Controller
         }
         $totalCells = count($cells);
 
-        if ($courses->count() > $totalCells) {
+        $maxModules = intdiv($totalCells, self::MIN_SESSIONS_PER_MODULE);
+        if ($courses->count() > $maxModules) {
             return redirect()->route('timetable-slots.index', $redirectParams)
-                ->with('error', "Auto-generate fits up to {$totalCells} modules a week (one session minimum each). This selection has {$courses->count()} modules — uncheck some or add extra slots manually.");
+                ->with('error', "Auto-generate fits up to {$maxModules} modules a week (every module meets at least ".self::MIN_SESSIONS_PER_MODULE." times). This selection has {$courses->count()} modules — uncheck some or add extra slots manually.");
         }
 
         TimetableSlot::where('semester_id', $semester->id)
@@ -345,14 +352,14 @@ class TimetableSlotController extends Controller
         $this->generateFullWeek($semester, $courses, $cells);
 
         return redirect()->route('timetable-slots.index', $redirectParams)
-            ->with('success', 'Weekly timetable randomly generated for '.$courses->count().' module(s), filling all '.$totalCells.' weekly sessions (heavier-credit modules get more sessions) — no empty slots left.');
+            ->with('success', 'Weekly timetable randomly generated for '.$courses->count().' module(s) — each meets '.self::MIN_SESSIONS_PER_MODULE.'–'.self::MAX_SESSIONS_PER_MODULE.' times a week (heavier-credit modules get more), never twice on the same day.');
     }
 
     /**
-     * Fill every weekly cell — no empty "—" left — by giving each module a share of the
-     * week proportional to its credit load (heavier modules meet more often), then placing
-     * one session per day per module where possible so the same module doesn't repeat on
-     * the same day.
+     * Give each module a share of the week (between MIN and MAX sessions, heavier-credit
+     * modules get more), then place at most one session per module per day so nothing repeats
+     * on the same day. When the module count doesn't divide evenly into the week, some cells
+     * are left empty rather than exceeding MAX_SESSIONS_PER_MODULE or double-booking a day.
      *
      * @param  \Illuminate\Support\Collection<int, Course>  $courses
      * @param  list<array{day: int, start: string, end: string}>  $cells
@@ -360,33 +367,26 @@ class TimetableSlotController extends Controller
     private function generateFullWeek(Semester $semester, $courses, array $cells): void
     {
         $totalCells = count($cells);
-
-        $weights = [];
-        foreach ($courses as $course) {
-            $weights[$course->id] = max((float) ($course->credits ?? 0), 1.0);
-        }
-        $totalWeight = array_sum($weights);
+        $courseCount = $courses->count();
 
         $sessionsPerCourse = [];
-        $allocated = 0;
-        foreach ($weights as $courseId => $weight) {
-            $n = max(1, (int) round($weight / $totalWeight * $totalCells));
-            $sessionsPerCourse[$courseId] = $n;
-            $allocated += $n;
+        foreach ($courses as $course) {
+            $sessionsPerCourse[$course->id] = self::MIN_SESSIONS_PER_MODULE;
         }
 
-        // Rounding can over/under-shoot the total — nudge counts back to exactly $totalCells.
-        $courseIds = array_keys($sessionsPerCourse);
-        $diff = $totalCells - $allocated;
-        for ($i = 0; $diff !== 0 && $i < $totalCells * 4; $i++) {
-            $id = $courseIds[$i % count($courseIds)];
-            if ($diff > 0) {
-                $sessionsPerCourse[$id]++;
-                $diff--;
-            } elseif ($sessionsPerCourse[$id] > 1) {
-                $sessionsPerCourse[$id]--;
-                $diff++;
+        // Hand out whatever's left of the week's cells one session at a time, heaviest-credit
+        // module first, never pushing any module past MAX_SESSIONS_PER_MODULE.
+        $byCreditDesc = $courses->sortByDesc(fn ($c) => (float) ($c->credits ?? 0))->values();
+        $remaining = max(0, $totalCells - $courseCount * self::MIN_SESSIONS_PER_MODULE);
+        $guard = 0;
+        $guardLimit = $courseCount * self::MAX_SESSIONS_PER_MODULE;
+        while ($remaining > 0 && $guard < $guardLimit) {
+            $course = $byCreditDesc[$guard % $courseCount];
+            if ($sessionsPerCourse[$course->id] < self::MAX_SESSIONS_PER_MODULE) {
+                $sessionsPerCourse[$course->id]++;
+                $remaining--;
             }
+            $guard++;
         }
 
         $bag = [];
@@ -406,12 +406,17 @@ class TimetableSlotController extends Controller
                 if ($bag === []) {
                     break;
                 }
-                $pickIndex = 0;
+                $pickIndex = null;
                 foreach ($bag as $i => $candidateId) {
                     if (! in_array($candidateId, $usedToday, true)) {
                         $pickIndex = $i;
                         break;
                     }
+                }
+                if ($pickIndex === null) {
+                    // Every module still waiting in the bag already met today — leave this
+                    // cell empty rather than book a module twice in one day.
+                    continue;
                 }
                 $courseId = array_splice($bag, $pickIndex, 1)[0];
                 $usedToday[] = $courseId;

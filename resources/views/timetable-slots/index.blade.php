@@ -35,7 +35,7 @@
     <div class="card-body">
         <ol class="small text-muted mb-3 ps-3">
             <li>Pick the semester, then narrow to one department/level (recommended) — <strong>Programme</strong> first, then <strong>Level</strong>.</li>
-            <li>Untick any modules you don't want scheduled; each module gets two sessions.</li>
+            <li>Untick any modules you don't want scheduled; each module gets 2–3 sessions a week (heavier-credit modules get more), never twice on the same day — up to 10 modules fit.</li>
             <li>Click <strong>Generate randomly</strong> to fill Monday–Friday (07:30–09:30, 10:00–12:00, 13:00–15:00, 15:00–16:30, with a tea and lunch break). This replaces any existing slots for the selected modules in that semester.</li>
         </ol>
         <form method="POST" action="{{ route('timetable-slots.auto-generate') }}" id="autoGenerateForm">
