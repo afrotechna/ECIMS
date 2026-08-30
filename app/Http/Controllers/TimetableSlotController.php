@@ -112,43 +112,14 @@ class TimetableSlotController extends Controller
         return compact('semester', 'programme', 'level', 'grid');
     }
 
-    /**
-     * Names for the sign-off block at the bottom of the printed/exported timetable: the
-     * Vice Principal (Academic, Research & Consultancy) college-wide, and the Head of
-     * Department for this specific programme, if either post is currently filled.
-     *
-     * @return array{vp: ?string, hod: ?string}
-     */
-    private function signatoryNames(Programme $programme): array
-    {
-        $vpName = \App\Models\User::where('role', 'vice_principal_arc')->value('name');
-
-        $hodRole = array_search($programme->code, \App\Models\User::HOD_PROGRAMME_CODES, true);
-        $hodName = $hodRole ? \App\Models\User::where('role', $hodRole)->value('name') : null;
-
-        return ['vp' => $this->firstAndSurname($vpName), 'hod' => $this->firstAndSurname($hodName)];
-    }
-
-    /** Trim a full name down to "First Surname" (drops any middle names) for the sign-off block. */
-    private function firstAndSurname(?string $fullName): ?string
-    {
-        if (! $fullName) {
-            return null;
-        }
-        $parts = preg_split('/\s+/', trim($fullName));
-
-        return count($parts) > 1 ? $parts[0].' '.end($parts) : $parts[0];
-    }
-
     /** Printable, letterhead-styled single-page view of one department/level's weekly grid (Print / Save-as-PDF). */
     public function print(Request $request)
     {
         ['semester' => $semester, 'programme' => $programme, 'level' => $level, 'grid' => $grid] = $this->resolvePanelContext($request);
 
         $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
-        ['vp' => $vpName, 'hod' => $hodName] = $this->signatoryNames($programme);
 
-        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'vpName', 'hodName'));
+        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels'));
     }
 
     /**
@@ -189,9 +160,8 @@ class TimetableSlotController extends Controller
         $grid = TimetableSlot::buildWeekGrid($slots);
         $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
         $backUrl = route('my.timetable', ['academic_year' => $academicYearStart]);
-        ['vp' => $vpName, 'hod' => $hodName] = $this->signatoryNames($programme);
 
-        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'backUrl', 'vpName', 'hodName'));
+        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'backUrl'));
     }
 
     /** Download one department/level's weekly grid as a Word document, matching the college's printed letterhead. */
@@ -212,9 +182,7 @@ class TimetableSlotController extends Controller
         $phpWord->addFontStyle('tt_cell', ['name' => 'Times New Roman', 'size' => 10]);
         $phpWord->addParagraphStyle('tt_center', ['alignment' => 'center', 'spaceAfter' => 40, 'lineHeight' => 1.0]);
         $phpWord->addFontStyle('tt_footer', ['name' => 'Times New Roman', 'size' => 8]);
-        $phpWord->addFontStyle('tt_sign_name', ['name' => 'Times New Roman', 'size' => 10, 'bold' => true]);
-        $phpWord->addFontStyle('tt_sign_role', ['name' => 'Times New Roman', 'size' => 9]);
-        $phpWord->addFontStyle('tt_sign_role_bold', ['name' => 'Times New Roman', 'size' => 9, 'bold' => true]);
+        $phpWord->addFontStyle('tt_sign_role_bold', ['name' => 'Times New Roman', 'size' => 10, 'bold' => true]);
 
         $section = $phpWord->addSection([
             'marginTop' => 850,
@@ -300,20 +268,19 @@ class TimetableSlotController extends Controller
         }
 
         // Sign-off: Vice Principal (Academic) on the left, Head of Department (this programme)
-        // on the right.
-        ['vp' => $vpName, 'hod' => $hodName] = $this->signatoryNames($programme);
+        // on the right — signature line only, no name.
         $section->addTextBreak(2);
         $signTable = $section->addTable(['borderSize' => 0, 'cellMargin' => 0]);
         $signTable->addRow();
         $signCellWidth = intdiv($fullWidth, 2);
         $vpCell = $signTable->addCell($signCellWidth);
         $vpCell->addText('.................................................', 'tt_cell', ['alignment' => 'left']);
-        $vpCell->addText($vpName ?? '', 'tt_sign_name', ['alignment' => 'left']);
-        $vpCell->addText('Vice Principal (Academic, Research & Consultancy)', 'tt_sign_role', ['alignment' => 'left']);
+        $vpCell->addText('VICE PRINCIPAL', 'tt_sign_role_bold', ['alignment' => 'left']);
+        $vpCell->addText('ACADEMIC, RESEARCH AND CONSULTANCY', 'tt_sign_role_bold', ['alignment' => 'left']);
         $hodCell = $signTable->addCell($fullWidth - $signCellWidth);
         $hodCell->addText('.................................................', 'tt_cell', ['alignment' => 'right']);
-        $hodCell->addText($hodName ?? '', 'tt_sign_name', ['alignment' => 'right']);
-        $hodCell->addText('Head of Department, '.$programme->name, 'tt_sign_role_bold', ['alignment' => 'right']);
+        $hodCell->addText('HEAD OF DEPARTMENT', 'tt_sign_role_bold', ['alignment' => 'right']);
+        $hodCell->addText(strtoupper($programme->name), 'tt_sign_role_bold', ['alignment' => 'right']);
 
         // Footer: institution contact line, repeats on every page.
         $footer = $section->addFooter();

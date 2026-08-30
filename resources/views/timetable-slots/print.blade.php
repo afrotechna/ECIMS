@@ -24,9 +24,7 @@
     .tt-signoff-table td.right { text-align: right; }
     .tt-signoff-line { border-top: 1px solid #000; width: 220px; margin-top: 22px; }
     .tt-signoff-table td.right .tt-signoff-line { margin-left: auto; }
-    .tt-signoff-name { font-weight: bold; margin-top: 3px; }
-    .tt-signoff-role { font-size: 9pt; }
-    .tt-signoff-role.bold { font-weight: bold; }
+    .tt-signoff-role { font-size: 10pt; font-weight: bold; text-transform: uppercase; margin-top: 3px; }
     .tt-footer { margin-top: 18px; padding-top: 6px; border-top: 1px solid #000; text-align: center; font-size: 8pt; }
 </style>
 @endpush
@@ -104,13 +102,13 @@
     <tr>
         <td>
             <div class="tt-signoff-line"></div>
-            <div class="tt-signoff-name">{{ $vpName ?? '' }}</div>
-            <div class="tt-signoff-role">Vice Principal (Academic, Research &amp; Consultancy)</div>
+            <div class="tt-signoff-role">VICE PRINCIPAL</div>
+            <div class="tt-signoff-role">ACADEMIC, RESEARCH AND CONSULTANCY</div>
         </td>
         <td class="right">
             <div class="tt-signoff-line"></div>
-            <div class="tt-signoff-name">{{ $hodName ?? '' }}</div>
-            <div class="tt-signoff-role bold">Head of Department, {{ $programme->name }}</div>
+            <div class="tt-signoff-role">HEAD OF DEPARTMENT</div>
+            <div class="tt-signoff-role">{{ strtoupper($programme->name) }}</div>
         </td>
     </tr>
 </table>
