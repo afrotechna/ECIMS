@@ -4,9 +4,13 @@
 <style>
     @page { size: landscape; margin: 10mm; }
     body { font-family: 'Times New Roman', Times, Georgia, serif; margin: 0; padding: 10mm; color: #000; }
-    .tt-header { text-align: center; margin-bottom: 10px; }
-    .tt-header .line { font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 1.35; }
-    .tt-header .sub { font-weight: normal; font-size: 10.5pt; margin-top: 2px; text-transform: uppercase; }
+    .tt-header-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    .tt-header-table td { border: none; padding: 0; vertical-align: middle; }
+    .tt-header-logo { width: 70px; text-align: center; }
+    .tt-header-logo img { max-width: 62px; max-height: 62px; }
+    .tt-header-text { text-align: center; }
+    .tt-header-text .line { font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 1.35; }
+    .tt-header-text .sub { font-weight: normal; font-size: 10.5pt; margin-top: 2px; text-transform: uppercase; }
     .tt-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9.5pt; }
     .tt-table th, .tt-table td { border: 1px solid #000; padding: 5px 6px; text-align: center; vertical-align: middle; word-wrap: break-word; }
     .tt-table thead th { text-transform: uppercase; font-weight: bold; }
@@ -15,6 +19,14 @@
     .tt-table .course-code { font-weight: bold; }
     .tt-table .course-name { font-weight: normal; }
     .tt-table .lecturer { font-size: 8.5pt; font-weight: bold; }
+    .tt-signoff-table { width: 100%; border-collapse: collapse; margin-top: 26px; }
+    .tt-signoff-table td { border: none; padding: 0; width: 50%; vertical-align: top; font-size: 10pt; }
+    .tt-signoff-table td.right { text-align: right; }
+    .tt-signoff-line { border-top: 1px solid #000; width: 220px; margin-top: 22px; }
+    .tt-signoff-table td.right .tt-signoff-line { margin-left: auto; }
+    .tt-signoff-name { font-weight: bold; margin-top: 3px; }
+    .tt-signoff-role { font-size: 9pt; }
+    .tt-footer { margin-top: 18px; padding-top: 6px; border-top: 1px solid #000; text-align: center; font-size: 8pt; }
 </style>
 @endpush
 @section('content')
@@ -23,17 +35,31 @@
     <a href="{{ $backUrl ?? route('timetable-slots.index', ['semester_id' => $semester->id, 'programme_id' => $programme->id]) }}" style="margin-left:0.5rem;">Back to Timetable</a>
 </div>
 
-<div class="tt-header">
-    <div class="line">Ministry of Health</div>
-    <div class="line">Musoma Clinical Officer Training Centre</div>
-    <div class="line">Department of {{ $programme->name }}</div>
-    <div class="line">Academic Year: {{ $semester->academicYearRange() }}</div>
-    <div class="line">{{ $semester->periodName() }}</div>
-    <div class="line">NTA Level {{ $level }}</div>
-    @if($semester->start_date && $semester->end_date)
-    <div class="sub">From {{ $semester->start_date->format('jS F Y') }} – {{ $semester->end_date->format('jS F Y') }}</div>
-    @endif
-</div>
+<table class="tt-header-table">
+    <tr>
+        <td class="tt-header-logo">
+            @if(file_exists(public_path('images/national-emblem.png')))
+            <img src="{{ asset('images/national-emblem.png') }}" alt="National Emblem">
+            @endif
+        </td>
+        <td class="tt-header-text">
+            <div class="line">Ministry of Health</div>
+            <div class="line">Musoma Clinical Officer Training Centre</div>
+            <div class="line">Department of {{ $programme->name }}</div>
+            <div class="line">Academic Year: {{ $semester->academicYearRange() }}</div>
+            <div class="line">{{ $semester->periodName() }}</div>
+            <div class="line">NTA Level {{ $level }}</div>
+            @if($semester->start_date && $semester->end_date)
+            <div class="sub">From {{ $semester->start_date->format('jS F Y') }} – {{ $semester->end_date->format('jS F Y') }}</div>
+            @endif
+        </td>
+        <td class="tt-header-logo">
+            @if(file_exists(public_path('images/logo.png')))
+            <img src="{{ asset('images/logo.png') }}" alt="College Logo">
+            @endif
+        </td>
+    </tr>
+</table>
 
 <table class="tt-table">
     <thead>
@@ -72,4 +98,24 @@
         @endforeach
     </tbody>
 </table>
+
+<table class="tt-signoff-table">
+    <tr>
+        <td>
+            <div class="tt-signoff-line"></div>
+            <div class="tt-signoff-name">{{ $vpName ?? '' }}</div>
+            <div class="tt-signoff-role">Vice Principal (Academic, Research &amp; Consultancy)</div>
+        </td>
+        <td class="right">
+            <div class="tt-signoff-line"></div>
+            <div class="tt-signoff-name">{{ $hodName ?? '' }}</div>
+            <div class="tt-signoff-role">Head of Department, {{ $programme->name }}</div>
+        </td>
+    </tr>
+</table>
+
+<div class="tt-footer">
+    {{ config('college.institution_name', config('college.school_name')) }}<br>
+    info@musomacohas.ac.tz &nbsp;|&nbsp; +255 28 262 0000 &nbsp;|&nbsp; www.musomacohas.ac.tz
+</div>
 @endsection

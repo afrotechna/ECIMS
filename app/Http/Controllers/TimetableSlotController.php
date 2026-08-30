@@ -112,14 +112,32 @@ class TimetableSlotController extends Controller
         return compact('semester', 'programme', 'level', 'grid');
     }
 
+    /**
+     * Names for the sign-off block at the bottom of the printed/exported timetable: the
+     * Vice Principal (Academic, Research & Consultancy) college-wide, and the Head of
+     * Department for this specific programme, if either post is currently filled.
+     *
+     * @return array{vp: ?string, hod: ?string}
+     */
+    private function signatoryNames(Programme $programme): array
+    {
+        $vpName = \App\Models\User::where('role', 'vice_principal_arc')->value('name');
+
+        $hodRole = array_search($programme->code, \App\Models\User::HOD_PROGRAMME_CODES, true);
+        $hodName = $hodRole ? \App\Models\User::where('role', $hodRole)->value('name') : null;
+
+        return ['vp' => $vpName, 'hod' => $hodName];
+    }
+
     /** Printable, letterhead-styled single-page view of one department/level's weekly grid (Print / Save-as-PDF). */
     public function print(Request $request)
     {
         ['semester' => $semester, 'programme' => $programme, 'level' => $level, 'grid' => $grid] = $this->resolvePanelContext($request);
 
         $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
+        ['vp' => $vpName, 'hod' => $hodName] = $this->signatoryNames($programme);
 
-        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels'));
+        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'vpName', 'hodName'));
     }
 
     /**
@@ -160,8 +178,9 @@ class TimetableSlotController extends Controller
         $grid = TimetableSlot::buildWeekGrid($slots);
         $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
         $backUrl = route('my.timetable', ['academic_year' => $academicYearStart]);
+        ['vp' => $vpName, 'hod' => $hodName] = $this->signatoryNames($programme);
 
-        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'backUrl'));
+        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'backUrl', 'vpName', 'hodName'));
     }
 
     /** Download one department/level's weekly grid as a Word document, matching the college's printed letterhead. */
@@ -181,6 +200,9 @@ class TimetableSlotController extends Controller
         $phpWord->addFontStyle('tt_cell_bold', ['name' => 'Times New Roman', 'size' => 10, 'bold' => true]);
         $phpWord->addFontStyle('tt_cell', ['name' => 'Times New Roman', 'size' => 10]);
         $phpWord->addParagraphStyle('tt_center', ['alignment' => 'center', 'spaceAfter' => 40, 'lineHeight' => 1.0]);
+        $phpWord->addFontStyle('tt_footer', ['name' => 'Times New Roman', 'size' => 8]);
+        $phpWord->addFontStyle('tt_sign_name', ['name' => 'Times New Roman', 'size' => 10, 'bold' => true]);
+        $phpWord->addFontStyle('tt_sign_role', ['name' => 'Times New Roman', 'size' => 9]);
 
         $section = $phpWord->addSection([
             'marginTop' => 850,
@@ -190,24 +212,42 @@ class TimetableSlotController extends Controller
             'orientation' => 'landscape',
         ]);
 
-        $section->addText('MINISTRY OF HEALTH', 'tt_heading', 'tt_center');
-        $section->addText('MUSOMA CLINICAL OFFICER TRAINING CENTRE', 'tt_heading', 'tt_center');
-        $section->addText('DEPARTMENT OF '.strtoupper($programme->name), 'tt_heading', 'tt_center');
-        $section->addText('ACADEMIC YEAR: '.$semester->academicYearRange(), 'tt_heading', 'tt_center');
-        $section->addText(strtoupper($semester->periodName()), 'tt_heading', 'tt_center');
-        $section->addText('NTA LEVEL '.$level, 'tt_heading', 'tt_center');
+        $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
+        $timeColWidth = 1300;
+        $dayColWidth = 1750;
+        $fullWidth = $timeColWidth + $dayColWidth * count($dayLabels);
+
+        // Letterhead: national emblem on the left, college logo on the right, flanking the
+        // centred title lines — matches the ID card / results letterhead convention used
+        // elsewhere in the app.
+        $emblemPath = public_path('images/national-emblem.png');
+        $logoPath = public_path('images/logo.png');
+        $sideColWidth = 1200;
+        $headerTable = $section->addTable(['borderSize' => 0, 'cellMargin' => 0]);
+        $headerTable->addRow();
+        $emblemCell = $headerTable->addCell($sideColWidth, ['valign' => 'center']);
+        if (file_exists($emblemPath)) {
+            $emblemCell->addImage($emblemPath, ['width' => 55, 'height' => 55, 'alignment' => 'center']);
+        }
+        $textCell = $headerTable->addCell($fullWidth - $sideColWidth * 2, ['valign' => 'center']);
+        $textCell->addText('MINISTRY OF HEALTH', 'tt_heading', 'tt_center');
+        $textCell->addText('MUSOMA CLINICAL OFFICER TRAINING CENTRE', 'tt_heading', 'tt_center');
+        $textCell->addText('DEPARTMENT OF '.strtoupper($programme->name), 'tt_heading', 'tt_center');
+        $textCell->addText('ACADEMIC YEAR: '.$semester->academicYearRange(), 'tt_heading', 'tt_center');
+        $textCell->addText(strtoupper($semester->periodName()), 'tt_heading', 'tt_center');
+        $textCell->addText('NTA LEVEL '.$level, 'tt_heading', 'tt_center');
         if ($semester->start_date && $semester->end_date) {
-            $section->addText(
+            $textCell->addText(
                 'FROM '.strtoupper($semester->start_date->format('jS F Y')).' – '.strtoupper($semester->end_date->format('jS F Y')),
                 'tt_sub',
                 'tt_center'
             );
         }
+        $logoCell = $headerTable->addCell($sideColWidth, ['valign' => 'center']);
+        if (file_exists($logoPath)) {
+            $logoCell->addImage($logoPath, ['width' => 55, 'height' => 55, 'alignment' => 'center']);
+        }
         $section->addTextBreak();
-
-        $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
-        $timeColWidth = 1300;
-        $dayColWidth = 1750;
 
         $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 60]);
         $table->addRow();
@@ -240,6 +280,27 @@ class TimetableSlotController extends Controller
                     ->addText($break['label'], 'tt_cell_bold', ['alignment' => 'center']);
             }
         }
+
+        // Sign-off: Vice Principal (Academic) on the left, Head of Department (this programme)
+        // on the right.
+        ['vp' => $vpName, 'hod' => $hodName] = $this->signatoryNames($programme);
+        $section->addTextBreak(2);
+        $signTable = $section->addTable(['borderSize' => 0, 'cellMargin' => 0]);
+        $signTable->addRow();
+        $signCellWidth = intdiv($fullWidth, 2);
+        $vpCell = $signTable->addCell($signCellWidth);
+        $vpCell->addText('.................................................', 'tt_cell', ['alignment' => 'left']);
+        $vpCell->addText($vpName ?? '', 'tt_sign_name', ['alignment' => 'left']);
+        $vpCell->addText('Vice Principal (Academic, Research & Consultancy)', 'tt_sign_role', ['alignment' => 'left']);
+        $hodCell = $signTable->addCell($fullWidth - $signCellWidth);
+        $hodCell->addText('.................................................', 'tt_cell', ['alignment' => 'right']);
+        $hodCell->addText($hodName ?? '', 'tt_sign_name', ['alignment' => 'right']);
+        $hodCell->addText('Head of Department, '.$programme->name, 'tt_sign_role', ['alignment' => 'right']);
+
+        // Footer: institution contact line, repeats on every page.
+        $footer = $section->addFooter();
+        $footer->addText(strtoupper((string) config('college.institution_name', config('college.school_name'))), 'tt_footer', ['alignment' => 'center']);
+        $footer->addText('info@musomacohas.ac.tz  |  +255 28 262 0000  |  www.musomacohas.ac.tz', 'tt_footer', ['alignment' => 'center']);
 
         $tempDir = storage_path('app/temp');
         if (! is_dir($tempDir)) {
