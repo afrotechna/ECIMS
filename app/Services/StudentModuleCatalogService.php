@@ -75,16 +75,20 @@ class StudentModuleCatalogService
 
     /**
      * @return array{
-     *     slots_semester_one: Collection,
-     *     slots_semester_two: Collection,
+     *     grid_semester_one: array,
+     *     grid_semester_two: array,
+     *     semester_one: ?Semester,
+     *     semester_two: ?Semester,
      * }
      */
     public function timetableByTerm(Student $student, int $academicYearStart): array
     {
         $student->loadMissing('programme');
 
+        $empty = ['grid_semester_one' => [], 'grid_semester_two' => [], 'semester_one' => null, 'semester_two' => null];
+
         if (! $student->programme_id) {
-            return ['slots_semester_one' => collect(), 'slots_semester_two' => collect()];
+            return $empty;
         }
 
         $ntaLevel = (int) ($student->nta_level ?? 0);
@@ -102,8 +106,8 @@ class StudentModuleCatalogService
             ->orderBy('number')
             ->get();
 
-        $semesterOneId = $semesters->firstWhere('number', Semester::PERIOD_FIRST)?->id;
-        $semesterTwoId = $semesters->firstWhere('number', Semester::PERIOD_SECOND)?->id;
+        $semesterOne = $semesters->firstWhere('number', Semester::PERIOD_FIRST);
+        $semesterTwo = $semesters->firstWhere('number', Semester::PERIOD_SECOND);
 
         $approvedIds = $student->semesterRegistrations()
             ->where('status', 'approved')
@@ -111,26 +115,27 @@ class StudentModuleCatalogService
 
         $allowedIds = $semesters->pluck('id')->merge($approvedIds)->unique()->filter();
 
-        $fetch = function (?int $semesterId) use ($allowedIds, $student, $ntaLevel) {
-            if (! $semesterId) {
-                return collect();
+        $fetchGrid = function (?Semester $semester) use ($allowedIds, $student, $ntaLevel) {
+            if (! $semester || ! $allowedIds->contains($semester->id)) {
+                return [];
             }
 
             // Only this student's own department + level cohort — the timetable page's grid
             // is scoped the same way, so students shouldn't see other departments' sessions.
-            return TimetableSlot::query()
+            $slots = TimetableSlot::query()
                 ->with(['semester', 'course'])
-                ->where('semester_id', $semesterId)
-                ->whereIn('semester_id', $allowedIds)
+                ->where('semester_id', $semester->id)
                 ->whereHas('course', fn ($q) => $q->where('programme_id', $student->programme_id)->where('nta_level', $ntaLevel))
-                ->orderBy('day_of_week')
-                ->orderBy('start_time')
                 ->get();
+
+            return TimetableSlot::buildWeekGrid($slots);
         };
 
         return [
-            'slots_semester_one' => $fetch($semesterOneId),
-            'slots_semester_two' => $fetch($semesterTwoId),
+            'grid_semester_one' => $fetchGrid($semesterOne),
+            'grid_semester_two' => $fetchGrid($semesterTwo),
+            'semester_one' => $semesterOne,
+            'semester_two' => $semesterTwo,
         ];
     }
 

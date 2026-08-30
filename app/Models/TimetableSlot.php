@@ -40,4 +40,25 @@ class TimetableSlot extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    /**
+     * Arrange a flat collection of slots into the standard day × session grid (day => session
+     * start time => slot|null), matching WEEK_DAYS/DAILY_SESSIONS. Shared by every place that
+     * renders the weekly timetable (admin grid, Word/print export, student "My Timetable").
+     *
+     * @param  \Illuminate\Support\Collection<int, self>  $slots
+     */
+    public static function buildWeekGrid($slots): array
+    {
+        $grid = [];
+        foreach (self::WEEK_DAYS as $day) {
+            foreach (self::DAILY_SESSIONS as $session) {
+                $grid[$day][$session['start']] = $slots->first(fn ($s) => (int) $s->day_of_week === $day
+                    && substr((string) $s->start_time, 0, 5) === $session['start']
+                    && substr((string) $s->end_time, 0, 5) === $session['end']);
+            }
+        }
+
+        return $grid;
+    }
 }

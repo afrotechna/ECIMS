@@ -2,7 +2,8 @@
 @section('title', 'My Class Timetable')
 @section('content')
 @php
-    $timetable = $timetable ?? ['slots_semester_one' => collect(), 'slots_semester_two' => collect()];
+    $timetable = $timetable ?? ['grid_semester_one' => [], 'grid_semester_two' => [], 'semester_one' => null, 'semester_two' => null];
+    $dayLabels = collect(\App\Models\TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => \App\Models\TimetableSlot::DAYS[$d]]);
 @endphp
 <nav class="student-breadcrumb">
     <a href="{{ route('dashboard') }}">Home</a>
@@ -15,7 +16,7 @@
         <p class="page-subtitle-landing mb-0">
             {{ $student->programme->name ?? '' }}
             @if($student->programme?->code) ({{ $student->programme->code }}) @endif
-            Â· {{ \App\Models\Student::NTA_LEVELS[(int) $student->nta_level] ?? 'Student' }}
+            &middot; {{ \App\Models\Student::NTA_LEVELS[(int) $student->nta_level] ?? 'Student' }}
         </p>
     </div>
     <span class="badge bg-light text-dark fs-6">Academic year {{ $academicYearStart }}/{{ $academicYearStart + 1 }}</span>
@@ -40,65 +41,66 @@
     </div>
 </div>
 
-<div id="student-timetable-collapse-scope">
-    @foreach([
-        ['key' => 'one', 'label' => 'Semester one', 'slots' => $timetable['slots_semester_one'] ?? collect(), 'open' => true],
-        ['key' => 'two', 'label' => 'Semester two', 'slots' => $timetable['slots_semester_two'] ?? collect(), 'open' => false],
-    ] as $block)
-    <div class="card card-landing mb-3 courses-tree-card">
-        <div
-            class="card-header-landing d-flex justify-content-between align-items-center gap-2 py-3 courses-fold-trigger {{ ($block['open'] ?? false) ? '' : 'collapsed' }}"
-            data-bs-toggle="collapse"
-            data-bs-target="#student-timetable-{{ $block['key'] }}"
-            aria-expanded="{{ ($block['open'] ?? false) ? 'true' : 'false' }}"
-            role="button"
-            tabindex="0"
-        >
-            <h2 class="h5 mb-0 fw-semibold text-uppercase">{{ $block['label'] }}</h2>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-light text-dark">{{ $block['slots']->count() }} session(s)</span>
-                <i class="bi bi-chevron-down courses-fold-icon flex-shrink-0"></i>
-            </div>
-        </div>
-        <div id="student-timetable-{{ $block['key'] }}" class="collapse {{ ($block['open'] ?? false) ? 'show' : '' }} border-top border-light-subtle">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Day</th>
-                                <th>Time</th>
-                                <th>Module</th>
-                                <th>Room</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($block['slots'] as $slot)
-                            <tr>
-                                <td>{{ \App\Models\TimetableSlot::DAYS[$slot->day_of_week] ?? $slot->day_of_week }}</td>
-                                <td class="text-nowrap">{{ $slot->start_time }} â€“ {{ $slot->end_time }}</td>
-                                <td>{{ $slot->course ? $slot->course->code.' — '.$slot->course->name : '—' }}</td>
-                                <td>{{ $slot->room ?? $slot->venue ?? '—' }}</td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">No timetable published for {{ strtolower($block['label']) }}.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+@foreach([
+    ['label' => 'Semester one', 'grid' => $timetable['grid_semester_one'] ?? [], 'semester' => $timetable['semester_one'] ?? null],
+    ['label' => 'Semester two', 'grid' => $timetable['grid_semester_two'] ?? [], 'semester' => $timetable['semester_two'] ?? null],
+] as $block)
+@php
+    $grid = $block['grid'];
+    $hasSlots = collect($grid)->flatten()->filter()->isNotEmpty();
+@endphp
+<div class="card card-landing mb-3">
+    <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span class="text-uppercase fw-semibold">{{ $block['label'] }}</span>
+        @if($block['semester'])
+        <span class="small opacity-75">{{ $block['semester']->label }}</span>
+        @endif
     </div>
-    @endforeach
+    <div class="card-body p-0">
+        @if($hasSlots)
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:130px;">Time</th>
+                        @foreach($dayLabels as $day => $label)
+                        <th class="text-center">{{ $label }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(\App\Models\TimetableSlot::DAILY_SESSIONS as $sessionIndex => $session)
+                    <tr>
+                        <td class="small fw-semibold text-muted" style="white-space:nowrap;">{{ $session['label'] }}</td>
+                        @foreach($dayLabels as $day => $label)
+                        @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
+                        <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}" style="min-width:120px;">
+                            @if($cellSlot)
+                                <div class="small">{{ $cellSlot->course->name ?? '—' }}</div>
+                                <div class="small fw-semibold">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
+                                @if($cellSlot->room)
+                                <div class="small text-muted">{{ $cellSlot->room }}</div>
+                                @endif
+                            @else
+                                <span class="text-muted small">—</span>
+                            @endif
+                        </td>
+                        @endforeach
+                    </tr>
+                    @if($break = \App\Models\TimetableSlot::BREAKS[$sessionIndex] ?? null)
+                    <tr>
+                        <td class="small fw-semibold text-muted">{{ $break['start'] }} – {{ $break['end'] }}</td>
+                        <td colspan="{{ count($dayLabels) }}" class="text-center small text-muted fw-semibold">{{ $break['label'] }}</td>
+                    </tr>
+                    @endif
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <p class="text-muted text-center py-4 mb-0">No timetable published for {{ strtolower($block['label']) }}.</p>
+        @endif
+    </div>
 </div>
+@endforeach
 @endsection
-
-@push('styles')
-<style>
-.courses-fold-trigger { cursor: pointer; user-select: none; }
-.courses-fold-icon { transition: transform 0.2s ease; display: inline-block; }
-.courses-fold-trigger.collapsed .courses-fold-icon { transform: rotate(-90deg); }
-</style>
-@endpush

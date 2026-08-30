@@ -63,14 +63,7 @@ class TimetableSlotController extends Controller
                 && (int) $s->course->programme_id === (int) $combo->programme_id
                 && (int) $s->course->nta_level === $level)->values();
 
-            $grid = [];
-            foreach (TimetableSlot::WEEK_DAYS as $day) {
-                foreach (TimetableSlot::DAILY_SESSIONS as $session) {
-                    $grid[$day][$session['start']] = $comboSlots->first(fn ($s) => (int) $s->day_of_week === $day
-                        && substr((string) $s->start_time, 0, 5) === $session['start']
-                        && substr((string) $s->end_time, 0, 5) === $session['end']);
-                }
-            }
+            $grid = TimetableSlot::buildWeekGrid($comboSlots);
 
             $panels[] = [
                 'programme' => $programmesById->get($combo->programme_id),
@@ -114,14 +107,7 @@ class TimetableSlotController extends Controller
             ->whereHas('course', fn ($q) => $q->where('programme_id', $programme->id)->where('nta_level', $level))
             ->get();
 
-        $grid = [];
-        foreach (TimetableSlot::WEEK_DAYS as $day) {
-            foreach (TimetableSlot::DAILY_SESSIONS as $session) {
-                $grid[$day][$session['start']] = $slots->first(fn ($s) => (int) $s->day_of_week === $day
-                    && substr((string) $s->start_time, 0, 5) === $session['start']
-                    && substr((string) $s->end_time, 0, 5) === $session['end']);
-            }
-        }
+        $grid = TimetableSlot::buildWeekGrid($slots);
 
         return compact('semester', 'programme', 'level', 'grid');
     }
