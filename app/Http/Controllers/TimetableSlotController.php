@@ -122,6 +122,48 @@ class TimetableSlotController extends Controller
         return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels'));
     }
 
+    /**
+     * Same printable letterhead view as print(), but for a student viewing their own timetable —
+     * scope is derived entirely from the logged-in student's own programme/level, never from
+     * request input, so a student can't print another department's schedule.
+     */
+    public function printMine(Request $request)
+    {
+        $student = auth()->user()->student;
+        abort_unless($student, 403);
+        $student->loadMissing('programme');
+        abort_unless($student->programme_id, 404, 'No programme is set on your student record yet.');
+
+        $level = (int) ($student->nta_level ?? 0);
+        if ($level < 4 || $level > 6) {
+            $level = (int) (Course::where('programme_id', $student->programme_id)
+                ->where('is_active', true)
+                ->whereNotNull('nta_level')
+                ->value('nta_level') ?? 4);
+        }
+
+        $academicYearStart = \App\Support\AcademicSession::resolveStartYear(
+            $request->filled('academic_year') ? $request->integer('academic_year') : null
+        );
+        $termNumber = (int) $request->get('term', Semester::PERIOD_FIRST);
+
+        $semester = Semester::where('academic_year', $academicYearStart)->where('number', $termNumber)->first();
+        abort_unless($semester, 404, 'No timetable found for that term yet.');
+
+        $programme = $student->programme;
+
+        $slots = TimetableSlot::with('course')
+            ->where('semester_id', $semester->id)
+            ->whereHas('course', fn ($q) => $q->where('programme_id', $programme->id)->where('nta_level', $level))
+            ->get();
+
+        $grid = TimetableSlot::buildWeekGrid($slots);
+        $dayLabels = collect(TimetableSlot::WEEK_DAYS)->mapWithKeys(fn ($d) => [$d => TimetableSlot::DAYS[$d]]);
+        $backUrl = route('my.timetable', ['academic_year' => $academicYearStart]);
+
+        return view('timetable-slots.print', compact('semester', 'programme', 'level', 'grid', 'dayLabels', 'backUrl'));
+    }
+
     /** Download one department/level's weekly grid as a Word document, matching the college's printed letterhead. */
     public function downloadWord(Request $request)
     {
@@ -181,7 +223,7 @@ class TimetableSlotController extends Controller
                 $cellSlot = $grid[$day][$session['start']] ?? null;
                 $cell = $table->addCell($dayColWidth);
                 if ($cellSlot) {
-                    $cell->addText(strtoupper($cellSlot->course->name ?? ''), 'tt_cell', ['alignment' => 'center']);
+                    $cell->addText(strtoupper(trim(($cellSlot->course->code ?? '').' — '.($cellSlot->course->name ?? ''))), 'tt_cell', ['alignment' => 'center']);
                     $cell->addText($cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ', 'tt_cell_bold', ['alignment' => 'center']);
                 } else {
                     $cell->addText('—', 'tt_cell', ['alignment' => 'center']);

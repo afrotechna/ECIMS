@@ -19,7 +19,7 @@
 @section('content')
 <div class="no-print" style="margin-bottom:1rem;">
     <button type="button" onclick="window.print()" style="padding:0.45rem 1rem;cursor:pointer;">Print / Save as PDF</button>
-    <a href="{{ route('timetable-slots.index', ['semester_id' => $semester->id, 'programme_id' => $programme->id]) }}" style="margin-left:0.5rem;">Back to Timetable</a>
+    <a href="{{ $backUrl ?? route('timetable-slots.index', ['semester_id' => $semester->id, 'programme_id' => $programme->id]) }}" style="margin-left:0.5rem;">Back to Timetable</a>
 </div>
 
 <div class="tt-header">
@@ -51,7 +51,7 @@
             @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
             <td>
                 @if($cellSlot)
-                    <div class="course-name">{{ $cellSlot->course->name ?? '—' }}</div>
+                    <div class="course-name">{{ $cellSlot->course->code ?? '' }} — {{ $cellSlot->course->name ?? '—' }}</div>
                     <div class="lecturer">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
                 @else
                     —

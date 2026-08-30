@@ -42,8 +42,8 @@
 </div>
 
 @foreach([
-    ['label' => 'Semester one', 'grid' => $timetable['grid_semester_one'] ?? [], 'semester' => $timetable['semester_one'] ?? null],
-    ['label' => 'Semester two', 'grid' => $timetable['grid_semester_two'] ?? [], 'semester' => $timetable['semester_two'] ?? null],
+    ['label' => 'Semester one', 'term' => \App\Models\Semester::PERIOD_FIRST, 'grid' => $timetable['grid_semester_one'] ?? [], 'semester' => $timetable['semester_one'] ?? null],
+    ['label' => 'Semester two', 'term' => \App\Models\Semester::PERIOD_SECOND, 'grid' => $timetable['grid_semester_two'] ?? [], 'semester' => $timetable['semester_two'] ?? null],
 ] as $block)
 @php
     $grid = $block['grid'];
@@ -51,9 +51,16 @@
 @endphp
 <div class="card card-landing mb-3">
     <div class="card-header-landing d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <span class="text-uppercase fw-semibold">{{ $block['label'] }}</span>
-        @if($block['semester'])
-        <span class="small opacity-75">{{ $block['semester']->label }}</span>
+        <div>
+            <span class="text-uppercase fw-semibold">{{ $block['label'] }}</span>
+            @if($block['semester'])
+            <span class="small opacity-75">{{ $block['semester']->label }}</span>
+            @endif
+        </div>
+        @if($hasSlots)
+        <a class="btn btn-outline-light btn-sm" target="_blank" href="{{ route('my.timetable.print', ['term' => $block['term'], 'academic_year' => $academicYearStart]) }}">
+            <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+        </a>
         @endif
     </div>
     <div class="card-body p-0">
@@ -76,7 +83,7 @@
                         @php $cellSlot = $grid[$day][$session['start']] ?? null; @endphp
                         <td class="text-center {{ $cellSlot ? 'bg-light' : '' }}" style="min-width:120px;">
                             @if($cellSlot)
-                                <div class="small">{{ $cellSlot->course->name ?? '—' }}</div>
+                                <div class="small">{{ $cellSlot->course->code ?? '' }} — {{ $cellSlot->course->name ?? '—' }}</div>
                                 <div class="small fw-semibold">{{ $cellSlot->lecturer ? 'Tutor: '.$cellSlot->lecturer : ' ' }}</div>
                                 @if($cellSlot->room)
                                 <div class="small text-muted">{{ $cellSlot->room }}</div>

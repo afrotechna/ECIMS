@@ -597,6 +597,7 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
 
         return view('timetable-slots.my-timetable', compact('student', 'timetable', 'academicYearStart', 'academicYearOptions'));
     })->name('my.timetable');
+    Route::get('my-timetable/print', [\App\Http\Controllers\TimetableSlotController::class, 'printMine'])->name('my.timetable.print');
     Route::get('my-assessments', [ResultController::class, 'studentAssessments'])->name('my.assessments');
     Route::get('my-module-results', [ResultController::class, 'studentModuleResults'])->name('my.module-results');
 });
