@@ -172,7 +172,11 @@ body {
 .navbar .navbar-brand .logo-circle.navbar-logo { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.2); display: inline-flex; align-items: center; justify-content: center; padding: 3px; flex-shrink: 0; }
 .navbar .navbar-brand .logo-circle.navbar-logo img { width: 100%; height: 100%; object-fit: cover; object-position: center 32%; display: block; }
 
-.main-content { flex: 1; padding: 1.5rem 1.75rem; background: var(--cohas-bg-page); }
+/* flex: 0 (not 1) — short pages must not stretch to fill the viewport; the footer should sit
+   right after the content, not get pinned to the bottom of the screen leaving a big empty gap.
+   .main-wrap keeps min-height:100vh only so its background still reaches the fixed sidebar's
+   full height on pages shorter than one viewport. */
+.main-content { flex: 0 1 auto; padding: 1.5rem 1.75rem; background: var(--cohas-bg-page); }
 
 .app-footer {
     flex-shrink: 0; background: var(--cohas-surface); border-top: 1px solid var(--cohas-border);
