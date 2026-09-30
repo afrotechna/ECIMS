@@ -25,7 +25,7 @@
             box-shadow: 0 10px 30px rgba(15, 23, 42, .12);
         }
         .receipt-band {
-            background: linear-gradient(135deg, #071d52 0%, #1a4fb5 100%);
+            background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%);
             color: #fff;
             padding: 1.5rem 1.5rem 1.25rem;
             text-align: center;
@@ -59,12 +59,12 @@
         .receipt-items td.ref { color: #64748b; font-size: .7rem; padding-top: 0; padding-bottom: .6rem; }
         .receipt-items td.sem-header {
             padding: .6rem 0 .2rem; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em;
-            font-weight: 700; color: #1a4fb5; border-bottom: none;
+            font-weight: 700; color: #0f766e; border-bottom: none;
         }
         .receipt-total-row td {
             padding-top: .75rem; font-size: .95rem; font-weight: 700; border-bottom: none;
         }
-        .receipt-total-row .amount { color: #1a4fb5; font-variant-numeric: tabular-nums; }
+        .receipt-total-row .amount { color: #0f766e; font-variant-numeric: tabular-nums; }
         .receipt-grand-total-row td { padding-top: .35rem; font-size: .8125rem; font-weight: 600; color: #64748b; }
         .receipt-grand-total-row .amount { color: #0f172a; }
         .receipt-footer {

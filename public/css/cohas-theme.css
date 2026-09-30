@@ -22,7 +22,7 @@
     transform: translateY(-1px);
 }
 .theme-toggle[aria-pressed="true"] {
-    background: var(--cohas-gradient, linear-gradient(135deg, #071d52 0%, #1a4fb5 100%));
+    background: var(--cohas-gradient, linear-gradient(135deg, #134e4a 0%, #0f766e 100%));
     border-color: transparent;
     color: #fff;
 }

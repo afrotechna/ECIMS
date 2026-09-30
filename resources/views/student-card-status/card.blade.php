@@ -9,8 +9,8 @@
     <link href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}" rel="stylesheet">
     <style>
         :root {
-            --id-navy-1: #071d52;
-            --id-navy-2: #1a4fb5;
+            --id-navy-1: #134e4a;
+            --id-navy-2: #0f766e;
             --id-gold: #d4af37;
         }
         html {

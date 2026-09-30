@@ -5,7 +5,7 @@
     margin: 0;
     min-height: 100vh;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--cohas-bg-page, #eef4fc);
+    background: var(--cohas-bg-page, #effcfa);
     overflow-x: hidden;
 }
 
@@ -378,7 +378,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: var(--cohas-bg-page, #eef4fc);
+    background: var(--cohas-bg-page, #effcfa);
     padding: clamp(0.75rem, 3vh, 1.5rem) 1.5rem;
 }
 
@@ -424,7 +424,7 @@
 
 .auth-main .lang-toggle {
     display: inline-flex;
-    border: 1px solid #d4e2f4;
+    border: 1px solid #c9ece7;
     border-radius: 0.5rem;
     overflow: hidden;
     background: #fff;
@@ -452,7 +452,7 @@
 /* Login card */
 .auth-login-card {
     background: #fff;
-    border: 1px solid #d4e2f4;
+    border: 1px solid #c9ece7;
     border-radius: 0.75rem;
     box-shadow: 0 8px 32px var(--cohas-shadow, rgba(7, 29, 82, 0.1));
     padding: clamp(0.85rem, 4vh, 2rem) 1.75rem clamp(0.65rem, 3vh, 1.5rem);
@@ -483,7 +483,7 @@
     border-radius: 50%;
     overflow: hidden;
     background: #fff;
-    border: 2px solid #d4e2f4;
+    border: 2px solid #c9ece7;
     padding: 5px;
     box-shadow: 0 6px 20px var(--cohas-shadow, rgba(7, 29, 82, 0.08));
 }
@@ -532,14 +532,14 @@
 .auth-field .form-control {
     width: 100%;
     border-radius: 0.4rem;
-    border: 1px solid #d4e2f4;
+    border: 1px solid #c9ece7;
     padding: 0.6rem 0.75rem;
     font-size: 0.9375rem;
 }
 
 .auth-field .form-control:focus {
     border-color: var(--cohas-blue-700);
-    box-shadow: 0 0 0 3px rgba(26, 79, 181, 0.15);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
 }
 
 .auth-input-group {
@@ -583,7 +583,7 @@
 
 .auth-input-toggle:hover {
     color: var(--cohas-blue-700);
-    background: #eef4fc;
+    background: #effcfa;
 }
 
 .auth-input-toggle:focus-visible {
@@ -644,7 +644,7 @@
     color: #fff;
     background: var(--cohas-gradient);
     transition: opacity 0.15s, transform 0.1s;
-    box-shadow: 0 2px 8px rgba(26, 79, 181, 0.25);
+    box-shadow: 0 2px 8px rgba(15, 118, 110, 0.25);
 }
 
 .auth-login-card > .btn-signin:hover,
@@ -707,7 +707,7 @@
     display: inline-block;
     width: 2rem;
     height: 1px;
-    background: #d4e2f4;
+    background: #c9ece7;
     vertical-align: middle;
     margin: 0 0.5rem;
 }
@@ -730,7 +730,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #d4e2f4;
+    border: 2px solid #c9ece7;
 }
 
 .landing-welcome .logo-hero img {
@@ -801,7 +801,7 @@
 
 .landing-pill {
     background: #fff;
-    border: 1px solid #d4e2f4;
+    border: 1px solid #c9ece7;
     border-radius: 0.5rem;
     padding: clamp(0.5rem, 1.8vh, 0.75rem);
     font-size: 0.78rem;
@@ -861,9 +861,9 @@
 .landing-main {
     position: relative;
     background:
-        radial-gradient(560px circle at 12% 8%, rgba(26, 79, 181, 0.07), transparent 55%),
+        radial-gradient(560px circle at 12% 8%, rgba(15, 118, 110, 0.07), transparent 55%),
         radial-gradient(520px circle at 92% 92%, rgba(56, 182, 232, 0.08), transparent 55%),
-        var(--cohas-bg-page, #eef4fc);
+        var(--cohas-bg-page, #effcfa);
 }
 
 /* Slow ambient drift on the promo panel's wave pattern */
@@ -1229,12 +1229,12 @@
 [data-theme="dark"] .landing-main {
     background:
         radial-gradient(560px circle at 12% 8%, rgba(56, 182, 232, 0.1), transparent 55%),
-        radial-gradient(520px circle at 92% 92%, rgba(77, 143, 232, 0.12), transparent 55%),
-        var(--cohas-bg-page, #071d52);
+        radial-gradient(520px circle at 92% 92%, rgba(45, 212, 191, 0.12), transparent 55%),
+        var(--cohas-bg-page, #134e4a);
 }
 
 [data-theme="dark"] .auth-login-card {
-    background: #0e3583;
+    background: #115e59;
     border-color: #334155;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
@@ -1255,7 +1255,7 @@
 }
 
 [data-theme="dark"] .auth-field .form-control {
-    background: #071d52;
+    background: #134e4a;
     border-color: #334155;
     color: #f1f5f9;
 }
@@ -1309,7 +1309,7 @@
 }
 
 [data-theme="dark"] .landing-pill {
-    background: #0e3583;
+    background: #115e59;
     border-color: #334155;
     color: #cbd5e1;
 }
@@ -1317,7 +1317,7 @@
 [data-theme="dark"] .landing-welcome .btn-outline-navy {
     background: transparent;
     color: #7eb8ff;
-    border-color: #4d8fe8;
+    border-color: #2dd4bf;
 }
 
 [data-theme="dark"] .landing-welcome .btn-outline-navy:hover {

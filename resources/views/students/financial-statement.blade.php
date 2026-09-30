@@ -17,7 +17,7 @@
     .fin-stmt-table td { font-size: .8125rem; vertical-align: middle; }
     .fin-stmt-table .text-money { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .fin-stmt-section-row td { background: #e2e8f0; font-weight: 700; font-size: .8125rem; color: #334155; }
-    .fin-stmt-semester-row td { background: var(--cohas-gradient, linear-gradient(135deg, #071d52 0%, #1a4fb5 100%)); font-weight: 700; font-size: .875rem; color: #fff; }
+    .fin-stmt-semester-row td { background: var(--cohas-gradient, linear-gradient(135deg, #134e4a 0%, #0f766e 100%)); font-weight: 700; font-size: .875rem; color: #fff; }
     .fin-stmt-semester-row .semester-year { font-weight: 500; color: rgba(255,255,255,.8); font-size: .8125rem; }
     .fin-stmt-summary-row td { background: #f1f5f9; font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; }
     .fin-stmt-summary-row .text-money { color: #0f172a; font-size: .875rem; }

@@ -8,8 +8,8 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <style>
         :root {
-            --navy-1: #071d52;
-            --navy-2: #1a4fb5;
+            --navy-1: #134e4a;
+            --navy-2: #0f766e;
             --green: #16a34a;
             --red: #dc2626;
             --amber: #d97706;

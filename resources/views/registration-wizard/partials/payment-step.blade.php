@@ -5,6 +5,7 @@
     $paymentTuitionDefault = $paymentTuitionDefault ?? 'continue';
     $chargesNhifQa = $chargesNhifQa ?? true;
     $isFirstSem = $isFirstSem ?? true;
+    $locked = $locked ?? false;
     $oldSlots = [
         'slot_sem1_nhif' => (int) old('slot_sem1_nhif', 0),
         'slot_sem1_nactvet_qa' => (int) old('slot_sem1_nactvet_qa', 0),
@@ -113,6 +114,7 @@
     @push('scripts')
     <script>
     (function () {
+        if (@json($locked)) return;
         var feeSlotsByKey = @json($feeSlotsByKey);
         var academicYear = @json((string) $paymentAcademicYear);
         var studentProgrammeId = @json($student->programme_id);

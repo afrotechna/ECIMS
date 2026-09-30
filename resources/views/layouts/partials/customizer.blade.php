@@ -8,11 +8,11 @@
             <div class="customizer-section-title">Theme</div>
             <div class="customizer-options">
                 <button type="button" class="customizer-option" data-customizer-theme="light">
-                    <span class="customizer-option-swatch"><span style="background:#0e3583"></span><span style="background:#ffffff"></span></span>
+                    <span class="customizer-option-swatch"><span style="background:#115e59"></span><span style="background:#ffffff"></span></span>
                     Light
                 </button>
                 <button type="button" class="customizer-option" data-customizer-theme="dark">
-                    <span class="customizer-option-swatch"><span style="background:#0e3583"></span><span style="background:#071d52"></span></span>
+                    <span class="customizer-option-swatch"><span style="background:#115e59"></span><span style="background:#134e4a"></span></span>
                     Dark
                 </button>
             </div>
@@ -21,11 +21,11 @@
             <div class="customizer-section-title">Menu color</div>
             <div class="customizer-options">
                 <button type="button" class="customizer-option" data-customizer-menu-skin="light">
-                    <span class="customizer-option-swatch"><span style="background:#ffffff"></span><span style="background:#eef4fc"></span></span>
+                    <span class="customizer-option-swatch"><span style="background:#ffffff"></span><span style="background:#effcfa"></span></span>
                     Light
                 </button>
                 <button type="button" class="customizer-option" data-customizer-menu-skin="dark">
-                    <span class="customizer-option-swatch"><span style="background:#071d52"></span><span style="background:#eef4fc"></span></span>
+                    <span class="customizer-option-swatch"><span style="background:#134e4a"></span><span style="background:#effcfa"></span></span>
                     Dark
                 </button>
             </div>

@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    var brandColor = '#1a4fb5';
+    var brandColor = '#0f766e';
     var errors = @json($errors->any() ? $errors->getMessages() : []);
     var errMsg = @json(session('error'));
     var infoMsg = @json(session('info'));

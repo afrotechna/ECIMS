@@ -1,13 +1,15 @@
 /**
- * MUSOMA COHAS — brand colours from official logo
- * Blue (primary) · Yellow (accent/CTA) · Green (success) · Cyan (info/links)
+ * MUSOMA COHAS — brand colours
+ * Teal (primary) · Yellow (accent/CTA) · Green (success) · Cyan (info/links)
+ * Variable names keep the historical `--cohas-blue-*` prefix to avoid
+ * touching every call site — only the values below changed.
  */
 :root,
 [data-bs-theme="light"] {
-    --cohas-blue-950: #071d52;
-    --cohas-blue-900: #0e3583;
-    --cohas-blue-700: #1a4fb5;
-    --cohas-blue-500: #2f6fd6;
+    --cohas-blue-950: #134e4a;
+    --cohas-blue-900: #115e59;
+    --cohas-blue-700: #0f766e;
+    --cohas-blue-500: #14b8a6;
     --cohas-cyan: #38b6e8;
     --cohas-cyan-soft: #e0f4fc;
     --cohas-yellow: #f2b705;
@@ -16,16 +18,16 @@
     --cohas-green: #1d9d57;
     --cohas-green-dark: #157a44;
     --cohas-green-soft: #e8f8ef;
-    --cohas-blue-soft: #e5edfb;
+    --cohas-blue-soft: #f0fdfa;
 
     --cohas-gradient: linear-gradient(135deg, var(--cohas-blue-950) 0%, var(--cohas-blue-900) 42%, var(--cohas-blue-700) 100%);
-    --cohas-gradient-hover: linear-gradient(135deg, var(--cohas-blue-900) 0%, var(--cohas-blue-700) 50%, #2080c9 100%);
-    --cohas-gradient-accent: linear-gradient(135deg, var(--cohas-blue-900) 0%, var(--cohas-blue-700) 55%, #1e78c4 100%);
+    --cohas-gradient-hover: linear-gradient(135deg, var(--cohas-blue-900) 0%, var(--cohas-blue-700) 50%, #2dd4bf 100%);
+    --cohas-gradient-accent: linear-gradient(135deg, var(--cohas-blue-900) 0%, var(--cohas-blue-700) 55%, #14b8a6 100%);
     --cohas-ring-gradient: linear-gradient(90deg, var(--cohas-yellow) 0%, var(--cohas-green) 38%, var(--cohas-cyan) 68%, var(--cohas-blue-700) 100%);
 
-    --cohas-bg-page: #eef4fc;
-    --cohas-shadow: rgba(7, 29, 82, 0.08);
-    --cohas-shadow-lg: rgba(7, 29, 82, 0.14);
+    --cohas-bg-page: #effcfa;
+    --cohas-shadow: rgba(19, 78, 74, 0.08);
+    --cohas-shadow-lg: rgba(19, 78, 74, 0.14);
 
     /* Unified surface/text vocabulary — shared by cohas-theme.css component overrides */
     --cohas-surface: #ffffff;
@@ -42,7 +44,7 @@
 
     /* Bootstrap 5.3 */
     --bs-primary: var(--cohas-blue-700);
-    --bs-primary-rgb: 26, 79, 181;
+    --bs-primary-rgb: 15, 118, 110;
     --bs-success: var(--cohas-green);
     --bs-success-rgb: 29, 157, 87;
     --bs-warning: var(--cohas-yellow);
@@ -52,29 +54,29 @@
     --bs-link-color: var(--cohas-blue-700);
     --bs-link-hover-color: var(--cohas-blue-900);
     --bs-body-bg: var(--cohas-bg-page);
-    --bs-border-color: #d4e2f4;
-    --bs-focus-ring-color: rgba(26, 79, 181, 0.28);
+    --bs-border-color: #c9ece7;
+    --bs-focus-ring-color: rgba(15, 118, 110, 0.28);
 }
 
 [data-theme="dark"] {
-    --cohas-bg-page: #071d52;
-    --cohas-gradient: linear-gradient(135deg, #051433 0%, var(--cohas-blue-950) 50%, var(--cohas-blue-900) 100%);
+    --cohas-bg-page: #134e4a;
+    --cohas-gradient: linear-gradient(135deg, #072e2a 0%, var(--cohas-blue-950) 50%, var(--cohas-blue-900) 100%);
     --cohas-gradient-hover: linear-gradient(135deg, var(--cohas-blue-950) 0%, var(--cohas-blue-700) 100%);
     --cohas-shadow: rgba(0, 0, 0, 0.25);
     --cohas-shadow-lg: rgba(0, 0, 0, 0.35);
-    --bs-primary: #4d8fe8;
-    --bs-primary-rgb: 77, 143, 232;
+    --bs-primary: #2dd4bf;
+    --bs-primary-rgb: 45, 212, 191;
     --bs-body-bg: var(--cohas-bg-page);
-    --bs-link-color: #7eb8ff;
-    --bs-link-hover-color: #a8d4ff;
+    --bs-link-color: #5eead4;
+    --bs-link-hover-color: #99f6e4;
 
-    --cohas-surface: #0e3583;
+    --cohas-surface: #115e59;
     --cohas-surface-muted: #334155;
     --cohas-text: #f1f5f9;
     --cohas-text-muted: #94a3b8;
     --cohas-border: #334155;
     --cohas-hover: #475569;
-    --cohas-blue-soft: rgba(77, 143, 232, 0.22);
+    --cohas-blue-soft: rgba(45, 212, 191, 0.22);
 }
 
 /* Page shell */
@@ -135,7 +137,7 @@ body {
 
 .card-modern {
     box-shadow: 0 2px 12px var(--cohas-shadow) !important;
-    border: 1px solid rgba(212, 226, 244, 0.9) !important;
+    border: 1px solid rgba(201, 236, 231, 0.9) !important;
 }
 
 .card-landing {
@@ -319,7 +321,7 @@ button.btn-primary {
     background: var(--cohas-gradient) !important;
     border-color: var(--cohas-blue-700) !important;
     color: #fff !important;
-    box-shadow: 0 2px 8px rgba(26, 79, 181, 0.25);
+    box-shadow: 0 2px 8px rgba(15, 118, 110, 0.25);
 }
 
 .btn-primary:hover,
@@ -328,7 +330,7 @@ button.btn-primary:hover {
     background: var(--cohas-gradient-hover) !important;
     border-color: var(--cohas-blue-900) !important;
     color: #fff !important;
-    box-shadow: 0 4px 14px rgba(26, 79, 181, 0.35);
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
 }
 
 .btn-outline-primary,
@@ -397,17 +399,17 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 
 /* Segment navigation */
 .cohas-segment-nav {
-    border-color: rgba(212, 226, 244, 0.95) !important;
+    border-color: rgba(201, 236, 231, 0.95) !important;
     box-shadow: 0 4px 24px var(--cohas-shadow) !important;
 }
 
 .cohas-segment-nav__clear {
     color: var(--cohas-blue-700) !important;
-    background: rgba(26, 79, 181, 0.08) !important;
+    background: rgba(15, 118, 110, 0.08) !important;
 }
 .cohas-segment-nav__clear:hover {
     color: var(--cohas-blue-900) !important;
-    background: rgba(26, 79, 181, 0.14) !important;
+    background: rgba(15, 118, 110, 0.14) !important;
 }
 
 .cohas-segment-nav__item--l4 { --segment-accent: var(--cohas-green); }
@@ -434,24 +436,24 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 
 /* Filters & dashboard */
 .cohas-filter-panel {
-    border-color: rgba(212, 226, 244, 0.95) !important;
+    border-color: rgba(201, 236, 231, 0.95) !important;
     box-shadow: 0 4px 24px var(--cohas-shadow) !important;
 }
 .cohas-filter-panel .form-control:focus,
 .cohas-filter-panel .form-select:focus {
     border-color: var(--cohas-blue-700) !important;
-    box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.15) !important;
+    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.15) !important;
 }
 
 .dashboard-stat-card,
 .dashboard-chart-card {
-    border-color: rgba(212, 226, 244, 0.95) !important;
+    border-color: rgba(201, 236, 231, 0.95) !important;
     box-shadow: 0 4px 20px var(--cohas-shadow) !important;
 }
 
 .dashboard-chart-card__head {
     background: linear-gradient(180deg, var(--cohas-cyan-soft) 0%, #fff 100%) !important;
-    border-color: #d4e2f4 !important;
+    border-color: #c9ece7 !important;
 }
 
 [data-theme="dark"] .dashboard-chart-card__head {
@@ -473,7 +475,7 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
 .bg-warning { background-color: var(--cohas-yellow) !important; }
 .bg-info { background-color: var(--cohas-cyan) !important; }
 
-.bg-primary.bg-opacity-10 { background-color: rgba(26, 79, 181, 0.1) !important; }
+.bg-primary.bg-opacity-10 { background-color: rgba(15, 118, 110, 0.1) !important; }
 .bg-success.bg-opacity-10 { background-color: var(--cohas-green-soft) !important; }
 .bg-info.bg-opacity-10 { background-color: var(--cohas-cyan-soft) !important; }
 .bg-warning.bg-opacity-10 { background-color: var(--cohas-yellow-soft) !important; }
@@ -591,24 +593,24 @@ a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
     margin: -0.5rem 0.75rem -0.5rem -0.75rem;
     padding: 0.5rem 0.9rem;
     border-radius: 0.65rem 0 0 0.65rem;
-    background-color: var(--cohas-blue-soft, #e5edfb);
-    color: var(--cohas-blue-700, #1a4fb5);
+    background-color: var(--cohas-blue-soft, #f0fdfa);
+    color: var(--cohas-blue-700, #0f766e);
     font-weight: 600;
     border: none;
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .form-control:hover::file-selector-button {
-    background-color: var(--cohas-blue-500, #2f6fd6);
+    background-color: var(--cohas-blue-500, #14b8a6);
     color: #fff;
 }
 
 .form-select {
-    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231a4fb5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230f766e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 [data-theme="dark"] .form-select {
-    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234d8fe8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232dd4bf' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 textarea.form-control {
@@ -622,7 +624,7 @@ textarea.form-control {
 
 .form-control:hover:not(:disabled):not(:focus):not([readonly]),
 .form-select:hover:not(:disabled):not(:focus) {
-    border-color: var(--cohas-blue-500, #2f6fd6);
+    border-color: var(--cohas-blue-500, #14b8a6);
 }
 
 .form-control:disabled,
@@ -637,7 +639,7 @@ textarea.form-control {
 .form-select:focus {
     background-color: var(--cohas-surface, #fff);
     border-color: var(--cohas-blue-700);
-    box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
+    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.18);
     transform: translateY(-1px);
 }
 
@@ -681,7 +683,7 @@ textarea.form-control {
 
 .form-check-input:focus {
     border-color: var(--cohas-blue-700);
-    box-shadow: 0 0 0 0.2rem rgba(26, 79, 181, 0.18);
+    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.18);
 }
 
 .form-check-label {
@@ -791,7 +793,7 @@ table .btn-sm.btn-cohas-edit {
 td.text-end .btn-outline-primary.btn-sm:hover {
     color: #fff !important;
     background: var(--cohas-blue-700) !important;
-    box-shadow: 0 3px 10px rgba(26, 79, 181, 0.3);
+    box-shadow: 0 3px 10px rgba(15, 118, 110, 0.3);
     transform: translateY(-1px);
 }
 

@@ -72,7 +72,7 @@
             data-bulk-scope="coursesBulkScope"
             data-bulk-confirm="Assign :count selected module(s) to the chosen semester?"
             data-bulk-confirm-button="Assign"
-            data-bulk-confirm-color="#1a4fb5"
+            data-bulk-confirm-color="#0f766e"
             data-bulk-confirm-icon="question"
             data-bulk-group-by="nta-level"
         >

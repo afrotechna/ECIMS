@@ -15,14 +15,14 @@
     $cmtData = [(int) ($cmtLevels[4] ?? 0), (int) ($cmtLevels[5] ?? 0), (int) ($cmtLevels[6] ?? 0)];
     $mltData = [(int) ($mltLevels[4] ?? 0), (int) ($mltLevels[5] ?? 0), (int) ($mltLevels[6] ?? 0)];
 
-    $levelColors = ['rgba(29, 157, 87, 0.9)', 'rgba(26, 79, 181, 0.9)', 'rgba(56, 182, 232, 0.9)'];
+    $levelColors = ['rgba(29, 157, 87, 0.9)', 'rgba(15, 118, 110, 0.9)', 'rgba(56, 182, 232, 0.9)'];
     $cmtColor = 'rgba(29, 157, 87, 0.88)';
     $mltColor = 'rgba(56, 182, 232, 0.88)';
     // Cycles rather than truncates, so a chart never runs out of distinct
     // colors no matter how many programmes are active.
     $progPalette = [
         'rgba(29, 157, 87, 0.88)',   // green
-        'rgba(26, 79, 181, 0.88)',   // navy blue
+        'rgba(15, 118, 110, 0.88)',   // navy blue
         'rgba(56, 182, 232, 0.88)',  // cyan
         'rgba(242, 183, 5, 0.88)',   // yellow
         'rgba(147, 51, 234, 0.85)',  // purple
@@ -266,7 +266,7 @@
 (function () {
     if (typeof Chart === 'undefined') return;
 
-    var navy = '#1a4fb5';
+    var navy = '#0f766e';
     var studentsLabel = {!! json_encode($chartStudentsLabel) !!};
     var balanceLabels = {!! json_encode([__('ui.charts.cleared'), __('ui.charts.arrears')]) !!};
     var compactScale = { ticks: { font: { size: 10 }, precision: 0 }, grid: { color: 'rgba(226,232,240,0.6)' } };
@@ -334,7 +334,7 @@
     if (document.getElementById('chartEnrollmentTrend') && enrollData.length) {
         new Chart(document.getElementById('chartEnrollmentTrend'), {
             type: 'bar',
-            data: { labels: enrollLabels, datasets: [{ label: studentsLabel, data: enrollData, backgroundColor: 'rgba(26, 79, 181, 0.78)', borderRadius: 4 }] },
+            data: { labels: enrollLabels, datasets: [{ label: studentsLabel, data: enrollData, backgroundColor: 'rgba(15, 118, 110, 0.78)', borderRadius: 4 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: compactScale, y: Object.assign({ beginAtZero: true }, compactScale) } }
         });
     }
