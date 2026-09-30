@@ -436,7 +436,7 @@
                     <span class="login-as">Login as: {{ $currentUser->staffDisplayName() ?: $currentUser->email }}</span>
                 @endif
             </div>
-            <div class="topbar-datetime" id="topbarDateTime" aria-live="polite">
+            <div class="topbar-datetime d-none d-md-block" id="topbarDateTime" aria-live="polite">
                 <span id="topbarDate"></span> &middot; <span id="topbarTime"></span>
             </div>
             <div class="topbar-right">
