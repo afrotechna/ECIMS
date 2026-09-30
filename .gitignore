@@ -8,7 +8,9 @@
 /storage/app/institution-documents
 /storage/app/office-documents
 /storage/app/student-documents
-/vendor
+# vendor/ is committed on purpose (see commit message): the Hostinger host used
+# for deployment has proc_open disabled, which breaks `composer install` on
+# the server, so dependencies are built locally and shipped in the repo instead.
 .env
 .env.backup
 .env.production
