@@ -60,23 +60,6 @@
     background: var(--cohas-bg-page) !important;
 }
 
-[data-theme="dark"] .topbar {
-    background: var(--cohas-surface) !important;
-    border-color: var(--cohas-border) !important;
-}
-[data-theme="dark"] .topbar .login-as,
-[data-theme="dark"] .topbar .topbar-datetime { color: var(--cohas-text-muted) !important; }
-[data-theme="dark"] .topbar .topbar-reg-no { color: var(--cohas-text) !important; }
-[data-theme="dark"] .topbar .btn-link { color: var(--cohas-text) !important; }
-[data-theme="dark"] .topbar .profile-menu {
-    background: var(--cohas-surface) !important;
-    border-color: var(--cohas-border) !important;
-}
-[data-theme="dark"] .topbar .profile-menu .profile-menu-header { border-color: var(--cohas-border) !important; }
-[data-theme="dark"] .topbar .profile-menu .profile-menu-header small { color: var(--cohas-text-muted) !important; }
-[data-theme="dark"] .topbar .profile-menu .profile-menu-item { color: var(--cohas-text-muted) !important; }
-[data-theme="dark"] .topbar .profile-menu .profile-menu-item:hover { background: var(--cohas-hover) !important; color: var(--cohas-text) !important; }
-
 [data-theme="dark"] .lang-toggle {
     border-color: var(--cohas-border) !important;
     background: var(--cohas-surface-muted) !important;

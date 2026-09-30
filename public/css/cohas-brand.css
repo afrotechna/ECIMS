@@ -110,7 +110,7 @@ body {
 .sidebar-wrap .nav-group-toggle:hover i:first-of-type,
 .sidebar-wrap .nav-group.expanded .nav-group-toggle i:first-of-type { color: var(--cohas-blue-900) !important; }
 
-.topbar .topbar-avatar,
+.topbar-avatar,
 .lang-toggle__btn.is-active,
 .theme-toggle[aria-pressed="true"] {
     background: var(--cohas-gradient) !important;
@@ -123,16 +123,17 @@ body {
     background: var(--cohas-gradient) !important;
 }
 
-/* Headers & cards */
+/* Headers & cards -- plain style, matching musomacotc-register (no gradient) */
 .page-header-landing,
 .card-landing .card-header-landing {
-    background: var(--cohas-gradient-accent) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 20px var(--cohas-shadow-lg);
+    background: var(--cohas-surface-muted) !important;
+    color: var(--cohas-text) !important;
+    box-shadow: none;
 }
 
 .page-header-landing {
-    border-bottom: 3px solid var(--cohas-yellow);
+    background: none !important;
+    border-bottom: none;
 }
 
 .card-modern {
@@ -259,19 +260,19 @@ a.btn-outline-warning:hover {
     color: #1a1a1a !important;
 }
 
-/* .btn-light / .btn-outline-light action buttons on gradient headers — the
-   same frosted-glass pill used for the dashboard's quick actions, applied
-   everywhere the pattern repeats (every list page's "Add …" header button). */
+/* .btn-light / .btn-outline-light action buttons in page/card headers --
+   these headers are plain/light now (not a dark gradient), so remap what
+   would otherwise be an invisible white-on-white button to a normal outline
+   button appropriate for a light background, without touching every
+   template that still uses the btn-outline-light class. */
 .page-header-landing .btn-light,
 .page-header-landing .btn-outline-light,
 .card-header-landing .btn-light,
 .card-header-landing .btn-outline-light {
-    background: rgba(255, 255, 255, 0.16) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    color: #fff !important;
-    border-radius: 999px !important;
+    background: var(--cohas-surface) !important;
+    border: 1px solid var(--cohas-border) !important;
+    color: var(--cohas-text) !important;
+    border-radius: var(--cohas-radius-sm) !important;
     font-weight: 600;
     box-shadow: none !important;
     transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
@@ -284,10 +285,10 @@ a.btn-outline-warning:hover {
 .page-header-landing .btn-outline-light:focus-visible,
 .card-header-landing .btn-light:focus-visible,
 .card-header-landing .btn-outline-light:focus-visible {
-    background: rgba(255, 255, 255, 0.36) !important;
-    border-color: rgba(255, 255, 255, 0.6) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+    background: var(--cohas-hover) !important;
+    border-color: var(--cohas-blue-700) !important;
+    color: var(--cohas-text) !important;
+    box-shadow: none !important;
     transform: translateY(-1px);
 }
 .page-header-landing .btn-light:active,
@@ -300,8 +301,9 @@ a.btn-outline-warning:hover {
 [data-theme="dark"] .page-header-landing .btn-outline-light,
 [data-theme="dark"] .card-header-landing .btn-light,
 [data-theme="dark"] .card-header-landing .btn-outline-light {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.22) !important;
+    background: var(--cohas-surface) !important;
+    border-color: var(--cohas-border) !important;
+    color: var(--cohas-text) !important;
 }
 [data-theme="dark"] .page-header-landing .btn-light:hover,
 [data-theme="dark"] .page-header-landing .btn-outline-light:hover,
@@ -311,8 +313,8 @@ a.btn-outline-warning:hover {
 [data-theme="dark"] .page-header-landing .btn-outline-light:focus-visible,
 [data-theme="dark"] .card-header-landing .btn-light:focus-visible,
 [data-theme="dark"] .card-header-landing .btn-outline-light:focus-visible {
-    background: rgba(255, 255, 255, 0.26) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
+    background: var(--cohas-hover) !important;
+    border-color: var(--cohas-blue-700) !important;
 }
 
 .btn-primary,
@@ -383,11 +385,11 @@ a.btn-cta:hover {
 }
 
 /* Links & breadcrumbs */
-a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item) {
+a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):not(.lang-toggle__btn):not(.dropdown-item) {
     color: var(--cohas-blue-700);
     text-decoration: none;
 }
-a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):hover {
+a:not(.btn):not(.nav-link):not(.cohas-segment-nav__item):not(.lang-toggle__btn):not(.dropdown-item):hover {
     color: var(--cohas-blue-900);
     text-decoration: none;
 }
@@ -701,13 +703,11 @@ textarea.form-control {
     color: var(--bs-body-color);
 }
 
-/* Modern glass-style quick-action pills on gradient page headers (e.g. dashboard). */
+/* Plain quick-action pills on the (now plain) dashboard header. */
 .quick-action-pill {
-    background: rgba(255, 255, 255, 0.16) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    color: #fff !important;
+    background: var(--cohas-surface-muted) !important;
+    border: 1px solid var(--cohas-border) !important;
+    color: var(--cohas-text) !important;
     border-radius: 999px !important;
     padding: 0.45rem 1rem !important;
     font-weight: 600;
@@ -715,26 +715,17 @@ textarea.form-control {
 }
 .quick-action-pill:hover,
 .quick-action-pill:focus-visible {
-    background: rgba(255, 255, 255, 0.36) !important;
-    border-color: rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    background: var(--cohas-hover) !important;
+    border-color: var(--cohas-border) !important;
+    box-shadow: 0 4px 14px var(--cohas-shadow);
     transform: translateY(-1px);
-    color: #fff !important;
+    color: var(--cohas-text) !important;
 }
 .quick-action-pill:active {
     transform: translateY(0) scale(0.97);
 }
 .quick-action-pill i {
     opacity: 0.9;
-}
-[data-theme="dark"] .quick-action-pill {
-    background: rgba(255, 255, 255, 0.10) !important;
-    border-color: rgba(255, 255, 255, 0.22) !important;
-}
-[data-theme="dark"] .quick-action-pill:hover,
-[data-theme="dark"] .quick-action-pill:focus-visible {
-    background: rgba(255, 255, 255, 0.26) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Progress */
@@ -820,18 +811,9 @@ table .btn-sm.btn-outline-danger:hover {
     transform: translateY(-1px);
 }
 
-/* Never red/blue-on-navy: action buttons on navy headers use a soft white chip */
-.page-header-landing .btn-cohas-delete,
-.page-header-landing .btn-cohas-edit,
-.page-header-landing .btn-outline-danger,
-.page-header-landing .btn-outline-primary,
-.page-header-landing .btn-outline-secondary,
-.card-header-landing .btn-cohas-delete,
-.card-header-landing .btn-cohas-edit,
-.card-header-landing .btn-outline-danger,
-.card-header-landing .btn-outline-primary,
-.card-header-landing .btn-outline-secondary,
-.card-header-landing .bulk-delete-submit,
+/* Never red/blue-on-navy: action buttons on the (still dark) navbar / active
+   segment-nav item use a soft white chip. page-header-landing/card-header-landing
+   are plain/light now, so those buttons just use normal Bootstrap outline colors. */
 .navbar.bg-primary .btn-cohas-delete,
 .navbar.bg-primary .btn-outline-danger,
 .cohas-segment-nav__item.is-active .btn-cohas-delete,
@@ -841,50 +823,12 @@ table .btn-sm.btn-outline-danger:hover {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
 }
 
-.page-header-landing .btn-cohas-delete,
-.page-header-landing .btn-outline-danger,
-.card-header-landing .btn-cohas-delete,
-.card-header-landing .btn-outline-danger,
-.card-header-landing .bulk-delete-submit,
 .navbar.bg-primary .btn-cohas-delete,
 .navbar.bg-primary .btn-outline-danger {
     color: #b91c1c !important;
 }
 
-.page-header-landing .btn-cohas-delete:hover,
-.page-header-landing .btn-outline-danger:hover,
-.card-header-landing .btn-cohas-delete:hover,
-.card-header-landing .btn-outline-danger:hover {
-    color: #fff !important;
-    background: #dc2626 !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
-    transform: translateY(-1px);
-}
-
-.page-header-landing .btn-cohas-edit,
-.page-header-landing .btn-outline-primary,
-.page-header-landing .btn-outline-secondary,
-.card-header-landing .btn-cohas-edit,
-.card-header-landing .btn-outline-primary,
-.card-header-landing .btn-outline-secondary {
-    color: var(--cohas-blue-700) !important;
-}
-
-.page-header-landing .btn-cohas-edit:hover,
-.page-header-landing .btn-outline-primary:hover,
-.card-header-landing .btn-cohas-edit:hover,
-.card-header-landing .btn-outline-primary:hover {
-    color: #fff !important;
-    background: var(--cohas-blue-700) !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
-    transform: translateY(-1px);
-}
-
-/* Red text on blue backgrounds — unreadable; use light or white chip */
-.page-header-landing .text-danger,
-.card-header-landing .text-danger,
-.page-header-landing a.text-danger,
-.card-header-landing a.text-danger,
+/* Red text on the navbar / active nav item — unreadable on dark; use a white chip */
 .bg-primary .text-danger,
 .navbar-dark .text-danger,
 .nav-link.active .text-danger {
@@ -894,12 +838,6 @@ table .btn-sm.btn-outline-danger:hover {
     padding: .15rem .45rem;
     font-weight: 600;
     text-decoration: none;
-}
-
-.page-header-landing a.text-danger:hover,
-.card-header-landing a.text-danger:hover {
-    background: #b91c1c !important;
-    color: #fff !important;
 }
 
 /* Plain text-danger on light pages — dark maroon, readable */
@@ -937,13 +875,6 @@ table .btn-sm.btn-outline-danger:hover {
     border: none !important;
 }
 
-[data-theme="dark"] .page-header-landing .btn-cohas-delete,
-[data-theme="dark"] .card-header-landing .btn-cohas-delete,
-[data-theme="dark"] .card-header-landing .bulk-delete-submit {
-    color: #991b1b !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    border: none !important;
-}
 
 [data-theme="dark"] .btn-cohas-delete:hover,
 [data-theme="dark"] .btn.btn-sm.btn-outline-danger:hover {

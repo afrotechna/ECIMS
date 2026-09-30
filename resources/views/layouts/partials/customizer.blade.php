@@ -18,28 +18,6 @@
             </div>
         </div>
         <div class="customizer-section">
-            <div class="customizer-section-title">Menu color</div>
-            <div class="customizer-options">
-                <button type="button" class="customizer-option" data-customizer-menu-skin="light">
-                    <span class="customizer-option-swatch"><span style="background:#ffffff"></span><span style="background:#effcfa"></span></span>
-                    Light
-                </button>
-                <button type="button" class="customizer-option" data-customizer-menu-skin="dark">
-                    <span class="customizer-option-swatch"><span style="background:#134e4a"></span><span style="background:#effcfa"></span></span>
-                    Dark
-                </button>
-            </div>
-        </div>
-        <div class="customizer-section">
-            <div class="customizer-section-title">Sidebar</div>
-            <div class="customizer-switch-row">
-                <label for="customizerSidebarCollapsed" class="mb-0">Start collapsed</label>
-                <div class="form-check form-switch mb-0">
-                    <input class="form-check-input" type="checkbox" role="switch" id="customizerSidebarCollapsed">
-                </div>
-            </div>
-        </div>
-        <div class="customizer-section">
             <button type="button" id="customizerReset" class="btn btn-outline-secondary customizer-reset-btn">
                 <i class="bi bi-arrow-counterclockwise me-1"></i> Reset to defaults
             </button>
