@@ -34,6 +34,16 @@
                     <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code', $hostel->code) }}">
                     @error('code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
+                <div class="col-md-6">
+                    <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                    <select class="form-select @error('gender') is-invalid @enderror" id="gender" name="gender" required>
+                        <option value="">Choose…</option>
+                        <option value="male" {{ old('gender', $hostel->gender) === 'male' ? 'selected' : '' }}>Male</option>
+                        <option value="female" {{ old('gender', $hostel->gender) === 'female' ? 'selected' : '' }}>Female</option>
+                    </select>
+                    <div class="form-text">Only students of this gender can be allocated to rooms in this hostel.</div>
+                    @error('gender')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
                 <div class="col-12"><hr class="my-1"><span class="small text-muted fw-semibold text-uppercase">Physical layout</span></div>
                 <div class="col-md-4">
                     <label for="block_count" class="form-label">Blocks <span class="text-danger">*</span></label>

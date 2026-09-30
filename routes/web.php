@@ -3,6 +3,11 @@
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\AccommodationAllocationController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\BudgetLineController;
+use App\Http\Controllers\CashAccountController;
+use App\Http\Controllers\CreditorController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\InstitutionTransactionController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -378,6 +383,19 @@ Route::middleware(['auth', 'password.changed', 'profile.completed'])->group(func
             Route::resource('payments', PaymentController::class)->only(['index', 'show']);
             Route::get('payments/{payment}/reverse', [PaymentController::class, 'reverseForm'])->name('payments.reverse.form');
             Route::post('payments/{payment}/reverse', [PaymentController::class, 'reverse'])->name('payments.reverse');
+
+            // Accountancy: institutional payments, creditors & department budgets
+            Route::post('departments/bulk-destroy', [DepartmentController::class, 'bulkDestroy'])->name('departments.bulk-destroy');
+            Route::resource('departments', DepartmentController::class)->except(['show']);
+            Route::post('cash-accounts/bulk-destroy', [CashAccountController::class, 'bulkDestroy'])->name('cash-accounts.bulk-destroy');
+            Route::resource('cash-accounts', CashAccountController::class)->except(['show']);
+            Route::post('budget-lines/bulk-destroy', [BudgetLineController::class, 'bulkDestroy'])->name('budget-lines.bulk-destroy');
+            Route::resource('budget-lines', BudgetLineController::class)->except(['show']);
+            Route::post('creditors/bulk-destroy', [CreditorController::class, 'bulkDestroy'])->name('creditors.bulk-destroy');
+            Route::resource('creditors', CreditorController::class)->except(['show']);
+            Route::post('creditors/{creditor}/pay', [CreditorController::class, 'pay'])->name('creditors.pay');
+            Route::resource('institution-transactions', InstitutionTransactionController::class)->only(['index', 'create', 'store']);
+            Route::post('institution-transactions/{institution_transaction}/void', [InstitutionTransactionController::class, 'void'])->name('institution-transactions.void');
             Route::post('students/{student}/ledger/charge', [StudentController::class, 'ledgerCharge'])->name('students.ledger.charge');
             Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
             Route::get('reports/enrollment', [ReportController::class, 'enrollment'])->name('reports.enrollment');

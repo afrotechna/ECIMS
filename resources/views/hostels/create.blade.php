@@ -11,7 +11,7 @@
 
 <div class="page-header-landing">
     <h1 class="page-title-landing"><i class="bi bi-plus-lg me-2 opacity-90"></i>Add Hostel</h1>
-    <p class="page-subtitle-landing mb-0">Default layout: <strong>14 blocks</strong>, <strong>4 rooms per block</strong>, <strong>8 berths per room</strong> (4 double-decker beds × 2 tiers).</p>
+    <p class="page-subtitle-landing mb-0">Default layout: <strong>6 blocks</strong>, <strong>4 rooms per block</strong>, <strong>8 berths per room</strong> (4 double-decker beds × 2 tiers).</p>
 </div>
 
 <div class="card card-landing">
@@ -29,6 +29,16 @@
                     <label for="code" class="form-label">Code</label>
                     <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code') }}" placeholder="e.g. MCH">
                     @error('code')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                    <select class="form-select @error('gender') is-invalid @enderror" id="gender" name="gender" required>
+                        <option value="">Choose…</option>
+                        <option value="male" {{ old('gender') === 'male' ? 'selected' : '' }}>Male</option>
+                        <option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>Female</option>
+                    </select>
+                    <div class="form-text">Only students of this gender can be allocated to rooms in this hostel.</div>
+                    @error('gender')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-12"><hr class="my-1"><span class="form-section-title d-block">Physical layout</span></div>
                 <div class="col-md-4">

@@ -30,6 +30,7 @@ return [
         'finance_fees' => 'Fee structures',
         'finance_payments' => 'Payments & ledger charges',
         'finance_reports' => 'Financial & admission reports',
+        'accountancy' => 'Institutional payments, creditors & budgets',
         'students' => 'Student records',
         'accommodation_facilities' => 'Hostels & rooms',
         'accommodation' => 'Room allocations',
@@ -65,6 +66,11 @@ return [
         'student-attendance' => 'student_attendance',
         'fee-structures' => 'finance_fees',
         'payments' => 'finance_payments',
+        'departments' => 'accountancy',
+        'cash-accounts' => 'accountancy',
+        'budget-lines' => 'accountancy',
+        'creditors' => 'accountancy',
+        'institution-transactions' => 'accountancy',
         'students' => 'students',
         'student-documents' => 'students',
         'search' => 'students',
@@ -167,6 +173,7 @@ return [
             'finance_fees' => ['view', 'create', 'update', 'delete'],
             'finance_payments' => ['view', 'create', 'update', 'delete'],
             'finance_reports' => ['view'],
+            'accountancy' => ['view', 'create', 'update', 'delete'],
             'inventory' => ['view', 'create', 'update', 'delete'],
             'students' => ['view', 'update'],
             'accommodation_facilities' => ['view', 'create', 'update', 'delete'],
@@ -185,6 +192,7 @@ return [
         'procurement_officer' => [
             'inventory' => ['view', 'create', 'update', 'delete'],
             'finance_reports' => ['view'],
+            'accountancy' => ['view', 'create', 'update'],
             'institution_docs' => ['view'],
             'calendar' => ['view', 'create', 'update'],
         ],
@@ -192,6 +200,7 @@ return [
         'secretary' => [
             'finance_reports' => ['view'],
             'finance_payments' => ['view', 'create', 'update'],
+            'accountancy' => ['view'],
             'students' => ['view'],
             'registrations' => ['view'],
             'programmes' => ['view'],
@@ -308,6 +317,7 @@ return [
             'finance_fees' => ['view', 'create', 'update', 'delete'],
             'finance_payments' => ['view', 'create', 'update', 'delete'],
             'finance_reports' => ['view'],
+            'accountancy' => ['view', 'create', 'update', 'delete'],
             'students' => ['view', 'update'],
             'registrations' => ['view'],
             'institution_docs' => ['view'],
@@ -370,7 +380,7 @@ return [
     ],
 
     'finance_modules' => [
-        'finance_fees', 'finance_payments', 'finance_reports', 'inventory',
+        'finance_fees', 'finance_payments', 'finance_reports', 'inventory', 'accountancy',
     ],
 
     /** Positions with academic portfolio (programmes → clinical). */

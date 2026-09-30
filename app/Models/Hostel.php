@@ -14,6 +14,7 @@ class Hostel extends Model
     protected $fillable = [
         'name',
         'code',
+        'gender',
         'block_count',
         'rooms_per_block',
         'beds_per_room',
@@ -27,8 +28,8 @@ class Hostel extends Model
         'beds_per_room' => 'integer',
     ];
 
-    /** Default campus layout: 14 blocks, 4 rooms each, 4 double-decker beds (8 berths) per room. */
-    public const DEFAULT_BLOCK_COUNT = 14;
+    /** Default campus layout: 6 blocks per gender, 4 rooms each, 4 double-decker beds (8 berths) per room. */
+    public const DEFAULT_BLOCK_COUNT = 6;
 
     public const DEFAULT_ROOMS_PER_BLOCK = 4;
 
@@ -47,5 +48,14 @@ class Hostel extends Model
     public function totalBedCapacity(): int
     {
         return (int) $this->rooms()->sum('bed_count');
+    }
+
+    public function genderLabel(): string
+    {
+        return match ($this->gender) {
+            'male' => 'Male',
+            'female' => 'Female',
+            default => '—',
+        };
     }
 }

@@ -125,6 +125,7 @@ class HostelController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:20'],
+            'gender' => ['required', 'in:male,female'],
             'block_count' => ['required', 'integer', 'min:1', 'max:60'],
             'rooms_per_block' => ['required', 'integer', 'min:1', 'max:30'],
             'beds_per_room' => ['required', 'integer', 'min:1', 'max:32'],

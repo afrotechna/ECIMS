@@ -13,7 +13,7 @@
 <div class="page-header-landing d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
         <h1 class="page-title-landing"><i class="bi bi-building me-2 opacity-90"></i>Hostels</h1>
-        <p class="page-subtitle-landing mb-0">Standard grid: <strong>14 blocks × 4 rooms</strong>, <strong>8 berths</strong> per room (4 double-decker beds).</p>
+        <p class="page-subtitle-landing mb-0">Male and Female hostels, <strong>6 blocks × 4 rooms</strong> each, <strong>8 berths</strong> per room (4 double-decker beds).</p>
     </div>
     @canModule('accommodation_facilities', 'create')
     <a href="{{ route('hostels.create') }}" class="btn btn-light btn-sm text-dark"><i class="bi bi-plus-lg me-1"></i> Add Hostel</a>
@@ -41,6 +41,7 @@
                     <tr>
                         @include('partials.bulk-delete.th', $bulkDelete)
                         <th>Name</th>
+                        <th>Gender</th>
                         <th>Code</th>
                         <th>Layout</th>
                         <th class="text-end">Rooms</th>
@@ -54,6 +55,7 @@
                     <tr>
                         @include('partials.bulk-delete.td', array_merge($bulkDelete, ['bulkRowId' => $h->id]))
                         <td><strong>{{ $h->name }}</strong></td>
+                        <td>{{ $h->genderLabel() }}</td>
                         <td>{{ $h->code ?? '—' }}</td>
                         <td class="small">{{ $h->block_count }} blocks × {{ $h->rooms_per_block }} rooms · {{ $h->beds_per_room }} berths/room</td>
                         <td class="text-end">{{ $h->rooms_count }}</td>
@@ -74,7 +76,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="text-center text-muted py-5">No hostels yet. <a href="{{ route('hostels.create') }}">Add one</a>.</td></tr>
+                    <tr><td colspan="9" class="text-center text-muted py-5">No hostels yet. <a href="{{ route('hostels.create') }}">Add one</a>.</td></tr>
                     @endforelse
                 </tbody>
             </table>

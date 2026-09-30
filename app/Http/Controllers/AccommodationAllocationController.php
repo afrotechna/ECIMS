@@ -30,7 +30,7 @@ class AccommodationAllocationController extends Controller
             ->whereHas('semesterRegistrations', fn ($q) => $q->where('status', 'approved')->whereNull('wizard_step'))
             ->orderBy('reg_no')
             ->get();
-        $rooms = $this->roomsSelectableForAllocation(null);
+        $rooms = $this->roomsSelectableForAllocation(null, null);
         $roomOptionsUrl = route('accommodation-allocations.room-options');
 
         return view('accommodation-allocations.create', compact('students', 'rooms', 'roomOptionsUrl'));
@@ -47,7 +47,11 @@ class AccommodationAllocationController extends Controller
         ]);
         $validated['status'] = $validated['status'] ?? 'active';
 
-        $room = Room::findOrFail($validated['room_id']);
+        $room = Room::with('hostel')->findOrFail($validated['room_id']);
+        $student = Student::findOrFail($validated['student_id']);
+        if ($student->hostelGender() && $room->hostel && $room->hostel->gender !== $student->hostelGender()) {
+            return redirect()->back()->withInput()->with('error', 'That room is in the '.$room->hostel->genderLabel().' Hostel — it does not match the student\'s gender.');
+        }
         if ($validated['status'] === 'active' && $room->activeAllocationsCount() >= $room->bed_count) {
             return redirect()->back()->withInput()->with('error', 'Room has no available berths (all beds are already allocated).');
         }
@@ -95,7 +99,7 @@ class AccommodationAllocationController extends Controller
             })
             ->orderBy('reg_no')
             ->get();
-        $rooms = $this->roomsSelectableForAllocation($allocation->room_id);
+        $rooms = $this->roomsSelectableForAllocation($allocation->room_id, $allocation->student?->hostelGender());
         $roomOptionsUrl = route('accommodation-allocations.room-options', ['allocation_id' => $allocation->id]);
 
         return view('accommodation-allocations.edit', compact('allocation', 'students', 'rooms', 'roomOptionsUrl'));
@@ -111,8 +115,13 @@ class AccommodationAllocationController extends Controller
             'status' => ['required', 'string', 'in:active,ended'],
         ]);
 
+        $targetRoom = Room::with('hostel')->findOrFail($validated['room_id']);
+        $student = Student::findOrFail($validated['student_id']);
+        if ($student->hostelGender() && $targetRoom->hostel && $targetRoom->hostel->gender !== $student->hostelGender()) {
+            return redirect()->back()->withInput()->with('error', 'That room is in the '.$targetRoom->hostel->genderLabel().' Hostel — it does not match the student\'s gender.');
+        }
+
         if ($validated['status'] === 'active') {
-            $targetRoom = Room::findOrFail($validated['room_id']);
             $others = AccommodationAllocation::query()
                 ->where('room_id', $targetRoom->id)
                 ->where('status', 'active')
@@ -147,7 +156,11 @@ class AccommodationAllocationController extends Controller
                 ->whereKey($request->integer('allocation_id'))
                 ->value('room_id');
         }
-        $rooms = $this->roomsSelectableForAllocation($alwaysInclude);
+        $gender = null;
+        if ($request->filled('student_id')) {
+            $gender = Student::find($request->integer('student_id'))?->hostelGender();
+        }
+        $rooms = $this->roomsSelectableForAllocation($alwaysInclude, $gender);
 
         return response()->json([
             'rooms' => $rooms->map(fn (Room $r) => [
@@ -163,11 +176,12 @@ class AccommodationAllocationController extends Controller
      *
      * @return \Illuminate\Support\Collection<int, Room>
      */
-    private function roomsSelectableForAllocation(?int $alwaysIncludeRoomId): \Illuminate\Support\Collection
+    private function roomsSelectableForAllocation(?int $alwaysIncludeRoomId, ?string $gender): \Illuminate\Support\Collection
     {
         $rooms = Room::query()
             ->with('hostel')
             ->where('is_active', true)
+            ->when($gender, fn ($q) => $q->whereHas('hostel', fn ($h) => $h->where('gender', $gender)))
             ->withCount([
                 'accommodationAllocations' => function ($q) {
                     $q->where('status', 'active');

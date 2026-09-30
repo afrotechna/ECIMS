@@ -70,12 +70,19 @@ class RecordPaymentService
             ]);
         }
 
+        $isGepg = ($validated['payment_method'] ?? null) === 'gepg';
+
         $refs = [];
         if ($tuitionPart > 0) {
             $ref = trim((string) ($validated['reference_tuition'] ?? $validated['reference'] ?? ''));
             if ($ref === '') {
                 throw ValidationException::withMessages([
                     'reference_tuition' => 'Enter the tuition fee control number.',
+                ]);
+            }
+            if ($isGepg && ! Payment::isValidControlNumber($ref)) {
+                throw ValidationException::withMessages([
+                    'reference_tuition' => 'Enter a valid GePG control number (6-20 digits).',
                 ]);
             }
             $refs['tuition'] = $ref;
@@ -85,6 +92,11 @@ class RecordPaymentService
             if ($ref === '') {
                 throw ValidationException::withMessages([
                     'reference_nactvet_qa' => 'Enter the NACTVET QA control number.',
+                ]);
+            }
+            if ($isGepg && ! Payment::isValidControlNumber($ref)) {
+                throw ValidationException::withMessages([
+                    'reference_nactvet_qa' => 'Enter a valid GePG control number (6-20 digits).',
                 ]);
             }
             $refs['nactvet_qa'] = $ref;

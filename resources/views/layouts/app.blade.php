@@ -266,6 +266,20 @@
                 </ul>
             </div>
             @endif
+            @canModule('accountancy', 'view')
+            <div class="nav-group {{ request()->routeIs('departments.*', 'cash-accounts.*', 'budget-lines.*', 'creditors.*', 'institution-transactions.*') ? 'expanded' : '' }}" id="navGroupAccountancy">
+                <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('departments.*', 'cash-accounts.*', 'budget-lines.*', 'creditors.*', 'institution-transactions.*') ? 'true' : 'false' }}" aria-controls="navGroupAccountancySub">
+                    <i class="bi bi-bank"></i><span>Accountancy</span><i class="bi bi-chevron-down"></i>
+                </button>
+                <ul class="nav-group-sub" id="navGroupAccountancySub">
+                    <li><a href="{{ route('cash-accounts.index') }}" class="{{ request()->routeIs('cash-accounts.*') ? 'active' : '' }}"><i class="bi bi-wallet2"></i>Cash accounts</a></li>
+                    <li><a href="{{ route('institution-transactions.index') }}" class="{{ request()->routeIs('institution-transactions.*') ? 'active' : '' }}"><i class="bi bi-journal-text"></i>Payments &amp; deposits ledger</a></li>
+                    <li><a href="{{ route('creditors.index') }}" class="{{ request()->routeIs('creditors.*') ? 'active' : '' }}"><i class="bi bi-file-earmark-ruled"></i>Creditors</a></li>
+                    <li><a href="{{ route('budget-lines.index') }}" class="{{ request()->routeIs('budget-lines.*') ? 'active' : '' }}"><i class="bi bi-pie-chart"></i>Department budgets</a></li>
+                    <li><a href="{{ route('departments.index') }}" class="{{ request()->routeIs('departments.*') ? 'active' : '' }}"><i class="bi bi-diagram-3"></i>Departments</a></li>
+                </ul>
+            </div>
+            @endcanModule
             <div class="nav-group {{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'transcript-requests.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*', 'reports.admission-control-sheet*', 'reports.students-on-leave', 'reports.graduation-clearance') ? 'expanded' : '' }}" id="navGroupCollegeOffice">
                 <button type="button" class="nav-group-toggle" aria-expanded="{{ request()->routeIs('students.*', 'message-logs.*', 'announcements.*', 'leave-applications.*', 'graduation-clearances.*', 'conduct-records.*', 'certificate-collections.*', 'student-card-status.*', 'calendar.*', 'reports.admission-control-sheet*', 'reports.students-on-leave', 'reports.graduation-clearance') ? 'true' : 'false' }}" aria-controls="navGroupCollegeOfficeSub">
                     <i class="bi bi-briefcase"></i><span>Registrar's office</span><i class="bi bi-chevron-down"></i>

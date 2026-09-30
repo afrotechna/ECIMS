@@ -104,7 +104,9 @@
     }
 
     function loadRooms(preserveId) {
-        fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+        var sep = url.indexOf('?') === -1 ? '?' : '&';
+        var u = studentEl.value ? url + sep + 'student_id=' + encodeURIComponent(studentEl.value) : url;
+        fetch(u, { credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
             .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
             .then(function (data) { fillRooms(data.rooms, preserveId); })
             .catch(function () {});

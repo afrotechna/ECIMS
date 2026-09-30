@@ -42,7 +42,13 @@ class Payment extends Model
 
     public static function methods(): array
     {
-        return ['cash' => 'Cash', 'bank' => 'Bank Transfer', 'mobile' => 'Mobile Money', 'cheque' => 'Cheque'];
+        return ['cash' => 'Cash', 'bank' => 'Bank Transfer', 'mobile' => 'Mobile Money', 'cheque' => 'Cheque', 'gepg' => 'GePG'];
+    }
+
+    /** GePG control numbers are 6-20 digits (Tanzania government payment gateway format). */
+    public static function isValidControlNumber(string $s): bool
+    {
+        return (bool) preg_match('/^\d{6,20}$/', trim($s));
     }
 
     /**

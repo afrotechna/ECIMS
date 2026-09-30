@@ -220,6 +220,16 @@ class Student extends Model
         return $this->hasOne(AccommodationAllocation::class)->where('status', 'active')->latestOfMany();
     }
 
+    /** The student's gender ('M'/'F') translated to a Hostel's gender ('male'/'female'), or null if unset. */
+    public function hostelGender(): ?string
+    {
+        return match ($this->gender) {
+            'M' => 'male',
+            'F' => 'female',
+            default => null,
+        };
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
